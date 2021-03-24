@@ -1,12 +1,12 @@
 {
-  "name": "express-typescript-starter",
+  "name": "appointment-availability-server",
   "version": "0.1.0",
-  "description": "A starting point for Node.js express apps with TypeScript",
+  "description": "A server which logs various appointment availability",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/TypeScript-Node-Starter"
+    "url": "https://github.com/usdigitalresponse/appointment-availability-infra"
   },
-  "author": "Bowden Kelly",
+  "author": "USDR",
   "license": "MIT",
   "scripts": {
     "build-ts": "tsc",
