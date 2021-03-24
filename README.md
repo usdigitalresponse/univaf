@@ -6,7 +6,14 @@ Get CVS to API running by Friday.
 
 ## Developing Locally
 
-TODO
+### Starting the API server
+
+```bash
+$ cd ./server/api
+$ npm install
+$ npm run watch         # `watch` will auto-recompile typescript
+$ npm run test          # `test` will run the various jest tests
+```
 
 ## Deploying to Production
 
