@@ -1,6 +1,6 @@
 [
   {
-    "name": "appointment-api",
+    "name": "api",
     "image": "${api_image}",
     "cpu": ${fargate_cpu},
     "memory": ${fargate_memory},
