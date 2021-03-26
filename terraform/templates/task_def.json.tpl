@@ -1,7 +1,7 @@
 [
   {
     "name": "appointment-api",
-    "image": "${app_image}",
+    "image": "${api_image}",
     "cpu": ${fargate_cpu},
     "memory": ${fargate_memory},
     "networkMode": "awsvpc",
@@ -15,8 +15,8 @@
     },
     "portMappings": [
       {
-        "containerPort": ${app_port},
-        "hostPort": ${app_port}
+        "containerPort": ${api_port},
+        "hostPort": ${api_port}
       }
     ]
   }
