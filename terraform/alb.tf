@@ -6,7 +6,7 @@ resource "aws_alb" "main" {
   security_groups = [aws_security_group.lb.id]
 }
 
-resource "aws_alb_target_group" "app" {
+resource "aws_alb_target_group" "api" {
   name        = "api-target-group"
   port        = 80
   protocol    = "HTTP"
@@ -27,11 +27,11 @@ resource "aws_alb_target_group" "app" {
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "front_end" {
   load_balancer_arn = aws_alb.main.id
-  port              = var.app_port
+  port              = var.api_port
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.app.id
+    target_group_arn = aws_alb_target_group.api.id
     type             = "forward"
   }
 }

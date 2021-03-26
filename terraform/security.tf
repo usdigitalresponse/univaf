@@ -1,6 +1,6 @@
 # security.tf
 
-# ALB Security Group: Edit to restrict access to the application
+# ALB Security Group: Edit to restrict access to the apilication
 resource "aws_security_group" "lb" {
   name        = "cb-load-balancer-security-group"
   description = "controls access to the ALB"
@@ -8,8 +8,8 @@ resource "aws_security_group" "lb" {
 
   ingress {
     protocol    = "tcp"
-    from_port   = var.app_port
-    to_port     = var.app_port
+    from_port   = var.api_port
+    to_port     = var.api_port
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -29,8 +29,8 @@ resource "aws_security_group" "ecs_tasks" {
 
   ingress {
     protocol        = "tcp"
-    from_port       = var.app_port
-    to_port         = var.app_port
+    from_port       = var.api_port
+    to_port         = var.api_port
     security_groups = [aws_security_group.lb.id]
   }
 

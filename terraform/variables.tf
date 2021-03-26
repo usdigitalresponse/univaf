@@ -18,17 +18,17 @@ variable "az_count" {
   default     = 2
 }
 
-variable "app_image" {
+variable "api_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "nginxdemos/hello"
+  default     = "nginxdemos/hello:latest"
 }
 
-variable "app_port" {
+variable "api_port" {
   description = "Port exposed by the docker image to redirect traffic to"
   default     = 8080
 }
 
-variable "app_count" {
+variable "api_count" {
   description = "Number of docker containers to run"
   default     = 2
 }

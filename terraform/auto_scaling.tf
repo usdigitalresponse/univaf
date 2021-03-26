@@ -1,6 +1,6 @@
 # auto_scaling.tf
 
-resource "aws_appautoscaling_target" "target" {
+resource "aws_apiautoscaling_target" "target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
   scalable_dimension = "ecs:service:DesiredCount"
@@ -10,7 +10,7 @@ resource "aws_appautoscaling_target" "target" {
 }
 
 # Automatically scale capacity up by one
-resource "aws_appautoscaling_policy" "up" {
+resource "aws_apiautoscaling_policy" "up" {
   name               = "cb_scale_up"
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
@@ -27,11 +27,11 @@ resource "aws_appautoscaling_policy" "up" {
     }
   }
 
-  depends_on = [aws_appautoscaling_target.target]
+  depends_on = [aws_apiautoscaling_target.target]
 }
 
 # Automatically scale capacity down by one
-resource "aws_appautoscaling_policy" "down" {
+resource "aws_apiautoscaling_policy" "down" {
   name               = "cb_scale_down"
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
@@ -48,7 +48,7 @@ resource "aws_appautoscaling_policy" "down" {
     }
   }
 
-  depends_on = [aws_appautoscaling_target.target]
+  depends_on = [aws_apiautoscaling_target.target]
 }
 
 # CloudWatch alarm that triggers the autoscaling up policy
@@ -67,7 +67,7 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
     ServiceName = aws_ecs_service.main.name
   }
 
-  alarm_actions = [aws_appautoscaling_policy.up.arn]
+  alarm_actions = [aws_apiautoscaling_policy.up.arn]
 }
 
 # CloudWatch alarm that triggers the autoscaling down policy
@@ -86,5 +86,5 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
     ServiceName = aws_ecs_service.main.name
   }
 
-  alarm_actions = [aws_appautoscaling_policy.down.arn]
+  alarm_actions = [aws_apiautoscaling_policy.down.arn]
 }
