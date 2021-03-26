@@ -8,7 +8,7 @@
     "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/appointment-api",
+          "awslogs-group": "/ecs/api",
           "awslogs-region": "${aws_region}",
           "awslogs-stream-prefix": "ecs"
         }
