@@ -5,12 +5,12 @@ variable "aws_region" {
 
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
-  default = "myEcsTaskExecutionRole"
+  default     = "myEcsTaskExecutionRole"
 }
 
 variable "ecs_auto_scale_role_name" {
   description = "ECS auto scale role Name"
-  default = "myEcsAutoScaleRole"
+  default     = "myEcsAutoScaleRole"
 }
 
 variable "az_count" {
