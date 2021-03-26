@@ -6,6 +6,27 @@ Get CVS to API running by Friday.
 
 ## Developing Locally
 
+### Running Postgres
+
+You will need to download the latest version of [Docker](https://www.docker.com/get-started) to run Postgres.
+
+```bash
+$ docker-compose up -d    # runs the database as a background process on 5432
+$ pgcli -p 5432 -h 127.0.0.1 postgres postgres   # connect locally and verify
+$ postgres@127:postgres> \l                      # list the databases
++-----------+----------+------------+------------+------------+-----------------------+
+| Name      | Owner    | Encoding   | Collate    | Ctype      | Access privileges     |
+|-----------+----------+------------+------------+------------+-----------------------|
+| postgres  | postgres | UTF8       | en_US.utf8 | en_US.utf8 | <null>                |
+| template0 | postgres | UTF8       | en_US.utf8 | en_US.utf8 | =c/postgres           |
+|           |          |            |            |            | postgres=CTc/postgres |
+| template1 | postgres | UTF8       | en_US.utf8 | en_US.utf8 | =c/postgres           |
+|           |          |            |            |            | postgres=CTc/postgres |
++-----------+----------+------------+------------+------------+-----------------------+
+```
+
+TODO: add commands for setting the schema
+
 ### Starting the API server
 
 ```bash
