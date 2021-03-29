@@ -1,0 +1,29 @@
+{
+  "name": "appointment-availability-loader",
+  "version": "0.1.0",
+  "description": "Scripts that find COVID-19 vaccine appointment availability from various sources",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usdigitalresponse/appointment-availability-infra.git"
+  },
+  "author": "USDR",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/usdigitalresponse/appointment-availability-infra/issues"
+  },
+  "homepage": "https://github.com/usdigitalresponse/appointment-availability-infra#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.10.0",
+    "csv-parse": "^4.15.3",
+    "get-stream": "^5.2.0",
+    "got": "^11.8.2",
+    "yargs": "^15.4.1"
+  }
+}
