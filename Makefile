@@ -6,6 +6,6 @@ compose:
 	docker-compose up -d
 
 seed:
-	cd server && ./scripts/build-database.sh
+	cd server && npm install && ./scripts/build-database.sh
 
 .PHONY: docker compose seed
