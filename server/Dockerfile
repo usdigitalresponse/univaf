@@ -6,11 +6,12 @@ WORKDIR /app
 # copy our files
 COPY . .
 
-# build for production
-ENV NODE_ENV=production
-
-# build the server
+# install the dependencies as fresh copies
+RUN npm run clean
 RUN npm install
+
+# run in production
+ENV NODE_ENV=production
 RUN npm run build
 
 # export the port

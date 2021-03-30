@@ -82,5 +82,5 @@ export const update = async (req: AppRequest, res: Response) => {
 
 export const healthcheck = async (req: AppRequest, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
-  res.status(200).send("OK");
+  res.status(200).send("OK!");
 };
