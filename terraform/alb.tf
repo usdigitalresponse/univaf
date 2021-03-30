@@ -31,7 +31,7 @@ resource "aws_alb_listener" "front_end" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.api.id
+    target_group_arn = aws_alb_target_group.api.arn
     type             = "forward"
   }
 }
