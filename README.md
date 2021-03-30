@@ -29,6 +29,7 @@ $ postgres@127:postgres> \l                      # list the databases (optional)
 Next, seed the database
 
 ```bash
+$ source ./server/.env # if you haven't already, source the env vars (you may need to modify these!)
 $ make seed
 ```
 
