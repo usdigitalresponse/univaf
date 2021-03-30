@@ -1,6 +1,7 @@
 import errorHandler from "errorhandler";
 import app from "./app";
 import process from "process";
+import { connection } from "./db";
 
 /**
  * Error Handler. Provides full stack
@@ -15,9 +16,13 @@ if (process.env.NODE_ENV === "development") {
 
 process.on("SIGINT", () => {
   console.log("Received SIGINT: process exiting");
-  connection.end()
+  connection
+    .end()
     .then(() => process.exit(0))
-    .catch(error => { console.error(error); process.exit(1); });
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
 });
 
 /**
