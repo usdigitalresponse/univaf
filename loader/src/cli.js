@@ -83,7 +83,7 @@ function main () {
         variety of different sources.
 
         Supported sources: ${Object.getOwnPropertyNames(sources).join(", ")}
-      `,
+      `.trim(),
       builder: (yargs) => yargs
         .option("send", {
           type: "string",
