@@ -25,7 +25,7 @@ variable "api_image" {
 
 variable "api_port" {
   description = "Port exposed by the docker image to redirect traffic to"
-  default     = 80
+  default     = 3000
 }
 
 variable "api_count" {

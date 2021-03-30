@@ -16,12 +16,14 @@ RUN npm run build
 # export the port
 EXPOSE 3000
 
-# exposed env vars
-ENV API_KEYS=abc
+# optional exposed env vars, the defaults are provided here.
 ENV DB_HOST=postgres
 ENV DB_USERNAME=postgres
 ENV DB_PASSWORD=password
 ENV DB_PORT=5432
+
+# required exposed env vars, with defaults provided
+ENV API_KEYS=abc
 ENV DB_NAME="appointment-availability"
 
 # run our built server
