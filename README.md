@@ -4,6 +4,13 @@
 
 Get CVS to API running by Friday.
 
+This project is broken up into two major chunks:
+
+1. **`server`** is a small API server that wraps a Postgres DB. Various scrapers and API clients can `POST` appointment data to it, and end consumers can `GET` data from it.
+
+2. **`loader`** is a set of scrapers and API clients than discover information about vaccine provider locations and appointment availability, then send it to the server. They can be run on a schedule, in a loop, or whatever works best. We hope to eventually add more here over time.
+
+
 ## Developing Locally
 
 ### Running Postgres
@@ -43,6 +50,41 @@ $ npm run watch         # `watch` will auto-recompile typescript
 $ npm run test          # `test` will run the various jest tests
 $ open http://localhost:3000/providers
 ```
+
+### Running the Loaders
+
+To install, run `npm install` in the loader directory:
+
+```bash
+$ cd ./loader
+$ npm install
+```
+
+Then load data from any supported sources by running `bin/appointment-availability-loader` with a list of the sources you want to load data from:
+
+```bash
+# Load data from NJVSS and the CVS API
+$ bin/appointment-availability-loader njvss cvsApi
+```
+
+Use `--help` to see a list of sources and other options:
+
+```bash
+$ bin/appointment-availability-loader --help
+appointment-availability-loader [sources..]
+
+Load data about COVID-19 vaccine appointment availability from a
+variety of different sources.
+
+Supported sources: cvsApi, cvsScraper, njvss
+
+Options:
+  --version  Show version number                                       [boolean]
+  --help     Show help                                                 [boolean]
+  --send     Send availability info to the database at this URL         [string]
+  --compact  Output JSON as a single line                              [boolean]
+```
+
 
 ## Deploying to Production
 
