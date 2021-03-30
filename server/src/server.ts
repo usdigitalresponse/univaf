@@ -15,8 +15,9 @@ if (process.env.NODE_ENV === "development") {
 
 process.on("SIGINT", () => {
   console.log("Received SIGINT: process exiting");
-  // TODO: add db cleanup
-  process.exit(0);
+  connection.end()
+    .then(() => process.exit(0))
+    .catch(error => { console.error(error); process.exit(1); });
 });
 
 /**
