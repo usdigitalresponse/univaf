@@ -3,10 +3,8 @@
 const yargs = require("yargs");
 const { sources } = require("./index");
 
-async function runSources (targets, handler, options) {
-  targets = targets.length
-    ? targets
-    : Object.getOwnPropertyNames(sources);
+async function runSources(targets, handler, options) {
+  targets = targets.length ? targets : Object.getOwnPropertyNames(sources);
 
   const runs = targets.map((name) => {
     const source = sources[name];
@@ -21,24 +19,23 @@ async function runSources (targets, handler, options) {
   return Promise.all(runs);
 }
 
-function createResultLogger (spacing) {
-  return function logResult (locationData) {
+function createResultLogger(spacing) {
+  return function logResult(locationData) {
     const serialized = JSON.stringify(locationData, null, spacing);
     for (const line of serialized.split("\n")) {
       process.stdout.write(`  ${line}\n`);
     }
-  }
-}
-
-function createDatabaseSender (url) {
-  console.warn(`Database sender not currently implemented!`);
-  return function handler (locationData) {
-    // TODO: Actually send to the DB at `url`
-    logResult(locationData);
   };
 }
 
-async function run (options) {
+function createDatabaseSender(_url) {
+  console.warn(`Database sender not currently implemented!`);
+  return function handler(_locationData) {
+    // TODO: Actually send to the DB at `url`
+  };
+}
+
+async function run(options) {
   const jsonSpacing = options.compact ? 0 : 2;
 
   const startTime = Date.now();
@@ -50,15 +47,13 @@ async function run (options) {
     process.stdout.write("[\n");
     const reports = await runSources(options.sources, handler, options);
     process.stdout.write("]\n");
-    const results = reports.map((report) => report.results).flat();
 
     let successCount = 0;
     for (let report of reports) {
       if (report.error) {
         console.error(`Error in "${report.name}":`, report.error, "\n");
         process.exitCode = 90;
-      }
-      else {
+      } else {
         successCount++;
       }
     }
@@ -67,14 +62,13 @@ async function run (options) {
     }
   } catch (error) {
     console.error(`Error: ${error}`);
-  }
-  finally {
+  } finally {
     console.error(`Completed in ${(Date.now() - startTime) / 1000} seconds.`);
   }
 }
 
-function main () {
-  const args = yargs
+function main() {
+  yargs
     .scriptName("appointment-availability-loader")
     .command({
       command: "$0 [sources..]",
@@ -84,19 +78,19 @@ function main () {
 
         Supported sources: ${Object.getOwnPropertyNames(sources).join(", ")}
       `.trim(),
-      builder: (yargs) => yargs
-        .option("send", {
-          type: "string",
-          describe: "Send availability info to the database at this URL",
-        })
-        .option("compact", {
-          type: "boolean",
-          describe: "Output JSON as a single line",
-        }),
-      handler: run
+      builder: (yargs) =>
+        yargs
+          .option("send", {
+            type: "string",
+            describe: "Send availability info to the database at this URL",
+          })
+          .option("compact", {
+            type: "boolean",
+            describe: "Output JSON as a single line",
+          }),
+      handler: run,
     })
-    .help()
-    .argv;
+    .help().argv;
 }
 
 module.exports = { main };

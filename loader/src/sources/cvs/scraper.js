@@ -258,7 +258,9 @@ function convertToStandardSchema(cvsResult) {
     if (!county) {
       // Ignore the store if it is not in our list. We need to log it out
       // and possibly update our result list.
-      warn(`CVS store ${location.StoreNumber} at ${addressString} is not in known store list, ignoring`);
+      warn(
+        `CVS store ${location.StoreNumber} at ${addressString} is not in known store list, ignoring`
+      );
       return;
     }
 
@@ -284,9 +286,9 @@ function convertToStandardSchema(cvsResult) {
         source: "cvs-scraper",
         updated_at: nowStr,
         checked_at: nowStr,
-        available: Available.yes
-      }
-    }
+        available: Available.yes,
+      },
+    };
   });
 
   return standardResults;
@@ -331,8 +333,8 @@ function createCannedUnavailableStore() {
           source: "cvs-scraper",
           updated_at: nowStr,
           checked_at: nowStr,
-          available: Available.no
-        }
+          available: Available.no,
+        },
       };
     }
   }
@@ -349,10 +351,10 @@ function sleep(ms) {
  *
  * @return {array} Array of results conforming to the scraper standard.
  */
-async function checkAvailability() {
+async function checkAvailability(handler, _options) {
   const clinicsZip = njClinicZip;
 
-  let standardResults = {}
+  let standardResults = {};
   for (let i = 0; i < clinicsZip.length; i += 1) {
     const rawResults = await queryClinic(clinicsZip[i].toString());
     if (rawResults) {

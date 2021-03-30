@@ -1,6 +1,9 @@
 const nock = require("nock");
 const { checkAvailability, CvsApiError } = require("../src/sources/cvs/api");
-const { CVS_BOOKING_URL } = require("../src/sources/cvs/shared");
+const {
+  CVS_BOOKING_URL,
+  CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
+} = require("../src/sources/cvs/shared");
 const { expectDatetimeString } = require("./support");
 
 describe("CVS API", () => {
@@ -67,56 +70,52 @@ describe("CVS API", () => {
     const result = await checkAvailability(() => null);
     expect(result).toEqual([
       {
-        "address_lines": [
-          "701 COLLEGE DRIVE",
-        ],
-        "availability": {
-          "available": "NO",
-          "checked_at": expectDatetimeString(),
-          "is_public": false,
-          "source": "cvs-api",
-          "updated_at": "2021-03-09T17:08:30.842Z",
+        address_lines: ["701 COLLEGE DRIVE"],
+        availability: {
+          available: "NO",
+          checked_at: expectDatetimeString(),
+          is_public: false,
+          source: "cvs-api",
+          updated_at: "2021-03-09T17:08:30.842Z",
         },
-        "booking_phone": "(800) 746-7287",
-        "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-        "city": "BLACKWOOD",
-        "county": null,
-        "external_ids": {
-          "cvs": "02196",
+        booking_phone: CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
+        booking_url: CVS_BOOKING_URL,
+        city: "BLACKWOOD",
+        county: null,
+        external_ids: {
+          cvs: "02196",
         },
-        "id": "CVS:02196",
-        "location_type": "PHARMACY",
-        "name": "CVS #2196",
-        "position": null,
-        "postal_code": "08012",
-        "provider": "CVS",
-        "state": "NJ",
+        id: "CVS:02196",
+        location_type: "PHARMACY",
+        name: "CVS #2196",
+        position: null,
+        postal_code: "08012",
+        provider: "CVS",
+        state: "NJ",
       },
       {
-        "address_lines": [
-          "2988 ROUTE 516",
-        ],
-        "availability": {
-          "available": "YES",
-          "checked_at": expectDatetimeString(),
-          "is_public": false,
-          "source": "cvs-api",
-          "updated_at": "2021-03-09T17:08:30.842Z",
+        address_lines: ["2988 ROUTE 516"],
+        availability: {
+          available: "YES",
+          checked_at: expectDatetimeString(),
+          is_public: false,
+          source: "cvs-api",
+          updated_at: "2021-03-09T17:08:30.842Z",
         },
-        "booking_phone": "(800) 746-7287",
-        "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-        "city": "OLD BRIDGE",
-        "county": null,
-        "external_ids": {
-          "cvs": "02139",
+        booking_phone: CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
+        booking_url: CVS_BOOKING_URL,
+        city: "OLD BRIDGE",
+        county: null,
+        external_ids: {
+          cvs: "02139",
         },
-        "id": "CVS:02139",
-        "location_type": "PHARMACY",
-        "name": "CVS #2139",
-        "position": null,
-        "postal_code": "08857",
-        "provider": "CVS",
-        "state": "NJ",
+        id: "CVS:02139",
+        location_type: "PHARMACY",
+        name: "CVS #2139",
+        position: null,
+        postal_code: "08857",
+        provider: "CVS",
+        state: "NJ",
       },
     ]);
   });

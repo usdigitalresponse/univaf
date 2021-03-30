@@ -157,29 +157,27 @@ test("simple schema conversion", () => {
   const standardResult = convertToStandardSchema(sample);
   expect(Object.keys(standardResult).length).toBe(1);
   expect(standardResult["04259"]).toEqual({
-    "address_lines": [
-      "1319 MAGIE AVENUE",
-    ],
-    "availability": {
-      "available": "YES",
-      "checked_at": expectDatetimeString(),
-      "source": "cvs-scraper",
-      "updated_at": expectDatetimeString(),
+    address_lines: ["1319 MAGIE AVENUE"],
+    availability: {
+      available: "YES",
+      checked_at: expectDatetimeString(),
+      source: "cvs-scraper",
+      updated_at: expectDatetimeString(),
     },
-    "booking_phone": "(800) 746-7287",
-    "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "city": "UNION",
-    "county": "Union",
-    "external_ids": {
-      "cvs": "04259",
+    booking_phone: CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
+    booking_url: CVS_BOOKING_URL,
+    city: "UNION",
+    county: "Union",
+    external_ids: {
+      cvs: "04259",
     },
-    "id": "CVS:04259",
-    "location_type": "PHARMACY",
-    "name": "CVS #04259",
-    "position": null,
-    "postal_code": "07083",
-    "provider": "CVS",
-    "state": "NJ",
+    id: "CVS:04259",
+    location_type: "PHARMACY",
+    name: "CVS #04259",
+    position: null,
+    postal_code: "07083",
+    provider: "CVS",
+    state: "NJ",
   });
 });
 
@@ -193,29 +191,27 @@ test("correctness of unavailable slots", () => {
 
   // Spot check to make sure we at least have the fields implemented correctly
   expect(results["00003"]).toEqual({
-    "address_lines": [
-      "1497 Route 206 Tabernacle, NJ 08088",
-    ],
-    "availability": {
-      "available": "NO",
-      "checked_at": expectDatetimeString(),
-      "source": "cvs-scraper",
-      "updated_at": expectDatetimeString(),
+    address_lines: ["1497 Route 206 Tabernacle, NJ 08088"],
+    availability: {
+      available: "NO",
+      checked_at: expectDatetimeString(),
+      source: "cvs-scraper",
+      updated_at: expectDatetimeString(),
     },
-    "booking_phone": "(800) 746-7287",
-    "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "city": null,
-    "county": null,
-    "external_ids": {
-      "cvs": "00003",
+    booking_phone: CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
+    booking_url: CVS_BOOKING_URL,
+    city: null,
+    county: null,
+    external_ids: {
+      cvs: "00003",
     },
-    "id": "CVS:00003",
-    "location_type": "PHARMACY",
-    "name": "CVS #00003",
-    "position": null,
-    "postal_code": "08088",
-    "provider": "CVS",
-    "state": "NJ",
+    id: "CVS:00003",
+    location_type: "PHARMACY",
+    name: "CVS #00003",
+    position: null,
+    postal_code: "08088",
+    provider: "CVS",
+    state: "NJ",
   });
 });
 

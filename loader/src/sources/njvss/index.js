@@ -237,7 +237,7 @@ const addressPattern = /^(.*),\s([^,]+),\s+NJ\s+(\d+)\s*$/;
  * @param {string} address
  * @returns {{lines: Array<string>, city: string, state: string, zip: string}}
  */
-function parseAddress (address) {
+function parseAddress(address) {
   const match = address.match(addressPattern);
   if (!match) {
     warn(`Could not parse NJVSS address: "${address}"`);
@@ -248,7 +248,7 @@ function parseAddress (address) {
     lines: [match[1]],
     city: match[2],
     state: "NJ",
-    zip: match[3]
+    zip: match[3],
   };
 }
 
@@ -256,7 +256,7 @@ function parseAddress (address) {
  * Get availability for locations scheduled through NJVSS.
  * @returns {Promise<Array<object>>}
  */
-async function checkAvailability (handler, _options) {
+async function checkAvailability(handler, _options) {
   console.error("Checking New Jersey VSS (https://covidvaccine.nj.gov)...");
 
   const checkTime = new Date().toISOString();
@@ -284,7 +284,9 @@ async function checkAvailability (handler, _options) {
       // FIXME: ideally, we'd have some NJVSS/VRAS-based IDs here.
       // external_ids: {},
       provider: NJVSS_PROVIDER,
-      location_type: simpleName.includes("megasite") ? LocationType.massVax : LocationType.clinic,
+      location_type: simpleName.includes("megasite")
+        ? LocationType.massVax
+        : LocationType.clinic,
       name: location.name,
 
       // TODO: parse the address to get city and postal code.
@@ -296,7 +298,7 @@ async function checkAvailability (handler, _options) {
       county: titleCase(location.county),
       position: {
         longitude: location.vras_longitude,
-        latitude: location.vras_latitude
+        latitude: location.vras_latitude,
       },
       info_phone: "1-855-568-0545",
       info_url: "https://covid19.nj.gov/pages/vaccine",
@@ -316,17 +318,17 @@ async function checkAvailability (handler, _options) {
         available: location.available > 0 ? Available.yes : Available.no,
         // meta: {},
         // is_public: true
-      }
+      },
     };
     handler(record);
     result.push(record);
   }
 
   return result;
-};
+}
 
 module.exports = {
   checkAvailability,
   getNjvssData,
-  getNjvssDataRaw
+  getNjvssDataRaw,
 };
