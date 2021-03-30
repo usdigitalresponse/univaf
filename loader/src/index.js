@@ -1,6 +1,7 @@
 const sources = {
-  "cvs-scraper": "abc",
-  njvss: require("./sources/njvss")
+  cvsApi: require("./sources/cvs/api"),
+  cvsScraper: require("./sources/cvs/scraper"),
+  njvss: require("./sources/njvss"),
 };
 
 module.exports = { sources };

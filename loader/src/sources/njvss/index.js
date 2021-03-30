@@ -259,7 +259,7 @@ function parseAddress (address) {
 async function checkAvailability (handler, _options) {
   console.error("Checking New Jersey VSS (https://covidvaccine.nj.gov)...");
 
-  const checkTime = new Date();
+  const checkTime = new Date().toISOString();
   let locations = await getNjvssData();
   // Not all locations listed in NJVSS are actively participating, so we need
   // to filter non-participants out.

@@ -27,7 +27,21 @@ const ADDRESS_EXPANSIONS = [
   [/ w /g, " west "],
 ];
 
+const USER_AGENTS = [
+  "Mozilla/5.0 CK={} (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko 	Internet Explorer 11 	Web Browser 	Computer 	Very common",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36 	Chrome 74 	Web Browser 	Computer 	Very common",
+  "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36 	Chrome 72 	Web Browser 	Computer 	Very common",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36 	Chrome 74 	Web Browser 	Computer 	Very common",
+  "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322) 	Internet Explorer 6 	Web Browser 	Computer 	Very common",
+  "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) 	Internet Explorer 6 	Web Browser 	Computer 	Very common",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36 	Chrome 60 	Web Browser 	Computer 	Very common",
+  "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko 	Internet Explorer 11 	Web Browser 	Computer 	Very common",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134",
+];
+
 module.exports = {
+  USER_AGENTS,
+
   /**
    * Simplify a text string (especially an address) as much as possible so that
    * it might match with a similar string from another source.
@@ -143,7 +157,30 @@ module.exports = {
     console.warn("Warning:", ...infos);
   },
 
+  /**
+   * Get a random integer between a `low` value (inclusive) and a `high` value
+   * (exclusive).
+   * @param {number} low Lowest possible value
+   * @param {number} high Highest possible value
+   * @returns number
+   */
   randomInt(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
   },
+
+  /**
+   * Get a random User-Agent string.
+   *
+   * Some sites use User-Agent (in combination with other things like IP
+   * address or cookies) to detect bots or single clients that are making lots
+   * of requests (like us!) and ban them. Switching user agents on each request
+   * or every few requests can help reduce the likelihood of getting blocked.
+   *
+   * (Often we need to use additional measures, too, like running from multiple
+   * IPs or using proxies.)
+   * @returns string
+   */
+  randomUserAgent() {
+    return USER_AGENTS[module.exports.randomInt(0, USER_AGENTS.length)];
+  }
 };
