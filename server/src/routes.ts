@@ -75,8 +75,12 @@ export const update = async (req: AppRequest, res: Response) => {
   const location = await db.getLocationById(data.id);
   if (!location) {
     await db.createLocation(data);
-  } else {
-    // Only update the location itself if there is other data for it
+  } else if (req.query.update_location) {
+    // Only update an existing location if explicitly requested to do so via
+    // querystring and if there is other data for it.
+    // (In most cases, we expect the DB will have manual updates that make it
+    // a better source of truth for locations than the source data, hence the
+    // need to opt in to updating here.)
     const fields = Object.keys(data).filter(key => key !== "availability");
     if (fields.length > 1) {
       await db.updateLocation(data);
@@ -95,6 +99,10 @@ export const update = async (req: AppRequest, res: Response) => {
         throw error;
       }
     }
+  }
+
+  if (!success) {
+    res.status(500);
   }
   res.json({ success });
 };
