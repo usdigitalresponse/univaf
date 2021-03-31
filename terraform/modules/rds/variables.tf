@@ -97,17 +97,17 @@ variable "vpc_id" {
 
 variable "ingress_allow_security_groups" {
   description = "A list of security group IDs to allow traffic from"
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
 variable "ingress_allow_cidr_blocks" {
   description = "A list of CIDR blocks to allow traffic from"
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
 variable "subnet_ids" {
   description = "A list of subnet IDs"
-  type        = "list"
+  type        = list(string)
 }
