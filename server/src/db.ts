@@ -123,29 +123,58 @@ export async function updateLocation(data: any): Promise<ProviderLocation> {
  * @param includePrivate Whether to include non-public locations.
  */
 export async function listLocations({
-  // TODO: implement includeAvailability
-  includeAvailability = true,
   includePrivate = false,
+  limit = 0,
+  where = "",
+  values = [] as any[],
 } = {}): Promise<ProviderLocation[]> {
   let fields = providerLocationFields;
-  let where = "";
 
   if (includePrivate) {
     fields = fields.concat(providerLocationPrivateFields);
   } else {
-    where = "is_public = true";
+    if (where) where += " AND ";
+    where += `pl.is_public = true`;
   }
 
   // Reformat fields as select expressions to get the right data back.
-  fields = fields.map((x) => (x === "position" ? selectSqlPoint(x) : x));
+  fields = fields
+    .map((name) => `pl.${name}`)
+    .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
 
-  const result = await connection.query(`
-    SELECT ${fields.join(", ")}
-    FROM provider_locations
+  const result = await connection.query(
+    `
+    SELECT ${fields.join(", ")}, row_to_json(availability.*) availability
+    FROM provider_locations pl
+      LEFT OUTER JOIN availability
+        ON pl.id = availability.provider_location_id
+        AND availability.updated_at = (
+          SELECT MAX(updated_at)
+          FROM availability avail_inner
+          WHERE
+            avail_inner.provider_location_id = pl.id
+            ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
+        )
     ${where ? `WHERE ${where}` : ""}
-    ORDER BY updated_at DESC
-  `);
-  return result.rows;
+    ORDER BY pl.updated_at DESC
+    ${limit ? `LIMIT ${limit}` : ""}
+  `,
+    values || []
+  );
+
+  return result.rows.map((row) => {
+    // The SELECT expression always creates an object; not sure if there's a
+    // good way to get it to output `NULL` instead for this case.
+    if (!row.position.longitude) row.position = null;
+
+    if (row.availability) {
+      delete row.availability.id;
+      delete row.availability.provider_location_id;
+      delete row.availability.is_public;
+    }
+
+    return row;
+  });
 }
 
 /**
@@ -157,27 +186,13 @@ export async function getLocationById(
   id: string,
   { includePrivate = false } = {}
 ): Promise<ProviderLocation | undefined> {
-  let fields = providerLocationFields;
-  let where = "id = $1";
-
-  if (includePrivate) {
-    fields = fields.concat(providerLocationPrivateFields);
-  } else {
-    where = `${where} AND is_public = true`;
-  }
-
-  // Reformat fields as select expressions to get the right data back.
-  fields = fields.map((x) => (x === "position" ? selectSqlPoint(x) : x));
-
-  const result = await connection.query(
-    `SELECT ${fields.join(", ")}
-    FROM provider_locations
-    WHERE ${where}
-    LIMIT 1`,
-    [id]
-  );
-
-  return result.rows[0];
+  const rows = await listLocations({
+    includePrivate,
+    limit: 1,
+    where: "pl.id = $1",
+    values: [id],
+  });
+  return rows[0];
 }
 
 /**
