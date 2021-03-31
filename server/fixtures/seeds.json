@@ -1137,8 +1137,8 @@
     "external_ids": {
       "storeNumber": 3
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3",
     "address_lines": [
       "1497 Route 206, Tabernacle, NJ 08088"
@@ -1162,8 +1162,8 @@
     "external_ids": {
       "storeNumber": 129
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #129",
     "address_lines": [
       "101 Polifly Rd, Polifly Plz, Hackensack, NJ 07601"
@@ -1187,8 +1187,8 @@
     "external_ids": {
       "storeNumber": 203
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #203",
     "address_lines": [
       "641 Shunpike Rd, Hickory Square S/c, Chatham, NJ 07928"
@@ -1212,8 +1212,8 @@
     "external_ids": {
       "storeNumber": 208
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #208",
     "address_lines": [
       "350 Buck Road, Glassboro, NJ 08028"
@@ -1237,8 +1237,8 @@
     "external_ids": {
       "storeNumber": 228
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #228",
     "address_lines": [
       "25 East Red Bank Avenue, Woodbury, NJ 08096"
@@ -1262,8 +1262,8 @@
     "external_ids": {
       "storeNumber": 243
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #243",
     "address_lines": [
       "4362 Route 130 North, Cooperstown Plaza, Willingboro, NJ 08046"
@@ -1287,8 +1287,8 @@
     "external_ids": {
       "storeNumber": 271
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #271",
     "address_lines": [
       "913 Oak Tree Ave, Golden Acres S/c, Oak Park Commons, South Plainfield, NJ 07080"
@@ -1312,8 +1312,8 @@
     "external_ids": {
       "storeNumber": 289
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #289",
     "address_lines": [
       "540 Cedar Lane, Teaneck, NJ 07666"
@@ -1337,8 +1337,8 @@
     "external_ids": {
       "storeNumber": 298
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #298",
     "address_lines": [
       "565 Valley Road, Upper Montclair, NJ 07043"
@@ -1362,8 +1362,8 @@
     "external_ids": {
       "storeNumber": 336
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #336",
     "address_lines": [
       "900 N. New Rd., Pleasantville, NJ 08232"
@@ -1387,8 +1387,8 @@
     "external_ids": {
       "storeNumber": 340
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #340",
     "address_lines": [
       "1239 S. Blackhorse Pike, Williamstown, NJ 08094"
@@ -1412,8 +1412,8 @@
     "external_ids": {
       "storeNumber": 356
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #356",
     "address_lines": [
       "51 Bananier Dr., Toms River, NJ 08755"
@@ -1437,8 +1437,8 @@
     "external_ids": {
       "storeNumber": 360
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #360",
     "address_lines": [
       "585 Ridge Rd., North Arlington, NJ 07031"
@@ -1462,8 +1462,8 @@
     "external_ids": {
       "storeNumber": 362
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #362",
     "address_lines": [
       "307 Egg Harbor Rd, Sewell, NJ 08080"
@@ -1487,8 +1487,8 @@
     "external_ids": {
       "storeNumber": 381
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #381",
     "address_lines": [
       "303 Franklin Avenue, Wyckoff, NJ 07481"
@@ -1512,8 +1512,8 @@
     "external_ids": {
       "storeNumber": 385
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #385",
     "address_lines": [
       "220 Schuyler Ave, Schuyler And Passaic Avenue's, Kearny, NJ 07032"
@@ -1537,8 +1537,8 @@
     "external_ids": {
       "storeNumber": 398
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #398",
     "address_lines": [
       "26th Street And Delaware Avenue, North Wildwood, North Wildwood, NJ 08260"
@@ -1562,8 +1562,8 @@
     "external_ids": {
       "storeNumber": 435
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #435",
     "address_lines": [
       "1965 Rte 57, Mansfield Plz, Hackettstown, NJ 07840"
@@ -1587,8 +1587,8 @@
     "external_ids": {
       "storeNumber": 448
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #448",
     "address_lines": [
       "202 Kings Highway East, Haddonfield, NJ 08033"
@@ -1612,8 +1612,8 @@
     "external_ids": {
       "storeNumber": 456
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #456",
     "address_lines": [
       "250 Closter Dock Road, Closter, NJ 07624"
@@ -1637,8 +1637,8 @@
     "external_ids": {
       "storeNumber": 462
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #462",
     "address_lines": [
       "69 N. White Horse Pike, Stratford, NJ 08084"
@@ -1662,8 +1662,8 @@
     "external_ids": {
       "storeNumber": 463
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #463",
     "address_lines": [
       "331 Broad Street, Bloomfield, NJ 07003"
@@ -1687,8 +1687,8 @@
     "external_ids": {
       "storeNumber": 464
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #464",
     "address_lines": [
       "780 Route 22 East, Corner Of Grove Street, North Plainfield, NJ 07060"
@@ -1712,8 +1712,8 @@
     "external_ids": {
       "storeNumber": 472
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #472",
     "address_lines": [
       "New York+atlantic Avs/10 Renaissanceplz, Atlantic City, NJ 08401"
@@ -1737,8 +1737,8 @@
     "external_ids": {
       "storeNumber": 481
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #481",
     "address_lines": [
       "1475 Bergen Boulevard, Fort Lee, NJ 07024"
@@ -1762,8 +1762,8 @@
     "external_ids": {
       "storeNumber": 506
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #506",
     "address_lines": [
       "1133 Inman Avenue, Edison, NJ 08820"
@@ -1787,8 +1787,8 @@
     "external_ids": {
       "storeNumber": 596
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #596",
     "address_lines": [
       "364 River Road, New Milford, NJ 07646"
@@ -1812,8 +1812,8 @@
     "external_ids": {
       "storeNumber": 617
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #617",
     "address_lines": [
       "387 Pompton Avenue, Cedar Grove, NJ 07009"
@@ -1837,8 +1837,8 @@
     "external_ids": {
       "storeNumber": 638
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #638",
     "address_lines": [
       "74 South Lakeview Dr., Gibbsboro, NJ 08026"
@@ -1862,8 +1862,8 @@
     "external_ids": {
       "storeNumber": 648
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #648",
     "address_lines": [
       "300 North Wood Avenue, Linden, NJ 07036"
@@ -1887,8 +1887,8 @@
     "external_ids": {
       "storeNumber": 661
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #661",
     "address_lines": [
       "416 W Cuthbert Blvd, Acme Shopping Center, Haddon Township, NJ 08108"
@@ -1912,8 +1912,8 @@
     "external_ids": {
       "storeNumber": 667
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #667",
     "address_lines": [
       "2287 Morris Avenue, Union, NJ 07083"
@@ -1937,8 +1937,8 @@
     "external_ids": {
       "storeNumber": 668
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #668",
     "address_lines": [
       "3110 Route 38, Mount Laurel, NJ 08054"
@@ -1962,8 +1962,8 @@
     "external_ids": {
       "storeNumber": 687
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #687",
     "address_lines": [
       "20 South Valley Road,, West Orange, NJ 07052"
@@ -1987,8 +1987,8 @@
     "external_ids": {
       "storeNumber": 695
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #695",
     "address_lines": [
       "76 Landis Avenue, Vineland, NJ 08360"
@@ -2012,8 +2012,8 @@
     "external_ids": {
       "storeNumber": 716
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #716",
     "address_lines": [
       "269a Livingston St., Northvale, NJ 07647"
@@ -2037,8 +2037,8 @@
     "external_ids": {
       "storeNumber": 749
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #749",
     "address_lines": [
       "17-19 Washington Street, Tenafly, NJ 07670"
@@ -2062,8 +2062,8 @@
     "external_ids": {
       "storeNumber": 752
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #752",
     "address_lines": [
       "1601 Haven Avenue, Ocean City, NJ 08226"
@@ -2087,8 +2087,8 @@
     "external_ids": {
       "storeNumber": 761
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #761",
     "address_lines": [
       "560 Passiac Ave, West Caldwell S/c, West Caldwell, NJ 07006"
@@ -2112,8 +2112,8 @@
     "external_ids": {
       "storeNumber": 764
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #764",
     "address_lines": [
       "18 West Maple Avenue, Merchantville, NJ 08109"
@@ -2137,8 +2137,8 @@
     "external_ids": {
       "storeNumber": 790
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #790",
     "address_lines": [
       "510 Prospect Avenue, Little Silver, NJ 07739"
@@ -2162,8 +2162,8 @@
     "external_ids": {
       "storeNumber": 814
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #814",
     "address_lines": [
       "50 West Madison Ave., Dumont, NJ 07628"
@@ -2187,8 +2187,8 @@
     "external_ids": {
       "storeNumber": 817
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #817",
     "address_lines": [
       "4 Schalks Crossing Rd,, Plainsboro, NJ 08536"
@@ -2212,8 +2212,8 @@
     "external_ids": {
       "storeNumber": 824
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #824",
     "address_lines": [
       "2721 Brunswick Pike, Lawrenceville, NJ 08648"
@@ -2237,8 +2237,8 @@
     "external_ids": {
       "storeNumber": 825
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #825",
     "address_lines": [
       "315 North Dorset Ave, Dorset Plaza, Ventnor City, NJ 08406"
@@ -2262,8 +2262,8 @@
     "external_ids": {
       "storeNumber": 837
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #837",
     "address_lines": [
       "360 Rte 73 South, Marlton, NJ 08053"
@@ -2287,8 +2287,8 @@
     "external_ids": {
       "storeNumber": 853
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #853",
     "address_lines": [
       "9301 Ventnor Avenue, Margate City, NJ 08402"
@@ -2312,8 +2312,8 @@
     "external_ids": {
       "storeNumber": 867
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #867",
     "address_lines": [
       "1000 S Elmora Ave, Color Plz, Space D, Elizabeth, NJ 07202"
@@ -2337,8 +2337,8 @@
     "external_ids": {
       "storeNumber": 936
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #936",
     "address_lines": [
       "3211 Rte 27 South, Corner Of Beekman Road, Franklin Park, NJ 08823"
@@ -2362,8 +2362,8 @@
     "external_ids": {
       "storeNumber": 955
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #955",
     "address_lines": [
       "430 Westfield Avenue, Elizabeth, NJ 07208"
@@ -2387,8 +2387,8 @@
     "external_ids": {
       "storeNumber": 961
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #961",
     "address_lines": [
       "3401 Simpson Avenue, Ocean City, NJ 08226"
@@ -2412,8 +2412,8 @@
     "external_ids": {
       "storeNumber": 965
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #965",
     "address_lines": [
       "187 Columbia Turnpike, Florham Park, NJ 07932"
@@ -2437,8 +2437,8 @@
     "external_ids": {
       "storeNumber": 1033
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1033",
     "address_lines": [
       "1 S. New York Rd., Village Shops, Smithville, NJ 08205"
@@ -2462,8 +2462,8 @@
     "external_ids": {
       "storeNumber": 1061
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1061",
     "address_lines": [
       "603 White Horse Pike, Absecon, NJ 08201"
@@ -2487,8 +2487,8 @@
     "external_ids": {
       "storeNumber": 1062
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1062",
     "address_lines": [
       "109 Berlin Rd., Clementon, NJ 08021"
@@ -2512,8 +2512,8 @@
     "external_ids": {
       "storeNumber": 1069
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1069",
     "address_lines": [
       "172 Nassau Street, Princeton, NJ 08542"
@@ -2537,8 +2537,8 @@
     "external_ids": {
       "storeNumber": 1088
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1088",
     "address_lines": [
       "27 Morristown Rd., Matawan, NJ 07747"
@@ -2562,8 +2562,8 @@
     "external_ids": {
       "storeNumber": 1124
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1124",
     "address_lines": [
       "5300 Bergenline Ave, Coviello Plaza, West New York, NJ 07093"
@@ -2587,8 +2587,8 @@
     "external_ids": {
       "storeNumber": 1167
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1167",
     "address_lines": [
       "449 Market Street, Elmwood Park, NJ 07407"
@@ -2612,8 +2612,8 @@
     "external_ids": {
       "storeNumber": 1195
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1195",
     "address_lines": [
       "321 South Main Street, Manville, NJ 08835"
@@ -2637,8 +2637,8 @@
     "external_ids": {
       "storeNumber": 1214
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1214",
     "address_lines": [
       "470 Route 36, Highlands, NJ 07732"
@@ -2662,8 +2662,8 @@
     "external_ids": {
       "storeNumber": 1224
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1224",
     "address_lines": [
       "216 Old Tappan Rd/34e Bi-state Plz S/c, Old Tappan, NJ 07675"
@@ -2687,8 +2687,8 @@
     "external_ids": {
       "storeNumber": 1240
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1240",
     "address_lines": [
       "233 East Main Street, Manasquan, NJ 08736"
@@ -2712,8 +2712,8 @@
     "external_ids": {
       "storeNumber": 1243
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1243",
     "address_lines": [
       "451-461 Bloomfield Avenue, Newark, NJ 07107"
@@ -2737,8 +2737,8 @@
     "external_ids": {
       "storeNumber": 1272
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1272",
     "address_lines": [
       "135 Kinderkamac Rd., River Edge, NJ 07661"
@@ -2762,8 +2762,8 @@
     "external_ids": {
       "storeNumber": 1275
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1275",
     "address_lines": [
       "107-113 Main St, The Ostrower Bldg, Woodbridge, NJ 07095"
@@ -2787,8 +2787,8 @@
     "external_ids": {
       "storeNumber": 1279
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1279",
     "address_lines": [
       "471 Main St, Chatham S/c, Chatham, NJ 07928"
@@ -2812,8 +2812,8 @@
     "external_ids": {
       "storeNumber": 1287
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1287",
     "address_lines": [
       "6056 Harding Hwy., Suite #d, Mays Landing, NJ 08330"
@@ -2837,8 +2837,8 @@
     "external_ids": {
       "storeNumber": 1526
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1526",
     "address_lines": [
       "328 W. White Horse Pike, Po 278, Pomona, NJ 08240"
@@ -2862,8 +2862,8 @@
     "external_ids": {
       "storeNumber": 1780
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1780",
     "address_lines": [
       "1103 Route 46, Ledgewood, NJ 07852"
@@ -2887,8 +2887,8 @@
     "external_ids": {
       "storeNumber": 1782
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1782",
     "address_lines": [
       "2 Don Connor Blvd., Jackson, NJ 08527"
@@ -2912,8 +2912,8 @@
     "external_ids": {
       "storeNumber": 1927
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1927",
     "address_lines": [
       "137 Route 22 East, Green Brook, NJ 08812"
@@ -2937,8 +2937,8 @@
     "external_ids": {
       "storeNumber": 1928
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1928",
     "address_lines": [
       "59 Washington St, Court Street Plaza, Hoboken, NJ 07030"
@@ -2962,8 +2962,8 @@
     "external_ids": {
       "storeNumber": 1946
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1946",
     "address_lines": [
       "610 West Main St., Freehold, NJ 07728"
@@ -2987,8 +2987,8 @@
     "external_ids": {
       "storeNumber": 1956
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1956",
     "address_lines": [
       "514 Park Ave, Scotch Plains Center, Scotch Plains, NJ 07076"
@@ -3012,8 +3012,8 @@
     "external_ids": {
       "storeNumber": 1967
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #1967",
     "address_lines": [
       "1100 Liberty St., Trenton, NJ 08611"
@@ -3037,8 +3037,8 @@
     "external_ids": {
       "storeNumber": 2001
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2001",
     "address_lines": [
       "2328 Plainfield Avenue, South Plainfield, NJ 07080"
@@ -3062,8 +3062,8 @@
     "external_ids": {
       "storeNumber": 2014
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2014",
     "address_lines": [
       "139 Myrtle Avenue, West Cape May, NJ 08204"
@@ -3087,8 +3087,8 @@
     "external_ids": {
       "storeNumber": 2015
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2015",
     "address_lines": [
       "7 West Main Street, Freehold, NJ 07728"
@@ -3112,8 +3112,8 @@
     "external_ids": {
       "storeNumber": 2017
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2017",
     "address_lines": [
       "1252 Bound Brook Rd, Cvs Plaza, Middlesex, NJ 08846"
@@ -3137,8 +3137,8 @@
     "external_ids": {
       "storeNumber": 2023
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2023",
     "address_lines": [
       "6110 Landis Ave, Acme S/c, Sea Isle City, NJ 08243"
@@ -3162,8 +3162,8 @@
     "external_ids": {
       "storeNumber": 2024
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2024",
     "address_lines": [
       "281 Midland Avenue, Garfield, NJ 07026"
@@ -3187,8 +3187,8 @@
     "external_ids": {
       "storeNumber": 2026
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2026",
     "address_lines": [
       "1011 Morris Avenue, Union, NJ 07083"
@@ -3212,8 +3212,8 @@
     "external_ids": {
       "storeNumber": 2031
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2031",
     "address_lines": [
       "14 Highway 36 W, Hazlet Township, NJ 07734"
@@ -3237,8 +3237,8 @@
     "external_ids": {
       "storeNumber": 2051
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2051",
     "address_lines": [
       "250 Glenwood Avenue, Bloomfield, NJ 07003"
@@ -3262,8 +3262,8 @@
     "external_ids": {
       "storeNumber": 2064
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2064",
     "address_lines": [
       "107 East First Avenue, Roselle, NJ 07203"
@@ -3287,8 +3287,8 @@
     "external_ids": {
       "storeNumber": 2090
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2090",
     "address_lines": [
       "4 White Horse Pike, Oaklyn, NJ 08107"
@@ -3312,8 +3312,8 @@
     "external_ids": {
       "storeNumber": 2093
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2093",
     "address_lines": [
       "18-35 River Rd, Fair Lawn, NJ 07410"
@@ -3337,8 +3337,8 @@
     "external_ids": {
       "storeNumber": 2094
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2094",
     "address_lines": [
       "71 Springside Road, Westampton, NJ 08060"
@@ -3362,8 +3362,8 @@
     "external_ids": {
       "storeNumber": 2117
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2117",
     "address_lines": [
       "2281 Route 33, Robbinsville, NJ 08691"
@@ -3387,8 +3387,8 @@
     "external_ids": {
       "storeNumber": 2122
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2122",
     "address_lines": [
       "401 Taunton Lake Rd-kings Grant, Marlton, NJ 08053"
@@ -3412,8 +3412,8 @@
     "external_ids": {
       "storeNumber": 2126
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2126",
     "address_lines": [
       "1900 Brunswick Avenue, Lawrenceville, NJ 08648"
@@ -3437,8 +3437,8 @@
     "external_ids": {
       "storeNumber": 2163
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2163",
     "address_lines": [
       "3003 Rte 130 South & Tenby Chase Dr, Delran, NJ 08075"
@@ -3462,8 +3462,8 @@
     "external_ids": {
       "storeNumber": 2196
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2196",
     "address_lines": [
       "701 College Drive, Blackwood, NJ 08012"
@@ -3487,8 +3487,8 @@
     "external_ids": {
       "storeNumber": 2199
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2199",
     "address_lines": [
       "3004 Mount Ephraim Ave., Camden, NJ 08104"
@@ -3512,8 +3512,8 @@
     "external_ids": {
       "storeNumber": 2207
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2207",
     "address_lines": [
       "1209 North High St., Millville, NJ 08332"
@@ -3537,8 +3537,8 @@
     "external_ids": {
       "storeNumber": 2209
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2209",
     "address_lines": [
       "811 Clinton Street, Hoboken, NJ 07030"
@@ -3562,8 +3562,8 @@
     "external_ids": {
       "storeNumber": 2231
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2231",
     "address_lines": [
       "1300 Woodlane Road, Eastampton, NJ 08060"
@@ -3587,8 +3587,8 @@
     "external_ids": {
       "storeNumber": 2264
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2264",
     "address_lines": [
       "589 Berlin Cross Keys Road, Sicklerville, NJ 08081"
@@ -3612,8 +3612,8 @@
     "external_ids": {
       "storeNumber": 2265
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2265",
     "address_lines": [
       "475 Fairlawn Parkway, Saddle Brook, NJ 07663"
@@ -3637,8 +3637,8 @@
     "external_ids": {
       "storeNumber": 2284
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2284",
     "address_lines": [
       "2545 Hooper Ave, Brick, NJ 08723"
@@ -3662,8 +3662,8 @@
     "external_ids": {
       "storeNumber": 2300
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2300",
     "address_lines": [
       "231 West Broad Street, Paulsboro, NJ 08066"
@@ -3687,8 +3687,8 @@
     "external_ids": {
       "storeNumber": 2301
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2301",
     "address_lines": [
       "3 Jacobstown Rd, Across From Wawa, New Egypt, NJ 08533"
@@ -3712,8 +3712,8 @@
     "external_ids": {
       "storeNumber": 2302
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2302",
     "address_lines": [
       "2305 Glassboro Crosskeys Road, Williamstown, NJ 08094"
@@ -3737,8 +3737,8 @@
     "external_ids": {
       "storeNumber": 2319
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2319",
     "address_lines": [
       "4315 Marlton Pike At Henshaw, Pennsauken, NJ 08109"
@@ -3762,8 +3762,8 @@
     "external_ids": {
       "storeNumber": 2320
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2320",
     "address_lines": [
       "524 Stokes Road, Medford, NJ 08055"
@@ -3787,8 +3787,8 @@
     "external_ids": {
       "storeNumber": 2354
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2354",
     "address_lines": [
       "5100 Park Boulevard, Wildwood, NJ 08260"
@@ -3812,8 +3812,8 @@
     "external_ids": {
       "storeNumber": 2390
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2390",
     "address_lines": [
       "451 Cedar Road, Mullica Hill, NJ 08062"
@@ -3837,8 +3837,8 @@
     "external_ids": {
       "storeNumber": 2409
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2409",
     "address_lines": [
       "219 West Main Street, Moorestown, NJ 08057"
@@ -3862,8 +3862,8 @@
     "external_ids": {
       "storeNumber": 2416
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2416",
     "address_lines": [
       "276 E. Main St., Denville, NJ 07834"
@@ -3887,8 +3887,8 @@
     "external_ids": {
       "storeNumber": 2456
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2456",
     "address_lines": [
       "8 Eden Avenue, Edison, NJ 08817"
@@ -3912,8 +3912,8 @@
     "external_ids": {
       "storeNumber": 2480
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2480",
     "address_lines": [
       "1021 Neck Road, Burlington Township, NJ 08016"
@@ -3937,8 +3937,8 @@
     "external_ids": {
       "storeNumber": 2535
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2535",
     "address_lines": [
       "49 Claremont Ave., Montclair, NJ 07042"
@@ -3962,8 +3962,8 @@
     "external_ids": {
       "storeNumber": 2576
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2576",
     "address_lines": [
       "190 Hwy 31, Flemington, NJ 08822"
@@ -3987,8 +3987,8 @@
     "external_ids": {
       "storeNumber": 2683
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2683",
     "address_lines": [
       "1 West White Horse Pike, Berlin, NJ 08009"
@@ -4012,8 +4012,8 @@
     "external_ids": {
       "storeNumber": 2684
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2684",
     "address_lines": [
       "2037 West Blvd., Malaga, NJ 08328"
@@ -4037,8 +4037,8 @@
     "external_ids": {
       "storeNumber": 2723
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2723",
     "address_lines": [
       "505 Route 530, Whiting, NJ 08759"
@@ -4062,8 +4062,8 @@
     "external_ids": {
       "storeNumber": 2742
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2742",
     "address_lines": [
       "188 Cedar Lane, Teaneck, NJ 07666"
@@ -4087,8 +4087,8 @@
     "external_ids": {
       "storeNumber": 2746
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2746",
     "address_lines": [
       "410 Broad Ave., Leonia, NJ 07605"
@@ -4112,8 +4112,8 @@
     "external_ids": {
       "storeNumber": 2753
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2753",
     "address_lines": [
       "560 Avenue C, Bayonne, NJ 07002"
@@ -4137,8 +4137,8 @@
     "external_ids": {
       "storeNumber": 2795
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2795",
     "address_lines": [
       "317 Central Avenue, East Orange, NJ 07018"
@@ -4162,8 +4162,8 @@
     "external_ids": {
       "storeNumber": 2813
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2813",
     "address_lines": [
       "217 Main Street, West Orange, NJ 07052"
@@ -4187,8 +4187,8 @@
     "external_ids": {
       "storeNumber": 2815
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2815",
     "address_lines": [
       "330 Rues Lane, East Brunswick, NJ 08816"
@@ -4212,8 +4212,8 @@
     "external_ids": {
       "storeNumber": 2816
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2816",
     "address_lines": [
       "2147 Hamilton Ave, Hamilton, NJ 08619"
@@ -4237,8 +4237,8 @@
     "external_ids": {
       "storeNumber": 2820
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2820",
     "address_lines": [
       "7500 Maple Ave., Corner Of Union, Pennsauken, NJ 08109"
@@ -4262,8 +4262,8 @@
     "external_ids": {
       "storeNumber": 2854
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2854",
     "address_lines": [
       "230 Milltown Rd., Bridgewater, NJ 08807"
@@ -4287,8 +4287,8 @@
     "external_ids": {
       "storeNumber": 2868
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2868",
     "address_lines": [
       "4000 Asbury Ave., Neptune, NJ 07753"
@@ -4312,8 +4312,8 @@
     "external_ids": {
       "storeNumber": 2870
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2870",
     "address_lines": [
       "1240-1248 Greenwood Ave, Trenton, NJ 08609"
@@ -4337,8 +4337,8 @@
     "external_ids": {
       "storeNumber": 2949
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2949",
     "address_lines": [
       "451 Ridgedale Ave., East Hanover, NJ 07936"
@@ -4362,8 +4362,8 @@
     "external_ids": {
       "storeNumber": 2950
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2950",
     "address_lines": [
       "880 River Rd, New Milford, NJ 07646"
@@ -4387,8 +4387,8 @@
     "external_ids": {
       "storeNumber": 2967
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2967",
     "address_lines": [
       "1104 Ringwood Ave, Haskell, NJ 07420"
@@ -4412,8 +4412,8 @@
     "external_ids": {
       "storeNumber": 2987
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #2987",
     "address_lines": [
       "15 Boonton Tpke, Lincoln Park, NJ 07035"
@@ -4437,8 +4437,8 @@
     "external_ids": {
       "storeNumber": 3031
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3031",
     "address_lines": [
       "440 Union Ave., Bridgewater, NJ 08807"
@@ -4462,8 +4462,8 @@
     "external_ids": {
       "storeNumber": 3097
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3097",
     "address_lines": [
       "375 Queen Anne Road, Teaneck, NJ 07666"
@@ -4487,8 +4487,8 @@
     "external_ids": {
       "storeNumber": 3136
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3136",
     "address_lines": [
       "440 Belleville Tpke., Corner Of Schuyler Avenue, North Arlington, NJ 07031"
@@ -4512,8 +4512,8 @@
     "external_ids": {
       "storeNumber": 3194
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3194",
     "address_lines": [
       "2006 Route 322, Swedesboro, NJ 08085"
@@ -4537,8 +4537,8 @@
     "external_ids": {
       "storeNumber": 3596
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3596",
     "address_lines": [
       "412 Springfield Ave., Berkeley Heights, NJ 07922"
@@ -4562,8 +4562,8 @@
     "external_ids": {
       "storeNumber": 3618
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3618",
     "address_lines": [
       "400 Kings Hwy., Corner Of White Horse Pike, Haddon Heights, NJ 08035"
@@ -4587,8 +4587,8 @@
     "external_ids": {
       "storeNumber": 3972
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #3972",
     "address_lines": [
       "421 Lacey Rd., Whiting, NJ 08759"
@@ -4612,8 +4612,8 @@
     "external_ids": {
       "storeNumber": 4047
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4047",
     "address_lines": [
       "5000 Route 42, Blackwood, NJ 08012"
@@ -4637,8 +4637,8 @@
     "external_ids": {
       "storeNumber": 4125
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4125",
     "address_lines": [
       "1501 Bayshore Rd., Villas, NJ 08251"
@@ -4662,8 +4662,8 @@
     "external_ids": {
       "storeNumber": 4259
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4259",
     "address_lines": [
       "1319 Magie Avenue, Union, NJ 07083"
@@ -4687,8 +4687,8 @@
     "external_ids": {
       "storeNumber": 4443
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4443",
     "address_lines": [
       "210 14th St., Hoboken, NJ 07030"
@@ -4712,8 +4712,8 @@
     "external_ids": {
       "storeNumber": 4615
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4615",
     "address_lines": [
       "714 Summit Ave., Union City, NJ 07087"
@@ -4737,8 +4737,8 @@
     "external_ids": {
       "storeNumber": 4644
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4644",
     "address_lines": [
       "80 Piermont Rd., Cresskill, NJ 07626"
@@ -4762,8 +4762,8 @@
     "external_ids": {
       "storeNumber": 4685
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4685",
     "address_lines": [
       "107 Morristown Rd., Suite B, Bernardsville, NJ 07924"
@@ -4787,8 +4787,8 @@
     "external_ids": {
       "storeNumber": 4841
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #4841",
     "address_lines": [
       "1 Route Us 9 South, Marmora, NJ 08223"
@@ -4812,8 +4812,8 @@
     "external_ids": {
       "storeNumber": 5427
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5427",
     "address_lines": [
       "29-00 Broadway (rt. 4), Fairlawn, NJ 07410"
@@ -4837,8 +4837,8 @@
     "external_ids": {
       "storeNumber": 5491
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5491",
     "address_lines": [
       "45 Franklin Turnpike, Mahwah, NJ 07430"
@@ -4862,8 +4862,8 @@
     "external_ids": {
       "storeNumber": 5675
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5675",
     "address_lines": [
       "955 West Bay Ave., Barnegat, NJ 08005"
@@ -4887,8 +4887,8 @@
     "external_ids": {
       "storeNumber": 5767
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5767",
     "address_lines": [
       "25 Pemberton Brown Mills Rd., Browns Mills, NJ 08015"
@@ -4912,8 +4912,8 @@
     "external_ids": {
       "storeNumber": 5820
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5820",
     "address_lines": [
       "200 Liberty Street, Little Ferry, NJ 07643"
@@ -4937,8 +4937,8 @@
     "external_ids": {
       "storeNumber": 5831
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5831",
     "address_lines": [
       "1600 Rt 35 N., Seaside Heights, NJ 08751"
@@ -4962,8 +4962,8 @@
     "external_ids": {
       "storeNumber": 5855
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5855",
     "address_lines": [
       "1163 E. Chestnut Ave., Vineland, NJ 08360"
@@ -4987,8 +4987,8 @@
     "external_ids": {
       "storeNumber": 5871
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5871",
     "address_lines": [
       "881 State Hwy 206, Princeton, NJ 08540"
@@ -5012,8 +5012,8 @@
     "external_ids": {
       "storeNumber": 5967
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5967",
     "address_lines": [
       "2078 Route 9, South, Ocean View, NJ 08230"
@@ -5037,8 +5037,8 @@
     "external_ids": {
       "storeNumber": 5980
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5980",
     "address_lines": [
       "949 Livingston Ave., North Brunswick, NJ 08902"
@@ -5062,8 +5062,8 @@
     "external_ids": {
       "storeNumber": 5984
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #5984",
     "address_lines": [
       "1000 Kresson Rd., Corner Of Main Street, Voorhees, NJ 08043"
@@ -5087,8 +5087,8 @@
     "external_ids": {
       "storeNumber": 6032
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6032",
     "address_lines": [
       "3560 Route 27, Kendall Park Shopping Plaza, Kendall Park, NJ 08824"
@@ -5112,8 +5112,8 @@
     "external_ids": {
       "storeNumber": 6034
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6034",
     "address_lines": [
       "2257 Us Hwy 1, South, North Brunswick, NJ 08902"
@@ -5137,8 +5137,8 @@
     "external_ids": {
       "storeNumber": 6038
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6038",
     "address_lines": [
       "1 Sunnybrae Blvd, Trenton, NJ 08620"
@@ -5162,8 +5162,8 @@
     "external_ids": {
       "storeNumber": 6039
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6039",
     "address_lines": [
       "200 Rte 33, Hamilton, NJ 08619"
@@ -5187,8 +5187,8 @@
     "external_ids": {
       "storeNumber": 6060
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6060",
     "address_lines": [
       "183 Route 206 South, Chester Spring Shopping Center, Chester, NJ 07930"
@@ -5212,8 +5212,8 @@
     "external_ids": {
       "storeNumber": 6061
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6061",
     "address_lines": [
       "837 Roosevelt Avenue, Carteret, NJ 07008"
@@ -5237,8 +5237,8 @@
     "external_ids": {
       "storeNumber": 6064
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6064",
     "address_lines": [
       "1646 Main Ave., Clifton, NJ 07011"
@@ -5262,8 +5262,8 @@
     "external_ids": {
       "storeNumber": 6065
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6065",
     "address_lines": [
       "515 Allwood Rd., Clifton, NJ 07012"
@@ -5287,8 +5287,8 @@
     "external_ids": {
       "storeNumber": 6067
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6067",
     "address_lines": [
       "410 Route 10, Whippany, NJ 07981"
@@ -5312,8 +5312,8 @@
     "external_ids": {
       "storeNumber": 6070
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6070",
     "address_lines": [
       "295 Valley Blvd., Wood Ridge, NJ 07075"
@@ -5337,8 +5337,8 @@
     "external_ids": {
       "storeNumber": 6075
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6075",
     "address_lines": [
       "77 Route 206, Stanhope, NJ 07874"
@@ -5362,8 +5362,8 @@
     "external_ids": {
       "storeNumber": 6076
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6076",
     "address_lines": [
       "110 Main Street, Hackensack, NJ 07601"
@@ -5387,8 +5387,8 @@
     "external_ids": {
       "storeNumber": 6344
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6344",
     "address_lines": [
       "234 Nj State Hwy Rt 202, Flemington, NJ 08822"
@@ -5412,8 +5412,8 @@
     "external_ids": {
       "storeNumber": 6544
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6544",
     "address_lines": [
       "2920 Rt 73 North, Store 1, Maple Shade, NJ 08052"
@@ -5437,8 +5437,8 @@
     "external_ids": {
       "storeNumber": 6760
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6760",
     "address_lines": [
       "798 Us Hwy 202, Flemington, NJ 08822"
@@ -5462,8 +5462,8 @@
     "external_ids": {
       "storeNumber": 6873
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6873",
     "address_lines": [
       "1 Cherry St., Lambertville, NJ 08530"
@@ -5487,8 +5487,8 @@
     "external_ids": {
       "storeNumber": 6900
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #6900",
     "address_lines": [
       "1320 Parkway Ave., Ewing, NJ 08628"
@@ -5512,8 +5512,8 @@
     "external_ids": {
       "storeNumber": 7069
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7069",
     "address_lines": [
       "3391 Highway 35, Hazlet, NJ 07730"
@@ -5537,8 +5537,8 @@
     "external_ids": {
       "storeNumber": 7096
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7096",
     "address_lines": [
       "3313 Brigantine Blvd, Brigantine, NJ 08203"
@@ -5562,8 +5562,8 @@
     "external_ids": {
       "storeNumber": 7105
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7105",
     "address_lines": [
       "150 Rochelle Ave., Rochelle Park, NJ 07662"
@@ -5587,8 +5587,8 @@
     "external_ids": {
       "storeNumber": 7160
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7160",
     "address_lines": [
       "350 Princeton-hightstown Road, West Windsor, NJ 08550"
@@ -5612,8 +5612,8 @@
     "external_ids": {
       "storeNumber": 7171
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7171",
     "address_lines": [
       "221 Main St., Lodi, NJ 07644"
@@ -5637,8 +5637,8 @@
     "external_ids": {
       "storeNumber": 7182
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7182",
     "address_lines": [
       "246 Norwood Ave., Oakhurst, NJ 07755"
@@ -5662,8 +5662,8 @@
     "external_ids": {
       "storeNumber": 7190
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7190",
     "address_lines": [
       "452 Route 9, Waretown, NJ 08758"
@@ -5687,8 +5687,8 @@
     "external_ids": {
       "storeNumber": 7400
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7400",
     "address_lines": [
       "4700 Bergenline Ave, Union City, NJ 07087"
@@ -5712,8 +5712,8 @@
     "external_ids": {
       "storeNumber": 7613
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7613",
     "address_lines": [
       "214 Rahway Avenue, Elizabeth, NJ 07202"
@@ -5737,8 +5737,8 @@
     "external_ids": {
       "storeNumber": 7915
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7915",
     "address_lines": [
       "115 Skyline Drive, Ringwood, NJ 07456"
@@ -5762,8 +5762,8 @@
     "external_ids": {
       "storeNumber": 7961
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #7961",
     "address_lines": [
       "524 Mullica Hill Rd, Mullica Hill, NJ 08062"
@@ -5787,8 +5787,8 @@
     "external_ids": {
       "storeNumber": 8924
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #8924",
     "address_lines": [
       "65 River Rd., Edgewater, NJ 07020"
@@ -5812,8 +5812,8 @@
     "external_ids": {
       "storeNumber": 8939
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #8939",
     "address_lines": [
       "596 River Ave, Lakewood, NJ 08701"
@@ -5837,8 +5837,8 @@
     "external_ids": {
       "storeNumber": 8951
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #8951",
     "address_lines": [
       "3629 E. Landis Ave., Vineland, NJ 08361"
@@ -5862,8 +5862,8 @@
     "external_ids": {
       "storeNumber": 10001
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10001",
     "address_lines": [
       "117 Speedwell Ave, Morristown, NJ 07960"
@@ -5887,8 +5887,8 @@
     "external_ids": {
       "storeNumber": 10031
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10031",
     "address_lines": [
       "911 Highway 35, Ocean, NJ 07712"
@@ -5912,8 +5912,8 @@
     "external_ids": {
       "storeNumber": 10046
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10046",
     "address_lines": [
       "71 S. Broadway, Long Branch, NJ 07740"
@@ -5937,8 +5937,8 @@
     "external_ids": {
       "storeNumber": 10087
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10087",
     "address_lines": [
       "265 Prospect Ave., West Orange, NJ 07052"
@@ -5962,8 +5962,8 @@
     "external_ids": {
       "storeNumber": 10091
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10091",
     "address_lines": [
       "1801 State Route 71, Wall, NJ 07719"
@@ -5987,8 +5987,8 @@
     "external_ids": {
       "storeNumber": 10237
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10237",
     "address_lines": [
       "457 Route 46, Rockaway, NJ 07866"
@@ -6012,8 +6012,8 @@
     "external_ids": {
       "storeNumber": 10289
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10289",
     "address_lines": [
       "215 Bergen Blvd., Fairview, NJ 07022"
@@ -6037,8 +6037,8 @@
     "external_ids": {
       "storeNumber": 10322
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10322",
     "address_lines": [
       "302 Route 94, Vernon, NJ 07462"
@@ -6062,8 +6062,8 @@
     "external_ids": {
       "storeNumber": 10363
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10363",
     "address_lines": [
       "4251 U.s. Hwy 9, Howell, NJ 07731"
@@ -6087,8 +6087,8 @@
     "external_ids": {
       "storeNumber": 10379
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10379",
     "address_lines": [
       "10 West Palisade Ave., Englewood, NJ 07631"
@@ -6112,8 +6112,8 @@
     "external_ids": {
       "storeNumber": 10381
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10381",
     "address_lines": [
       "3503 Route 46, Parsippany, NJ 07054"
@@ -6137,8 +6137,8 @@
     "external_ids": {
       "storeNumber": 10458
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10458",
     "address_lines": [
       "300 Atlantic City Blvd., Beachwood, NJ 08722"
@@ -6162,8 +6162,8 @@
     "external_ids": {
       "storeNumber": 10552
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10552",
     "address_lines": [
       "85 Main St., Hackettstown, NJ 07840"
@@ -6187,8 +6187,8 @@
     "external_ids": {
       "storeNumber": 10608
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10608",
     "address_lines": [
       "1357 Lakewood Road, Toms River, NJ 08755"
@@ -6212,8 +6212,8 @@
     "external_ids": {
       "storeNumber": 10611
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10611",
     "address_lines": [
       "1000 West St. George's Ave., Linden, NJ 07036"
@@ -6237,8 +6237,8 @@
     "external_ids": {
       "storeNumber": 10853
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #10853",
     "address_lines": [
       "2311 Route 206, Suite 600, Belle Mead, NJ 08502"
@@ -6262,8 +6262,8 @@
     "external_ids": {
       "storeNumber": 11010
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11010",
     "address_lines": [
       "1570 Route 38, Lumberton, NJ 08048"
@@ -6287,8 +6287,8 @@
     "external_ids": {
       "storeNumber": 11012
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11012",
     "address_lines": [
       "1200 Highway 35, Middletown, NJ 07748"
@@ -6312,8 +6312,8 @@
     "external_ids": {
       "storeNumber": 11088
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11088",
     "address_lines": [
       "88 Morgan Street, Jersey City, NJ 07302"
@@ -6337,8 +6337,8 @@
     "external_ids": {
       "storeNumber": 11135
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11135",
     "address_lines": [
       "70 Hudson St, Jersey City, NJ 07302"
@@ -6362,8 +6362,8 @@
     "external_ids": {
       "storeNumber": 11163
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11163",
     "address_lines": [
       "45 Pearl Street, Metuchen, NJ 08840"
@@ -6387,8 +6387,8 @@
     "external_ids": {
       "storeNumber": 11204
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11204",
     "address_lines": [
       "88 E. Main St., Mendham, NJ 07945"
@@ -6412,8 +6412,8 @@
     "external_ids": {
       "storeNumber": 11271
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #11271",
     "address_lines": [
       "30 Belvidere Ave, Washington, NJ 07882"
@@ -6437,8 +6437,8 @@
     "external_ids": {
       "storeNumber": 16440
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16440",
     "address_lines": [
       "100 Parsonage Rd, Edison, NJ 08837"
@@ -6462,8 +6462,8 @@
     "external_ids": {
       "storeNumber": 16464
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16464",
     "address_lines": [
       "2137 Route 38, Cherry Hill, NJ 08002"
@@ -6487,8 +6487,8 @@
     "external_ids": {
       "storeNumber": 16482
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16482",
     "address_lines": [
       "380 Consumer Sq, Mays Landing, NJ 08330"
@@ -6512,8 +6512,8 @@
     "external_ids": {
       "storeNumber": 16496
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16496",
     "address_lines": [
       "4001 Black Horse Pike, Turnersville, NJ 08012"
@@ -6537,8 +6537,8 @@
     "external_ids": {
       "storeNumber": 16497
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16497",
     "address_lines": [
       "1139 White Horse Rd, Voorhees, NJ 08043"
@@ -6562,8 +6562,8 @@
     "external_ids": {
       "storeNumber": 16513
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16513",
     "address_lines": [
       "500 Nassau Park Blvd, Princeton, NJ 08540"
@@ -6587,8 +6587,8 @@
     "external_ids": {
       "storeNumber": 16514
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16514",
     "address_lines": [
       "400 Ryders Ln, Milltown, NJ 08850"
@@ -6612,8 +6612,8 @@
     "external_ids": {
       "storeNumber": 16515
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16515",
     "address_lines": [
       "570 Route 70, Brick, NJ 08723"
@@ -6637,8 +6637,8 @@
     "external_ids": {
       "storeNumber": 16516
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16516",
     "address_lines": [
       "1331 Hooper Ave, Toms River, NJ 08753"
@@ -6662,8 +6662,8 @@
     "external_ids": {
       "storeNumber": 16517
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16517",
     "address_lines": [
       "1515 Us Highway 22, Watchung, NJ 07069"
@@ -6687,8 +6687,8 @@
     "external_ids": {
       "storeNumber": 16520
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16520",
     "address_lines": [
       "2703 Route 541, Burlington, NJ 08016"
@@ -6712,8 +6712,8 @@
     "external_ids": {
       "storeNumber": 16533
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16533",
     "address_lines": [
       "632 Route 46 E, Fairfield, NJ 07004"
@@ -6737,8 +6737,8 @@
     "external_ids": {
       "storeNumber": 16542
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16542",
     "address_lines": [
       "55 Us Hwy 9, Manalapan, NJ 07726"
@@ -6762,8 +6762,8 @@
     "external_ids": {
       "storeNumber": 16550
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16550",
     "address_lines": [
       "2105 Route 35, Middletown, NJ 07748"
@@ -6787,8 +6787,8 @@
     "external_ids": {
       "storeNumber": 16579
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16579",
     "address_lines": [
       "200 Promenade Blvd, Bridgewater, NJ 08807"
@@ -6812,8 +6812,8 @@
     "external_ids": {
       "storeNumber": 16610
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16610",
     "address_lines": [
       "543 River Rd, Edgewater, NJ 07020"
@@ -6837,8 +6837,8 @@
     "external_ids": {
       "storeNumber": 16658
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16658",
     "address_lines": [
       "621 W Edgar Rd, Linden, NJ 07036"
@@ -6862,8 +6862,8 @@
     "external_ids": {
       "storeNumber": 16671
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16671",
     "address_lines": [
       "630 Main St, Hackensack, NJ 07601"
@@ -6887,8 +6887,8 @@
     "external_ids": {
       "storeNumber": 16684
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16684",
     "address_lines": [
       "70 Princeton Hightstown Rd, East Windsor, NJ 08520"
@@ -6912,8 +6912,8 @@
     "external_ids": {
       "storeNumber": 16704
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16704",
     "address_lines": [
       "751 Route 73 S, Marlton, NJ 08053"
@@ -6937,8 +6937,8 @@
     "external_ids": {
       "storeNumber": 16717
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16717",
     "address_lines": [
       "2331 State Route 66, Ocean, NJ 07712"
@@ -6962,8 +6962,8 @@
     "external_ids": {
       "storeNumber": 16728
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16728",
     "address_lines": [
       "1900 Deptford Center Rd, Deptford, NJ 08096"
@@ -6987,8 +6987,8 @@
     "external_ids": {
       "storeNumber": 16796
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16796",
     "address_lines": [
       "1204 New Brunswick Ave, Phillipsburg, NJ 08865"
@@ -7012,8 +7012,8 @@
     "external_ids": {
       "storeNumber": 16944
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16944",
     "address_lines": [
       "4955 Us Highway 9, Howell, NJ 07731"
@@ -7037,8 +7037,8 @@
     "external_ids": {
       "storeNumber": 16984
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #16984",
     "address_lines": [
       "381 Mount Hope Ave, Rockaway, NJ 07866"
@@ -7062,8 +7062,8 @@
     "external_ids": {
       "storeNumber": 17006
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17006",
     "address_lines": [
       "100 14th St, Jersey City, NJ 07310"
@@ -7087,8 +7087,8 @@
     "external_ids": {
       "storeNumber": 17035
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17035",
     "address_lines": [
       "4 Centerton Rd, Mount Laurel, NJ 08054"
@@ -7112,8 +7112,8 @@
     "external_ids": {
       "storeNumber": 17047
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17047",
     "address_lines": [
       "5000 Hadley Center Dr, South Plainfield, NJ 07080"
@@ -7137,8 +7137,8 @@
     "external_ids": {
       "storeNumber": 17190
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17190",
     "address_lines": [
       "4004 Rte 130 N, Delran, NJ 08075"
@@ -7162,8 +7162,8 @@
     "external_ids": {
       "storeNumber": 17224
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17224",
     "address_lines": [
       "2235 Springfield Ave, Vauxhall, NJ 07088"
@@ -7187,8 +7187,8 @@
     "external_ids": {
       "storeNumber": 17250
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17250",
     "address_lines": [
       "2100 N 2nd St, Millville, NJ 08332"
@@ -7212,8 +7212,8 @@
     "external_ids": {
       "storeNumber": 17261
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17261",
     "address_lines": [
       "487 Cross Keys Rd, Sicklerville, NJ 08081"
@@ -7237,8 +7237,8 @@
     "external_ids": {
       "storeNumber": 17331
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17331",
     "address_lines": [
       "4196 Us Hwy 1, Monmouth Junction, NJ 08852"
@@ -7262,8 +7262,8 @@
     "external_ids": {
       "storeNumber": 17444
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17444",
     "address_lines": [
       "900 Bergen Town Ctr, Paramus, NJ 07652"
@@ -7287,8 +7287,8 @@
     "external_ids": {
       "storeNumber": 17447
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17447",
     "address_lines": [
       "675 Woodbury Glassboro Rd, Sewell, NJ 08080"
@@ -7312,8 +7312,8 @@
     "external_ids": {
       "storeNumber": 17455
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17455",
     "address_lines": [
       "209 Stafford Park Blvd, Manahawkin, NJ 08050"
@@ -7337,8 +7337,8 @@
     "external_ids": {
       "storeNumber": 17501
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17501",
     "address_lines": [
       "68 Us Hwy 46 W, Hackettstown, NJ 07840"
@@ -7362,8 +7362,8 @@
     "external_ids": {
       "storeNumber": 17667
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17667",
     "address_lines": [
       "101 Grand Ave, North Brunswick, NJ 08902"
@@ -7387,8 +7387,8 @@
     "external_ids": {
       "storeNumber": 17690
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17690",
     "address_lines": [
       "29 Vervalen St, Closter, NJ 07624"
@@ -7412,8 +7412,8 @@
     "external_ids": {
       "storeNumber": 17734
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17734",
     "address_lines": [
       "1157 Us Hwy 46, Parsippany, NJ 07054"
@@ -7437,8 +7437,8 @@
     "external_ids": {
       "storeNumber": 17738
     },
-    "provider": "NJVSS",
-    "location_type": "clinic",
+    "provider": "CVS",
+    "location_type": "pharmacy",
     "name": "CVS #17738",
     "address_lines": [
       "650 W. Cuthbert Blvd., Haddon Township, NJ 08108"

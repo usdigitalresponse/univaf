@@ -123,29 +123,57 @@ export async function updateLocation(data: any): Promise<ProviderLocation> {
  * @param includePrivate Whether to include non-public locations.
  */
 export async function listLocations({
-  // TODO: implement includeAvailability
-  includeAvailability = true,
   includePrivate = false,
+  limit = 0,
+  where = [] as string[],
+  values = [] as any[],
 } = {}): Promise<ProviderLocation[]> {
   let fields = providerLocationFields;
-  let where = "";
 
   if (includePrivate) {
     fields = fields.concat(providerLocationPrivateFields);
   } else {
-    where = "is_public = true";
+    where.push(`pl.is_public = true`);
   }
 
   // Reformat fields as select expressions to get the right data back.
-  fields = fields.map((x) => (x === "position" ? selectSqlPoint(x) : x));
+  fields = fields
+    .map((name) => `pl.${name}`)
+    .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
 
-  const result = await connection.query(`
-    SELECT ${fields.join(", ")}
-    FROM provider_locations
-    ${where ? `WHERE ${where}` : ""}
-    ORDER BY updated_at DESC
-  `);
-  return result.rows;
+  const result = await connection.query(
+    `
+    SELECT ${fields.join(", ")}, row_to_json(availability.*) availability
+    FROM provider_locations pl
+      LEFT OUTER JOIN availability
+        ON pl.id = availability.provider_location_id
+        AND availability.updated_at = (
+          SELECT MAX(updated_at)
+          FROM availability avail_inner
+          WHERE
+            avail_inner.provider_location_id = pl.id
+            ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
+        )
+    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+    ORDER BY pl.updated_at DESC
+    ${limit ? `LIMIT ${limit}` : ""}
+    `,
+    values || []
+  );
+
+  return result.rows.map((row) => {
+    // The SELECT expression always creates an object; not sure if there's a
+    // good way to get it to output `NULL` instead for this case.
+    if (!row.position.longitude) row.position = null;
+
+    if (row.availability) {
+      delete row.availability.id;
+      delete row.availability.provider_location_id;
+      delete row.availability.is_public;
+    }
+
+    return row;
+  });
 }
 
 /**
@@ -157,27 +185,13 @@ export async function getLocationById(
   id: string,
   { includePrivate = false } = {}
 ): Promise<ProviderLocation | undefined> {
-  let fields = providerLocationFields;
-  let where = "id = $1";
-
-  if (includePrivate) {
-    fields = fields.concat(providerLocationPrivateFields);
-  } else {
-    where = `${where} AND is_public = true`;
-  }
-
-  // Reformat fields as select expressions to get the right data back.
-  fields = fields.map((x) => (x === "position" ? selectSqlPoint(x) : x));
-
-  const result = await connection.query(
-    `SELECT ${fields.join(", ")}
-    FROM provider_locations
-    WHERE ${where}
-    LIMIT 1`,
-    [id]
-  );
-
-  return result.rows[0];
+  const rows = await listLocations({
+    includePrivate,
+    limit: 1,
+    where: ["pl.id = $1"],
+    values: [id],
+  });
+  return rows[0];
 }
 
 /**
@@ -220,7 +234,7 @@ export async function updateAvailability(
   );
 
   if (existingAvailability.rows.length > 0) {
-    await connection.query(
+    const result = await connection.query(
       `
       UPDATE availability
       SET
@@ -229,7 +243,7 @@ export async function updateAvailability(
         checked_at = $3,
         meta = $4,
         is_public = $5
-      WHERE id = $6
+      WHERE id = $6 AND updated_at < $2
       `,
       [
         available,
@@ -240,27 +254,29 @@ export async function updateAvailability(
         existingAvailability.rows[0].id,
       ]
     );
-    return true;
+    return result.rowCount > 0;
   } else {
-    const location = await getLocationById(id);
-    if (!location) {
-      throw new Error("not found");
+    try {
+      const result = await connection.query(
+        `INSERT INTO availability (
+          provider_location_id,
+          source,
+          available,
+          updated_at,
+          checked_at,
+          meta,
+          is_public
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [id, source, available, updated_at, checked_at, meta, is_public]
+      );
+      return result.rowCount > 0;
+    } catch (error) {
+      if (error.message.includes('constraint "fk_provider_location"')) {
+        throw new Error("not found");
+      }
+      throw error;
     }
-
-    await connection.query(
-      `INSERT INTO availability (
-        provider_location_id,
-        source,
-        available,
-        updated_at,
-        checked_at,
-        meta,
-        is_public
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [id, source, available, updated_at, checked_at, meta, is_public]
-    );
-    return true;
   }
 }
 

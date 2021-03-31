@@ -41,9 +41,10 @@ app.get("/", (_req: Request, res: Response) =>
   res.send("COVID-19 Appointments")
 );
 app.get("/health", routes.healthcheck);
-app.get("/providers", handleErrors(routes.list));
-app.get("/providers/:id", handleErrors(routes.getById));
-// app.post("/providers", handleErrors(routes.create))
+app.get("/locations", handleErrors(routes.list));
+app.get("/locations/:id", handleErrors(routes.getById));
+// app.get("/availability", handleErrors(routes.listAvailability));
+// app.post("/locations", handleErrors(routes.create))
 app.post("/update", handleErrors(routes.update));
 
 // Handle unhandled errors
