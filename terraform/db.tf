@@ -5,7 +5,7 @@ module "db" {
   vpc_id            = aws_vpc.main.id
   subnet_ids        = [aws_subnet.private.*.id]
   password          = var.db_password
-  user              = var.db_user
+  username          = var.db_user
   name              = "availability-db"
   engine            = "postgres"
   engine_version    = "13.1"
