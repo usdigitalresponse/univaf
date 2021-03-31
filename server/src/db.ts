@@ -125,7 +125,7 @@ export async function updateLocation(data: any): Promise<ProviderLocation> {
 export async function listLocations({
   includePrivate = false,
   limit = 0,
-  where = "",
+  where = [] as string[],
   values = [] as any[],
 } = {}): Promise<ProviderLocation[]> {
   let fields = providerLocationFields;
@@ -133,8 +133,7 @@ export async function listLocations({
   if (includePrivate) {
     fields = fields.concat(providerLocationPrivateFields);
   } else {
-    if (where) where += " AND ";
-    where += `pl.is_public = true`;
+    where.push(`pl.is_public = true`);
   }
 
   // Reformat fields as select expressions to get the right data back.
@@ -155,10 +154,10 @@ export async function listLocations({
             avail_inner.provider_location_id = pl.id
             ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
         )
-    ${where ? `WHERE ${where}` : ""}
+    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
     ORDER BY pl.updated_at DESC
     ${limit ? `LIMIT ${limit}` : ""}
-  `,
+    `,
     values || []
   );
 
@@ -189,7 +188,7 @@ export async function getLocationById(
   const rows = await listLocations({
     includePrivate,
     limit: 1,
-    where: "pl.id = $1",
+    where: ["pl.id = $1"],
     values: [id],
   });
   return rows[0];
