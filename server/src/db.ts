@@ -256,25 +256,27 @@ export async function updateAvailability(
     );
     return true;
   } else {
-    const location = await getLocationById(id);
-    if (!location) {
-      throw new Error("not found");
+    try {
+      await connection.query(
+        `INSERT INTO availability (
+          provider_location_id,
+          source,
+          available,
+          updated_at,
+          checked_at,
+          meta,
+          is_public
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [id, source, available, updated_at, checked_at, meta, is_public]
+      );
+      return true;
+    } catch (error) {
+      if (error.message.includes('constraint "fk_provider_location"')) {
+        throw new Error("not found");
+      }
+      throw error;
     }
-
-    await connection.query(
-      `INSERT INTO availability (
-        provider_location_id,
-        source,
-        available,
-        updated_at,
-        checked_at,
-        meta,
-        is_public
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [id, source, available, updated_at, checked_at, meta, is_public]
-    );
-    return true;
   }
 }
 
