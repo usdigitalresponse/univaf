@@ -60,7 +60,14 @@ async function run(options) {
 
     if (inFlightResults.length > 0) {
       console.warn("Waiting for data to finish sending to API...");
-      await Promise.all(inFlightResults);
+      const saveResults = await Promise.all(inFlightResults);
+      for (const saveResult of saveResults) {
+        if (saveResult.success === false) {
+          const data = saveResult.sent;
+          const source = data.availability ? ` from ${data.availability.source}` : "";
+          console.error(`Error sending "${data.name}"${source}: ${saveResult.statusCode} ${saveResult.error || "unknown reason"}`);
+        }
+      }
     }
 
     let successCount = 0;

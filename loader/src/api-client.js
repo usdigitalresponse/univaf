@@ -33,15 +33,26 @@ class ApiClient {
   }
 
   async sendUpdate (data) {
-    await got.post({
+    const response = await got.post({
       url: `${this.url}/update`,
       headers: {
         "x-api-key": this.key,
         "User-Agent": this.userAgent,
       },
       json: data,
-      responseType: "json"
+      responseType: "json",
+      throwHttpErrors: false
     });
+
+    const body = response.body;
+    // TODO: should probably always include success in response on API side?
+    if (body.error || body.success === false) {
+      body.success = false;
+      body.sent = data;
+      body.statusCode = response.statusCode;
+    }
+
+    return body;
   }
 }
 
