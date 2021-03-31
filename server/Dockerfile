@@ -28,4 +28,4 @@ ENV API_KEYS=abc
 ENV DB_NAME="appointment-availability"
 
 # run our built server
-CMD node ./dist/server.js
+CMD node ./dist/src/server.js
