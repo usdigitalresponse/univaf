@@ -70,7 +70,8 @@ export const update = async (req: AppRequest, res: Response) => {
   const data = req.body;
 
   // TODO: if no `id`, look up by external IDs?
-  if (!data.id) res.status(422).json({ error: "You must set an ID in the data" });
+  if (!data.id)
+    res.status(422).json({ error: "You must set an ID in the data" });
 
   const location = await db.getLocationById(data.id);
   if (!location) {
@@ -81,7 +82,7 @@ export const update = async (req: AppRequest, res: Response) => {
     // (In most cases, we expect the DB will have manual updates that make it
     // a better source of truth for locations than the source data, hence the
     // need to opt in to updating here.)
-    const fields = Object.keys(data).filter(key => key !== "availability");
+    const fields = Object.keys(data).filter((key) => key !== "availability");
     if (fields.length > 1) {
       await db.updateLocation(data);
     }

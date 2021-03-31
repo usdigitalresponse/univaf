@@ -236,10 +236,11 @@ async function findLocationIds(locations) {
   try {
     const client = ApiClient.fromEnv();
     savedLocations = await client.getLocations({ provider: "NJVSS" });
-  }
-  catch (error) {
-    warn(`Could not contact API. This may output already known locations with different IDs. (${error})`);
-    return locations.map(location => {
+  } catch (error) {
+    warn(
+      `Could not contact API. This may output already known locations with different IDs. (${error})`
+    );
+    return locations.map((location) => {
       location.id = createId(location);
       return location;
     });
@@ -312,10 +313,15 @@ async function findLocationIds(locations) {
   for (const item of matched) {
     if (item.match) {
       item.location.id = item.match.id;
-    }
-    else {
-      warn(`NJVSS Inventing new ID for "${item.location.name}" at "${item.simpleAddress}"`);
-      item.location.id = createId(item.location, item.simpleName, item.simpleAddress);
+    } else {
+      warn(
+        `NJVSS Inventing new ID for "${item.location.name}" at "${item.simpleAddress}"`
+      );
+      item.location.id = createId(
+        item.location,
+        item.simpleName,
+        item.simpleAddress
+      );
     }
   }
 

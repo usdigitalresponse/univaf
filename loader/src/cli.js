@@ -1,7 +1,7 @@
 "use strict";
 
 const yargs = require("yargs");
-const ApiClient = require('./api-client');
+const ApiClient = require("./api-client");
 const { sources } = require("./index");
 
 async function runSources(targets, handler, options) {
@@ -38,9 +38,9 @@ function createDatabaseSender() {
   };
 }
 
-function compoundHandler (...handlers) {
+function compoundHandler(...handlers) {
   return function handler(locationData) {
-    handlers.forEach(handle => handle(locationData));
+    handlers.forEach((handle) => handle(locationData));
   };
 }
 
@@ -64,8 +64,14 @@ async function run(options) {
       for (const saveResult of saveResults) {
         if (saveResult.success === false) {
           const data = saveResult.sent;
-          const source = data.availability ? ` from ${data.availability.source}` : "";
-          console.error(`Error sending "${data.name}"${source}: ${saveResult.statusCode} ${saveResult.error || "unknown reason"}`);
+          const source = data.availability
+            ? ` from ${data.availability.source}`
+            : "";
+          console.error(
+            `Error sending "${data.name}"${source}: ${saveResult.statusCode} ${
+              saveResult.error || "unknown reason"
+            }`
+          );
         }
       }
     }
@@ -104,7 +110,8 @@ function main() {
         yargs
           .option("send", {
             type: "boolean",
-            describe: "Send availability info to the API specified by the environment variable API_URL",
+            describe:
+              "Send availability info to the API specified by the environment variable API_URL",
           })
           .option("compact", {
             type: "boolean",
