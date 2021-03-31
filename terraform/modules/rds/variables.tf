@@ -9,7 +9,7 @@ variable "engine" {
 
 variable "engine_version" {
   description = "Database version"
-  default     = "9.6.1"
+  default     = "13.1"
 }
 
 variable "port" {

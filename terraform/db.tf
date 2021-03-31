@@ -6,6 +6,7 @@ module "db" {
   subnet_ids        = aws_subnet.private[*].id
   password          = var.db_password
   username          = var.db_user
+  database          = "postgres" # RDS has a restriction here for the database name, no hyphens
   name              = "availability-db"
   engine            = "postgres"
   engine_version    = "13.1"
