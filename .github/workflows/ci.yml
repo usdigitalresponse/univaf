@@ -115,7 +115,7 @@ jobs:
       - name: Build, tag, and push to seed-db
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: appointment-seed-db
+          ECR_REPOSITORY: appointment-db-seed
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./server/Dockerfile.seed-db ./server
