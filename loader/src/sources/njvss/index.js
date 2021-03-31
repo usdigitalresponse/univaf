@@ -254,7 +254,7 @@ async function findLocationIds(locations) {
   const matched = locations.map((location) => {
     // Just match on the first address line. Entries in the DoH list use a
     // variety of formats and the first line is still more-or-less unique.
-    let simpleAddress = matchableAddress(location.address_lines);
+    let simpleAddress = matchableAddress(location.address_lines[0]);
     let simpleName = matchable(location.name);
 
     // Manual overrides for cases where the data just does not reconcile :(
@@ -314,7 +314,7 @@ async function findLocationIds(locations) {
       item.location.id = item.match.id;
     }
     else {
-      warn(`NJVSS Inventing new ID for "${item.location.name}" at "${item.location.address_lines}, ${item.city}"`);
+      warn(`NJVSS Inventing new ID for "${item.location.name}" at "${item.simpleAddress}"`);
       item.location.id = createId(item.location, item.simpleName, item.simpleAddress);
     }
   }
