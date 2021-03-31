@@ -57,7 +57,9 @@ module.exports = {
   },
 
   matchableAddress(text, line = null) {
-    let lines = text.split(ADDRESS_LINE_DELIMITER_PATTERN);
+    let lines = Array.isArray(text)
+      ? text
+      : text.split(ADDRESS_LINE_DELIMITER_PATTERN);
 
     // If there are multiple lines and it looks like the first line is the name
     // of a place (rather than the street), drop the first line.

@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const csvParse = require("csv-parse/lib/sync");
 const getStream = require("get-stream");
 const { S3 } = require("@aws-sdk/client-s3");
+const ApiClient = require("../../api-client");
 const {
   matchable,
   matchableAddress,
@@ -124,7 +125,7 @@ async function getNjvssData() {
 
 /**
  * Remove NJVSS locations from an array if they probably don't actually
- * participage in NJVSS for scheduling appointments.
+ * participate in NJVSS for scheduling appointments.
  *
  * The NJVSS database includes many locations that are not actually
  * participating in NJVSS for scheduling, and which will never have open
@@ -184,7 +185,7 @@ function filterActualNjvssLocations(locations) {
     if (location.available > 0) {
       warn(oneLine`
         NJVSS reports availability for a new site: "${location.name}" at
-        "${location.vras_provider_address}"
+        "${location.vras_provideraddress}"
       `);
     }
 
@@ -198,12 +199,127 @@ function filterActualNjvssLocations(locations) {
   // match up to something in the NJVSS database now.
   for (const known of knownLocations) {
     warn(oneLine`
-      Previously known NJVSS location not found in database:
+      Previously known NJVSS location not found in NJVSS data:
       "${known.name}" at "${known.address}"
     `);
   }
 
   return filtered;
+}
+
+function createId(location, simpleName, simpleAddress) {
+  simpleName = simpleName || matchable(location.name);
+  simpleAddress = simpleAddress || matchableAddress(location.address_lines);
+  return crypto
+    .createHash("sha1")
+    .update(`${simpleName} ${simpleAddress}`)
+    .digest("hex");
+}
+
+/**
+ * Match up locations from the NJVSS database with locations from the API.
+ * Because NJVSS data doesn't currently include IDs, and all the other fields
+ * are malleable, IDs fo NJVSS are arbitrary.
+ * In the mean time, this function tries to reduce duplication by roughly
+ * matching live NJVSS data to an existing record from API and use that
+ * record's ID if possible.
+ *
+ * If no match can be found, a new ID will be invented for the record.
+ *
+ * Returns the list of passed in locations, but with each modified to add an
+ * `id` property.
+ * @param {Array<object>} locations List of found NJVSS locations.
+ * @returns {Array<object>}
+ */
+async function findLocationIds(locations) {
+  let savedLocations;
+  try {
+    const client = ApiClient.fromEnv();
+    savedLocations = await client.getLocations({ provider: "NJVSS" });
+  }
+  catch (error) {
+    warn(`Could not contact API. This may output already known locations with different IDs. (${error})`);
+    return locations.map(location => {
+      location.id = createId(location);
+      return location;
+    });
+  }
+
+  for (const saved of savedLocations) {
+    saved.simpleAddress = matchableAddress(saved.address_lines);
+    saved.simpleName = matchable(saved.name);
+  }
+  let unmatched = savedLocations.slice();
+
+  const matched = locations.map((location) => {
+    // Just match on the first address line. Entries in the DoH list use a
+    // variety of formats and the first line is still more-or-less unique.
+    let simpleAddress = matchableAddress(location.address_lines);
+    let simpleName = matchable(location.name);
+
+    // Manual overrides for cases where the data just does not reconcile :(
+    if (simpleAddress === "college center 1400 tanyard road") {
+      simpleAddress = "1400 tanyard road";
+    }
+    if (simpleName === "vineland doh public health nursing") {
+      simpleName = "city of vineland health department";
+    }
+
+    return { location, simpleAddress, simpleName, match: null };
+  });
+
+  // We need to do three separate loops for matching (address + name,
+  // address only, name only) because the names are not very unique, and if we
+  // did a single pass, we might have a record that matches by name when we
+  // would prefer it match an address later on in the list.
+  //
+  // For example, if the API has an entry like:
+  //   {name: "Trinitas Regional Medical Center", address: "600 Pearl St."}
+  // And NJVSS has:
+  //   {name: "Trinitas Regional Medical Center", address: "225 Williamson St."}
+  //   {name: "TRMC at Thomas Dunn Sports Center", address: "600 Pearl St."}
+  //
+  // A single pass check of all 3 kinds of matches would join the API record to
+  // the first NJVSS site instead of the second, which would be more accurate.
+  // The same situation also applies in reverse.
+  for (const item of matched) {
+    if (!item.match) {
+      item.match = popItem(
+        unmatched,
+        (saved) =>
+          saved.simpleAddress.includes(item.simpleAddress) &&
+          saved.simpleName.includes(item.simpleName)
+      );
+    }
+  }
+
+  for (const item of matched) {
+    if (!item.match) {
+      item.match = popItem(unmatched, (saved) =>
+        saved.simpleAddress.includes(item.simpleAddress)
+      );
+    }
+  }
+
+  for (const item of matched) {
+    if (!item.match) {
+      item.match = popItem(unmatched, (saved) =>
+        saved.simpleName.includes(item.simpleName)
+      );
+    }
+  }
+
+  for (const item of matched) {
+    if (item.match) {
+      item.location.id = item.match.id;
+    }
+    else {
+      warn(`NJVSS Inventing new ID for "${item.location.name}" at "${item.location.address_lines}, ${item.city}"`);
+      item.location.id = createId(item.location, item.simpleName, item.simpleAddress);
+    }
+  }
+
+  return locations;
 }
 
 /**
@@ -265,36 +381,30 @@ async function checkAvailability(handler, _options) {
   // to filter non-participants out.
   locations = filterActualNjvssLocations(locations);
 
-  const result = [];
+  let result = [];
   for (const location of locations) {
-    // FIXME: This is a bad way to calculate an ID (both name and address are
-    // prone to change). We need to pull locations from the DB and/or get IDs
-    // from within NJVSS/VRAS (there aren't any in this exported data, sadly).
-    const simpleAddress = matchableAddress(location.vras_provideraddress);
-    const simpleName = matchable(location.name);
-    const id = crypto
-      .createHash("sha1")
-      .update(`${simpleName} ${simpleAddress}`)
-      .digest("hex");
-
+    // FIXME: there are some fields we should not try to update if
+    // `_options.send` is true (we expect NJVSS to have messy data, and
+    // manually entered data in the DB will be better). This may need some
+    // changes on the API side, too.
     const address = parseAddress(location.vras_provideraddress);
-
     const record = {
-      id,
-      // FIXME: ideally, we'd have some NJVSS/VRAS-based IDs here.
+      // TODO: The NJVSS/VRAS exports don't have any kind of IDs, but we'll be
+      // adding them. When they've been added, use them to assign an `id` and
+      // `external_ids`.
+      // For now, we try and match existing saved records by name/address and
+      // invent an ID if we don't match. See call to `findLocationIds` below.
+      // id: "",
       // external_ids: {},
       provider: NJVSS_PROVIDER,
-      location_type: simpleName.includes("megasite")
+      location_type: location.name.toLowerCase().includes("megasite")
         ? LocationType.massVax
         : LocationType.clinic,
       name: location.name,
-
-      // TODO: parse the address to get city and postal code.
       address_lines: address.lines,
       city: address.city,
       state: "NJ",
       postal_code: address.zip,
-
       county: titleCase(location.county),
       position: {
         longitude: location.vras_longitude,
@@ -320,8 +430,12 @@ async function checkAvailability(handler, _options) {
         // is_public: true
       },
     };
-    handler(record);
     result.push(record);
+  }
+
+  result = await findLocationIds(result);
+  for (const record of result) {
+    handler(record);
   }
 
   return result;

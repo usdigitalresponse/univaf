@@ -116,7 +116,6 @@ function parseApiLocation(location, lastUpdated) {
     provider: "CVS",
     location_type: LocationType.pharmacy,
 
-    // TODO: parse the address to get city and postal code.
     address_lines: [location.address],
     city: location.city,
     state: location.stateCode,

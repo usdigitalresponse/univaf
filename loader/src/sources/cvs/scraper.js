@@ -271,7 +271,6 @@ function convertToStandardSchema(cvsResult) {
       provider: "CVS",
       location_type: LocationType.pharmacy,
 
-      // TODO: parse the address to get city and postal code.
       address_lines: [location.addressLine],
       city: location.addressCityDescriptionText,
       state: location.addressState,
