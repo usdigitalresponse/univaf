@@ -1,6 +1,7 @@
 "use strict";
 
 const yargs = require("yargs");
+const ApiClient = require('./api-client');
 const { sources } = require("./index");
 
 async function runSources(targets, handler, options) {
@@ -28,25 +29,39 @@ function createResultLogger(spacing) {
   };
 }
 
-function createDatabaseSender(_url) {
-  console.warn(`Database sender not currently implemented!`);
-  return function handler(_locationData) {
-    // TODO: Actually send to the DB at `url`
+const inFlightResults = [];
+
+function createDatabaseSender() {
+  const client = ApiClient.fromEnv();
+  return function handler(locationData) {
+    inFlightResults.push(client.sendUpdate(locationData));
+  };
+}
+
+function compoundHandler (...handlers) {
+  return function handler(locationData) {
+    handlers.forEach(handle => handle(locationData));
   };
 }
 
 async function run(options) {
   const jsonSpacing = options.compact ? 0 : 2;
 
-  const startTime = Date.now();
-  const handler = options.send
-    ? createDatabaseSender(options.send)
-    : createResultLogger(jsonSpacing);
+  let handler = createResultLogger(jsonSpacing);
+  if (options.send) {
+    handler = compoundHandler(handler, createDatabaseSender());
+  }
 
+  const startTime = Date.now();
   try {
     process.stdout.write("[\n");
     const reports = await runSources(options.sources, handler, options);
     process.stdout.write("]\n");
+
+    if (inFlightResults.length > 0) {
+      console.warn("Waiting for data to finish sending to API...");
+      await Promise.all(inFlightResults);
+    }
 
     let successCount = 0;
     for (let report of reports) {
@@ -81,8 +96,8 @@ function main() {
       builder: (yargs) =>
         yargs
           .option("send", {
-            type: "string",
-            describe: "Send availability info to the database at this URL",
+            type: "boolean",
+            describe: "Send availability info to the API specified by the environment variable API_URL",
           })
           .option("compact", {
             type: "boolean",
