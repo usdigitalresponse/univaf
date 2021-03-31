@@ -68,22 +68,35 @@ export const update = async (req: AppRequest, res: Response) => {
   }
 
   const data = req.body;
-  try {
-    await db.updateAvailability(data.id, data);
-  } catch (error) {
-    if (error.message.startsWith("not found")) {
-      return res.status(404).json({
-        error: `No provider location with ID '${data.id}'`,
-      });
-    } else if (error instanceof TypeError) {
-      return res.status(422).json({
-        error: error.message,
-      });
-    } else {
-      throw error;
+
+  // TODO: if no `id`, look up by external IDs?
+  if (!data.id) res.status(422).json({ error: "You must set an ID in the data" });
+
+  const location = await db.getLocationById(data.id);
+  if (!location) {
+    await db.createLocation(data);
+  } else {
+    // Only update the location itself if there is other data for it
+    const fields = Object.keys(data).filter(key => key !== "availability");
+    if (fields.length > 1) {
+      await db.updateLocation(data);
     }
   }
-  res.json({ success: true });
+
+  let success = true;
+  if (data.availability) {
+    success = false;
+    try {
+      success = await db.updateAvailability(data.id, data.availability);
+    } catch (error) {
+      if (error instanceof TypeError) {
+        return res.status(422).json({ error: error.message });
+      } else {
+        throw error;
+      }
+    }
+  }
+  res.json({ success });
 };
 
 /**

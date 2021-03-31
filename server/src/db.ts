@@ -234,7 +234,7 @@ export async function updateAvailability(
   );
 
   if (existingAvailability.rows.length > 0) {
-    await connection.query(
+    const result = await connection.query(
       `
       UPDATE availability
       SET
@@ -243,7 +243,7 @@ export async function updateAvailability(
         checked_at = $3,
         meta = $4,
         is_public = $5
-      WHERE id = $6
+      WHERE id = $6 AND updated_at < $2
       `,
       [
         available,
@@ -254,10 +254,10 @@ export async function updateAvailability(
         existingAvailability.rows[0].id,
       ]
     );
-    return true;
+    return result.rowCount > 0;
   } else {
     try {
-      await connection.query(
+      const result = await connection.query(
         `INSERT INTO availability (
           provider_location_id,
           source,
@@ -270,7 +270,7 @@ export async function updateAvailability(
         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [id, source, available, updated_at, checked_at, meta, is_public]
       );
-      return true;
+      return result.rowCount > 0;
     } catch (error) {
       if (error.message.includes('constraint "fk_provider_location"')) {
         throw new Error("not found");
