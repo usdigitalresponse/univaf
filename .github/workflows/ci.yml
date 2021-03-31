@@ -74,21 +74,15 @@ jobs:
           cd ../loader
           npm ci
 
-      - name: Lint Server
+      - name: Lint JS Code
         uses: wearerequired/lint-action@v1
         with:
           eslint: true
           eslint_dir: server/
+          eslint_args: . ../loader/
           prettier: true
           prettier_dir: server/
-
-      - name: Lint Loader
-        uses: wearerequired/lint-action@v1
-        with:
-          eslint: true
-          eslint_dir: loader/
-          prettier: true
-          prettier_dir: loader/
+          prettier_args: . ../loader/
 
   lint_workflows:
     runs-on: ubuntu-latest
