@@ -46,3 +46,22 @@ variable "fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
   default     = "2048"
 }
+
+variable "db_password" {
+  description = "The password for the database instance, filled via Terraform"
+}
+
+variable "db_user" {
+  description = "The database user"
+  default     = "postgres"
+}
+
+variable "db_instance" {
+  description = "The instance type for the DB"
+  default     = "db.m4.large"
+}
+
+variable "db_size" {
+  description = "The storage size for the DB"
+  default     = 100
+}
