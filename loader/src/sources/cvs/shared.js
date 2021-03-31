@@ -20,7 +20,7 @@ function getStoreCounty(storeNumber) {
     // use it. This is useful when we know geocode guesses will fail
     // (e.g. a zip code that maps to multiple counties).
     if (knownStores[storeNumber].county) {
-    return knownStores[storeNumber].county;
+      return knownStores[storeNumber].county;
     }
   } else {
     if (!TESTING) warn(`CVS #${storeNumber} is not in known store list`);

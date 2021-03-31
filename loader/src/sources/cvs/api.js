@@ -10,15 +10,11 @@
 
 const got = require("got");
 const { Available, LocationType } = require("../../model");
-const {
-  oneLine,
-  titleCase,
-  warn,
-} = require("../../utils");
+const { oneLine, warn } = require("../../utils");
 const {
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
   CVS_BOOKING_URL,
-  getStoreCounty
+  getStoreCounty,
 } = require("./shared");
 
 const API_URL = "https://api.cvshealth.com/";
@@ -137,7 +133,7 @@ function parseApiLocation(location, lastUpdated) {
       checked_at: checkTime,
       available,
       is_public: false,
-    }
+    },
   };
 }
 
@@ -173,7 +169,7 @@ async function checkAvailability(handler, _options) {
     }).json();
 
     return body.covaxAvailability.map((location) => {
-      const record = parseApiLocation(location, body.lastUpdated)
+      const record = parseApiLocation(location, body.lastUpdated);
       handler(record);
       return record;
     });

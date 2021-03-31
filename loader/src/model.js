@@ -3,7 +3,7 @@
  * @readonly
  * @enum {string}
  */
- const Available = {
+const Available = {
   /** Vaccines are available! */
   yes: "YES",
   /** We got good data, but can't clearly tell availability from it. */
@@ -23,5 +23,5 @@ const LocationType = {
 
 module.exports = {
   Available,
-  LocationType
+  LocationType,
 };

@@ -11,8 +11,8 @@ export enum LocationType {
 }
 
 export interface Position {
-  longitude: number,
-  latitude: number
+  longitude: number;
+  latitude: number;
 }
 
 /**

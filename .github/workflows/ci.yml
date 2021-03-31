@@ -1,0 +1,97 @@
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+
+name: Continuous Integration
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+            ~/.cache
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-v1
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: |
+          cd server
+          npm ci
+          cd ../loader
+          npm ci
+
+      - name: Run server tests
+        run: |
+          cd server
+          npm run test
+
+      - name: Run loader tests
+        run: |
+          cd loader
+          npm run test
+
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+            ~/.cache
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-v1
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: |
+          cd server
+          npm ci
+          cd ../loader
+          npm ci
+
+      # We have ESLint and Prettier installed separately in each subproject,
+      # but this action can only run once per job. So we run the versions
+      # installed in the server project on both at once, and have some weird
+      # arguments.
+      - name: Lint JS Code
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          eslint_dir: server/
+          eslint_args: . ../loader/
+          prettier: true
+          prettier_dir: server/
+          prettier_args: . ../loader/
+
+  lint_workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cschleiden/actions-linter@v1
+        with:
+          workflows: '[".github/workflows/*.yaml", ".github/workflows/*.yml"]'

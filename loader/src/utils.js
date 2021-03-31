@@ -182,5 +182,5 @@ module.exports = {
    */
   randomUserAgent() {
     return USER_AGENTS[module.exports.randomInt(0, USER_AGENTS.length)];
-  }
+  },
 };

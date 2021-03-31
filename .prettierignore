@@ -1,0 +1,9 @@
+# THIS FILE IS SYMLINKED IN BOTH server/ and loader/, so paths need to work in
+# both those contexts. (That's why a lot of these are prefixed with "**".
+**/package-lock.json
+dist
+coverage
+scratch.*
+
+**/fixtures/*.json
+**/src/sources/cvs/known-stores.js

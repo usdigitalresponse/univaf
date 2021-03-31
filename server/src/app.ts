@@ -37,6 +37,9 @@ app.use(authorizeRequest);
  * Primary app routes.
  */
 
+app.get("/", (_req: Request, res: Response) =>
+  res.send("COVID-19 Appointments")
+);
 app.get("/health", routes.healthcheck);
 app.get("/providers", handleErrors(routes.list));
 app.get("/providers/:id", handleErrors(routes.getById));
