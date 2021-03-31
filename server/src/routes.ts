@@ -70,8 +70,9 @@ export const update = async (req: AppRequest, res: Response) => {
   const data = req.body;
 
   // TODO: if no `id`, look up by external IDs?
-  if (!data.id)
-    res.status(422).json({ error: "You must set an ID in the data" });
+  if (!data.id) {
+    return res.status(422).json({ error: "You must set an ID in the data" });
+  }
 
   const location = await db.getLocationById(data.id);
   if (!location) {
