@@ -58,7 +58,7 @@ variable "db_user" {
 
 variable "db_instance" {
   description = "The instance type for the DB"
-  default     = "db.m4.large"
+  default     = "db.m5.large"
 }
 
 variable "db_size" {
