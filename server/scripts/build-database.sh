@@ -5,23 +5,27 @@ if [ -z "${DB_NAME}" ]; then
   exit 1
 fi
 
+case "$ENV" in
+  production) CMD="" ;; # in prod, just run against the live db
+           *) CMD="docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume $(pwd)/db:/db postgres" ;;
+esac
+
+PGPASSWORD=$DB_PASSWORD
+
 # drop the existing database
-docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD  \
-  postgres dropdb \
+$CMD dropdb \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
   $DB_NAME || true
 
 # create the new database
-docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD \
-  postgres createdb \
+$CMD createdb \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
   $DB_NAME
 
 # seed the database!
-docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume "$(pwd)"/db:/db \
-  postgres psql -d $DB_NAME -f /db/schema.sql \
+$CMD psql -d $DB_NAME -f ./db/schema.sql \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
 
