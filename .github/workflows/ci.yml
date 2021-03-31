@@ -74,6 +74,10 @@ jobs:
           cd ../loader
           npm ci
 
+      # We have ESLint and Prettier installed separately in each subproject,
+      # but this action can only run once per job. So we run the versions
+      # installed in the server project on both at once, and have some weird
+      # arguments.
       - name: Lint JS Code
         uses: wearerequired/lint-action@v1
         with:
