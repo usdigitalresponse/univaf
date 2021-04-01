@@ -2,7 +2,7 @@
   {
     "cpu": "${cpu}",
     "memory": "${memory}",
-    "environment": ${jsonencode([for key, val in env_vars : { name = key, value = val}])},
+    "environment": ${env_vars}
     "essential": true,
     "command": [],
     "image": "${image}:${image_version}",

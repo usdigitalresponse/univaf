@@ -29,7 +29,7 @@ data "template_file" "template" {
     image         = var.image
     aws_region    = var.aws_region
     image_version = var.image_version
-    env_vars      = var.env_vars
+    env_vars      = jsonencode([for key, val in var.env_vars : { name = key, value = val}])
     name          = var.name
     entry_point   = var.entry_point
     command       = var.command
