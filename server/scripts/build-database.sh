@@ -6,11 +6,11 @@ if [ -z "${DB_NAME}" ]; then
 fi
 
 case "$ENV" in
-  production) CMD="" ;; # in prod, just run against the live db
-           *) CMD="docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume $(pwd)/db:/db postgres" ;;
+  production) export CMD="" ;; # in prod, just run against the live db
+           *) export CMD="docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume $(pwd)/db:/db postgres" ;;
 esac
 
-PGPASSWORD=$DB_PASSWORD
+export PGPASSWORD=$DB_PASSWORD
 
 # drop the existing database
 $CMD dropdb \
