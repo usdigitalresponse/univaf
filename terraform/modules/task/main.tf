@@ -19,6 +19,24 @@
 
 # The ECS task definition.
 
+data "template_file" "template" {
+  template = file("./task_def.json.tpl")
+
+  vars = {
+    cpu           = var.cpu
+    memory        = var.memory
+    port          = var.port
+    image         = var.image
+    aws_region    = var.aws_region
+    image_version = var.image_version
+    env_vars      = var.env_vars
+    name          = var.name
+    entry_point   = var.entry_point
+    command       = var.command
+  }
+}
+
+
 resource "aws_ecs_task_definition" "main" {
   family        = var.name
   task_role_arn = var.role
@@ -31,34 +49,5 @@ resource "aws_ecs_task_definition" "main" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu
   memory                   = var.memory
-  container_definitions = <<EOF
-[
-  {
-    "cpu": "${var.cpu}",
-    "memory": "${var.memory}",
-    "environment": "${var.env_vars}",
-    "essential": true,
-    "command": "${var.command}",
-    "image": "${var.image}:${var.image_version}",
-    "name": "${var.name}",
-    "portMappings": [
-        {
-        "containerPort": "${var.port}",
-        "hostPort": "${var.port}"
-      }
-    ],
-    "entryPoint": "${var.entry_point}",
-    "networkMode": "awsvpc",
-    "mountPoints": [],
-    "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/${var.name}",
-          "awslogs-region": "${var.aws_region}",
-          "awslogs-stream-prefix": "ecs"
-        }
-    }
-  }
-]
-EOF
+  container_definitions    = data.template_file.template.rendered
 }
