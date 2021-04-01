@@ -20,7 +20,7 @@ variable "az_count" {
 
 variable "api_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server:ce13f720"
+  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server:latest"
 }
 
 variable "api_port" {
@@ -37,18 +37,19 @@ variable "health_check_path" {
   default = "/health"
 }
 
-variable "fargate_cpu" {
+variable "cpu" {
   description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
-  default     = "1024"
+  default     = 1024
 }
 
-variable "fargate_memory" {
+variable "memory" {
   description = "Fargate instance memory to provision (in MiB)"
-  default     = "2048"
+  default     = 2048
 }
 
 variable "db_password" {
   description = "The password for the database instance, filled via Terraform"
+  sensitive   = true
 }
 
 variable "db_user" {
