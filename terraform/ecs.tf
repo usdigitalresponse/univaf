@@ -16,6 +16,23 @@ data "template_file" "api" {
   }
 }
 
+module "db_seed_task" {
+  source = "./modules/task"
+
+  name = "db-seed-task"
+  image = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-db-seed"
+  role = aws_iam_role.ecs_task_execution_role.arn
+
+  env_vars = <<EOF
+  [
+    { "name": "DB_HOST",     "value": "${module.db.host}" },
+    { "name": "DB_NAME",     "value": "${module.db.db_name}" },
+    { "name": "DB_USERNAME", "value": "${var.db_user}" },
+    { "name": "DB_PASSWORD", "value": "${var.db_password}" }
+  ]
+EOF
+}
+
 resource "aws_ecs_task_definition" "api" {
   family                   = "api-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn

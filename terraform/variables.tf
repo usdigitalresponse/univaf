@@ -20,7 +20,7 @@ variable "az_count" {
 
 variable "api_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server:ce13f720"
+  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server:latest"
 }
 
 variable "api_port" {
@@ -49,6 +49,7 @@ variable "fargate_memory" {
 
 variable "db_password" {
   description = "The password for the database instance, filled via Terraform"
+  sensitive =  true
 }
 
 variable "db_user" {
