@@ -27,7 +27,7 @@ variable "cpu" {
 variable "env_vars" {
   description = "The raw json of the task env vars"
   default     = {}
-} # [{ "name": name, "value": value }]
+}
 
 variable "command" {
   description = "The raw json of the task command"
@@ -51,7 +51,7 @@ variable "memory" {
 
 variable "log_driver" {
   description = "The log driver to use use for the container"
-  default     = "journald"
+  default     = "awslogs"
 }
 
 variable "role" {
