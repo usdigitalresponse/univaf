@@ -29,7 +29,7 @@ data "template_file" "template" {
     image         = var.image
     aws_region    = var.aws_region
     image_version = var.image_version
-    env_vars      = jsonencode([for key, val in var.env_vars : { name = key, value = val}])
+    env_vars      = jsonencode([for key, val in var.env_vars : { name = key, value = val }])
     name          = var.name
     entry_point   = var.entry_point
     command       = var.command
@@ -49,5 +49,35 @@ resource "aws_ecs_task_definition" "main" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu
   memory                   = var.memory
-  container_definitions    = data.template_file.template.rendered
+  container_definitions = jsonencode([
+    {
+      cpu    = var.cpu
+      memory = var.memory
+
+      name  = var.name
+      image = var.image
+
+      environment = [for key, val in var.env_vars : { name = key, value = val }]
+      entryPoint  = []
+      command     = []
+
+      essential   = true
+      networkMode = "awsvpc"
+      mountPoints = []
+      portMappings = [
+        {
+          containerPort = var.port
+          hostPort      = var.port
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group" = "/ecs/${var.name}"
+          "awslogs-region"  = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
 }

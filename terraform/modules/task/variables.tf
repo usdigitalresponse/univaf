@@ -12,7 +12,7 @@ variable "name" {
 
 variable "port" {
   description = "The docker container port"
-  default = ""
+  default     = ""
 }
 
 /**

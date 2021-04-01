@@ -2,7 +2,7 @@
   {
     "cpu": "${cpu}",
     "memory": "${memory}",
-    "environment": ${env_vars}
+    "environment": ${env_vars},
     "essential": true,
     "command": [],
     "image": "${image}:${image_version}",
