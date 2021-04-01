@@ -20,7 +20,7 @@
 # The ECS task definition.
 
 data "template_file" "template" {
-  template = file("./templates/template.json.tpl")
+  template = file("${path.module}/templates/template.json.tpl")
 
   vars = {
     cpu           = var.cpu
