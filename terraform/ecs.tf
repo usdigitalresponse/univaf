@@ -31,6 +31,9 @@ module "db_seed_task" {
   name  = "db-seed"
   image = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-db-seed"
   role  = aws_iam_role.ecs_task_execution_role.arn
+  cpu    = var.cpu
+  memory = var.memory
+  port   = var.api_port
 
   env_vars = {
     DB_HOST     = module.db.host

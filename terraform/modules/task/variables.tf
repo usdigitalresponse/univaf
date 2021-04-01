@@ -21,7 +21,7 @@ variable "port" {
 
 variable "cpu" {
   description = "The number of cpu units to reserve for the container"
-  default     = 512
+  default     = 1024
 }
 
 variable "env_vars" {
@@ -46,7 +46,7 @@ variable "image_version" {
 
 variable "memory" {
   description = "The number of MiB of memory to reserve for the container"
-  default     = 512
+  default     = 2048
 }
 
 variable "log_driver" {
