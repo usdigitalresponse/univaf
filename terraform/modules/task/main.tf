@@ -20,7 +20,7 @@
 # The ECS task definition.
 
 data "template_file" "template" {
-  template = file("./task_def.json.tpl")
+  template = file("./template.json.tpl")
 
   vars = {
     cpu           = var.cpu
