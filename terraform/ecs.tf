@@ -21,6 +21,8 @@ module "api_task" {
     DB_PASSWORD = var.db_password
     ENV         = "production"
   }
+
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
 
 module "db_seed_task" {
@@ -37,6 +39,8 @@ module "db_seed_task" {
     DB_PASSWORD = var.db_password
     ENV         = "production"
   }
+
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
 
 resource "aws_ecs_service" "main" {
@@ -58,5 +62,5 @@ resource "aws_ecs_service" "main" {
     container_port   = var.api_port
   }
 
-  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
 }
