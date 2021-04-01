@@ -23,14 +23,12 @@ module "db_seed_task" {
   image = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-db-seed"
   role = aws_iam_role.ecs_task_execution_role.arn
 
-  env_vars = <<EOF
-  [
-    { "name": "DB_HOST",     "value": "${module.db.host}" },
-    { "name": "DB_NAME",     "value": "${module.db.db_name}" },
-    { "name": "DB_USERNAME", "value": "${var.db_user}" },
-    { "name": "DB_PASSWORD", "value": "${var.db_password}" }
-  ]
-EOF
+  env_vars = {
+    DB_HOST = module.db.host
+    DB_NAME = module.db.db_name
+    DB_USERNAME = var.db_user
+    DB_PASSWORD = var.db_password
+  }
 }
 
 resource "aws_ecs_task_definition" "api" {

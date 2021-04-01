@@ -2,9 +2,9 @@
   {
     "cpu": "${cpu}",
     "memory": "${memory}",
-    "environment": "${env_vars}",
+    "environment": ${jsonencode([for key, val in env_vars : { name = key, value = val}])},
     "essential": true,
-    "command": "${command}",
+    "command": [],
     "image": "${image}:${image_version}",
     "name": "${name}",
     "portMappings": [
@@ -13,7 +13,7 @@
         "hostPort": "${port}"
       }
     ],
-    "entryPoint": "${entry_point}",
+    "entryPoint": [],
     "networkMode": "awsvpc",
     "mountPoints": [],
     "logConfiguration": {
