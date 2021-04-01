@@ -34,20 +34,20 @@ resource "aws_ecs_task_definition" "main" {
   container_definitions = <<EOF
 [
   {
-    "cpu": ${var.cpu},
-    "memory": ${var.memory},
-    "environment": ${var.env_vars},
+    "cpu": "${var.cpu}",
+    "memory": "${var.memory}",
+    "environment": "${var.env_vars}",
     "essential": true,
-    "command": ${var.command},
+    "command": "${var.command}",
     "image": "${var.image}:${var.image_version}",
     "name": "${var.name}",
     "portMappings": [
         {
-        "containerPort": ${var.port},
-        "hostPort": ${var.port}
+        "containerPort": "${var.port}",
+        "hostPort": "${var.port}"
       }
     ],
-    "entryPoint": ${var.entry_point},
+    "entryPoint": "${var.entry_point}",
     "networkMode": "awsvpc",
     "mountPoints": [],
     "logConfiguration": {
