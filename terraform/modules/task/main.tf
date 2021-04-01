@@ -48,7 +48,7 @@ resource "aws_ecs_task_definition" "main" {
       }
     ],
     "entryPoint": ${var.entry_point},
-    "networkMode": "awsvpc"
+    "networkMode": "awsvpc",
     "mountPoints": [],
     "logConfiguration": {
         "logDriver": "awslogs",
