@@ -19,8 +19,8 @@
 
 # The ECS task definition.
 resource "aws_ecs_task_definition" "main" {
-  family        = var.name
-  task_role_arn = var.role
+  family             = var.name
+  execution_role_arn = var.role
 
   lifecycle {
     create_before_destroy = true
