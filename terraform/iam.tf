@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
 resource "aws_iam_policy" "ecs_runtask_policy" {
   name = "runtask_policy"
   path = "/"
-  policy = data.aws_iam_policy_document.ecs_task_additional_permissions
+  policy = data.aws_iam_policy_document.ecs_task_additional_permissions.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_runtask_policy" {
