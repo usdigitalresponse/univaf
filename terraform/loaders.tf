@@ -46,3 +46,16 @@ module "njvss_loader" {
     NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
   }
 }
+
+module "vaccinespotter_loader" {
+  source = "./modules/loader"
+
+  name = "vaccinespotter"
+  loader_source = "vaccinespotter"
+  api_url = "http://${aws_alb.main.dns_name}"
+  api_key = var.api_key
+  schedule = "rate(2 minutes)"
+  cluster_arn = aws_ecs_cluster.main.arn
+  role = aws_iam_role.ecs_task_execution_role.arn
+  subnets = aws_subnet.public.*.id
+}
