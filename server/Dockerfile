@@ -24,7 +24,7 @@ ENV DB_PASSWORD=password
 ENV DB_PORT=5432
 
 # required exposed env vars, with defaults provided
-ENV API_KEYS=abc
+ENV API_KEYS=""
 ENV DB_NAME="appointment-availability"
 
 # run our built server
