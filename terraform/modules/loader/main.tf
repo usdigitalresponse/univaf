@@ -8,11 +8,11 @@ module "loader_task" {
   memory = 2048
   port   = 3000
 
-  env_vars = {
+  env_vars = merge({
     SOURCES = var.loader_source
     API_URL = var.api_url
     API_KEY = var.api_key
-  }
+  }, var.env_vars)
 }
 
 # Set up CloudWatch group and log stream and retain logs for 30 days

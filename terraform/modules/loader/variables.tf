@@ -31,3 +31,7 @@ variable "cluster_arn" {
 variable "subnets" {
 
 }
+
+variable "env_vars" {
+  default = {}
+}
