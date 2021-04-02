@@ -10,4 +10,5 @@ module "cvs_scraper_loader" {
   schedule = "rate(10 minutes)"
   cluster_arn = aws_ecs_cluster.main.arn
   role = aws_iam_role.ecs_task_execution_role.arn
+  subnets = aws_subnet.public.*.id
 }

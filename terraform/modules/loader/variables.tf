@@ -27,3 +27,7 @@ variable "schedule" {
 variable "cluster_arn" {
 
 }
+
+variable "subnets" {
+
+}

@@ -71,5 +71,10 @@ resource "aws_cloudwatch_event_target" "run_task" {
   ecs_target {
     task_count          = 1
     task_definition_arn = module.loader_task.arn
+    launch_type         = "FARGATE"
+
+    network_configuration {
+       subnets = var.subnets
+    }
   }
 }
