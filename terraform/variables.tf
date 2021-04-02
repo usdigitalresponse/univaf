@@ -66,3 +66,7 @@ variable "db_size" {
   description = "The storage size for the DB"
   default     = 100
 }
+
+variable "api_key" {
+  
+}
