@@ -44,7 +44,7 @@ resource "aws_iam_policy" "ecs_runtask_policy" {
   policy = data.aws_iam_policy_document.ecs_task_additional_permissions
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
+resource "aws_iam_role_policy_attachment" "ecs_runtask_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.ecs_runtask_policy.arn
 }
