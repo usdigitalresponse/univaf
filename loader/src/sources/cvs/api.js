@@ -160,6 +160,8 @@ async function checkAvailability(handler, _options) {
     const body = await got({
       url: apiUrl + AVAILABILITY_ENDPOINT,
       searchParams: {
+        // TODO: CLI options or something else should supply a list of states
+        // that apply here instead of hardcoding NJ (and only NJ).
         stateCode: "NJ",
       },
       headers: {
