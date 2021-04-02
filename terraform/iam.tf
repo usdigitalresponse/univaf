@@ -4,7 +4,7 @@ data "aws_iam_policy_document" "ecs_task_execution_role" {
   statement {
     sid     = "1"
     effect  = "Allow"
-    actions = ["sts:AssumeRole", "iam:PassRole"]
+    actions = ["sts:AssumeRole"]
 
     principals {
       type        = "Service"
@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "ecs_task_additional_permissions" {
   statement {
     sid = "1"
     effect = "Allow"
-    actions = ["ecs:RunTask"]
+    actions = ["ecs:RunTask", "iam:PassRole"]
     resources = [
       "*" # todo lock this down
     ]
