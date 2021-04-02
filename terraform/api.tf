@@ -51,6 +51,7 @@ module "api_task" {
     DB_NAME     = module.db.db_name
     DB_USERNAME = var.db_user
     DB_PASSWORD = var.db_password
+    API_KEY     = var.api_key
     ENV         = "production"
   }
 
