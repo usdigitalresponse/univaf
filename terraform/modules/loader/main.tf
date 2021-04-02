@@ -7,6 +7,7 @@ module "loader_task" {
   cpu    = 1024
   memory = 2048
   port   = 3000
+  command = concat(var.command, [var.loader_source])
 
   env_vars = merge({
     SOURCES = var.loader_source

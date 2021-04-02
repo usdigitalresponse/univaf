@@ -1,6 +1,10 @@
-
 variable "loader_source" {
   description = "The source to run (cvsScraper, cvsApi, etc)"
+}
+
+variable "command" {
+  description = "The arguments to the appointment-availability-loader command"
+  default = []
 }
 
 variable "api_url" {

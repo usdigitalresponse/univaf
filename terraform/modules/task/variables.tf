@@ -30,13 +30,13 @@ variable "env_vars" {
 }
 
 variable "command" {
-  description = "The raw json of the task command"
-  default     = "[]"
-} # ["--key=foo","--port=bar"]
+  description = "Command and arguments to run"
+  default     = []
+} # ["--state","NJ","vaccinespotter"]
 
 variable "entry_point" {
   description = "The docker container entry point"
-  default     = "[]"
+  default     = []
 }
 
 variable "image_version" {

@@ -39,8 +39,8 @@ resource "aws_ecs_task_definition" "main" {
       image = var.image
 
       environment = [for key, val in var.env_vars : { name = key, value = val }]
-      entryPoint  = []
-      command     = []
+      entryPoint  = var.entry_point
+      command     = var.command
 
       essential   = true
       networkMode = "awsvpc"
