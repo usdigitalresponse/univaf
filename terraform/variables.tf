@@ -68,5 +68,17 @@ variable "db_size" {
 }
 
 variable "api_key" {
-  
+}
+
+variable "cvs_api_key" {
+  description = "The CVS API Key"
+  sensitive = true
+}
+
+variable "njvss_aws_key_id" {
+  sensitive =  true
+}
+
+variable "njvss_aws_secret_key" {
+  sensitive =  true
 }
