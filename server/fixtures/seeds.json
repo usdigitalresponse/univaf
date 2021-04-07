@@ -1147,7 +1147,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1172,7 +1172,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1197,7 +1197,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1222,7 +1222,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1247,7 +1247,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1272,7 +1272,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1297,7 +1297,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1322,7 +1322,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1347,7 +1347,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1372,7 +1372,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1397,7 +1397,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1422,7 +1422,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1447,7 +1447,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1472,7 +1472,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1497,7 +1497,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1522,7 +1522,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1547,7 +1547,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1572,7 +1572,7 @@
     "county": "Warren",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1597,7 +1597,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1622,7 +1622,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1647,7 +1647,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1672,7 +1672,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1697,7 +1697,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1722,7 +1722,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1747,7 +1747,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1772,7 +1772,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1797,7 +1797,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1822,7 +1822,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1847,7 +1847,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1872,7 +1872,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1897,7 +1897,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1922,7 +1922,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1947,7 +1947,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1972,7 +1972,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -1997,7 +1997,7 @@
     "county": "Cumberland",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2022,7 +2022,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2047,7 +2047,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2072,7 +2072,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2097,7 +2097,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2122,7 +2122,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2147,7 +2147,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2172,7 +2172,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2197,7 +2197,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2222,7 +2222,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2247,7 +2247,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2272,7 +2272,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2297,7 +2297,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2322,7 +2322,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2347,7 +2347,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2372,7 +2372,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2397,7 +2397,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2422,7 +2422,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2447,7 +2447,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2472,7 +2472,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2497,7 +2497,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2522,7 +2522,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2547,7 +2547,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2572,7 +2572,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2597,7 +2597,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2622,7 +2622,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2647,7 +2647,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2672,7 +2672,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2697,7 +2697,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2722,7 +2722,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2747,7 +2747,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2772,7 +2772,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2797,7 +2797,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2822,7 +2822,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2847,7 +2847,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2872,7 +2872,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2897,7 +2897,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2922,7 +2922,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2947,7 +2947,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2972,7 +2972,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -2997,7 +2997,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3022,7 +3022,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3047,7 +3047,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3072,7 +3072,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3097,7 +3097,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3122,7 +3122,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3147,7 +3147,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3172,7 +3172,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3197,7 +3197,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3222,7 +3222,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3247,7 +3247,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3272,7 +3272,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3297,7 +3297,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3322,7 +3322,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3347,7 +3347,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3372,7 +3372,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3397,7 +3397,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3422,7 +3422,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3447,7 +3447,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3472,7 +3472,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3497,7 +3497,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3522,7 +3522,7 @@
     "county": "Cumberland",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3547,7 +3547,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3572,7 +3572,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3597,7 +3597,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3622,7 +3622,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3647,7 +3647,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3672,7 +3672,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3697,7 +3697,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3722,7 +3722,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3747,7 +3747,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3772,7 +3772,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3797,7 +3797,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3822,7 +3822,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3847,7 +3847,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3872,7 +3872,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3897,7 +3897,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3922,7 +3922,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3947,7 +3947,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3972,7 +3972,7 @@
     "county": "Hunterdon",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -3997,7 +3997,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4022,7 +4022,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4047,7 +4047,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4072,7 +4072,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4097,7 +4097,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4122,7 +4122,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4147,7 +4147,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4172,7 +4172,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4197,7 +4197,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4222,7 +4222,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4247,7 +4247,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4272,7 +4272,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4297,7 +4297,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4322,7 +4322,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4347,7 +4347,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4372,7 +4372,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4397,7 +4397,7 @@
     "county": "Passaic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4422,7 +4422,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4447,7 +4447,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4472,7 +4472,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4497,7 +4497,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4522,7 +4522,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4547,7 +4547,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4572,7 +4572,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4597,7 +4597,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4622,7 +4622,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4647,7 +4647,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4672,7 +4672,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4697,7 +4697,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4722,7 +4722,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4747,7 +4747,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4772,7 +4772,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4797,7 +4797,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4822,7 +4822,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4847,7 +4847,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4872,7 +4872,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4897,7 +4897,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4922,7 +4922,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4947,7 +4947,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4972,7 +4972,7 @@
     "county": "Cumberland",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -4997,7 +4997,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5022,7 +5022,7 @@
     "county": "Cape May",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5047,7 +5047,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5072,7 +5072,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5097,7 +5097,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5122,7 +5122,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5147,7 +5147,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5172,7 +5172,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5197,7 +5197,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5222,7 +5222,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5247,7 +5247,7 @@
     "county": "Passaic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5272,7 +5272,7 @@
     "county": "Passaic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5297,7 +5297,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5322,7 +5322,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5347,7 +5347,7 @@
     "county": "Sussex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5372,7 +5372,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5397,7 +5397,7 @@
     "county": "Hunterdon",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5422,7 +5422,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5447,7 +5447,7 @@
     "county": "Hunterdon",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5472,7 +5472,7 @@
     "county": "Hunterdon",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5497,7 +5497,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5522,7 +5522,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5547,7 +5547,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5572,7 +5572,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5597,7 +5597,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5622,7 +5622,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5647,7 +5647,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5672,7 +5672,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5697,7 +5697,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5722,7 +5722,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5747,7 +5747,7 @@
     "county": "Passaic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5772,7 +5772,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5797,7 +5797,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5822,7 +5822,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5847,7 +5847,7 @@
     "county": "Cumberland",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5872,7 +5872,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5897,7 +5897,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5922,7 +5922,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5947,7 +5947,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5972,7 +5972,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -5997,7 +5997,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6022,7 +6022,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6047,7 +6047,7 @@
     "county": "Sussex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6072,7 +6072,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6097,7 +6097,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6122,7 +6122,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6147,7 +6147,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6172,7 +6172,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6197,7 +6197,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6222,7 +6222,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6247,7 +6247,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6272,7 +6272,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6297,7 +6297,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6322,7 +6322,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6347,7 +6347,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6372,7 +6372,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6397,7 +6397,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6422,7 +6422,7 @@
     "county": "Warren",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6447,7 +6447,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6472,7 +6472,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6497,7 +6497,7 @@
     "county": "Atlantic",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6522,7 +6522,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6547,7 +6547,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6572,7 +6572,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6597,7 +6597,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6622,7 +6622,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6647,7 +6647,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6672,7 +6672,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6697,7 +6697,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6722,7 +6722,7 @@
     "county": "Essex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6747,7 +6747,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6772,7 +6772,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6797,7 +6797,7 @@
     "county": "Somerset",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6822,7 +6822,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6847,7 +6847,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6872,7 +6872,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6897,7 +6897,7 @@
     "county": "Mercer",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6922,7 +6922,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6947,7 +6947,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6972,7 +6972,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -6997,7 +6997,7 @@
     "county": "Warren",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7022,7 +7022,7 @@
     "county": "Monmouth",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7047,7 +7047,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7072,7 +7072,7 @@
     "county": "Hudson",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7097,7 +7097,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7122,7 +7122,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7147,7 +7147,7 @@
     "county": "Burlington",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7172,7 +7172,7 @@
     "county": "Union",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7197,7 +7197,7 @@
     "county": "Cumberland",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7222,7 +7222,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7247,7 +7247,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7272,7 +7272,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7297,7 +7297,7 @@
     "county": "Gloucester",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7322,7 +7322,7 @@
     "county": "Ocean",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7347,7 +7347,7 @@
     "county": "Warren",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7372,7 +7372,7 @@
     "county": "Middlesex",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7397,7 +7397,7 @@
     "county": "Bergen",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7422,7 +7422,7 @@
     "county": "Morris",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
@@ -7447,7 +7447,7 @@
     "county": "Camden",
     "booking_phone": "(800) 746-7287",
     "booking_url": "https://www.cvs.com/vaccine/intake/store/cvd-schedule",
-    "requires_waitlist": true,
+    "requires_waitlist": false,
     "is_public": true,
     "availability": {
       "source": "CVS API",
