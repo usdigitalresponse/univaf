@@ -77,8 +77,7 @@ const formatters = {
         meta: {
           appointment_types: store.properties.appointment_types,
           vaccine_types: store.properties.appointment_vaccine_types,
-          // TODO: consider adding this although it is *super* verbose
-          // appointments: store.properties.appointments,
+          appointments: store.properties.appointments,
         },
         ...additions?.availability,
       },
