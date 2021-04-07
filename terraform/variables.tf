@@ -72,13 +72,22 @@ variable "api_key" {
 
 variable "cvs_api_key" {
   description = "The CVS API Key"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "njvss_aws_key_id" {
-  sensitive =  true
+  sensitive = true
 }
 
 variable "njvss_aws_secret_key" {
-  sensitive =  true
+  sensitive = true
+}
+
+variable "ssl_enabled" {
+  description = "Whether to enable HTTPS for this (note you must configure a cetificate for it!)"
+  default     = false
+}
+
+variable "domain_name" {
+  description = "The domain name to use for HTTPS traffic"
 }

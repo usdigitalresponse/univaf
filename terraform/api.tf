@@ -36,6 +36,48 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
+# Add HTTPS (optional)
+data "aws_acm_certificate" "issued_cert" {
+  count    = var.ssl_enabled ? 1 : 0
+  domain   = var.domain_name
+  statuses = ["ISSUED"]
+}
+
+resource "aws_alb_listener" "front_end_https" {
+  count             = var.ssl_enabled ? 1 : 0
+  load_balancer_arn = aws_alb.main.id
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = data.aws_acm_certificate.issued_cert[0].arn
+
+  default_action {
+    target_group_arn = aws_alb_target_group.api.arn
+    type             = "forward"
+  }
+}
+
+# Add DNS (optional)
+data "aws_route53_zone" "domain_zone" {
+  count = var.domain_name ? 1 : 0
+}
+
+resource "aws_route53_record" "api_domain_record" {
+  count = var.domain_name ? 1 : 0
+
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_alb.main.dns_name
+    zone_id                = aws_alb.main.zone_id
+    evaluate_target_health = false
+  }
+}
+
+
+
 module "api_task" {
   source = "./modules/task"
 
