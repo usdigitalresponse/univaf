@@ -39,6 +39,8 @@ jobs:
           npm ci
 
       - name: Build UI
+        env:
+          DATA_URL: ${{ secrets.DATA_URL }}
         run: |
           cd main/ui
           NODE_ENV=production npm run build
