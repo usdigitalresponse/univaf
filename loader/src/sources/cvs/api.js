@@ -131,7 +131,7 @@ function parseApiLocation(location, lastUpdated) {
       updated_at: lastUpdated || checkTime,
       checked_at: checkTime,
       available,
-      is_public: false,
+      is_public: true,
     },
   };
 }

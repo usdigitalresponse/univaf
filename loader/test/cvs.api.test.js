@@ -74,7 +74,7 @@ describe("CVS API", () => {
         availability: {
           available: "NO",
           checked_at: expectDatetimeString(),
-          is_public: false,
+          is_public: true,
           source: "cvs-api",
           updated_at: "2021-03-09T17:08:30.842Z",
         },
@@ -98,7 +98,7 @@ describe("CVS API", () => {
         availability: {
           available: "YES",
           checked_at: expectDatetimeString(),
-          is_public: false,
+          is_public: true,
           source: "cvs-api",
           updated_at: "2021-03-09T17:08:30.842Z",
         },
