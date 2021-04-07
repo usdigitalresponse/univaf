@@ -24,12 +24,15 @@ const formatters = {
       available = Available.no;
     }
 
+    const providerBrand = `${store.properties.provider}_${store.properties.provider_brand}`;
+
     return {
       id: `vaccinespotter:${store.properties.id}`,
       ...additions,
       external_ids: {
-        ...additions?.external_ids,
         vaccinespotter: store.properties.id,
+        [providerBrand]: store.properties.provider_location_id,
+        ...additions?.external_ids,
       },
       location_type: LocationType.pharmacy,
       name: store.properties.name,
@@ -184,7 +187,6 @@ const formatters = {
     const storeId = store.properties.provider_location_id;
     return formatters._base(store, {
       id: `kroger_covid:${storeId}`,
-      external_ids: { kroger_covid: storeId },
     });
   },
 
