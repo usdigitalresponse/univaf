@@ -1,0 +1,38 @@
+#appointment-finder-root {
+  --primary-blue: #0b5ed7;
+  --color-availability-no: #e8a4c8;
+  --color-availability-yes: #a1d76a;
+  --color-availability-unknown: #eee;
+  --link-color: var(--primary-blue);
+}
+
+#appointment-finder-root * {
+  box-sizing: border-box;
+}
+
+#appointment-finder-root a {
+  color: var(--primary-blue);
+}
+
+.notice-main,
+.error-main,
+.loading-main {
+  margin: 1rem 15%;
+  text-align: center;
+}
+
+.notice-main {
+  color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.error-main {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  border-radius: 5px;
+  padding: 1rem;
+}

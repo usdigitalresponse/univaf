@@ -1,0 +1,43 @@
+{
+  "name": "appointment-availability-ui",
+  "version": "0.1.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usdigitalresponse/appointment-availability-infra"
+  },
+  "author": "USDR",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo 'Bad job no tests yet!'; false",
+    "start": "npm run dev",
+    "dev": "webpack serve",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.0",
+    "eslint": "^7.23.0",
+    "html-webpack-plugin": "^5.3.1",
+    "prettier": "^2.2.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.30.0",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "browserslist": [
+    "last 3 versions",
+    "not < 1%",
+    "not ie < 1000",
+    "not op_mini all",
+    "not android < 1000",
+    "not dead"
+  ]
+}
