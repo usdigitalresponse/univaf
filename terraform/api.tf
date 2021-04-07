@@ -59,7 +59,8 @@ resource "aws_alb_listener" "front_end_https" {
 
 # Add DNS (optional)
 data "aws_route53_zone" "domain_zone" {
-  count = var.domain_name ? 1 : 0
+  count = var.domain_name != "" ? 1 : 0
+  name  = var.domain_name
 }
 
 resource "aws_route53_record" "api_domain_record" {
