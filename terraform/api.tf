@@ -36,18 +36,6 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
-resource "aws_alb_listener" "front_end_ssl" {
-  load_balancer_arn = aws_alb.main.id
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-
-  default_action {
-    target_group_arn = aws_alb_target_group.api.arn
-    type             = "forward"
-  }
-}
-
 module "api_task" {
   source = "./modules/task"
 
@@ -67,7 +55,7 @@ module "api_task" {
     ENV         = "production"
   }
 
-  depends_on = [aws_alb_listener.front_end, aws_alb_listener.front_end_ssl, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
 
 resource "aws_ecs_service" "main" {
@@ -89,7 +77,7 @@ resource "aws_ecs_service" "main" {
     container_port   = var.api_port
   }
 
-  depends_on = [aws_alb_listener.front_end, aws_alb_listener.front_end_ssl, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
 }
 
 # Set up CloudWatch group and log stream and retain logs for 30 days
