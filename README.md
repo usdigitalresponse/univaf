@@ -109,10 +109,10 @@ $ npm start
 
 And open your browser to `http://localhost:8080` to see it in action.
 
-You can also build a production copy of the UI with `npm build`:
+You can also build a production copy of the UI with `npm run build`:
 
 ```bash
-$ NODE_ENV=production npm build
+$ NODE_ENV=production npm run build
 ```
 
 That will create a JS file and an HTML file in the `ui/dist/` directory. The HTML file is an example, while the JS file is a standalone UI. (The idea here is to keep it portable; a site could embed the UI by simple adding a `<script>` tag to a page.)

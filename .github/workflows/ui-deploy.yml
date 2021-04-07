@@ -10,7 +10,7 @@ on:
 name: Deploy UI
 
 jobs:
-  test:
+  deploy_ui:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
       - name: Build UI
         run: |
           cd main/ui
-          NODE_ENV=production npm build
+          NODE_ENV=production npm run build
 
       - uses: actions/checkout@v2
         with:
