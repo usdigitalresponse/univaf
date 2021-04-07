@@ -90,4 +90,5 @@ variable "ssl_enabled" {
 
 variable "domain_name" {
   description = "The domain name to use for HTTPS traffic"
+  default     = ""
 }
