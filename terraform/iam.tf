@@ -16,8 +16,8 @@ data "aws_iam_policy_document" "ecs_task_execution_role" {
 data "aws_iam_policy_document" "ecs_task_additional_permissions" {
   version = "2012-10-17"
   statement {
-    sid = "1"
-    effect = "Allow"
+    sid     = "1"
+    effect  = "Allow"
     actions = ["ecs:RunTask", "iam:PassRole"]
     resources = [
       "*" # todo lock this down
@@ -39,8 +39,8 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
 
 # ECS task execution role policy attachment
 resource "aws_iam_policy" "ecs_runtask_policy" {
-  name = "runtask_policy"
-  path = "/"
+  name   = "runtask_policy"
+  path   = "/"
   policy = data.aws_iam_policy_document.ecs_task_additional_permissions.json
 }
 
