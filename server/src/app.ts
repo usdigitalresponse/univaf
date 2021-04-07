@@ -5,6 +5,7 @@ import express, {
   Response,
 } from "express";
 import compression from "compression"; // compresses requests
+import cors from "cors";
 import { authorizeRequest } from "./middleware";
 import * as routes from "./routes";
 import bodyParser from "body-parser";
@@ -31,6 +32,7 @@ const app = express();
 app.set("port", process.env.PORT || 3000);
 app.use(compression());
 app.use(bodyParser.json());
+app.use(cors());
 app.use(authorizeRequest);
 
 /**
