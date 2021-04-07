@@ -54,9 +54,7 @@ async function run(options) {
 
   const startTime = Date.now();
   try {
-    process.stdout.write("[\n");
     const reports = await runSources(options.sources, handler, options);
-    process.stdout.write("]\n");
 
     if (inFlightResults.length > 0) {
       console.warn("Waiting for data to finish sending to API...");
@@ -116,6 +114,15 @@ function main() {
           .option("compact", {
             type: "boolean",
             describe: "Output JSON as a single line",
+          })
+          .option("states", {
+            type: "string",
+            describe:
+              "Comma-separated list of states to query for multi-state sources (e.g. vaccinespotter)",
+          })
+          .option("vaccinespotter-states", {
+            type: "string",
+            describe: "Overrides the `--states` option for vaccinespotter",
           }),
       handler: run,
     })
