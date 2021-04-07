@@ -23,7 +23,7 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json') }}
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-v1
             ${{ runner.os }}-npm-
@@ -33,6 +33,8 @@ jobs:
           cd server
           npm ci
           cd ../loader
+          npm ci
+          cd ../ui
           npm ci
 
       - name: Run server tests
@@ -44,6 +46,12 @@ jobs:
         run: |
           cd loader
           npm run test
+
+      # TODO: We should write some tests :(
+      - name: Build UI
+        run: |
+          cd ui
+          NODE_ENV=production npm build
 
   lint:
     name: Run linters
@@ -62,7 +70,7 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json') }}
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-v1
             ${{ runner.os }}-npm-
@@ -72,6 +80,8 @@ jobs:
           cd server
           npm ci
           cd ../loader
+          npm ci
+          cd ../ui
           npm ci
 
       # We have ESLint and Prettier installed separately in each subproject,
@@ -83,10 +93,10 @@ jobs:
         with:
           eslint: true
           eslint_dir: server/
-          eslint_args: . ../loader/
+          eslint_args: . ../loader/ ../ui/
           prettier: true
           prettier_dir: server/
-          prettier_args: . ../loader/
+          prettier_args: . ../loader/ ../ui/
 
   lint_workflows:
     runs-on: ubuntu-latest

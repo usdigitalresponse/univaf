@@ -4,6 +4,7 @@
 dist
 coverage
 scratch.*
+*.md
 
 **/fixtures/*.json
 **/src/sources/cvs/known-stores.js
