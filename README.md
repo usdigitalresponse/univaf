@@ -4,11 +4,13 @@
 
 Get CVS to API running by Friday.
 
-This project is broken up into two major chunks:
+This project is broken up into three major chunks:
 
 1. **`server`** is a small API server that wraps a Postgres DB. Various scrapers and API clients can `POST` appointment data to it, and end consumers can `GET` data from it.
 
 2. **`loader`** is a set of scrapers and API clients than discover information about vaccine provider locations and appointment availability, then send it to the server. They can be run on a schedule, in a loop, or whatever works best. We hope to eventually add more here over time.
+
+3. **`ui`** is a demo frontend to display the data. It’s not especially fancy, and is meant more as a display of what can be done or a starter for states/community groups to build their own site.
 
 
 ## Developing Locally
@@ -41,6 +43,7 @@ $ make seed
 ```
 
 Finally run the server!
+
 
 ### Starting the API server
 
@@ -84,6 +87,40 @@ Options:
   --send     Send availability info to the database at this URL         [string]
   --compact  Output JSON as a single line                              [boolean]
 ```
+
+
+### Building and Viewing the UI
+
+To install, run `npm install` in the ui directory:
+
+```bash
+$ cd ./ui
+$ npm install
+```
+
+The UI needs an API server to load data from. By default, it will use `http://localhost:3000`, but if you want to use a different server, set the `DATA_URL` environment variable.
+
+Then you can start the development server with `npm start`:
+
+```bash
+$ export DATA_URL='http://api.server.com'
+$ npm start
+```
+
+And open your browser to `http://localhost:8080` to see it in action.
+
+You can also build a production copy of the UI with `npm build`:
+
+```bash
+$ NODE_ENV=production npm build
+```
+
+That will create a JS file and an HTML file in the `ui/dist/` directory. The HTML file is an example, while the JS file is a standalone UI. (The idea here is to keep it portable; a site could embed the UI by simple adding a `<script>` tag to a page.)
+
+
+#### UI Deployment
+
+The UI is currently deployed directly to GitHub Pages with an actions workflow, so you can view the demo at https://usdigitalresponse.github.io/appointment-availability-infra/.
 
 
 ## Deploying to Production
