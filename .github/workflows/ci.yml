@@ -109,7 +109,6 @@ jobs:
   build_docker:
     runs-on: ubuntu-latest
     env:
-      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       IMAGE_TAG: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v2
@@ -127,6 +126,7 @@ jobs:
 
       - name: Build and push appointment-db-seed
         env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: appointment-db-seed
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./server/Dockerfile.seed-db ./server
@@ -135,6 +135,7 @@ jobs:
       - name: Tag and push appointment-db-seed latest
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: appointment-db-seed
         run: |
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
@@ -142,6 +143,7 @@ jobs:
 
       - name: Build and push appointment-server
         env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: appointment-server
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./server/Dockerfile ./server
@@ -150,6 +152,7 @@ jobs:
       - name: Tag and push appointment-server latest
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: appointment-server
         run: |
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
@@ -157,6 +160,7 @@ jobs:
 
       - name: Build and push appointment-loader
         env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: appointment-loader
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./loader/Dockerfile ./loader
@@ -165,6 +169,7 @@ jobs:
       - name: Tag and push appointment-loader latest
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: appointment-loader
         run: |
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
