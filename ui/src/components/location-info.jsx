@@ -74,7 +74,11 @@ function CallToAction({ location }) {
   if (location.booking_url) {
     const text = location.requires_waitlist ? "Join Waitlist" : "Book Online";
     bookingLink = (
-      <a className="location-info--booking-link" target="_blank" href={location.booking_url}>
+      <a
+        className="location-info--booking-link"
+        target="_blank"
+        href={location.booking_url}
+      >
         {text}
       </a>
     );
