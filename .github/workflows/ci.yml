@@ -108,6 +108,24 @@ jobs:
 
   build_docker:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Instead of building all combinations of a set of options, just build
+        # these particular combinations.
+        include:
+          - repository: appointment-db-seed
+            dockerfile: ./server/Dockerfile.seed-db
+            build_path: ./server
+
+          - repository: appointment-server
+            dockerfile: ./server/Dockerfile
+            build_path: ./server
+
+          - repository: appointment-loader
+            dockerfile: ./loader/Dockerfile
+            build_path: ./loader
+    env:
+      IMAGE_TAG: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v2
 
@@ -122,35 +140,19 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push to seed-db
+      - name: Build and push ${{ matrix.repository }}
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: appointment-db-seed
-          IMAGE_TAG: ${{ github.sha }}
+          ECR_REPOSITORY: ${{ matrix.repository }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./server/Dockerfile.seed-db ./server
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ${{ matrix.dockerfile }} ${{ matrix.build_path }}
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Build, tag, and push to server
+      - name: Tag and push ${{ matrix.repository }} latest
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: appointment-server
-          IMAGE_TAG: ${{ github.sha }}
+          ECR_REPOSITORY: ${{ matrix.repository }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./server/Dockerfile ./server
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-
-      - name: Build, tag, and push to loader
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: appointment-loader
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./loader/Dockerfile ./loader
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
