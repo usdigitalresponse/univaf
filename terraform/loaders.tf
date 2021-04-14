@@ -51,7 +51,7 @@ module "vaccinespotter_loader" {
   source = "./modules/loader"
 
   name          = "vaccinespotter"
-  command       = ["--states", "CO,NJ"]
+  command       = ["--states", "AZ,CO,NJ,PA"]
   loader_source = "vaccinespotter"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
