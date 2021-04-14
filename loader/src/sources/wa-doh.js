@@ -8,7 +8,7 @@ const { HttpApiError } = require("../exceptions");
 // XXX: Need to find an acceptable way to handle this
 const allStates = require("../../../ui/src/states.json");
 
-const API_URL = "https://apim-vaccs-prod.azure-api.net/graphql";
+const API_URL = "https://apim-vaccs-prod.azure-api.net/open/graphql";
 
 class WaDohApiError extends HttpApiError {
   parse(response) {
