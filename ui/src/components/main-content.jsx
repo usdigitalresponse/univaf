@@ -4,6 +4,7 @@ import LocationList from "./location-list";
 
 // URL for appointment availability API
 const DATA_URL = process.env.DATA_URL || "http://localhost:3000";
+const API_KEY = process.env.API_KEY || "";
 // Maximum age at which to consider availability data accurate
 const MAX_AVAILABILITY_AGE = 4 * 60 * 60 * 1000;
 // Characters to ignore in search queries
@@ -96,7 +97,12 @@ export default class MainContent extends React.Component {
       this.setState({ loading: true });
       // TODO: wrap most of this (and the data cleaning) into an API client.
       const response = await fetch(
-        `${DATA_URL}/locations?state=${this.props.filters.state}`
+        `${DATA_URL}/locations?state=${this.props.filters.state}&include_private=true`,
+        {
+          headers: {
+            "x-api-key": API_KEY,
+          },
+        }
       );
       let data = await response.json();
       data = this.cleanData(data);
