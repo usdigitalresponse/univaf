@@ -95,13 +95,20 @@ export default class MainContent extends React.Component {
   async fetchData() {
     try {
       this.setState({ loading: true });
+      let headers = {};
+      let includePrivate = false;
+
+      // If we're passed an API key, try and include the private locations
+      if (API_KEY !== "") {
+        headers = { "x-api-key": API_KEY };
+        includePrivate = true;
+      }
+
       // TODO: wrap most of this (and the data cleaning) into an API client.
       const response = await fetch(
-        `${DATA_URL}/locations?state=${this.props.filters.state}&include_private=true`,
+        `${DATA_URL}/locations?state=${this.props.filters.state}&include_private=${includePrivate}`,
         {
-          headers: {
-            "x-api-key": API_KEY,
-          },
+          headers: headers,
         }
       );
       let data = await response.json();
