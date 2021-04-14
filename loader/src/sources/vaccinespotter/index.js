@@ -38,6 +38,31 @@ const formatters = {
       id = `vaccinespotter:${store.properties.id}`;
     }
 
+    // Default to `undefined` (rather than null) to suppress output in JSON.
+    const meta = {
+      appointment_types: store.properties.appointment_types || undefined,
+      vaccine_types: store.properties.appointment_vaccine_types || undefined,
+      appointments: store.properties.appointments || undefined,
+    };
+    // Summarize appointments when detailed data is available.
+    if (store.properties.appointments) {
+      const categorized = Object.create(null);
+      for (const appointment of store.properties.appointments) {
+        // Assume `time` is ISO 8601 in location's local timezone.
+        // (This may need fancier parsing if that turns out to be untrue.)
+        const date = appointment.time.slice(0, 10);
+        const key = `${date}::${appointment.type}`;
+        if (key in categorized) {
+          categorized[key].available += 1;
+        } else {
+          categorized[key] = { date, type: appointment.type, available: 1 };
+        }
+      }
+      meta.capacity = Object.keys(categorized)
+        .sort()
+        .map((key) => categorized[key]);
+    }
+
     return {
       id,
       location_type: LocationType.pharmacy,
@@ -55,6 +80,7 @@ const formatters = {
       },
       booking_url: store.properties.url,
       meta: {
+        time_zone: store.properties.time_zone,
         vaccinespotter: {
           provider: store.properties.provider,
           brand: store.properties.provider_brand,
@@ -74,12 +100,7 @@ const formatters = {
         updated_at: store.properties.appointments_last_fetched,
         checked_at: new Date().toISOString(),
         available,
-        meta: {
-          appointment_types: store.properties.appointment_types,
-          vaccine_types: store.properties.appointment_vaccine_types,
-          // TODO: consider adding this although it is *super* verbose
-          // appointments: store.properties.appointments,
-        },
+        meta,
         ...additions?.availability,
       },
     };
