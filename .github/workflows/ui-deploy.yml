@@ -41,7 +41,6 @@ jobs:
       - name: Build UI
         env:
           DATA_URL: ${{ secrets.DATA_URL }}
-          API_KEY: ${{ secrets.API_KEY }}
         run: |
           cd main/ui
           NODE_ENV=production npm run build

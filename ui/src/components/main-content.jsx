@@ -4,7 +4,6 @@ import LocationList from "./location-list";
 
 // URL for appointment availability API
 const DATA_URL = process.env.DATA_URL || "http://localhost:3000";
-const API_KEY = process.env.API_KEY || "";
 // Maximum age at which to consider availability data accurate
 const MAX_AVAILABILITY_AGE = 4 * 60 * 60 * 1000;
 // Characters to ignore in search queries
@@ -92,15 +91,21 @@ export default class MainContent extends React.Component {
     });
   }
 
+  getApiKey() {
+    let params = new URLSearchParams(document.location.search.substring(1));
+    return params.get("api_key");
+  }
+
   async fetchData() {
     try {
       this.setState({ loading: true });
       let headers = {};
       let includePrivate = false;
+      let apiKey = this.getApiKey();
 
       // If we're passed an API key, try and include the private locations
-      if (API_KEY !== "") {
-        headers = { "x-api-key": API_KEY };
+      if (apiKey) {
+        headers = { "x-api-key": apiKey };
         includePrivate = true;
       }
 
