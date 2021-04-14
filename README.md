@@ -79,13 +79,18 @@ appointment-availability-loader [sources..]
 Load data about COVID-19 vaccine appointment availability from a
 variety of different sources.
 
-Supported sources: cvsApi, cvsScraper, njvss
+Supported sources: cvsApi, cvsScraper, njvss, vaccinespotter
 
 Options:
-  --version  Show version number                                       [boolean]
-  --help     Show help                                                 [boolean]
-  --send     Send availability info to the database at this URL         [string]
-  --compact  Output JSON as a single line                              [boolean]
+  --version                Show version number                         [boolean]
+  --help                   Show help                                   [boolean]
+  --send                   Send availability info to the API specified by the
+                           environment variable API_URL                [boolean]
+  --compact                Output JSON as a single line                [boolean]
+  --states                 Comma-separated list of states to query for
+                           multi-state sources (e.g. vaccinespotter)    [string]
+  --vaccinespotter-states  Overrides the `--states` option for vaccinespotter
+                                                                        [string]
 ```
 
 

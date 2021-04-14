@@ -15,71 +15,174 @@ async function queryState(state) {
   }
 }
 
-function formatStore(store) {
-  let storeId = store.properties.provider_location_id;
-  const extraInfo = walgreens_store_list[storeId] || {};
-  const county = extraInfo?.ADDRESS?.COUNTY;
+const formatters = {
+  _base(store, additions = null) {
+    let available = Available.unknown;
+    if (store.properties.appointments_available) {
+      available = Available.yes;
+    } else if (store.properties.appointments_available === false) {
+      available = Available.no;
+    }
 
-  let available = Available.unknown;
-  if (store.properties.appointments_available) {
-    available = Available.yes;
-  } else if (store.properties.appointments_available === false) {
-    available = Available.no;
-  }
+    // Determine what identifier type to use for `external_ids`.
+    let provider = store.properties.provider.trim().toLowerCase();
+    let providerBrand = store.properties.provider_brand.trim().toLowerCase();
+    if (!providerBrand.includes(provider)) {
+      providerBrand = `${provider}_${providerBrand}`;
+    }
 
-  return {
-    id: `walgreens:${storeId}`,
-    external_ids: {
-      walgreens: storeId,
-    },
-    provider: "Walgreens",
-    location_type: LocationType.pharmacy,
-    name: `Walgreens #${storeId}`,
-    address_lines: [titleCase(store.properties.address)],
-    city: titleCase(store.properties.city),
-    state: store.properties.state,
-    postal_code: store.properties.postal_code,
-    county: county && titleCase(county),
-    position: {
-      longitude: store.geometry.coordinates[0],
-      latitude: store.geometry.coordinates[1],
-    },
-    booking_phone: "1-800-925-4733",
-    booking_url: store.properties.url,
-    availability: {
-      source: "vaccinespotter",
-      updated_at: store.properties.appointments_last_fetched,
-      checked_at: new Date().toISOString(),
-      available,
-      meta: {
-        appointment_types: store.properties.appointment_types,
-        vaccine_types: store.properties.appointment_vaccine_types,
-        // TODO: consider adding this although it is *super* verbose
-        // appointments: store.properties.appointments,
+    let id;
+    if (store.properties.provider_brand_id) {
+      id = `${providerBrand}:${store.properties.provider_brand_id}`;
+    } else {
+      id = `vaccinespotter:${store.properties.id}`;
+    }
+
+    return {
+      id,
+      location_type: LocationType.pharmacy,
+      name: store.properties.name,
+      provider: providerBrand,
+      address_lines: store.properties.address && [
+        titleCase(store.properties.address),
+      ],
+      city: store.properties.city && titleCase(store.properties.city),
+      state: store.properties.state,
+      postal_code: store.properties.postal_code,
+      position: {
+        longitude: store.geometry.coordinates[0],
+        latitude: store.geometry.coordinates[1],
       },
-    },
-  };
+      booking_url: store.properties.url,
+      meta: {
+        vaccinespotter: {
+          provider: store.properties.provider,
+          brand: store.properties.provider_brand,
+          brand_id: store.properties.provider_brand_id,
+        },
+      },
+
+      // Override any of the above with additions.
+      ...additions,
+      external_ids: {
+        vaccinespotter: store.properties.id,
+        [providerBrand]: store.properties.provider_location_id,
+        ...additions?.external_ids,
+      },
+      availability: {
+        source: "vaccinespotter",
+        updated_at: store.properties.appointments_last_fetched,
+        checked_at: new Date().toISOString(),
+        available,
+        meta: {
+          appointment_types: store.properties.appointment_types,
+          vaccine_types: store.properties.appointment_vaccine_types,
+          // TODO: consider adding this although it is *super* verbose
+          // appointments: store.properties.appointments,
+        },
+        ...additions?.availability,
+      },
+    };
+  },
+
+  walgreens(store) {
+    const storeId = store.properties.provider_location_id;
+    const extraInfo = walgreens_store_list[storeId] || {};
+    const county = extraInfo?.ADDRESS?.COUNTY;
+
+    // All Walgreens sub-brands are actually just flavors of normal Walgreens
+    // stores (rather than visibly separate brands), except Duane Reade.
+    // Make sure they all have IDs with the same scheme.
+    return formatters._base(store, {
+      id: `walgreens:${storeId}`,
+      external_ids: { walgreens: storeId },
+      county: county && titleCase(county),
+      booking_phone: "1-800-925-4733",
+    });
+  },
+
+  duane_reade(store) {
+    // Use a more familiar name for Duane Reade, but keep its ID as Walgreens
+    // (they share the same store numbering).
+    return {
+      ...formatters.walgreens(store),
+      name: `Duane Reade #${store.properties.provider_location_id}`,
+    };
+  },
+
+  safeway(store) {
+    const formatted = formatters._base(store);
+
+    // The provider location IDs are not store numbers for safeway.
+    const idMatch = store.properties.name.match(/safeway\s(\d+)/i);
+    if (idMatch) {
+      const storeId = idMatch[1];
+      formatted.id = `safeway:${storeId}`;
+      formatted.external_ids.safeway = storeId;
+      formatted.name = `Safeway #${storeId}`;
+    } else {
+      console.warn(
+        "VaccineSpotter: No Safeway store number found for location",
+        store.properties.id
+      );
+    }
+
+    return formatted;
+  },
+
+  centura(store) {
+    return formatters._base(store, {
+      location_type: LocationType.clinic,
+      booking_phone: "855-882-8065",
+    });
+  },
+
+  comassvax(store) {
+    return formatters._base(store, {
+      location_type: LocationType.massVax,
+    });
+  },
+
+  cvs() {
+    // VaccineSpotter data for CVS is not currently very good; we rely on the
+    // CVS API instead.
+    return null;
+  },
+
+  rite_aid() {
+    // We have a separate scraper for Rite Aid and an API upcoming.
+    return null;
+  },
+};
+
+function formatStore(store) {
+  const data = store.properties;
+  const formatter =
+    formatters[`${data.provider}_${data.provider_brand}`] ||
+    formatters[store.properties.provider_brand] ||
+    formatters[store.properties.provider] ||
+    formatters._base;
+  return formatter(store);
 }
 
 async function checkAvailability(handler, options) {
-  // TODO: use this to find counties
-  // let stores_wg_base = require("./walgreens_base");
-
   let states = ["NJ"];
-  if (options.states) {
-    // FIXME: support other states
-    // states = options.states.split(",").map(state => state.trim());
-    if (options.states !== "NJ") {
-      throw new Error("VaccineSpotter source only supports NJ");
-    }
+  if (options.vaccinespotterStates) {
+    states = options.vaccinespotterStates
+      .split(",")
+      .map((state) => state.trim());
+  } else if (options.states) {
+    states = options.states.split(",").map((state) => state.trim());
   }
+
+  if (!states.length) console.warn("No states specified for vaccinespotter");
 
   let results = [];
   for (const state of states) {
     let stores = await queryState(state);
     let walgreens = stores.features
-      .filter((item) => item.properties.provider === "walgreens")
       .map(formatStore)
+      .filter((item) => !!item)
       .forEach(handler);
 
     results = results.concat(walgreens);
