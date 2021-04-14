@@ -131,7 +131,7 @@ function toLocationType(apiValue) {
  */
 function formatLocation(data) {
   let provider = data.providerName;
-  if (!provider && data.rawDataSourceName === "CostcoLocationsFn") {
+  if (!provider && (data.locationName || "").toLowerCase().includes("costco")) {
     provider = "Costco";
   }
   if (!provider) {
@@ -204,7 +204,11 @@ async function checkAvailability(handler, options) {
         // WA publishes fairly comprehensive data within the state, but at the
         // moment we're only interested in the sources they publish nationwide
         // data for.
-        if (state === "WA" && item.rawDataSourceName !== "CostcoLocationsFn") {
+        if (
+          state === "WA" &&
+          item.rawDataSourceName !== "CostcoLocationsFn" &&
+          item.rawDataSourceName !== "CostcoVaccineAvailabilityFn"
+        ) {
           continue;
         }
 
