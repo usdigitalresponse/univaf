@@ -91,14 +91,38 @@ export default class MainContent extends React.Component {
     });
   }
 
+  getApiKey() {
+    let params = new URLSearchParams(document.location.search.substring(1));
+    return params.get("api_key");
+  }
+
   async fetchData() {
     try {
       this.setState({ loading: true });
+      let headers = {};
+      let includePrivate = false;
+      let apiKey = this.getApiKey();
+
+      // If we're passed an API key, try and include the private locations
+      if (apiKey) {
+        headers = { "x-api-key": apiKey };
+        includePrivate = true;
+      }
+
       // TODO: wrap most of this (and the data cleaning) into an API client.
       const response = await fetch(
-        `${DATA_URL}/locations?state=${this.props.filters.state}`
+        `${DATA_URL}/locations?state=${this.props.filters.state}&include_private=${includePrivate}`,
+        {
+          headers: headers,
+        }
       );
       let data = await response.json();
+      if (data.error) {
+        if (apiKey && response.status === 403) {
+          throw new Error("Invalid API key");
+        }
+        throw new Error(data.error);
+      }
       data = this.cleanData(data);
 
       const sortValues = {
