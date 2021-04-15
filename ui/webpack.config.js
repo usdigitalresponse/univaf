@@ -31,7 +31,6 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       DATA_URL: "",
-      API_KEY: "",
     }),
     new HtmlWebpackPlugin({ inject: "body" }),
   ],
