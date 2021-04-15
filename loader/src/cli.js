@@ -1,8 +1,11 @@
 "use strict";
 
+const Sentry = require("@sentry/node");
 const yargs = require("yargs");
 const ApiClient = require("./api-client");
 const { sources } = require("./index");
+
+Sentry.init();
 
 async function runSources(targets, handler, options) {
   targets = targets.length ? targets : Object.getOwnPropertyNames(sources);
@@ -65,11 +68,11 @@ async function run(options) {
           const source = data.availability
             ? ` from ${data.availability.source}`
             : "";
-          console.error(
-            `Error sending "${data.name}"${source}: ${saveResult.statusCode} ${
-              saveResult.error || "unknown reason"
-            }`
-          );
+          const message = `Error sending "${data.name}"${source}: ${
+            saveResult.statusCode
+          } ${saveResult.error || "unknown reason"}`;
+          console.error(message);
+          Sentry.captureMessage(message, Sentry.Severity.Error);
         }
       }
     }
@@ -78,6 +81,7 @@ async function run(options) {
     for (let report of reports) {
       if (report.error) {
         console.error(`Error in "${report.name}":`, report.error, "\n");
+        Sentry.captureException(report.error);
         process.exitCode = 90;
       } else {
         successCount++;
@@ -88,6 +92,7 @@ async function run(options) {
     }
   } catch (error) {
     console.error(`Error: ${error}`);
+    Sentry.captureException(error);
   } finally {
     console.error(`Completed in ${(Date.now() - startTime) / 1000} seconds.`);
   }
