@@ -117,6 +117,12 @@ export default class MainContent extends React.Component {
         }
       );
       let data = await response.json();
+      if (data.error) {
+        if (apiKey && response.status === 403) {
+          throw new Error("Invalid API key");
+        }
+        throw new Error(data.error);
+      }
       data = this.cleanData(data);
 
       const sortValues = {
