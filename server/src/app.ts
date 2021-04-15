@@ -6,9 +6,13 @@ import express, {
 } from "express";
 import compression from "compression"; // compresses requests
 import cors from "cors";
+import errorHandler from "errorhandler";
+import * as Sentry from "@sentry/node";
 import { authorizeRequest } from "./middleware";
 import * as routes from "./routes";
 import bodyParser from "body-parser";
+
+Sentry.init();
 
 type PromiseHandler = (
   req: Request,
@@ -28,6 +32,9 @@ function handleErrors(handler: PromiseHandler): RequestHandler {
 // Create Express server
 const app = express();
 
+// Create a Sentry.io error context for all requests.
+app.use(Sentry.Handlers.requestHandler());
+
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 app.use(compression());
@@ -42,6 +49,9 @@ app.use(authorizeRequest);
 app.get("/", (_req: Request, res: Response) =>
   res.send("COVID-19 Appointments")
 );
+app.get("/debugme", (_req: Request, res: Response) => {
+  throw new Error("TESTING SENTRY AGAIN");
+});
 app.get("/health", routes.healthcheck);
 app.get("/locations", handleErrors(routes.list));
 app.get("/locations/:id", handleErrors(routes.getById));
@@ -49,10 +59,17 @@ app.get("/locations/:id", handleErrors(routes.getById));
 // app.post("/locations", handleErrors(routes.create))
 app.post("/update", handleErrors(routes.update));
 
-// Handle unhandled errors
-app.use((error: any, req: Request, res: Response, _next: NextFunction) => {
-  console.error("ERRROR:", error);
-  res.status(500).json({ error: error.message || error });
-});
+// Send unhandled errors to Sentry.io
+app.use(Sentry.Handlers.errorHandler());
+
+// In development mode, provide nice stack traces to users
+if (app.get("env") === "development") {
+  app.use(errorHandler());
+} else {
+  app.use((error: any, req: Request, res: Response, _next: NextFunction) => {
+    console.error("ERRROR:", error);
+    res.status(500).json({ error: error.message || error });
+  });
+}
 
 export default app;
