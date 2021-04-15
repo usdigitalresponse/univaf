@@ -95,6 +95,7 @@ module "api_task" {
     DB_USERNAME = var.db_user
     DB_PASSWORD = var.db_password
     API_KEYS    = var.api_key
+    SENTRY_DSN  = var.api_sentry_dsn
     ENV         = "production"
   }
 
