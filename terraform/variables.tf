@@ -96,11 +96,11 @@ variable "domain_name" {
 variable "api_sentry_dsn" {
   description = "The Sentry.io DSN to use for the API service"
   default     = ""
-  sensitive = true
+  sensitive   = true
 }
 
 variable "loader_sentry_dsn" {
   description = "The Sentry.io DSN to use for the loaders"
   default     = ""
-  sensitive = true
+  sensitive   = true
 }
