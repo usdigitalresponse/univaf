@@ -89,6 +89,13 @@ smartSchedulingApi.use((_req: Request, res: Response) =>
     code: "not-found",
   })
 );
+app.use((error: any, req: Request, res: Response, _next: NextFunction) => {
+  console.error("ERRROR:", error);
+  sendFhirError(res, 500, {
+    severity: "fatal",
+    code: "exception",
+  });
+});
 
 // Send unhandled errors to Sentry.io
 app.use(Sentry.Handlers.errorHandler());
