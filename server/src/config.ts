@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export function getApiKeys(): Array<string> {
   let keyList = process.env.API_KEYS;
   if (!keyList) {
@@ -11,4 +13,19 @@ export function getApiKeys(): Array<string> {
   }
 
   return keyList.split(",").map((key) => key.trim());
+}
+
+export function getHostUrl(request?: Request): string {
+  let hostUrl = process.env.HOST_URL;
+  if (!hostUrl) {
+    if (!request) {
+      throw new Error("Cannot calculate host URL without a request");
+    } else {
+      const port = request.app.get("port");
+      hostUrl = `${request.protocol}://${request.hostname}:${port}`;
+    }
+  }
+  if (hostUrl.endsWith("/")) hostUrl = hostUrl.slice(0, -1);
+
+  return hostUrl;
 }

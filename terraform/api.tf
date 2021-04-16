@@ -98,6 +98,7 @@ module "api_task" {
     DB_PASSWORD = var.db_password
     API_KEYS    = var.api_key
     SENTRY_DSN  = var.api_sentry_dsn
+    HOST_URL    = format("https://%s", var.domain_name)
     ENV         = "production"
   }
 

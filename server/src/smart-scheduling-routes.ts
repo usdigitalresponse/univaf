@@ -13,6 +13,7 @@ import express, {
   Request,
   Response,
 } from "express";
+import { getHostUrl } from "./config";
 import * as db from "./db";
 import { Availability } from "./interfaces";
 import states from "./states.json";
@@ -68,9 +69,7 @@ export function fhirNotImplemented(_req: Request, res: Response) {
 const statesList = states.filter((state: any) => state.type === "State");
 
 export function manifest(req: Request, res: Response) {
-  // XXX: hostUrl should come from configuration
-  const hostUrl = `${req.protocol}://${req.hostname}:${req.app.get("port")}`;
-  const baseUrl = `${hostUrl}${req.baseUrl}`;
+  const baseUrl = `${getHostUrl()}${req.baseUrl}`;
   res.json({
     // TODO: consider making this the latest updated availability timestamp.
     transactionTime: new Date().toISOString(),
