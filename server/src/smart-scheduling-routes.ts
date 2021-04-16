@@ -13,6 +13,7 @@ import express, {
   Request,
   Response,
 } from "express";
+import * as db from "./db";
 import states from "./states.json";
 
 interface FhirIssue {
@@ -88,14 +89,117 @@ export function manifest(req: Request, res: Response) {
   });
 }
 
-export function listLocations(req: Request, res: Response) {
-  fhirNotImplemented(req, res);
+export async function listLocations(req: Request, res: Response) {
+  let index = 1;
+  let where: Array<string> = [];
+  let values = [];
+  if (req.params.state) {
+    where.push(`state = $${index++}`);
+    values.push(req.params.state);
+  }
+
+  const providers = await db.listLocations({ where, values });
+  res.header("Content-Type", "application/fhir+ndjson").send(
+    providers
+      .map((provider) => {
+        // For simplicity, use the `booking_*` fields here, even though it
+        // should theoretically be the `info_*` fields.
+        const telecom = [];
+        if (provider.booking_phone) {
+          telecom.push({
+            system: "phone",
+            value: provider.booking_phone,
+          });
+        }
+        if (provider.booking_url) {
+          telecom.push({
+            system: "url",
+            value: provider.booking_url,
+          });
+        }
+
+        return JSON.stringify({
+          resourceType: "Location",
+          id: provider.id,
+          identifier: Object.entries(provider.external_ids || {}).map(
+            ([key, value]) => ({
+              system:
+                key === "vtrcks"
+                  ? "https://cdc.gov/vaccines/programs/vtrcks"
+                  : `https://fhir.usdigitalresponse.org/identifiers/${key}`,
+              value,
+            })
+          ),
+          name: provider.name,
+          description: provider.description,
+          telecom: telecom.length ? telecom : undefined,
+          address: {
+            line: provider.address_lines,
+            city: provider.city,
+            state: provider.state,
+            postalCode: provider.postal_code,
+            district: provider.county,
+          },
+          position: provider.position,
+          meta: {
+            lastUpdated: provider.updated_at.toISOString(),
+          },
+          // TODO: use extensions to expose additional info?
+          // - provider
+          // - location_type
+          // - eligibility
+          // - requires_waitlist
+          // - meta
+        });
+      })
+      .join("\n")
+  );
 }
 
-export function listSchedules(req: Request, res: Response) {
-  fhirNotImplemented(req, res);
+export async function listSchedules(req: Request, res: Response) {
+  let index = 1;
+  let where: Array<string> = [];
+  let values = [];
+  if (req.params.state) {
+    where.push(`state = $${index++}`);
+    values.push(req.params.state);
+  }
+
+  const providers = await db.listLocations({ where, values });
+  res.header("Content-Type", "application/fhir+ndjson").send(
+    providers
+      .map((provider) => {
+        return JSON.stringify({
+          resourceType: "Schedule",
+          id: `${provider.id}__covid19vaccine`,
+          serviceType: [
+            {
+              coding: [
+                {
+                  system: "http://terminology.hl7.org/CodeSystem/service-type",
+                  code: "57",
+                  display: "Immunization",
+                },
+                {
+                  system:
+                    "http://fhir-registry.smarthealthit.org/CodeSystem/service-type",
+                  code: "covid19-immunization",
+                  display: "COVID-19 Immunization Appointment",
+                },
+              ],
+            },
+          ],
+          actor: [
+            {
+              reference: `Location/${provider.id}`,
+            },
+          ],
+        });
+      })
+      .join("\n")
+  );
 }
 
-export function listSlots(req: Request, res: Response) {
+export async function listSlots(req: Request, res: Response) {
   fhirNotImplemented(req, res);
 }

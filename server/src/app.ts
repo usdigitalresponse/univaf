@@ -73,10 +73,16 @@ import {
 const smartSchedulingApi = express.Router();
 app.use("/smart-scheduling", smartSchedulingApi);
 
-smartSchedulingApi.get("/([$])bulk-publish", manifest);
-smartSchedulingApi.get("/locations/states/:state.ndjson", listLocations);
-smartSchedulingApi.get("/schedules/states/:state.ndjson", listSchedules);
-smartSchedulingApi.get("/slots/states/:state.ndjson", listSlots);
+smartSchedulingApi.get("/([$])bulk-publish", handleErrors(manifest));
+smartSchedulingApi.get(
+  "/locations/states/:state.ndjson",
+  handleErrors(listLocations)
+);
+smartSchedulingApi.get(
+  "/schedules/states/:state.ndjson",
+  handleErrors(listSchedules)
+);
+smartSchedulingApi.get("/slots/states/:state.ndjson", handleErrors(listSlots));
 smartSchedulingApi.use((_req: Request, res: Response) =>
   sendFhirError(res, 404, {
     severity: "fatal",
