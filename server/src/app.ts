@@ -37,6 +37,7 @@ app.use(Sentry.Handlers.requestHandler());
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
+app.enable("trust proxy");
 app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
@@ -58,6 +59,30 @@ app.get("/locations/:id", handleErrors(routes.getById));
 // app.get("/availability", handleErrors(routes.listAvailability));
 // app.post("/locations", handleErrors(routes.create))
 app.post("/update", handleErrors(routes.update));
+
+// FHIR SMART Scheduling Links API ------------------------------------------
+// https://github.com/smart-on-fhir/smart-scheduling-links/
+import {
+  sendFhirError,
+  manifest,
+  listLocations,
+  listSchedules,
+  listSlots,
+} from "./smart-scheduling-routes";
+
+const smartSchedulingApi = express.Router();
+app.use("/smart-scheduling", smartSchedulingApi);
+
+smartSchedulingApi.get("/([$])bulk-publish", manifest);
+smartSchedulingApi.get("/locations/states/:state.ndjson", listLocations);
+smartSchedulingApi.get("/schedules/states/:state.ndjson", listSchedules);
+smartSchedulingApi.get("/slots/states/:state.ndjson", listSlots);
+smartSchedulingApi.use((_req: Request, res: Response) =>
+  sendFhirError(res, 404, {
+    severity: "fatal",
+    code: "not-found",
+  })
+);
 
 // Send unhandled errors to Sentry.io
 app.use(Sentry.Handlers.errorHandler());
