@@ -9,6 +9,9 @@ RUN apt-get install -y nodejs
 
 # copy our files
 COPY ./server .
+# src/states.json is a symlink, so we need to explicitly copy the actual file.
+# (Docker doesn't support symlinks)
+COPY ./data/states.json ./src/states.json
 
 # install the dependencies as fresh copies
 RUN npm run clean
