@@ -16,6 +16,7 @@ export const connection = new Pool({
 
 const providerLocationFields = [
   "id",
+  "external_ids",
   "provider",
   "location_type",
   "name",
@@ -37,11 +38,7 @@ const providerLocationFields = [
   "updated_at",
 ];
 
-const providerLocationPrivateFields = [
-  "external_ids",
-  "is_public",
-  "internal_notes",
-];
+const providerLocationPrivateFields = ["is_public", "internal_notes"];
 
 const providerLocationAllFields = providerLocationFields.concat(
   providerLocationPrivateFields
