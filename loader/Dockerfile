@@ -1,10 +1,13 @@
 FROM node:14
 
+# Upgrade to NPM 7
+RUN npm install -g npm
+
 # set our workdir out of /app
 WORKDIR /app
 
 # copy our files
-COPY . .
+COPY ./loader .
 
 # install the dependencies as fresh copies
 RUN rm -rf node_modules

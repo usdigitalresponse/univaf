@@ -114,16 +114,16 @@ jobs:
         # these particular combinations.
         include:
           - repository: appointment-db-seed
-            dockerfile: ./server/Dockerfile.seed-db
-            build_path: ./server
+            dockerfile: "./server/Dockerfile.seed-db"
+            build_path: "."
 
           - repository: appointment-server
-            dockerfile: ./server/Dockerfile
-            build_path: ./server
+            dockerfile: "./server/Dockerfile"
+            build_path: "."
 
           - repository: appointment-loader
-            dockerfile: ./loader/Dockerfile
-            build_path: ./loader
+            dockerfile: "./loader/Dockerfile"
+            build_path: "."
     env:
       IMAGE_TAG: ${{ github.sha }}
     steps:
