@@ -19,8 +19,8 @@ variable "name" {
   description = "The name of the source"
 }
 
-variable "loader_sentry_dsn" {
-  description = "The Sentry.io DSN to use for the loaders"
+variable "sentry_dsn" {
+  description = "The Sentry.io DSN to use for error reporting"
   default     = ""
   sensitive   = true
 }

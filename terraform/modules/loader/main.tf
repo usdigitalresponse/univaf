@@ -13,7 +13,7 @@ module "loader_task" {
     SOURCES     = var.loader_source
     API_URL     = var.api_url
     API_KEY     = var.api_key
-    SENTRY_DSN  = var.loader_sentry_dsn
+    SENTRY_DSN  = var.sentry_dsn
   }, var.env_vars)
 }
 
