@@ -7,6 +7,7 @@
 #   loader_source = "cvsScraper"
 #   api_url = "http://${aws_alb.main.dns_name}"
 #   api_key = var.api_key
+#   sentry_dsn = var.loader_sentry_dsn
 #   schedule = "rate(10 minutes)"
 #   cluster_arn = aws_ecs_cluster.main.arn
 #   role = aws_iam_role.ecs_task_execution_role.arn
@@ -20,6 +21,7 @@ module "cvs_api_loader" {
   loader_source = "cvsApi"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(3 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
@@ -37,6 +39,7 @@ module "njvss_loader" {
   loader_source = "njvss"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(3 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
@@ -55,6 +58,7 @@ module "vaccinespotter_loader" {
   loader_source = "vaccinespotter"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(2 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
