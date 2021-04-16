@@ -14,7 +14,14 @@ import express, {
   Response,
 } from "express";
 import * as db from "./db";
+import { Availability } from "./interfaces";
 import states from "./states.json";
+
+const CURRENT_AS_OF = "http://usds.gov/vaccine/currentAsOf";
+const VTRCKS = "https://cdc.gov/vaccines/programs/vtrcks";
+const SERVICE_TYPE = "http://terminology.hl7.org/CodeSystem/service-type";
+const SLOT_CAPACITY =
+  "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity";
 
 interface FhirIssue {
   severity: "fatal" | "error" | "warning" | "information";
@@ -125,7 +132,7 @@ export async function listLocations(req: Request, res: Response) {
             ([key, value]) => ({
               system:
                 key === "vtrcks"
-                  ? "https://cdc.gov/vaccines/programs/vtrcks"
+                  ? VTRCKS
                   : `https://fhir.usdigitalresponse.org/identifiers/${key}`,
               value,
             })
@@ -171,18 +178,18 @@ export async function listSchedules(req: Request, res: Response) {
       .map((provider) => {
         return JSON.stringify({
           resourceType: "Schedule",
+          // NOTE: high likelihood of going over the max length here.
           id: `${provider.id}__covid19vaccine`,
           serviceType: [
             {
               coding: [
                 {
-                  system: "http://terminology.hl7.org/CodeSystem/service-type",
+                  system: SERVICE_TYPE,
                   code: "57",
                   display: "Immunization",
                 },
                 {
-                  system:
-                    "http://fhir-registry.smarthealthit.org/CodeSystem/service-type",
+                  system: SERVICE_TYPE,
                   code: "covid19-immunization",
                   display: "COVID-19 Immunization Appointment",
                 },
@@ -201,5 +208,59 @@ export async function listSchedules(req: Request, res: Response) {
 }
 
 export async function listSlots(req: Request, res: Response) {
-  fhirNotImplemented(req, res);
+  let index = 1;
+  let where: Array<string> = [];
+  let values = [];
+  if (req.params.state) {
+    where.push(`state = $${index++}`);
+    values.push(req.params.state);
+  }
+
+  const providers = await db.listLocations({ where, values });
+  res.header("Content-Type", "application/fhir+ndjson").send(
+    providers
+      .map((provider) => {
+        // Status can only be "busy" or "free", which doesn't cover concept of
+        // "unknown" status. Instead, "unknown" with status = "free" and
+        // capacity = 0.
+        let capacity = 0;
+        let status = "free";
+        if (provider.availability?.available === Availability.NO) {
+          status = "busy";
+        } else if (provider.availability?.available === Availability.YES) {
+          capacity = 1;
+        }
+
+        const extension: Array<any> = [
+          {
+            url: SLOT_CAPACITY,
+            valueInteger: capacity,
+          },
+        ];
+        if (provider.availability?.updated_at) {
+          extension.push({
+            url: CURRENT_AS_OF,
+            valueInstant: provider.availability.updated_at,
+          });
+        }
+
+        return JSON.stringify({
+          resourceType: "Slot",
+          // NOTE: high likelihood of going over the max length here.
+          id: `${provider.id}__covid19vaccine_combined_slot`,
+          schedule: {
+            reference: `Schedule/${provider.id}__covid19vaccine`,
+          },
+          status,
+          // These times are a lie. For most providers, we have no detailed
+          // slot information beyond "yes/no/unknown appointments available at
+          // some future time".
+          // TODO: provide more detail here when we have it.
+          start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          end: new Date(Date.now() + 32 * 60 * 60 * 1000).toISOString(),
+          extension,
+        });
+      })
+      .join("\n")
+  );
 }
