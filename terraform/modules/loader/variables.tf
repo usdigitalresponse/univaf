@@ -19,6 +19,12 @@ variable "name" {
   description = "The name of the source"
 }
 
+variable "loader_sentry_dsn" {
+  description = "The Sentry.io DSN to use for the loaders"
+  default     = ""
+  sensitive   = true
+}
+
 variable "role" {
   description = "The ECS task role to run as"
 }

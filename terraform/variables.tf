@@ -92,3 +92,15 @@ variable "domain_name" {
   description = "The domain name to use for HTTPS traffic"
   default     = ""
 }
+
+variable "api_sentry_dsn" {
+  description = "The Sentry.io DSN to use for the API service"
+  default     = ""
+  sensitive   = true
+}
+
+variable "loader_sentry_dsn" {
+  description = "The Sentry.io DSN to use for the loaders"
+  default     = ""
+  sensitive   = true
+}

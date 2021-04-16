@@ -10,9 +10,10 @@ module "loader_task" {
   command = concat(var.command, [var.loader_source])
 
   env_vars = merge({
-    SOURCES = var.loader_source
-    API_URL = var.api_url
-    API_KEY = var.api_key
+    SOURCES     = var.loader_source
+    API_URL     = var.api_url
+    API_KEY     = var.api_key
+    SENTRY_DSN  = var.loader_sentry_dsn
   }, var.env_vars)
 }
 

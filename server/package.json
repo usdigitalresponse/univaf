@@ -25,6 +25,8 @@
     "db:seed": "npm run build && node dist/scripts/seed-database.js"
   },
   "dependencies": {
+    "@sentry/node": "^6.2.5",
+    "@sentry/tracing": "^6.2.5",
     "async": "3.2.0",
     "bluebird": "3.7.2",
     "body-parser": "1.19.0",

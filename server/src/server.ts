@@ -1,14 +1,6 @@
-import errorHandler from "errorhandler";
 import app from "./app";
 import process from "process";
 import { connection } from "./db";
-
-/**
- * Error Handler. Provides full stack
- */
-if (process.env.NODE_ENV === "development") {
-  app.use(errorHandler());
-}
 
 /**
  * Kill on SIGINT
