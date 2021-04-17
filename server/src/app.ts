@@ -32,12 +32,10 @@ function handleErrors(handler: PromiseHandler): RequestHandler {
 // Create Express server
 const app = express();
 
-// Create a Sentry.io error context for all requests.
-app.use(Sentry.Handlers.requestHandler());
-
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 app.enable("trust proxy");
+app.use(Sentry.Handlers.requestHandler());
 app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
@@ -89,6 +87,7 @@ smartSchedulingApi.use((_req: Request, res: Response) =>
     code: "not-found",
   })
 );
+smartSchedulingApi.use(Sentry.Handlers.errorHandler());
 smartSchedulingApi.use(
   (error: any, req: Request, res: Response, _next: NextFunction) => {
     console.error("ERRROR:", error);
