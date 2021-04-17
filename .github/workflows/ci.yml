@@ -115,15 +115,15 @@ jobs:
         include:
           - repository: appointment-db-seed
             dockerfile: "./server/Dockerfile.seed-db"
-            build_path: "."
+            build_path: "./server"
 
           - repository: appointment-server
             dockerfile: "./server/Dockerfile"
-            build_path: "."
+            build_path: "./server"
 
           - repository: appointment-loader
             dockerfile: "./loader/Dockerfile"
-            build_path: "."
+            build_path: "./loader"
     env:
       IMAGE_TAG: ${{ github.sha }}
     steps:

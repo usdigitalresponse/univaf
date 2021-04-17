@@ -7,10 +7,7 @@ RUN npm install -g npm
 WORKDIR /app
 
 # copy our files
-COPY ./server .
-# src/states.json is a symlink, so we need to explicitly copy the actual file.
-# (Docker doesn't support symlinks)
-COPY ./data/states.json ./src/states.json
+COPY . .
 
 # install the dependencies as fresh copies
 RUN npm run clean
@@ -24,7 +21,7 @@ RUN npm run build
 EXPOSE 3000
 
 # optional exposed env vars, the defaults are provided here.
-ENV DB_HOST=localhost
+ENV DB_HOST=postgres
 ENV DB_USERNAME=postgres
 ENV DB_PASSWORD=password
 ENV DB_PORT=5432

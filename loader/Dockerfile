@@ -7,7 +7,7 @@ RUN npm install -g npm
 WORKDIR /app
 
 # copy our files
-COPY ./loader .
+COPY . .
 
 # install the dependencies as fresh copies
 RUN rm -rf node_modules
