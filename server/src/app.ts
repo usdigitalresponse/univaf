@@ -91,9 +91,12 @@ smartSchedulingApi.use(Sentry.Handlers.errorHandler());
 smartSchedulingApi.use(
   (error: any, req: Request, res: Response, _next: NextFunction) => {
     console.error("ERRROR:", error);
+    const diagnostics =
+      app.get("env") === "development" ? error.stack : undefined;
     sendFhirError(res, 500, {
       severity: "fatal",
       code: "exception",
+      diagnostics,
     });
   }
 );

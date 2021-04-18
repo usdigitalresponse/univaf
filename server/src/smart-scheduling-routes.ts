@@ -69,7 +69,7 @@ export function fhirNotImplemented(_req: Request, res: Response) {
 const statesList = states.filter((state: any) => state.type === "State");
 
 export function manifest(req: Request, res: Response) {
-  const baseUrl = `${getHostUrl()}${req.baseUrl}`;
+  const baseUrl = `${getHostUrl(req)}${req.baseUrl}`;
   res.json({
     // TODO: consider making this the latest updated availability timestamp.
     transactionTime: new Date().toISOString(),
