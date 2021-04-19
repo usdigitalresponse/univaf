@@ -1,0 +1,6 @@
+.DS_Store
+.vscode
+.git
+.github
+scratch.*
+node_modules

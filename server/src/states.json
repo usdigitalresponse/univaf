@@ -1,0 +1,695 @@
+[
+  {
+    "name": "Alabama",
+    "type": "State",
+    "iso": "US-AL",
+    "ansi": ["AL", "1"],
+    "usps": "AL",
+    "gpo": "Ala.",
+    "ap": "Ala."
+  },
+  {
+    "name": "Alaska",
+    "type": "State",
+    "iso": "US-AK",
+    "ansi": ["AK", "2"],
+    "usps": "AK",
+    "gpo": "Alaska",
+    "ap": "Alaska"
+  },
+  {
+    "name": "Arizona",
+    "type": "State",
+    "iso": "US-AZ",
+    "ansi": ["AZ", "4"],
+    "usps": "AZ",
+    "gpo": "Ariz.",
+    "ap": "Ariz."
+  },
+  {
+    "name": "Arkansas",
+    "type": "State",
+    "iso": "US-AR",
+    "ansi": ["AR", "5"],
+    "usps": "AR",
+    "gpo": "Ark.",
+    "ap": "Ark."
+  },
+  {
+    "name": "California",
+    "type": "State",
+    "iso": "US-CA",
+    "ansi": ["CA", "6"],
+    "usps": "CA",
+    "gpo": "Calif.",
+    "ap": "Calif."
+  },
+  {
+    "name": "Colorado",
+    "type": "State",
+    "iso": "US-CO",
+    "ansi": ["CO", "8"],
+    "usps": "CO",
+    "gpo": "Colo.",
+    "ap": "Colo."
+  },
+  {
+    "name": "Connecticut",
+    "type": "State",
+    "iso": "US-CT",
+    "ansi": ["CT", "9"],
+    "usps": "CT",
+    "gpo": "Conn.",
+    "ap": "Conn."
+  },
+  {
+    "name": "Delaware",
+    "type": "State",
+    "iso": "US-DE",
+    "ansi": ["DE", "10"],
+    "usps": "DE",
+    "gpo": "Del.",
+    "ap": "Del."
+  },
+  {
+    "name": "District of Columbia",
+    "type": "Federal district",
+    "iso": "US-DC",
+    "ansi": ["DC", "11"],
+    "usps": "DC",
+    "gpo": "D.C.",
+    "ap": "D.C."
+  },
+  {
+    "name": "Florida",
+    "type": "State",
+    "iso": "US-FL",
+    "ansi": ["FL", "12"],
+    "usps": "FL",
+    "gpo": "Fla.",
+    "ap": "Fla."
+  },
+  {
+    "name": "Georgia",
+    "type": "State",
+    "iso": "US-GA",
+    "ansi": ["GA", "13"],
+    "usps": "GA",
+    "gpo": "Ga.",
+    "ap": "Ga."
+  },
+  {
+    "name": "Hawaii",
+    "type": "State",
+    "iso": "US-HI",
+    "ansi": ["HI", "15"],
+    "usps": "HI",
+    "gpo": "Hawaii",
+    "ap": "Hawaii"
+  },
+  {
+    "name": "Idaho",
+    "type": "State",
+    "iso": "US-ID",
+    "ansi": ["ID", "16"],
+    "usps": "ID",
+    "gpo": "Idaho",
+    "ap": "Idaho"
+  },
+  {
+    "name": "Illinois",
+    "type": "State",
+    "iso": "US-IL",
+    "ansi": ["IL", "17"],
+    "usps": "IL",
+    "gpo": "Ill.",
+    "ap": "Ill."
+  },
+  {
+    "name": "Indiana",
+    "type": "State",
+    "iso": "US-IN",
+    "ansi": ["IN", "18"],
+    "usps": "IN",
+    "gpo": "Ind.",
+    "ap": "Ind."
+  },
+  {
+    "name": "Iowa",
+    "type": "State",
+    "iso": "US-IA",
+    "ansi": ["IA", "19"],
+    "usps": "IA",
+    "gpo": "Iowa",
+    "ap": "Iowa"
+  },
+  {
+    "name": "Kansas",
+    "type": "State",
+    "iso": "US-KS",
+    "ansi": ["KS", "20"],
+    "usps": "KS",
+    "gpo": "Kans.",
+    "ap": "Kan."
+  },
+  {
+    "name": "Kentucky",
+    "type": "State",
+    "iso": "US-KY",
+    "ansi": ["KY", "21"],
+    "usps": "KY",
+    "gpo": "Ky.",
+    "ap": "Ky."
+  },
+  {
+    "name": "Louisiana",
+    "type": "State",
+    "iso": "US-LA",
+    "ansi": ["LA", "22"],
+    "usps": "LA",
+    "gpo": "La.",
+    "ap": "La."
+  },
+  {
+    "name": "Maine",
+    "type": "State",
+    "iso": "US-ME",
+    "ansi": ["ME", "23"],
+    "usps": "ME",
+    "gpo": "Maine",
+    "ap": "Maine"
+  },
+  {
+    "name": "Maryland",
+    "type": "State",
+    "iso": "US-MD",
+    "ansi": ["MD", "24"],
+    "usps": "MD",
+    "gpo": "Md.",
+    "ap": "Md."
+  },
+  {
+    "name": "Massachusetts",
+    "type": "State",
+    "iso": "US-MA",
+    "ansi": ["MA", "25"],
+    "usps": "MA",
+    "gpo": "Mass.",
+    "ap": "Mass."
+  },
+  {
+    "name": "Michigan",
+    "type": "State",
+    "iso": "US-MI",
+    "ansi": ["MI", "26"],
+    "usps": "MI",
+    "gpo": "Mich.",
+    "ap": "Mich."
+  },
+  {
+    "name": "Minnesota",
+    "type": "State",
+    "iso": "US-MN",
+    "ansi": ["MN", "27"],
+    "usps": "MN",
+    "gpo": "Minn.",
+    "ap": "Minn."
+  },
+  {
+    "name": "Mississippi",
+    "type": "State",
+    "iso": "US-MS",
+    "ansi": ["MS", "28"],
+    "usps": "MS",
+    "gpo": "Miss.",
+    "ap": "Miss."
+  },
+  {
+    "name": "Missouri",
+    "type": "State",
+    "iso": "US-MO",
+    "ansi": ["MO", "29"],
+    "usps": "MO",
+    "gpo": "Mo.",
+    "ap": "Mo."
+  },
+  {
+    "name": "Montana",
+    "type": "State",
+    "iso": "US-MT",
+    "ansi": ["MT", "30"],
+    "usps": "MT",
+    "gpo": "Mont.",
+    "ap": "Mont."
+  },
+  {
+    "name": "Nebraska",
+    "type": "State",
+    "iso": "US-NE",
+    "ansi": ["NE", "31"],
+    "usps": "NE",
+    "gpo": "Nebr.",
+    "ap": "Neb."
+  },
+  {
+    "name": "Nevada",
+    "type": "State",
+    "iso": "US-NV",
+    "ansi": ["NV", "32"],
+    "usps": "NV",
+    "gpo": "Nev.",
+    "ap": "Nev."
+  },
+  {
+    "name": "New Hampshire",
+    "type": "State",
+    "iso": "US-NH",
+    "ansi": ["NH", "33"],
+    "usps": "NH",
+    "gpo": "N.H.",
+    "ap": "N.H."
+  },
+  {
+    "name": "New Jersey",
+    "type": "State",
+    "iso": "US-NJ",
+    "ansi": ["NJ", "34"],
+    "usps": "NJ",
+    "gpo": "N.J.",
+    "ap": "N.J."
+  },
+  {
+    "name": "New Mexico",
+    "type": "State",
+    "iso": "US-NM",
+    "ansi": ["NM", "35"],
+    "usps": "NM",
+    "gpo": "N.\u00a0Mex.",
+    "ap": "N.M."
+  },
+  {
+    "name": "New York",
+    "type": "State",
+    "iso": "US-NY",
+    "ansi": ["NY", "36"],
+    "usps": "NY",
+    "gpo": "N.Y.",
+    "ap": "N.Y."
+  },
+  {
+    "name": "North Carolina",
+    "type": "State",
+    "iso": "US-NC",
+    "ansi": ["NC", "37"],
+    "usps": "NC",
+    "gpo": "N.C.",
+    "ap": "N.C."
+  },
+  {
+    "name": "North Dakota",
+    "type": "State",
+    "iso": "US-ND",
+    "ansi": ["ND", "38"],
+    "usps": "ND",
+    "gpo": "N.\u00a0Dak.",
+    "ap": "N.D."
+  },
+  {
+    "name": "Ohio",
+    "type": "State",
+    "iso": "US-OH",
+    "ansi": ["OH", "39"],
+    "usps": "OH",
+    "gpo": "Ohio",
+    "ap": "Ohio"
+  },
+  {
+    "name": "Oklahoma",
+    "type": "State",
+    "iso": "US-OK",
+    "ansi": ["OK", "40"],
+    "usps": "OK",
+    "gpo": "Okla.",
+    "ap": "Okla."
+  },
+  {
+    "name": "Oregon",
+    "type": "State",
+    "iso": "US-OR",
+    "ansi": ["OR", "41"],
+    "usps": "OR",
+    "gpo": "Oreg.",
+    "ap": "Ore."
+  },
+  {
+    "name": "Pennsylvania",
+    "type": "State",
+    "iso": "US-PA",
+    "ansi": ["PA", "42"],
+    "usps": "PA",
+    "gpo": "Pa.",
+    "ap": "Pa."
+  },
+  {
+    "name": "Rhode Island",
+    "type": "State",
+    "iso": "US-RI",
+    "ansi": ["RI", "44"],
+    "usps": "RI",
+    "gpo": "R.I.",
+    "ap": "R.I."
+  },
+  {
+    "name": "South Carolina",
+    "type": "State",
+    "iso": "US-SC",
+    "ansi": ["SC", "45"],
+    "usps": "SC",
+    "gpo": "S.C.",
+    "ap": "S.C."
+  },
+  {
+    "name": "South Dakota",
+    "type": "State",
+    "iso": "US-SD",
+    "ansi": ["SD", "46"],
+    "usps": "SD",
+    "gpo": "S.\u00a0Dak.",
+    "ap": "S.D."
+  },
+  {
+    "name": "Tennessee",
+    "type": "State",
+    "iso": "US-TN",
+    "ansi": ["TN", "47"],
+    "usps": "TN",
+    "gpo": "Tenn.",
+    "ap": "Tenn."
+  },
+  {
+    "name": "Texas",
+    "type": "State",
+    "iso": "US-TX",
+    "ansi": ["TX", "48"],
+    "usps": "TX",
+    "gpo": "Tex.",
+    "ap": "Texas"
+  },
+  {
+    "name": "Utah",
+    "type": "State",
+    "iso": "US-UT",
+    "ansi": ["UT", "49"],
+    "usps": "UT",
+    "gpo": "Utah",
+    "ap": "Utah"
+  },
+  {
+    "name": "Vermont",
+    "type": "State",
+    "iso": "US-VT",
+    "ansi": ["VT", "50"],
+    "usps": "VT",
+    "gpo": "Vt.",
+    "ap": "Vt."
+  },
+  {
+    "name": "Virginia",
+    "type": "State",
+    "iso": "US-VA",
+    "ansi": ["VA", "51"],
+    "usps": "VA",
+    "gpo": "Va.",
+    "ap": "Va."
+  },
+  {
+    "name": "Washington",
+    "type": "State",
+    "iso": "US-WA",
+    "ansi": ["WA", "53"],
+    "usps": "WA",
+    "gpo": "Wash.",
+    "ap": "Wash."
+  },
+  {
+    "name": "West Virginia",
+    "type": "State",
+    "iso": "US-WV",
+    "ansi": ["WV", "54"],
+    "usps": "WV",
+    "gpo": "W.\u00a0Va.",
+    "ap": "W.Va."
+  },
+  {
+    "name": "Wisconsin",
+    "type": "State",
+    "iso": "US-WI",
+    "ansi": ["WI", "55"],
+    "usps": "WI",
+    "gpo": "Wis.",
+    "ap": "Wis."
+  },
+  {
+    "name": "Wyoming",
+    "type": "State",
+    "iso": "US-WY",
+    "ansi": ["WY", "56"],
+    "usps": "WY",
+    "gpo": "Wyo.",
+    "ap": "Wyo."
+  },
+  {
+    "name": "American Samoa",
+    "type": "Insular area (Territory)",
+    "iso": "AS\nASM\n016\nUS-AS",
+    "ansi": ["AS", "60"],
+    "usps": "AS",
+    "gpo": "A.S.",
+    "ap": ""
+  },
+  {
+    "name": "Guam",
+    "type": "Insular area (Territory)",
+    "iso": "GU\nGUM\n316\nUS-GU",
+    "ansi": ["GU", "66"],
+    "usps": "GU",
+    "gpo": "Guam",
+    "ap": ""
+  },
+  {
+    "name": "Northern Mariana Islands",
+    "type": "Insular area (Commonwealth)",
+    "iso": "MP\nMNP\n580\nUS-MP",
+    "ansi": ["MP", "69"],
+    "usps": "MP",
+    "gpo": "M.P.",
+    "ap": ""
+  },
+  {
+    "name": "Puerto Rico",
+    "type": "Insular area (Commonwealth)",
+    "iso": "PR\nPRI\n630\nUS-PR",
+    "ansi": ["PR", "72"],
+    "usps": "PR",
+    "gpo": "P.R.",
+    "ap": ""
+  },
+  {
+    "name": "U.S. Virgin Islands",
+    "type": "Insular area (Territory)",
+    "iso": "VI\nVIR\n850\nUS-VI",
+    "ansi": ["VI", "78"],
+    "usps": "VI",
+    "gpo": "V.I.",
+    "ap": ""
+  },
+  {
+    "name": "U.S. Minor Outlying Islands",
+    "type": "Insular areas",
+    "iso": "UM\nUMI\n581\nUS-UM",
+    "ansi": ["UM", "74"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Baker Island",
+    "type": "island",
+    "iso": "UM-81",
+    "ansi": ["", "81"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Howland Island",
+    "type": "island",
+    "iso": "UM-84",
+    "ansi": ["", "84"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Jarvis Island",
+    "type": "island",
+    "iso": "UM-86",
+    "ansi": ["", "86"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Johnston Atoll",
+    "type": "atoll",
+    "iso": "UM-67",
+    "ansi": ["", "67"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Kingman Reef",
+    "type": "atoll",
+    "iso": "UM-89",
+    "ansi": ["", "89"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Midway Islands",
+    "type": "atoll",
+    "iso": "UM-71",
+    "ansi": ["", "71"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Navassa Island",
+    "type": "island",
+    "iso": "UM-76",
+    "ansi": ["", "76"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Palmyra Atoll[c]",
+    "type": "atoll[c]",
+    "iso": "UM-95",
+    "ansi": ["", "95"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Wake Island",
+    "type": "atoll",
+    "iso": "UM-79",
+    "ansi": ["", "79"],
+    "usps": "",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Micronesia",
+    "type": "Freely associated state",
+    "iso": "FM\nFSM\n583",
+    "ansi": ["FM", "64"],
+    "usps": "FM",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Marshall Islands",
+    "type": "Freely associated state",
+    "iso": "MH\nMHL\n584",
+    "ansi": ["MH", "68"],
+    "usps": "MH",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Palau",
+    "type": "Freely associated state",
+    "iso": "PW\nPLW\n585",
+    "ansi": ["PW", "70"],
+    "usps": "PW",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "U.S. Armed Forces \u2013 Americas[d]",
+    "type": "US military mail code",
+    "iso": "",
+    "ansi": ["", ""],
+    "usps": "AA",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "U.S. Armed Forces \u2013 Europe[e]",
+    "type": "US military mail code",
+    "iso": "",
+    "ansi": ["", ""],
+    "usps": "AE",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "U.S. Armed Forces \u2013 Pacific[f]",
+    "type": "US military mail code",
+    "iso": "",
+    "ansi": ["", ""],
+    "usps": "AP",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Northern Mariana Islands",
+    "type": "Obsolete postal code[g]",
+    "iso": "",
+    "ansi": ["", ""],
+    "usps": "CM",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Panama Canal Zone",
+    "type": "Obsolete postal code",
+    "iso": "PZ\nPCZ\n594",
+    "ansi": ["", ""],
+    "usps": "CZ",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Nebraska",
+    "type": "Obsolete postal code[h]",
+    "iso": "",
+    "ansi": ["", ""],
+    "usps": "NB",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Philippine Islands",
+    "type": "Obsolete postal code",
+    "iso": "PH\nPHL\n608[9]",
+    "ansi": ["", ""],
+    "usps": "PI",
+    "gpo": "",
+    "ap": ""
+  },
+  {
+    "name": "Trust Territory of the Pacific Islands",
+    "type": "Obsolete postal code",
+    "iso": "PC\nPCI\n582",
+    "ansi": ["", ""],
+    "usps": "TT",
+    "gpo": "",
+    "ap": ""
+  }
+]

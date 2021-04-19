@@ -1,5 +1,8 @@
 FROM node:14
 
+# Upgrade to NPM 7
+RUN npm install -g npm
+
 # set our workdir out of /app
 WORKDIR /app
 

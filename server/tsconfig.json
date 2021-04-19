@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
+    // We require Node.js 14.x, so we can rely on recent ECMAScript support.
+    "lib": ["es2020"],
+    "target": "es2020",
+
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es6",
+    "resolveJsonModule": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,

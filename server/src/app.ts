@@ -32,11 +32,10 @@ function handleErrors(handler: PromiseHandler): RequestHandler {
 // Create Express server
 const app = express();
 
-// Create a Sentry.io error context for all requests.
-app.use(Sentry.Handlers.requestHandler());
-
 // Express configuration
 app.set("port", process.env.PORT || 3000);
+app.enable("trust proxy");
+app.use(Sentry.Handlers.requestHandler());
 app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
@@ -58,6 +57,49 @@ app.get("/locations/:id", handleErrors(routes.getById));
 // app.get("/availability", handleErrors(routes.listAvailability));
 // app.post("/locations", handleErrors(routes.create))
 app.post("/update", handleErrors(routes.update));
+
+// FHIR SMART Scheduling Links API ------------------------------------------
+// https://github.com/smart-on-fhir/smart-scheduling-links/
+import {
+  sendFhirError,
+  manifest,
+  listLocations,
+  listSchedules,
+  listSlots,
+} from "./smart-scheduling-routes";
+
+const smartSchedulingApi = express.Router();
+app.use("/smart-scheduling", smartSchedulingApi);
+
+smartSchedulingApi.get("/([$])bulk-publish", handleErrors(manifest));
+smartSchedulingApi.get(
+  "/locations/states/:state.ndjson",
+  handleErrors(listLocations)
+);
+smartSchedulingApi.get(
+  "/schedules/states/:state.ndjson",
+  handleErrors(listSchedules)
+);
+smartSchedulingApi.get("/slots/states/:state.ndjson", handleErrors(listSlots));
+smartSchedulingApi.use((_req: Request, res: Response) =>
+  sendFhirError(res, 404, {
+    severity: "fatal",
+    code: "not-found",
+  })
+);
+smartSchedulingApi.use(Sentry.Handlers.errorHandler());
+smartSchedulingApi.use(
+  (error: any, req: Request, res: Response, _next: NextFunction) => {
+    console.error("ERRROR:", error);
+    const diagnostics =
+      app.get("env") === "development" ? error.stack : undefined;
+    sendFhirError(res, 500, {
+      severity: "fatal",
+      code: "exception",
+      diagnostics,
+    });
+  }
+);
 
 // Send unhandled errors to Sentry.io
 app.use(Sentry.Handlers.errorHandler());
