@@ -2,7 +2,7 @@
 
 const Sentry = require("@sentry/node");
 const yargs = require("yargs");
-const ApiClient = require("./api-client");
+const { ApiClient } = require("./api-client");
 const { sources } = require("./index");
 
 Sentry.init();
@@ -32,12 +32,13 @@ function createResultLogger(spacing) {
   };
 }
 
-const inFlightResults = [];
+let updateQueue = null;
 
 function createDatabaseSender() {
   const client = ApiClient.fromEnv();
+  updateQueue = client.updateQueue();
   return function handler(locationData) {
-    inFlightResults.push(client.sendUpdate(locationData));
+    updateQueue.push(locationData);
   };
 }
 
@@ -59,11 +60,14 @@ async function run(options) {
   try {
     const reports = await runSources(options.sources, handler, options);
 
-    if (inFlightResults.length > 0) {
-      console.warn("Waiting for data to finish sending to API...");
-      const saveResults = await Promise.all(inFlightResults);
-      for (const saveResult of saveResults) {
-        if (saveResult.success === false) {
+    if (updateQueue) {
+      if (updateQueue.length) {
+        console.warn("Waiting for data to finish sending to API...");
+      }
+      const results = await updateQueue.whenDone();
+      console.warn(`Sent ${results.length} updates`);
+      for (let saveResult of results) {
+        if (saveResult.error || saveResult.success === false) {
           const data = saveResult.sent;
           const source = data.availability
             ? ` from ${data.availability.source}`
