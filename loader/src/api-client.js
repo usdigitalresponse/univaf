@@ -1,6 +1,9 @@
 const got = require("got");
+const Queue = require("queue");
 const config = require("./config");
 const packageInfo = require("../package.json");
+
+const DEFAULT_CONCURRENCY = 10;
 
 class ApiClient {
   static fromEnv() {
@@ -34,7 +37,7 @@ class ApiClient {
     return body;
   }
 
-  async sendUpdate(data) {
+  async sendUpdate(data, _options) {
     const response = await got.post({
       url: `${this.url}/update`,
       headers: {
@@ -56,6 +59,75 @@ class ApiClient {
 
     return body;
   }
+
+  /**
+   * Create a queue for sending updates. Use this to manage concurrency,
+   * throttling, etc. if you are planning to send lots of updates in rapid
+   * succession.
+   * @param {number} [concurrency] Number of concurrent updates to send
+   * @returns {UpdateQueue}
+   */
+  updateQueue(concurrency) {
+    return new UpdateQueue(this, {
+      concurrency: concurrency || config.apiConcurrency,
+    });
+  }
 }
 
-module.exports = ApiClient;
+class UpdateQueue extends Queue {
+  constructor(client, options = {}) {
+    if (!options.concurrency) options.concurrency = DEFAULT_CONCURRENCY;
+
+    super({
+      autostart: true,
+      ...options,
+      results: [],
+    });
+    this.client = client;
+  }
+
+  /**
+   * Add an update to the queue. Returns a promise that resolves when the
+   * update has been completed.
+   * @param {any} update The update to send
+   * @param {any} [options] Any request options to set for the update
+   * @returns {Promise}
+   */
+  async push(update, options) {
+    return await super.push(() => {
+      return this.client
+        .sendUpdate(update, options)
+        .catch((error) => ({ success: false, sent: update, error }));
+    });
+  }
+
+  /**
+   * An array of the results of all the sent updates.
+   * @returns {Array<any>}
+   */
+  get allResults() {
+    return this.results.map((entry) => entry && entry[0]);
+  }
+
+  /**
+   * Wait for all queued updates to be completed. Returns a promise that
+   * resolves to an array with the results of the updates.
+   * @returns {Promise<Array<any>>}
+   */
+  whenDone() {
+    if (!this.length) return Promise.resolve(this.allResults);
+
+    return new Promise((resolve, reject) => {
+      this.on("end", (error) => {
+        if (error) return reject(error);
+
+        return resolve(this.allResults);
+      });
+    });
+  }
+}
+
+module.exports = {
+  ApiClient,
+  UpdateQueue,
+};
