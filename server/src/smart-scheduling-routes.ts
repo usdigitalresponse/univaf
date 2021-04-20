@@ -20,7 +20,9 @@ import states from "./states.json";
 
 const CURRENT_AS_OF = "http://usds.gov/vaccine/currentAsOf";
 const VTRCKS = "https://cdc.gov/vaccines/programs/vtrcks";
-const SERVICE_TYPE = "http://terminology.hl7.org/CodeSystem/service-type";
+const SERVICE_TYPE_HL7 = "http://terminology.hl7.org/CodeSystem/service-type";
+const SERVICE_TYPE_SMART =
+  "http://fhir-registry.smarthealthit.org/CodeSystem/service-type";
 const SLOT_CAPACITY =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity";
 
@@ -133,18 +135,18 @@ export async function listLocations(req: Request, res: Response) {
                 key === "vtrcks"
                   ? VTRCKS
                   : `https://fhir.usdigitalresponse.org/identifiers/${key}`,
-              value,
+              value: value.toString(),
             })
           ),
           name: provider.name,
-          description: provider.description,
+          description: provider.description || undefined,
           telecom: telecom.length ? telecom : undefined,
           address: {
             line: provider.address_lines,
             city: provider.city,
             state: provider.state,
             postalCode: provider.postal_code,
-            district: provider.county,
+            district: provider.county || undefined,
           },
           position: provider.position,
           meta: {
@@ -183,12 +185,12 @@ export async function listSchedules(req: Request, res: Response) {
             {
               coding: [
                 {
-                  system: SERVICE_TYPE,
+                  system: SERVICE_TYPE_HL7,
                   code: "57",
                   display: "Immunization",
                 },
                 {
-                  system: SERVICE_TYPE,
+                  system: SERVICE_TYPE_SMART,
                   code: "covid19-immunization",
                   display: "COVID-19 Immunization Appointment",
                 },
