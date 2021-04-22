@@ -2,7 +2,27 @@
 
 import { Response, Request, RequestHandler, NextFunction } from "express";
 import * as db from "./db";
+import { ApiError } from "./exceptions";
 import { AppRequest } from "./middleware";
+
+/**
+ * Send an error response.
+ * @param response HTTP Response to write to
+ * @param error Error instance, error-like object, or a string
+ * @param httpStatus HTTP status code to use
+ */
+function sendError(response: Response, error: any, httpStatus?: number): void {
+  if (error instanceof ApiError) {
+    response
+      .status(httpStatus || error.httpStatus)
+      .json({ error: error.toJson() });
+  } else {
+    const message = error.message || error;
+    response
+      .status(httpStatus || 500)
+      .json({ error: { message, code: error.code } });
+  }
+}
 
 /**
  * Index returns the full list of everything in our database
@@ -10,7 +30,7 @@ import { AppRequest } from "./middleware";
 export const list = async (req: AppRequest, res: Response) => {
   const includePrivate = req.query.include_private === "true";
   if (includePrivate && !req.authorization) {
-    return res.status(403).json({ error: "Not authorized for private data" });
+    return sendError(res, "Not authorized for private data", 403);
   }
 
   let index = 1;
@@ -38,17 +58,17 @@ export const list = async (req: AppRequest, res: Response) => {
 export const getById = async (req: AppRequest, res: Response) => {
   const id = req.params["id"];
   if (!id) {
-    return res.status(422).json({ error: "missing param 'id'" });
+    return sendError(res, "Missing param 'id'", 422);
   }
 
   const includePrivate = req.query.include_private === "true";
   if (includePrivate && !req.authorization) {
-    return res.status(403).json({ error: "Not authorized for private data" });
+    return sendError(res, "Not authorized for private data", 403);
   }
 
   const provider = await db.getLocationById(id, { includePrivate });
   if (!provider) {
-    res.status(404).json({ error: `No provider location with ID '${id}'` });
+    return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
     res.json(provider);
   }
@@ -64,19 +84,24 @@ export const getById = async (req: AppRequest, res: Response) => {
 
 export const update = async (req: AppRequest, res: Response) => {
   if (!req.authorization) {
-    return res.status(403).json({ error: "Not authorized to update data" });
+    return sendError(res, "Not authorized to update data", 403);
   }
 
   const data = req.body;
 
   // TODO: if no `id`, look up by external IDs?
   if (!data.id) {
-    return res.status(422).json({ error: "You must set an ID in the data" });
+    return sendError(res, "You must set an ID in the data", 422);
   }
 
+  const result: any = { location: { action: null } };
+
+  // FIXME: need to make this a single PG operation or add locks around it. It's
+  // possible for two concurrent updates to both try and create a location.
   const location = await db.getLocationById(data.id);
   if (!location) {
     await db.createLocation(data);
+    result.location.action = "created";
   } else if (req.query.update_location) {
     // Only update an existing location if explicitly requested to do so via
     // querystring and if there is other data for it.
@@ -86,35 +111,34 @@ export const update = async (req: AppRequest, res: Response) => {
     const fields = Object.keys(data).filter((key) => key !== "availability");
     if (fields.length > 1) {
       await db.updateLocation(data);
+      result.location.action = "updated";
     }
   }
 
-  let success = true;
   if (data.availability) {
-    success = false;
     try {
-      success = await db.updateAvailability(data.id, data.availability);
+      const operation = await db.updateAvailability(data.id, data.availability);
+      result.availability = operation;
     } catch (error) {
+      if (error instanceof ApiError) {
+        return sendError(res, error);
+      }
       if (error instanceof TypeError) {
-        return res.status(422).json({ error: error.message });
+        return sendError(res, error, 422);
       } else {
         throw error;
       }
     }
   }
 
-  if (!success) {
-    res.status(500);
-  }
-  res.json({ success });
+  res.json(result);
 };
 
 /**
- * Healthcheck code whic
+ * Basic healthcheck to indicate the server is OK.
  * @param req
  * @param res
  */
-
 export const healthcheck = async (req: AppRequest, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
   res.status(200).send("OK!");
