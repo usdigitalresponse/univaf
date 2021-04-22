@@ -131,6 +131,12 @@ export const update = async (req: AppRequest, res: Response) => {
     }
   }
 
+  if (
+    result.location?.action === "created" ||
+    result.availability?.action === "created"
+  ) {
+    res.status(201);
+  }
   res.json(result);
 };
 
