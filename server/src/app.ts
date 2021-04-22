@@ -29,6 +29,20 @@ function handleErrors(handler: PromiseHandler): RequestHandler {
   };
 }
 
+// TODO: we should use a proper logging library (e.g. Winston) which has
+// plugins and extensions for this, and will gather better data.
+function logRequest(_request: Request, response: Response, next: NextFunction) {
+  const start = new Date();
+  response.on("finish", () => {
+    console.error(
+      `${start.toISOString()} - ${new Date().toISOString()} ${
+        response.statusCode
+      } POST /update`
+    );
+  });
+  next();
+}
+
 // Create Express server
 const app = express();
 
@@ -36,6 +50,7 @@ const app = express();
 app.set("port", process.env.PORT || 3000);
 app.enable("trust proxy");
 app.use(Sentry.Handlers.requestHandler());
+app.use(logRequest);
 app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
@@ -110,7 +125,15 @@ if (app.get("env") === "development") {
 } else {
   app.use((error: any, req: Request, res: Response, _next: NextFunction) => {
     console.error("ERRROR:", error);
-    res.status(500).json({ error: error.message || error });
+    if (error && error.httpStatus) {
+      res.status(error.httpStatus).json({
+        error: { message: error.message, code: error.code },
+      });
+    } else {
+      res.status(500).json({
+        error: { message: "Unknown error" },
+      });
+    }
   });
 }
 
