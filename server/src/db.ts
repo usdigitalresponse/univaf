@@ -5,6 +5,7 @@ import {
   LocationAvailability,
 } from "./interfaces";
 import { Pool } from "pg";
+import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 
 export const connection = new Pool({
   host: process.env.DB_HOST,
@@ -62,6 +63,8 @@ function selectSqlPoint(column: string): string {
  * @param data ProviderLocation-like object with data to insert
  */
 export async function createLocation(data: any): Promise<ProviderLocation> {
+  if (!data.name) throw new ValueError("Locations must have a `name`");
+
   const now = new Date();
   const sqlData = {
     ...data,
@@ -214,15 +217,17 @@ export async function updateAvailability(
     meta: any;
     is_public: boolean;
   }
-): Promise<boolean> {
-  if (!source) throw new TypeError("You must set `source`");
-  if (!available) throw new TypeError("You must setprovide `available`");
-  if (!checked_at) throw new TypeError("You must set `checked_at`");
+): Promise<{ action: string; locationId: string }> {
+  if (!source) throw new ValueError("You must set `source`");
+  if (!available) throw new ValueError("You must setprovide `available`");
+  if (!checked_at) throw new ValueError("You must set `checked_at`");
 
   if (!updated_at) {
     updated_at = checked_at;
   }
 
+  // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
+  // or wrap this in a PG advisory lock to keep consistent across calls.
   const existingAvailability = await connection.query(
     `SELECT id, provider_location_id, source
     FROM availability
@@ -251,7 +256,14 @@ export async function updateAvailability(
         existingAvailability.rows[0].id,
       ]
     );
-    return result.rowCount > 0;
+
+    if (result.rowCount === 0) {
+      throw new OutOfDateError(
+        "Newer availability data has already been recorded"
+      );
+    } else {
+      return { locationId: id, action: "update" };
+    }
   } else {
     try {
       const result = await connection.query(
@@ -267,10 +279,11 @@ export async function updateAvailability(
         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [id, source, available, updated_at, checked_at, meta, is_public]
       );
-      return result.rowCount > 0;
+      return { locationId: id, action: "create" };
     } catch (error) {
       if (error.message.includes('constraint "fk_provider_location"')) {
-        throw new Error("not found");
+        console.error(`SQL Error: ${error.message}`);
+        throw new NotFoundError(`Could not find location ${id}`);
       }
       throw error;
     }

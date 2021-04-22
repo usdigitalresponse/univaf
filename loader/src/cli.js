@@ -68,13 +68,16 @@ async function run(options) {
       console.warn(`Sent ${results.length} updates`);
       for (let saveResult of results) {
         if (saveResult.error || saveResult.success === false) {
+          // Out-of-date data is not a problem worth alerting.
+          if (saveResult.error?.code === "out_of_date") continue;
+
           const data = saveResult.sent;
           const source = data.availability
             ? ` from ${data.availability.source}`
             : "";
           const message = `Error sending "${data.name}"${source}: ${
             saveResult.statusCode
-          } ${saveResult.error || "unknown reason"}`;
+          } ${saveResult.error?.message || "unknown reason"}`;
           console.error(message);
           Sentry.captureMessage(message, Sentry.Severity.Error);
         }
