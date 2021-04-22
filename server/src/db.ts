@@ -5,7 +5,7 @@ import {
   LocationAvailability,
 } from "./interfaces";
 import { Pool } from "pg";
-import { NotFoundError, OutOfDateError } from "./exceptions";
+import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 
 export const connection = new Pool({
   host: process.env.DB_HOST,
@@ -63,7 +63,7 @@ function selectSqlPoint(column: string): string {
  * @param data ProviderLocation-like object with data to insert
  */
 export async function createLocation(data: any): Promise<ProviderLocation> {
-  if (!data.name) throw new TypeError("Locations must have a `name`");
+  if (!data.name) throw new ValueError("Locations must have a `name`");
 
   const now = new Date();
   const sqlData = {
@@ -218,9 +218,9 @@ export async function updateAvailability(
     is_public: boolean;
   }
 ): Promise<{ action: string; locationId: string }> {
-  if (!source) throw new TypeError("You must set `source`");
-  if (!available) throw new TypeError("You must setprovide `available`");
-  if (!checked_at) throw new TypeError("You must set `checked_at`");
+  if (!source) throw new ValueError("You must set `source`");
+  if (!available) throw new ValueError("You must setprovide `available`");
+  if (!checked_at) throw new ValueError("You must set `checked_at`");
 
   if (!updated_at) {
     updated_at = checked_at;

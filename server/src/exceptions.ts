@@ -26,7 +26,7 @@ export class ApiError extends Error {
 }
 
 /**
- * Indicates a resource could not be found.
+ * A resource could not be found.
  */
 export class NotFoundError extends ApiError {
   httpStatus = 404;
@@ -34,7 +34,15 @@ export class NotFoundError extends ApiError {
 }
 
 /**
- * Indicates data is too old to make use of.
+ * Input data was incorrectly formatted or otherwise invalid.
+ */
+export class ValueError extends ApiError {
+  httpStatus = 422;
+  code = "value_error";
+}
+
+/**
+ * Data is too old to make use of.
  */
 export class OutOfDateError extends ApiError {
   httpStatus = 409;
