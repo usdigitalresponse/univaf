@@ -32,8 +32,8 @@ const formatters = {
     }
 
     let id;
-    if (store.properties.provider_brand_id) {
-      id = `${providerBrand}:${store.properties.provider_brand_id}`;
+    if (store.properties.provider_location_id) {
+      id = `${providerBrand}:${store.properties.provider_location_id}`;
     } else {
       id = `vaccinespotter:${store.properties.id}`;
     }
@@ -91,7 +91,7 @@ const formatters = {
       // Override any of the above with additions.
       ...additions,
       external_ids: {
-        vaccinespotter: store.properties.id,
+        vaccinespotter: store.properties.id.toString(),
         [providerBrand]: store.properties.provider_location_id,
         ...additions?.external_ids,
       },
