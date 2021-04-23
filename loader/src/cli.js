@@ -9,7 +9,8 @@ const { sources } = require("./index");
 Sentry.init();
 
 async function runSources(targets, handler, options) {
-  targets = (targets && targets.length) ? targets : Object.getOwnPropertyNames(sources);
+  targets =
+    targets && targets.length ? targets : Object.getOwnPropertyNames(sources);
 
   const runs = targets.map((name) => {
     const source = sources[name];
@@ -95,16 +96,15 @@ async function run(options) {
         console.error(`Error in "${report.name}":`, report.error, "\n");
         Sentry.captureException(report.error);
         process.exitCode = 90;
-        success = false
+        success = false;
       } else {
         successCount++;
       }
     }
     if (successCount === 0) {
       process.exitCode = 1;
-      success = false
+      success = false;
     }
-
   } catch (error) {
     console.error(`Error: ${error}`);
     Sentry.captureException(error);
@@ -112,7 +112,7 @@ async function run(options) {
   } finally {
     console.error(`Completed in ${(Date.now() - startTime) / 1000} seconds.`);
   }
-  return success
+  return success;
 }
 
 // Run either the server or one-off CLI.
@@ -139,8 +139,7 @@ function main() {
         yargs
           .option("server", {
             type: "boolean",
-            describe:
-              "Run this as a server rather than a 1-off CLI",
+            describe: "Run this as a server rather than a 1-off CLI",
           })
           .option("send", {
             type: "boolean",
