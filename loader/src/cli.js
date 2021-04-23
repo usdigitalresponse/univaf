@@ -1,5 +1,6 @@
 "use strict";
 
+const server = require("./server");
 const Sentry = require("@sentry/node");
 const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
@@ -8,7 +9,7 @@ const { sources } = require("./index");
 Sentry.init();
 
 async function runSources(targets, handler, options) {
-  targets = targets.length ? targets : Object.getOwnPropertyNames(sources);
+  targets = (targets && targets.length) ? targets : Object.getOwnPropertyNames(sources);
 
   const runs = targets.map((name) => {
     const source = sources[name];
@@ -48,6 +49,7 @@ function compoundHandler(...handlers) {
   };
 }
 
+// Returns true on success, and false on failure.
 async function run(options) {
   const jsonSpacing = options.compact ? 0 : 2;
 
@@ -56,6 +58,7 @@ async function run(options) {
     handler = compoundHandler(handler, createDatabaseSender());
   }
 
+  let success = true;
   const startTime = Date.now();
   try {
     const reports = await runSources(options.sources, handler, options);
@@ -80,6 +83,7 @@ async function run(options) {
           } ${saveResult.error?.message || "unknown reason"}`;
           console.error(message);
           Sentry.captureMessage(message, Sentry.Severity.Error);
+          success = false;
         }
       }
     }
@@ -87,21 +91,36 @@ async function run(options) {
     let successCount = 0;
     for (let report of reports) {
       if (report.error) {
+        // TODO: should any errors result in an error being returned?
         console.error(`Error in "${report.name}":`, report.error, "\n");
         Sentry.captureException(report.error);
         process.exitCode = 90;
+        success = false
       } else {
         successCount++;
       }
     }
     if (successCount === 0) {
       process.exitCode = 1;
+      success = false
     }
+
   } catch (error) {
     console.error(`Error: ${error}`);
     Sentry.captureException(error);
+    success = false;
   } finally {
     console.error(`Completed in ${(Date.now() - startTime) / 1000} seconds.`);
+  }
+  return success
+}
+
+// Run either the server or one-off CLI.
+function entrypoint(options) {
+  if (options.server) {
+    server.runServer(run, options);
+  } else {
+    run(options).then();
   }
 }
 
@@ -118,6 +137,11 @@ function main() {
       `.trim(),
       builder: (yargs) =>
         yargs
+          .option("server", {
+            type: "boolean",
+            describe:
+              "Run this as a server rather than a 1-off CLI",
+          })
           .option("send", {
             type: "boolean",
             describe:
@@ -136,7 +160,7 @@ function main() {
             type: "string",
             describe: "Overrides the `--states` option for vaccinespotter",
           }),
-      handler: run,
+      handler: entrypoint,
     })
     .help().argv;
 }
