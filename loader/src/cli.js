@@ -153,13 +153,9 @@ function main() {
       describe: `
         Start a web server that loads vaccine appointment availability when an
         HTTP POST request is made to "/".
+
+        Use the "PORT" environment variable to specify what port to listen on.
       `.trim(),
-      builder: (yargs) =>
-        yargs.option("send", {
-          type: "boolean",
-          describe:
-            "Send availability info to the API specified by the environment variable API_URL",
-        }),
       handler(options) {
         return server.runServer(run, options);
       },
