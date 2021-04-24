@@ -3,7 +3,7 @@ const http = require("http");
 const Sentry = require("@sentry/node");
 
 const hostname = "0.0.0.0";
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3010;
 
 /**
  * Start an HTTP server that loads data from a set of sources on request.
