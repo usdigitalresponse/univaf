@@ -115,15 +115,6 @@ async function run(options) {
   return success;
 }
 
-// Run either the server or one-off CLI.
-function entrypoint(options) {
-  if (options.server) {
-    server.runServer(run, options);
-  } else {
-    run(options).then();
-  }
-}
-
 function main() {
   yargs
     .scriptName("appointment-availability-loader")
@@ -137,10 +128,6 @@ function main() {
       `.trim(),
       builder: (yargs) =>
         yargs
-          .option("server", {
-            type: "boolean",
-            describe: "Run this as a server rather than a 1-off CLI",
-          })
           .option("send", {
             type: "boolean",
             describe:
@@ -159,7 +146,23 @@ function main() {
             type: "string",
             describe: "Overrides the `--states` option for vaccinespotter",
           }),
-      handler: entrypoint,
+      handler: run,
+    })
+    .command({
+      command: "server",
+      describe: `
+        Start a web server that loads vaccine appointment availability when an
+        HTTP POST request is made to "/".
+      `.trim(),
+      builder: (yargs) =>
+        yargs.option("send", {
+          type: "boolean",
+          describe:
+            "Send availability info to the API specified by the environment variable API_URL",
+        }),
+      handler(options) {
+        return server.runServer(run, options);
+      },
     })
     .help().argv;
 }
