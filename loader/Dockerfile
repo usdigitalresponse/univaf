@@ -20,3 +20,4 @@ ENV API_KEY=""
 
 # run our built server
 ENTRYPOINT ["node", "./bin/appointment-availability-loader", "--send", "--compact"]
+
