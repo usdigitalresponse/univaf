@@ -36,7 +36,7 @@ function runServer(runFunc, options) {
       return;
     }
 
-    console.error(`[${new Date().toISOString()}] Received POST data:`, data);
+    console.log(`[${new Date().toISOString()}] Received POST data:`, data);
 
     let success = false;
     try {
@@ -53,6 +53,8 @@ function runServer(runFunc, options) {
   server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
   });
+
+  return server;
 }
 
 module.exports = { runServer };
