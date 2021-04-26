@@ -5,15 +5,20 @@ const Sentry = require("@sentry/node");
 
 const hostname = "0.0.0.0";
 const port = process.env.PORT || 3010;
+let server = null;
 
 function shutdown(signal) {
   return (err) => {
-    console.log(`${signal}...`);
-    if (err) console.error(err.stack || err);
+    console.log(`${signal}: shutting down server...`);
+    const isSignal = typeof err === "string" && err.startsWith("SIG");
+    if (!isSignal) console.error(err.stack || err);
+
     setTimeout(() => {
       console.log("...waited 5s, exiting.");
       process.exit(err ? 1 : 0);
     }, 5000).unref();
+
+    if (server) server.close();
   };
 }
 
@@ -37,7 +42,7 @@ function runServer(runFunc, options) {
     .on("SIGINT", shutdown("SIGINT"))
     .on("uncaughtException", shutdown("uncaughtException"));
 
-  const server = http.createServer(async (request, res) => {
+  server = http.createServer(async (request, res) => {
     res.setHeader("Content-Type", "text/plain");
 
     let data;
