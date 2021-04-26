@@ -15,7 +15,7 @@ function shutdown(signal) {
 
     setTimeout(() => {
       console.log("...waited 5s, exiting.");
-      process.exit(err ? 1 : 0);
+      process.exit(isSignal ? 0 : 1);
     }, 5000).unref();
 
     if (server) server.close();
