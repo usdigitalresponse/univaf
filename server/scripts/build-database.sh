@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 if [ -z "${DB_NAME}" ]; then
   echo "Please set the DB_NAME environment variable."
@@ -7,6 +8,7 @@ fi
 
 case "$ENV" in
   production) export CMD="" ;; # in prod, just run against the live db
+     localdb) export CMD="" ;; # same for local, non-dockerized db
            *) export CMD="docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume $(pwd)/db:/db postgres" ;;
 esac
 
