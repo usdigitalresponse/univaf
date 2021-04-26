@@ -1,9 +1,21 @@
 const getStream = require("get-stream");
 const http = require("http");
+const process = require("process");
 const Sentry = require("@sentry/node");
 
 const hostname = "0.0.0.0";
 const port = process.env.PORT || 3010;
+
+function shutdown(signal) {
+  return (err) => {
+    console.log(`${signal}...`);
+    if (err) console.error(err.stack || err);
+    setTimeout(() => {
+      console.log("...waited 5s, exiting.");
+      process.exit(err ? 1 : 0);
+    }, 5000).unref();
+  };
+}
 
 /**
  * Start an HTTP server that loads data from a set of sources on request.
@@ -20,6 +32,11 @@ const port = process.env.PORT || 3010;
  * @param {any} options CLI options to start the server or run the sources with.
  */
 function runServer(runFunc, options) {
+  process
+    .on("SIGTERM", shutdown("SIGTERM"))
+    .on("SIGINT", shutdown("SIGINT"))
+    .on("uncaughtException", shutdown("uncaughtException"));
+
   const server = http.createServer(async (request, res) => {
     res.setHeader("Content-Type", "text/plain");
 
