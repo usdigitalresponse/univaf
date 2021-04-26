@@ -1,9 +1,40 @@
 const getStream = require("get-stream");
 const http = require("http");
+const process = require("process");
 const Sentry = require("@sentry/node");
 
 const hostname = "0.0.0.0";
 const port = process.env.PORT || 3010;
+const shutdownSignals = ["SIGTERM", "SIGINT"];
+let server = null;
+
+function shutdown(signal) {
+  return (error) => {
+    // Unhook signals to guarantee we can shut down with them.
+    // (Bash expects a program sent a signal to kill itself with that same
+    // signal, and handles it poorly if done differently.)
+    for (const signal in shutdownSignals) process.removeAllListeners(signal);
+
+    console.log(`${signal}: shutting down server...`);
+    const isSignal = typeof error === "string" && error.startsWith("SIG");
+    if (!isSignal) console.error(error.stack || error);
+
+    setTimeout(() => {
+      console.log("...waited 5s, exiting.");
+      process.exit(isSignal ? 0 : 1);
+    }, 5000).unref();
+
+    if (server) {
+      server.close(() => {
+        if (isSignal) {
+          process.kill(process.pid, error);
+        } else {
+          process.exit(1);
+        }
+      });
+    }
+  };
+}
 
 /**
  * Start an HTTP server that loads data from a set of sources on request.
@@ -20,7 +51,10 @@ const port = process.env.PORT || 3010;
  * @param {any} options CLI options to start the server or run the sources with.
  */
 function runServer(runFunc, options) {
-  const server = http.createServer(async (request, res) => {
+  for (const signal in shutdownSignals) process.on(signal, shutdown(signal));
+  process.on("uncaughtException", shutdown("uncaughtException"));
+
+  server = http.createServer(async (request, res) => {
     res.setHeader("Content-Type", "text/plain");
 
     let data;
