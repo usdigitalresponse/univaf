@@ -70,6 +70,7 @@ module "rite_aid_loader" {
 
   name          = "riteAidApi"
   loader_source = "riteAidApi"
+  command       = ["--states", "CA,CT,DE,ID,MA,MD,MI,NJ,NY,OH,OR,PA,VA,VT,WA"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
