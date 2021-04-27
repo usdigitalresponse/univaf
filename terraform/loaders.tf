@@ -64,3 +64,21 @@ module "vaccinespotter_loader" {
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
 }
+
+module "rite_aid_loader" {
+  source = "./modules/loader"
+
+  name          = "riteAidApi"
+  loader_source = "riteAidApi"
+  api_url       = "http://${aws_alb.main.dns_name}"
+  api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
+  schedule      = "rate(2 minutes)"
+  cluster_arn   = aws_ecs_cluster.main.arn
+  role          = aws_iam_role.ecs_task_execution_role.arn
+  subnets       = aws_subnet.public.*.id
+  env_vars = {
+    RITE_AID_URL = var.rite_aid_api_url
+    RITE_AID_KEY = var.rite_aid_api_key
+  }
+}

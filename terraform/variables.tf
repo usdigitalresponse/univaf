@@ -75,6 +75,16 @@ variable "cvs_api_key" {
   sensitive   = true
 }
 
+variable "rite_aid_api_url" {
+  description = "The Rite Aid API URL"
+  default     = "https://api.riteaid.com/digital/Covid19-Vaccine/ProviderDetails"
+}
+
+variable "rite_aid_api_key" {
+  description = "The Rite Aid API Key"
+  sensitive   = true
+}
+
 variable "njvss_aws_key_id" {
   sensitive = true
 }
