@@ -1,0 +1,2080 @@
+{
+  "07001": {
+    "counties": ["Middlesex County"]
+  },
+  "07002": {
+    "counties": ["Hudson County"]
+  },
+  "07003": {
+    "counties": ["Essex County"]
+  },
+  "07004": {
+    "counties": ["Essex County"]
+  },
+  "07005": {
+    "counties": ["Morris County"]
+  },
+  "07006": {
+    "counties": ["Essex County", "Passaic County"]
+  },
+  "07007": {
+    "counties": ["Essex County"]
+  },
+  "07008": {
+    "counties": ["Middlesex County"]
+  },
+  "07009": {
+    "counties": ["Essex County"]
+  },
+  "07010": {
+    "counties": ["Bergen County"]
+  },
+  "07011": {
+    "counties": ["Passaic County"]
+  },
+  "07012": {
+    "counties": ["Passaic County"]
+  },
+  "07013": {
+    "counties": ["Passaic County"]
+  },
+  "07014": {
+    "counties": ["Essex County", "Passaic County"]
+  },
+  "07015": {
+    "counties": ["Passaic County"]
+  },
+  "07016": {
+    "counties": ["Union County"]
+  },
+  "07017": {
+    "counties": ["Essex County"]
+  },
+  "07018": {
+    "counties": ["Essex County"]
+  },
+  "07019": {
+    "counties": ["Essex County"]
+  },
+  "07020": {
+    "counties": ["Bergen County"]
+  },
+  "07021": {
+    "counties": ["Essex County"]
+  },
+  "07022": {
+    "counties": ["Bergen County"]
+  },
+  "07023": {
+    "counties": ["Union County"]
+  },
+  "07024": {
+    "counties": ["Bergen County"]
+  },
+  "07026": {
+    "counties": ["Bergen County"]
+  },
+  "07027": {
+    "counties": ["Union County"]
+  },
+  "07028": {
+    "counties": ["Essex County"]
+  },
+  "07029": {
+    "counties": ["Hudson County"]
+  },
+  "07030": {
+    "counties": ["Hudson County"]
+  },
+  "07031": {
+    "counties": ["Bergen County", "Hudson County"]
+  },
+  "07032": {
+    "counties": ["Bergen County", "Hudson County"]
+  },
+  "07033": {
+    "counties": ["Union County"]
+  },
+  "07034": {
+    "counties": ["Morris County"]
+  },
+  "07035": {
+    "counties": ["Morris County"]
+  },
+  "07036": {
+    "counties": ["Union County"]
+  },
+  "07039": {
+    "counties": ["Essex County"]
+  },
+  "07040": {
+    "counties": ["Essex County", "Union County"]
+  },
+  "07041": {
+    "counties": ["Essex County"]
+  },
+  "07042": {
+    "counties": ["Essex County"]
+  },
+  "07043": {
+    "counties": ["Essex County", "Passaic County"]
+  },
+  "07044": {
+    "counties": ["Essex County"]
+  },
+  "07045": {
+    "counties": ["Morris County"]
+  },
+  "07046": {
+    "counties": ["Morris County"]
+  },
+  "07047": {
+    "counties": ["Hudson County", "Bergen County"]
+  },
+  "07050": {
+    "counties": ["Essex County"]
+  },
+  "07051": {
+    "counties": ["Essex County"]
+  },
+  "07052": {
+    "counties": ["Essex County"]
+  },
+  "07054": {
+    "counties": ["Morris County"]
+  },
+  "07055": {
+    "counties": ["Passaic County"]
+  },
+  "07057": {
+    "counties": ["Bergen County"]
+  },
+  "07058": {
+    "counties": ["Morris County"]
+  },
+  "07059": {
+    "counties": ["Somerset County"]
+  },
+  "07060": {
+    "counties": ["Somerset County", "Union County"]
+  },
+  "07061": {
+    "counties": ["Union County"]
+  },
+  "07062": {
+    "counties": ["Somerset County", "Union County"]
+  },
+  "07063": {
+    "counties": ["Union County", "Somerset County"]
+  },
+  "07064": {
+    "counties": ["Middlesex County"]
+  },
+  "07065": {
+    "counties": ["Union County", "Middlesex County"]
+  },
+  "07066": {
+    "counties": ["Union County"]
+  },
+  "07067": {
+    "counties": ["Union County", "Middlesex County"]
+  },
+  "07068": {
+    "counties": ["Essex County"]
+  },
+  "07069": {
+    "counties": ["Union County", "Somerset County"]
+  },
+  "07070": {
+    "counties": ["Bergen County"]
+  },
+  "07071": {
+    "counties": ["Bergen County"]
+  },
+  "07072": {
+    "counties": ["Bergen County"]
+  },
+  "07073": {
+    "counties": ["Bergen County"]
+  },
+  "07074": {
+    "counties": ["Bergen County"]
+  },
+  "07075": {
+    "counties": ["Bergen County"]
+  },
+  "07076": {
+    "counties": ["Somerset County", "Union County", "Middlesex County"]
+  },
+  "07077": {
+    "counties": ["Middlesex County"]
+  },
+  "07078": {
+    "counties": ["Union County", "Essex County"]
+  },
+  "07079": {
+    "counties": ["Essex County"]
+  },
+  "07080": {
+    "counties": ["Union County", "Middlesex County"]
+  },
+  "07081": {
+    "counties": ["Union County"]
+  },
+  "07082": {
+    "counties": ["Morris County"]
+  },
+  "07083": {
+    "counties": ["Essex County", "Union County"]
+  },
+  "07086": {
+    "counties": ["Hudson County"]
+  },
+  "07087": {
+    "counties": ["Hudson County"]
+  },
+  "07088": {
+    "counties": ["Union County", "Essex County"]
+  },
+  "07090": {
+    "counties": ["Union County"]
+  },
+  "07091": {
+    "counties": ["Union County"]
+  },
+  "07092": {
+    "counties": ["Union County"]
+  },
+  "07093": {
+    "counties": ["Hudson County"]
+  },
+  "07094": {
+    "counties": ["Hudson County"]
+  },
+  "07095": {
+    "counties": ["Middlesex County"]
+  },
+  "07096": {
+    "counties": ["Hudson County"]
+  },
+  "07097": {
+    "counties": ["Hudson County"]
+  },
+  "07099": {
+    "counties": ["Hudson County"]
+  },
+  "07101": {
+    "counties": ["Essex County"]
+  },
+  "07102": {
+    "counties": ["Essex County"]
+  },
+  "07103": {
+    "counties": ["Essex County"]
+  },
+  "07104": {
+    "counties": ["Essex County"]
+  },
+  "07105": {
+    "counties": ["Essex County"]
+  },
+  "07106": {
+    "counties": ["Essex County"]
+  },
+  "07107": {
+    "counties": ["Essex County"]
+  },
+  "07108": {
+    "counties": ["Essex County"]
+  },
+  "07109": {
+    "counties": ["Essex County"]
+  },
+  "07110": {
+    "counties": ["Essex County", "Passaic County"]
+  },
+  "07111": {
+    "counties": ["Union County", "Essex County"]
+  },
+  "07112": {
+    "counties": ["Essex County"]
+  },
+  "07114": {
+    "counties": ["Union County", "Essex County"]
+  },
+  "07175": {
+    "counties": ["Essex County"]
+  },
+  "07201": {
+    "counties": ["Union County", "Essex County"]
+  },
+  "07202": {
+    "counties": ["Union County"]
+  },
+  "07203": {
+    "counties": ["Union County"]
+  },
+  "07204": {
+    "counties": ["Union County"]
+  },
+  "07205": {
+    "counties": ["Essex County", "Union County"]
+  },
+  "07206": {
+    "counties": ["Union County"]
+  },
+  "07207": {
+    "counties": ["Union County"]
+  },
+  "07208": {
+    "counties": ["Union County"]
+  },
+  "07302": {
+    "counties": ["Hudson County"]
+  },
+  "07303": {
+    "counties": ["Hudson County"]
+  },
+  "07304": {
+    "counties": ["Hudson County"]
+  },
+  "07305": {
+    "counties": ["Hudson County"]
+  },
+  "07306": {
+    "counties": ["Hudson County"]
+  },
+  "07307": {
+    "counties": ["Hudson County"]
+  },
+  "07310": {
+    "counties": ["Hudson County"]
+  },
+  "07311": {
+    "counties": ["Hudson County"]
+  },
+  "07399": {
+    "counties": ["Hudson County"]
+  },
+  "07401": {
+    "counties": ["Bergen County"]
+  },
+  "07403": {
+    "counties": ["Passaic County", "Morris County"]
+  },
+  "07405": {
+    "counties": ["Morris County"]
+  },
+  "07407": {
+    "counties": ["Bergen County"]
+  },
+  "07410": {
+    "counties": ["Bergen County"]
+  },
+  "07416": {
+    "counties": ["Sussex County"]
+  },
+  "07417": {
+    "counties": ["Bergen County"]
+  },
+  "07418": {
+    "counties": ["Sussex County"]
+  },
+  "07419": {
+    "counties": ["Sussex County"]
+  },
+  "07420": {
+    "counties": ["Passaic County"]
+  },
+  "07421": {
+    "counties": ["Passaic County", "Sussex County"]
+  },
+  "07422": {
+    "counties": ["Sussex County"]
+  },
+  "07423": {
+    "counties": ["Bergen County"]
+  },
+  "07424": {
+    "counties": ["Passaic County"]
+  },
+  "07428": {
+    "counties": ["Sussex County"]
+  },
+  "07430": {
+    "counties": ["Bergen County"]
+  },
+  "07432": {
+    "counties": ["Bergen County"]
+  },
+  "07435": {
+    "counties": ["Passaic County", "Morris County"]
+  },
+  "07436": {
+    "counties": ["Bergen County"]
+  },
+  "07438": {
+    "counties": ["Morris County", "Passaic County"]
+  },
+  "07439": {
+    "counties": ["Sussex County"]
+  },
+  "07440": {
+    "counties": ["Morris County"]
+  },
+  "07442": {
+    "counties": ["Passaic County"]
+  },
+  "07444": {
+    "counties": ["Morris County"]
+  },
+  "07446": {
+    "counties": ["Bergen County"]
+  },
+  "07450": {
+    "counties": ["Bergen County"]
+  },
+  "07451": {
+    "counties": ["Bergen County"]
+  },
+  "07452": {
+    "counties": ["Bergen County"]
+  },
+  "07456": {
+    "counties": ["Passaic County"]
+  },
+  "07457": {
+    "counties": ["Morris County"]
+  },
+  "07458": {
+    "counties": ["Bergen County"]
+  },
+  "07460": {
+    "counties": ["Morris County", "Sussex County", "Passaic County"]
+  },
+  "07461": {
+    "counties": ["Sussex County"]
+  },
+  "07462": {
+    "counties": ["Sussex County"]
+  },
+  "07463": {
+    "counties": ["Bergen County"]
+  },
+  "07465": {
+    "counties": ["Passaic County"]
+  },
+  "07470": {
+    "counties": ["Passaic County"]
+  },
+  "07474": {
+    "counties": ["Passaic County"]
+  },
+  "07480": {
+    "counties": ["Passaic County"]
+  },
+  "07481": {
+    "counties": ["Bergen County"]
+  },
+  "07495": {
+    "counties": ["Bergen County"]
+  },
+  "07501": {
+    "counties": ["Passaic County"]
+  },
+  "07502": {
+    "counties": ["Passaic County"]
+  },
+  "07503": {
+    "counties": ["Passaic County"]
+  },
+  "07504": {
+    "counties": ["Passaic County"]
+  },
+  "07505": {
+    "counties": ["Passaic County"]
+  },
+  "07506": {
+    "counties": ["Passaic County", "Bergen County"]
+  },
+  "07507": {
+    "counties": ["Passaic County"]
+  },
+  "07508": {
+    "counties": ["Passaic County"]
+  },
+  "07509": {
+    "counties": ["Passaic County"]
+  },
+  "07510": {
+    "counties": ["Passaic County"]
+  },
+  "07511": {
+    "counties": ["Passaic County"]
+  },
+  "07512": {
+    "counties": ["Passaic County"]
+  },
+  "07513": {
+    "counties": ["Passaic County"]
+  },
+  "07514": {
+    "counties": ["Passaic County"]
+  },
+  "07522": {
+    "counties": ["Passaic County"]
+  },
+  "07524": {
+    "counties": ["Passaic County"]
+  },
+  "07538": {
+    "counties": ["Passaic County"]
+  },
+  "07543": {
+    "counties": ["Passaic County"]
+  },
+  "07544": {
+    "counties": ["Passaic County"]
+  },
+  "07601": {
+    "counties": ["Bergen County"]
+  },
+  "07602": {
+    "counties": ["Bergen County"]
+  },
+  "07603": {
+    "counties": ["Bergen County"]
+  },
+  "07604": {
+    "counties": ["Bergen County"]
+  },
+  "07605": {
+    "counties": ["Bergen County"]
+  },
+  "07606": {
+    "counties": ["Bergen County"]
+  },
+  "07607": {
+    "counties": ["Bergen County"]
+  },
+  "07608": {
+    "counties": ["Bergen County"]
+  },
+  "07620": {
+    "counties": ["Bergen County"]
+  },
+  "07621": {
+    "counties": ["Bergen County"]
+  },
+  "07624": {
+    "counties": ["Bergen County"]
+  },
+  "07626": {
+    "counties": ["Bergen County"]
+  },
+  "07627": {
+    "counties": ["Bergen County"]
+  },
+  "07628": {
+    "counties": ["Bergen County"]
+  },
+  "07630": {
+    "counties": ["Bergen County"]
+  },
+  "07631": {
+    "counties": ["Bergen County"]
+  },
+  "07632": {
+    "counties": ["Bergen County"]
+  },
+  "07640": {
+    "counties": ["Bergen County"]
+  },
+  "07641": {
+    "counties": ["Bergen County"]
+  },
+  "07642": {
+    "counties": ["Bergen County"]
+  },
+  "07643": {
+    "counties": ["Bergen County"]
+  },
+  "07644": {
+    "counties": ["Bergen County"]
+  },
+  "07645": {
+    "counties": ["Bergen County"]
+  },
+  "07646": {
+    "counties": ["Bergen County"]
+  },
+  "07647": {
+    "counties": ["Bergen County"]
+  },
+  "07648": {
+    "counties": ["Bergen County"]
+  },
+  "07649": {
+    "counties": ["Bergen County"]
+  },
+  "07650": {
+    "counties": ["Bergen County"]
+  },
+  "07652": {
+    "counties": ["Bergen County"]
+  },
+  "07653": {
+    "counties": ["Bergen County"]
+  },
+  "07656": {
+    "counties": ["Bergen County"]
+  },
+  "07657": {
+    "counties": ["Bergen County"]
+  },
+  "07660": {
+    "counties": ["Bergen County"]
+  },
+  "07661": {
+    "counties": ["Bergen County"]
+  },
+  "07662": {
+    "counties": ["Bergen County"]
+  },
+  "07663": {
+    "counties": ["Bergen County"]
+  },
+  "07666": {
+    "counties": ["Bergen County"]
+  },
+  "07670": {
+    "counties": ["Bergen County"]
+  },
+  "07675": {
+    "counties": ["Bergen County"]
+  },
+  "07676": {
+    "counties": ["Bergen County"]
+  },
+  "07677": {
+    "counties": ["Bergen County"]
+  },
+  "07699": {
+    "counties": ["Bergen County"]
+  },
+  "07701": {
+    "counties": ["Monmouth County"]
+  },
+  "07702": {
+    "counties": ["Monmouth County"]
+  },
+  "07704": {
+    "counties": ["Monmouth County"]
+  },
+  "07710": {
+    "counties": ["Monmouth County"]
+  },
+  "07711": {
+    "counties": ["Monmouth County"]
+  },
+  "07712": {
+    "counties": ["Monmouth County"]
+  },
+  "07716": {
+    "counties": ["Monmouth County"]
+  },
+  "07717": {
+    "counties": ["Monmouth County"]
+  },
+  "07718": {
+    "counties": ["Monmouth County"]
+  },
+  "07719": {
+    "counties": ["Monmouth County"]
+  },
+  "07720": {
+    "counties": ["Monmouth County"]
+  },
+  "07721": {
+    "counties": ["Monmouth County", "Middlesex County"]
+  },
+  "07722": {
+    "counties": ["Monmouth County"]
+  },
+  "07723": {
+    "counties": ["Monmouth County"]
+  },
+  "07724": {
+    "counties": ["Monmouth County"]
+  },
+  "07726": {
+    "counties": ["Monmouth County", "Middlesex County"]
+  },
+  "07727": {
+    "counties": ["Monmouth County"]
+  },
+  "07728": {
+    "counties": ["Monmouth County", "Ocean County"]
+  },
+  "07730": {
+    "counties": ["Monmouth County"]
+  },
+  "07731": {
+    "counties": ["Ocean County", "Monmouth County"]
+  },
+  "07732": {
+    "counties": ["Monmouth County"]
+  },
+  "07733": {
+    "counties": ["Monmouth County"]
+  },
+  "07734": {
+    "counties": ["Monmouth County"]
+  },
+  "07735": {
+    "counties": ["Middlesex County", "Monmouth County"]
+  },
+  "07737": {
+    "counties": ["Monmouth County"]
+  },
+  "07738": {
+    "counties": ["Monmouth County"]
+  },
+  "07739": {
+    "counties": ["Monmouth County"]
+  },
+  "07740": {
+    "counties": ["Monmouth County"]
+  },
+  "07746": {
+    "counties": ["Monmouth County"]
+  },
+  "07747": {
+    "counties": ["Middlesex County", "Monmouth County"]
+  },
+  "07748": {
+    "counties": ["Monmouth County"]
+  },
+  "07750": {
+    "counties": ["Monmouth County"]
+  },
+  "07751": {
+    "counties": ["Middlesex County", "Monmouth County"]
+  },
+  "07752": {
+    "counties": ["Monmouth County"]
+  },
+  "07753": {
+    "counties": ["Monmouth County"]
+  },
+  "07754": {
+    "counties": ["Monmouth County"]
+  },
+  "07755": {
+    "counties": ["Monmouth County"]
+  },
+  "07756": {
+    "counties": ["Monmouth County"]
+  },
+  "07757": {
+    "counties": ["Monmouth County"]
+  },
+  "07758": {
+    "counties": ["Monmouth County"]
+  },
+  "07760": {
+    "counties": ["Monmouth County"]
+  },
+  "07762": {
+    "counties": ["Monmouth County"]
+  },
+  "07763": {
+    "counties": ["Monmouth County"]
+  },
+  "07764": {
+    "counties": ["Monmouth County"]
+  },
+  "07765": {
+    "counties": ["Monmouth County"]
+  },
+  "07799": {
+    "counties": ["Monmouth County"]
+  },
+  "07801": {
+    "counties": ["Morris County"]
+  },
+  "07802": {
+    "counties": ["Morris County"]
+  },
+  "07803": {
+    "counties": ["Morris County"]
+  },
+  "07806": {
+    "counties": ["Morris County"]
+  },
+  "07820": {
+    "counties": ["Warren County"]
+  },
+  "07821": {
+    "counties": ["Sussex County", "Warren County"]
+  },
+  "07822": {
+    "counties": ["Sussex County"]
+  },
+  "07823": {
+    "counties": ["Warren County"]
+  },
+  "07825": {
+    "counties": ["Warren County", "Sussex County"]
+  },
+  "07826": {
+    "counties": ["Sussex County"]
+  },
+  "07827": {
+    "counties": ["Sussex County"]
+  },
+  "07828": {
+    "counties": ["Morris County", "Warren County"]
+  },
+  "07830": {
+    "counties": ["Hunterdon County", "Morris County"]
+  },
+  "07831": {
+    "counties": ["Hunterdon County"]
+  },
+  "07832": {
+    "counties": ["Warren County", "Sussex County"]
+  },
+  "07833": {
+    "counties": ["Warren County"]
+  },
+  "07834": {
+    "counties": ["Morris County"]
+  },
+  "07836": {
+    "counties": ["Morris County"]
+  },
+  "07837": {
+    "counties": ["Sussex County"]
+  },
+  "07838": {
+    "counties": ["Warren County"]
+  },
+  "07839": {
+    "counties": ["Sussex County"]
+  },
+  "07840": {
+    "counties": ["Morris County", "Warren County"]
+  },
+  "07842": {
+    "counties": ["Morris County"]
+  },
+  "07843": {
+    "counties": ["Sussex County"]
+  },
+  "07844": {
+    "counties": ["Warren County"]
+  },
+  "07845": {
+    "counties": ["Morris County"]
+  },
+  "07846": {
+    "counties": ["Warren County"]
+  },
+  "07847": {
+    "counties": ["Morris County"]
+  },
+  "07848": {
+    "counties": ["Sussex County"]
+  },
+  "07849": {
+    "counties": ["Sussex County", "Morris County"]
+  },
+  "07850": {
+    "counties": ["Morris County"]
+  },
+  "07851": {
+    "counties": ["Sussex County"]
+  },
+  "07852": {
+    "counties": ["Morris County"]
+  },
+  "07853": {
+    "counties": ["Morris County"]
+  },
+  "07855": {
+    "counties": ["Sussex County"]
+  },
+  "07856": {
+    "counties": ["Morris County"]
+  },
+  "07857": {
+    "counties": ["Morris County", "Sussex County"]
+  },
+  "07860": {
+    "counties": ["Sussex County", "Warren County"]
+  },
+  "07863": {
+    "counties": ["Warren County"]
+  },
+  "07865": {
+    "counties": ["Warren County", "Hunterdon County", "Morris County"]
+  },
+  "07866": {
+    "counties": ["Morris County"]
+  },
+  "07869": {
+    "counties": ["Morris County"]
+  },
+  "07870": {
+    "counties": ["Morris County"]
+  },
+  "07871": {
+    "counties": ["Sussex County"]
+  },
+  "07874": {
+    "counties": ["Sussex County", "Warren County"]
+  },
+  "07875": {
+    "counties": ["Sussex County"]
+  },
+  "07876": {
+    "counties": ["Morris County"]
+  },
+  "07877": {
+    "counties": ["Sussex County"]
+  },
+  "07878": {
+    "counties": ["Morris County"]
+  },
+  "07879": {
+    "counties": ["Sussex County"]
+  },
+  "07880": {
+    "counties": ["Warren County"]
+  },
+  "07882": {
+    "counties": ["Hunterdon County", "Warren County"]
+  },
+  "07885": {
+    "counties": ["Morris County"]
+  },
+  "07890": {
+    "counties": ["Sussex County"]
+  },
+  "07901": {
+    "counties": ["Union County"]
+  },
+  "07902": {
+    "counties": ["Union County"]
+  },
+  "07920": {
+    "counties": ["Somerset County", "Morris County"]
+  },
+  "07921": {
+    "counties": ["Somerset County"]
+  },
+  "07922": {
+    "counties": ["Union County", "Somerset County"]
+  },
+  "07924": {
+    "counties": ["Morris County", "Somerset County"]
+  },
+  "07926": {
+    "counties": ["Morris County"]
+  },
+  "07927": {
+    "counties": ["Morris County"]
+  },
+  "07928": {
+    "counties": ["Morris County", "Union County"]
+  },
+  "07930": {
+    "counties": ["Morris County"]
+  },
+  "07931": {
+    "counties": ["Morris County", "Somerset County"]
+  },
+  "07932": {
+    "counties": ["Morris County"]
+  },
+  "07933": {
+    "counties": ["Morris County"]
+  },
+  "07934": {
+    "counties": ["Morris County", "Somerset County"]
+  },
+  "07935": {
+    "counties": ["Morris County"]
+  },
+  "07936": {
+    "counties": ["Morris County"]
+  },
+  "07938": {
+    "counties": ["Somerset County"]
+  },
+  "07939": {
+    "counties": ["Somerset County"]
+  },
+  "07940": {
+    "counties": ["Morris County"]
+  },
+  "07945": {
+    "counties": ["Morris County"]
+  },
+  "07946": {
+    "counties": ["Morris County"]
+  },
+  "07950": {
+    "counties": ["Morris County"]
+  },
+  "07960": {
+    "counties": ["Morris County"]
+  },
+  "07961": {
+    "counties": ["Morris County"]
+  },
+  "07962": {
+    "counties": ["Morris County"]
+  },
+  "07963": {
+    "counties": ["Morris County"]
+  },
+  "07970": {
+    "counties": ["Morris County"]
+  },
+  "07974": {
+    "counties": ["Union County"]
+  },
+  "07976": {
+    "counties": ["Morris County"]
+  },
+  "07977": {
+    "counties": ["Somerset County"]
+  },
+  "07978": {
+    "counties": ["Somerset County"]
+  },
+  "07979": {
+    "counties": ["Hunterdon County"]
+  },
+  "07980": {
+    "counties": ["Morris County"]
+  },
+  "07981": {
+    "counties": ["Morris County"]
+  },
+  "08001": {
+    "counties": ["Salem County"]
+  },
+  "08002": {
+    "counties": ["Camden County"]
+  },
+  "08003": {
+    "counties": ["Camden County"]
+  },
+  "08004": {
+    "counties": ["Camden County"]
+  },
+  "08005": {
+    "counties": ["Ocean County"]
+  },
+  "08006": {
+    "counties": ["Ocean County"]
+  },
+  "08007": {
+    "counties": ["Camden County"]
+  },
+  "08008": {
+    "counties": ["Ocean County"]
+  },
+  "08009": {
+    "counties": ["Camden County"]
+  },
+  "08010": {
+    "counties": ["Burlington County"]
+  },
+  "08011": {
+    "counties": ["Burlington County"]
+  },
+  "08012": {
+    "counties": ["Camden County", "Gloucester County"]
+  },
+  "08014": {
+    "counties": ["Gloucester County"]
+  },
+  "08015": {
+    "counties": ["Burlington County"]
+  },
+  "08016": {
+    "counties": ["Burlington County"]
+  },
+  "08018": {
+    "counties": ["Camden County"]
+  },
+  "08019": {
+    "counties": ["Burlington County"]
+  },
+  "08020": {
+    "counties": ["Gloucester County"]
+  },
+  "08021": {
+    "counties": ["Camden County"]
+  },
+  "08022": {
+    "counties": ["Burlington County"]
+  },
+  "08023": {
+    "counties": ["Salem County"]
+  },
+  "08025": {
+    "counties": ["Gloucester County"]
+  },
+  "08026": {
+    "counties": ["Camden County"]
+  },
+  "08027": {
+    "counties": ["Gloucester County"]
+  },
+  "08028": {
+    "counties": ["Gloucester County"]
+  },
+  "08029": {
+    "counties": ["Camden County"]
+  },
+  "08030": {
+    "counties": ["Camden County"]
+  },
+  "08031": {
+    "counties": ["Camden County"]
+  },
+  "08032": {
+    "counties": ["Gloucester County"]
+  },
+  "08033": {
+    "counties": ["Camden County"]
+  },
+  "08034": {
+    "counties": ["Camden County"]
+  },
+  "08035": {
+    "counties": ["Camden County"]
+  },
+  "08036": {
+    "counties": ["Burlington County"]
+  },
+  "08037": {
+    "counties": ["Camden County", "Atlantic County"]
+  },
+  "08038": {
+    "counties": ["Salem County"]
+  },
+  "08039": {
+    "counties": ["Gloucester County"]
+  },
+  "08041": {
+    "counties": ["Burlington County"]
+  },
+  "08042": {
+    "counties": ["Burlington County"]
+  },
+  "08043": {
+    "counties": ["Burlington County", "Camden County"]
+  },
+  "08045": {
+    "counties": ["Camden County"]
+  },
+  "08046": {
+    "counties": ["Burlington County"]
+  },
+  "08048": {
+    "counties": ["Burlington County"]
+  },
+  "08049": {
+    "counties": ["Camden County"]
+  },
+  "08050": {
+    "counties": ["Ocean County"]
+  },
+  "08051": {
+    "counties": ["Gloucester County"]
+  },
+  "08052": {
+    "counties": ["Burlington County", "Camden County"]
+  },
+  "08053": {
+    "counties": ["Camden County", "Burlington County"]
+  },
+  "08054": {
+    "counties": ["Burlington County"]
+  },
+  "08055": {
+    "counties": ["Burlington County"]
+  },
+  "08056": {
+    "counties": ["Gloucester County"]
+  },
+  "08057": {
+    "counties": ["Burlington County"]
+  },
+  "08059": {
+    "counties": ["Camden County"]
+  },
+  "08060": {
+    "counties": ["Burlington County"]
+  },
+  "08061": {
+    "counties": ["Gloucester County"]
+  },
+  "08062": {
+    "counties": ["Gloucester County"]
+  },
+  "08063": {
+    "counties": ["Gloucester County"]
+  },
+  "08064": {
+    "counties": ["Burlington County"]
+  },
+  "08065": {
+    "counties": ["Camden County", "Burlington County"]
+  },
+  "08066": {
+    "counties": ["Gloucester County"]
+  },
+  "08067": {
+    "counties": ["Salem County"]
+  },
+  "08068": {
+    "counties": ["Burlington County"]
+  },
+  "08069": {
+    "counties": ["Salem County"]
+  },
+  "08070": {
+    "counties": ["Salem County"]
+  },
+  "08071": {
+    "counties": ["Gloucester County"]
+  },
+  "08072": {
+    "counties": ["Salem County"]
+  },
+  "08073": {
+    "counties": ["Burlington County"]
+  },
+  "08074": {
+    "counties": ["Gloucester County"]
+  },
+  "08075": {
+    "counties": ["Burlington County"]
+  },
+  "08077": {
+    "counties": ["Burlington County"]
+  },
+  "08078": {
+    "counties": ["Camden County"]
+  },
+  "08079": {
+    "counties": ["Salem County"]
+  },
+  "08080": {
+    "counties": ["Gloucester County", "Camden County"]
+  },
+  "08081": {
+    "counties": ["Camden County", "Gloucester County"]
+  },
+  "08083": {
+    "counties": ["Camden County"]
+  },
+  "08084": {
+    "counties": ["Camden County"]
+  },
+  "08085": {
+    "counties": ["Salem County", "Gloucester County"]
+  },
+  "08086": {
+    "counties": ["Gloucester County"]
+  },
+  "08087": {
+    "counties": ["Ocean County", "Burlington County"]
+  },
+  "08088": {
+    "counties": ["Burlington County"]
+  },
+  "08089": {
+    "counties": ["Camden County"]
+  },
+  "08090": {
+    "counties": ["Gloucester County"]
+  },
+  "08091": {
+    "counties": ["Camden County", "Burlington County"]
+  },
+  "08092": {
+    "counties": ["Ocean County"]
+  },
+  "08093": {
+    "counties": ["Gloucester County"]
+  },
+  "08094": {
+    "counties": ["Gloucester County", "Atlantic County"]
+  },
+  "08095": {
+    "counties": ["Camden County"]
+  },
+  "08096": {
+    "counties": ["Gloucester County"]
+  },
+  "08097": {
+    "counties": ["Gloucester County"]
+  },
+  "08098": {
+    "counties": ["Gloucester County", "Salem County"]
+  },
+  "08099": {
+    "counties": ["Camden County"]
+  },
+  "08101": {
+    "counties": ["Camden County"]
+  },
+  "08102": {
+    "counties": ["Camden County"]
+  },
+  "08103": {
+    "counties": ["Camden County"]
+  },
+  "08104": {
+    "counties": ["Camden County"]
+  },
+  "08105": {
+    "counties": ["Camden County"]
+  },
+  "08106": {
+    "counties": ["Camden County"]
+  },
+  "08107": {
+    "counties": ["Camden County"]
+  },
+  "08108": {
+    "counties": ["Camden County"]
+  },
+  "08109": {
+    "counties": ["Camden County"]
+  },
+  "08110": {
+    "counties": ["Camden County", "Burlington County"]
+  },
+  "08201": {
+    "counties": ["Atlantic County"]
+  },
+  "08202": {
+    "counties": ["Cape May County"]
+  },
+  "08203": {
+    "counties": ["Atlantic County"]
+  },
+  "08204": {
+    "counties": ["Cape May County"]
+  },
+  "08205": {
+    "counties": ["Atlantic County"]
+  },
+  "08210": {
+    "counties": ["Cape May County"]
+  },
+  "08212": {
+    "counties": ["Cape May County"]
+  },
+  "08213": {
+    "counties": ["Atlantic County"]
+  },
+  "08214": {
+    "counties": ["Cape May County"]
+  },
+  "08215": {
+    "counties": ["Atlantic County", "Burlington County"]
+  },
+  "08217": {
+    "counties": ["Atlantic County"]
+  },
+  "08218": {
+    "counties": ["Cape May County"]
+  },
+  "08219": {
+    "counties": ["Cape May County"]
+  },
+  "08220": {
+    "counties": ["Atlantic County"]
+  },
+  "08221": {
+    "counties": ["Atlantic County"]
+  },
+  "08223": {
+    "counties": ["Cape May County"]
+  },
+  "08224": {
+    "counties": ["Burlington County"]
+  },
+  "08225": {
+    "counties": ["Atlantic County"]
+  },
+  "08226": {
+    "counties": ["Cape May County"]
+  },
+  "08230": {
+    "counties": ["Cape May County"]
+  },
+  "08231": {
+    "counties": ["Atlantic County"]
+  },
+  "08232": {
+    "counties": ["Atlantic County"]
+  },
+  "08234": {
+    "counties": ["Atlantic County"]
+  },
+  "08240": {
+    "counties": ["Atlantic County"]
+  },
+  "08241": {
+    "counties": ["Atlantic County"]
+  },
+  "08242": {
+    "counties": ["Cape May County"]
+  },
+  "08243": {
+    "counties": ["Cape May County"]
+  },
+  "08244": {
+    "counties": ["Atlantic County"]
+  },
+  "08245": {
+    "counties": ["Cape May County"]
+  },
+  "08246": {
+    "counties": ["Cape May County"]
+  },
+  "08247": {
+    "counties": ["Cape May County"]
+  },
+  "08248": {
+    "counties": ["Cape May County"]
+  },
+  "08250": {
+    "counties": ["Cape May County"]
+  },
+  "08251": {
+    "counties": ["Cape May County"]
+  },
+  "08252": {
+    "counties": ["Cape May County"]
+  },
+  "08260": {
+    "counties": ["Cape May County"]
+  },
+  "08270": {
+    "counties": ["Cape May County", "Cumberland County", "Atlantic County"]
+  },
+  "08302": {
+    "counties": ["Cumberland County", "Salem County"]
+  },
+  "08310": {
+    "counties": ["Atlantic County"]
+  },
+  "08311": {
+    "counties": ["Cumberland County"]
+  },
+  "08312": {
+    "counties": ["Gloucester County"]
+  },
+  "08313": {
+    "counties": ["Cumberland County"]
+  },
+  "08314": {
+    "counties": ["Cumberland County", "Cape May County"]
+  },
+  "08315": {
+    "counties": ["Cumberland County"]
+  },
+  "08316": {
+    "counties": ["Cumberland County"]
+  },
+  "08317": {
+    "counties": ["Atlantic County"]
+  },
+  "08318": {
+    "counties": ["Salem County", "Cumberland County"]
+  },
+  "08319": {
+    "counties": ["Atlantic County"]
+  },
+  "08320": {
+    "counties": ["Cumberland County"]
+  },
+  "08321": {
+    "counties": ["Cumberland County"]
+  },
+  "08322": {
+    "counties": ["Gloucester County"]
+  },
+  "08323": {
+    "counties": ["Cumberland County"]
+  },
+  "08324": {
+    "counties": ["Cumberland County"]
+  },
+  "08326": {
+    "counties": ["Atlantic County"]
+  },
+  "08327": {
+    "counties": ["Cumberland County"]
+  },
+  "08328": {
+    "counties": ["Gloucester County"]
+  },
+  "08329": {
+    "counties": ["Cumberland County"]
+  },
+  "08330": {
+    "counties": ["Atlantic County"]
+  },
+  "08332": {
+    "counties": ["Cumberland County"]
+  },
+  "08340": {
+    "counties": ["Atlantic County", "Cumberland County"]
+  },
+  "08341": {
+    "counties": ["Atlantic County"]
+  },
+  "08342": {
+    "counties": ["Atlantic County"]
+  },
+  "08343": {
+    "counties": ["Gloucester County", "Salem County"]
+  },
+  "08344": {
+    "counties": [
+      "Salem County",
+      "Atlantic County",
+      "Cumberland County",
+      "Gloucester County"
+    ]
+  },
+  "08345": {
+    "counties": ["Cumberland County"]
+  },
+  "08346": {
+    "counties": ["Atlantic County"]
+  },
+  "08347": {
+    "counties": ["Salem County"]
+  },
+  "08348": {
+    "counties": ["Cumberland County"]
+  },
+  "08349": {
+    "counties": ["Cumberland County"]
+  },
+  "08350": {
+    "counties": ["Atlantic County"]
+  },
+  "08352": {
+    "counties": ["Cumberland County"]
+  },
+  "08353": {
+    "counties": ["Cumberland County"]
+  },
+  "08360": {
+    "counties": ["Atlantic County", "Gloucester County", "Cumberland County"]
+  },
+  "08361": {
+    "counties": ["Atlantic County", "Cumberland County"]
+  },
+  "08362": {
+    "counties": ["Cumberland County"]
+  },
+  "08401": {
+    "counties": ["Atlantic County"]
+  },
+  "08402": {
+    "counties": ["Atlantic County"]
+  },
+  "08403": {
+    "counties": ["Atlantic County"]
+  },
+  "08404": {
+    "counties": ["Atlantic County"]
+  },
+  "08405": {
+    "counties": ["Atlantic County"]
+  },
+  "08406": {
+    "counties": ["Atlantic County"]
+  },
+  "08501": {
+    "counties": ["Monmouth County", "Burlington County", "Mercer County"]
+  },
+  "08502": {
+    "counties": ["Somerset County"]
+  },
+  "08504": {
+    "counties": ["Somerset County"]
+  },
+  "08505": {
+    "counties": ["Burlington County"]
+  },
+  "08510": {
+    "counties": ["Monmouth County"]
+  },
+  "08511": {
+    "counties": ["Burlington County"]
+  },
+  "08512": {
+    "counties": ["Mercer County", "Middlesex County"]
+  },
+  "08514": {
+    "counties": ["Ocean County", "Monmouth County"]
+  },
+  "08515": {
+    "counties": ["Burlington County"]
+  },
+  "08518": {
+    "counties": ["Burlington County"]
+  },
+  "08520": {
+    "counties": ["Monmouth County", "Mercer County", "Middlesex County"]
+  },
+  "08525": {
+    "counties": ["Somerset County", "Mercer County", "Hunterdon County"]
+  },
+  "08527": {
+    "counties": ["Monmouth County", "Ocean County"]
+  },
+  "08528": {
+    "counties": ["Somerset County", "Middlesex County"]
+  },
+  "08530": {
+    "counties": ["Mercer County", "Hunterdon County"]
+  },
+  "08533": {
+    "counties": ["Ocean County", "Burlington County"]
+  },
+  "08534": {
+    "counties": ["Mercer County"]
+  },
+  "08535": {
+    "counties": ["Monmouth County"]
+  },
+  "08536": {
+    "counties": ["Middlesex County"]
+  },
+  "08540": {
+    "counties": ["Mercer County", "Middlesex County", "Somerset County"]
+  },
+  "08542": {
+    "counties": ["Mercer County"]
+  },
+  "08543": {
+    "counties": ["Mercer County"]
+  },
+  "08544": {
+    "counties": ["Mercer County"]
+  },
+  "08550": {
+    "counties": ["Mercer County"]
+  },
+  "08551": {
+    "counties": ["Hunterdon County"]
+  },
+  "08553": {
+    "counties": ["Somerset County"]
+  },
+  "08554": {
+    "counties": ["Burlington County"]
+  },
+  "08555": {
+    "counties": ["Monmouth County"]
+  },
+  "08556": {
+    "counties": ["Hunterdon County"]
+  },
+  "08557": {
+    "counties": ["Hunterdon County"]
+  },
+  "08558": {
+    "counties": ["Hunterdon County", "Somerset County", "Mercer County"]
+  },
+  "08559": {
+    "counties": ["Hunterdon County"]
+  },
+  "08560": {
+    "counties": ["Hunterdon County", "Mercer County"]
+  },
+  "08561": {
+    "counties": ["Mercer County"]
+  },
+  "08562": {
+    "counties": ["Monmouth County", "Burlington County"]
+  },
+  "08601": {
+    "counties": ["Mercer County"]
+  },
+  "08602": {
+    "counties": ["Mercer County"]
+  },
+  "08603": {
+    "counties": ["Mercer County"]
+  },
+  "08604": {
+    "counties": ["Mercer County"]
+  },
+  "08605": {
+    "counties": ["Mercer County"]
+  },
+  "08606": {
+    "counties": ["Mercer County"]
+  },
+  "08607": {
+    "counties": ["Mercer County"]
+  },
+  "08608": {
+    "counties": ["Mercer County"]
+  },
+  "08609": {
+    "counties": ["Mercer County"]
+  },
+  "08610": {
+    "counties": ["Burlington County", "Mercer County"]
+  },
+  "08611": {
+    "counties": ["Mercer County"]
+  },
+  "08618": {
+    "counties": ["Mercer County"]
+  },
+  "08619": {
+    "counties": ["Mercer County"]
+  },
+  "08620": {
+    "counties": ["Mercer County", "Monmouth County", "Burlington County"]
+  },
+  "08628": {
+    "counties": ["Mercer County"]
+  },
+  "08629": {
+    "counties": ["Mercer County"]
+  },
+  "08638": {
+    "counties": ["Mercer County"]
+  },
+  "08640": {
+    "counties": ["Burlington County"]
+  },
+  "08641": {
+    "counties": ["Burlington County"]
+  },
+  "08648": {
+    "counties": ["Mercer County"]
+  },
+  "08650": {
+    "counties": ["Mercer County"]
+  },
+  "08690": {
+    "counties": ["Mercer County"]
+  },
+  "08691": {
+    "counties": ["Monmouth County", "Mercer County"]
+  },
+  "08701": {
+    "counties": ["Ocean County"]
+  },
+  "08720": {
+    "counties": ["Monmouth County"]
+  },
+  "08721": {
+    "counties": ["Ocean County"]
+  },
+  "08722": {
+    "counties": ["Ocean County"]
+  },
+  "08723": {
+    "counties": ["Ocean County"]
+  },
+  "08724": {
+    "counties": ["Ocean County", "Monmouth County"]
+  },
+  "08730": {
+    "counties": ["Monmouth County"]
+  },
+  "08731": {
+    "counties": ["Ocean County"]
+  },
+  "08732": {
+    "counties": ["Ocean County"]
+  },
+  "08733": {
+    "counties": ["Ocean County"]
+  },
+  "08734": {
+    "counties": ["Ocean County"]
+  },
+  "08735": {
+    "counties": ["Ocean County"]
+  },
+  "08736": {
+    "counties": ["Monmouth County"]
+  },
+  "08738": {
+    "counties": ["Ocean County"]
+  },
+  "08739": {
+    "counties": ["Ocean County"]
+  },
+  "08740": {
+    "counties": ["Ocean County"]
+  },
+  "08741": {
+    "counties": ["Ocean County"]
+  },
+  "08742": {
+    "counties": ["Ocean County"]
+  },
+  "08750": {
+    "counties": ["Monmouth County"]
+  },
+  "08751": {
+    "counties": ["Ocean County"]
+  },
+  "08752": {
+    "counties": ["Ocean County"]
+  },
+  "08753": {
+    "counties": ["Ocean County"]
+  },
+  "08754": {
+    "counties": ["Ocean County"]
+  },
+  "08755": {
+    "counties": ["Ocean County"]
+  },
+  "08757": {
+    "counties": ["Ocean County"]
+  },
+  "08758": {
+    "counties": ["Ocean County"]
+  },
+  "08759": {
+    "counties": ["Ocean County"]
+  },
+  "08801": {
+    "counties": ["Hunterdon County"]
+  },
+  "08802": {
+    "counties": ["Hunterdon County", "Warren County"]
+  },
+  "08803": {
+    "counties": ["Hunterdon County"]
+  },
+  "08804": {
+    "counties": ["Hunterdon County", "Warren County"]
+  },
+  "08805": {
+    "counties": ["Middlesex County", "Somerset County"]
+  },
+  "08807": {
+    "counties": ["Somerset County"]
+  },
+  "08808": {
+    "counties": ["Warren County"]
+  },
+  "08809": {
+    "counties": ["Hunterdon County"]
+  },
+  "08810": {
+    "counties": ["Middlesex County"]
+  },
+  "08812": {
+    "counties": ["Middlesex County", "Somerset County", "Union County"]
+  },
+  "08816": {
+    "counties": ["Middlesex County"]
+  },
+  "08817": {
+    "counties": ["Middlesex County"]
+  },
+  "08818": {
+    "counties": ["Middlesex County"]
+  },
+  "08820": {
+    "counties": ["Union County", "Middlesex County"]
+  },
+  "08821": {
+    "counties": ["Somerset County"]
+  },
+  "08822": {
+    "counties": ["Somerset County", "Hunterdon County"]
+  },
+  "08823": {
+    "counties": ["Somerset County", "Middlesex County"]
+  },
+  "08824": {
+    "counties": ["Middlesex County"]
+  },
+  "08825": {
+    "counties": ["Hunterdon County"]
+  },
+  "08826": {
+    "counties": ["Hunterdon County"]
+  },
+  "08827": {
+    "counties": ["Warren County", "Hunterdon County"]
+  },
+  "08828": {
+    "counties": ["Middlesex County"]
+  },
+  "08829": {
+    "counties": ["Hunterdon County"]
+  },
+  "08830": {
+    "counties": ["Middlesex County"]
+  },
+  "08831": {
+    "counties": ["Middlesex County"]
+  },
+  "08832": {
+    "counties": ["Middlesex County"]
+  },
+  "08833": {
+    "counties": ["Hunterdon County"]
+  },
+  "08835": {
+    "counties": ["Somerset County"]
+  },
+  "08836": {
+    "counties": ["Somerset County"]
+  },
+  "08837": {
+    "counties": ["Middlesex County"]
+  },
+  "08840": {
+    "counties": ["Middlesex County"]
+  },
+  "08844": {
+    "counties": ["Somerset County", "Hunterdon County"]
+  },
+  "08846": {
+    "counties": ["Middlesex County"]
+  },
+  "08848": {
+    "counties": ["Warren County", "Hunterdon County"]
+  },
+  "08850": {
+    "counties": ["Middlesex County"]
+  },
+  "08852": {
+    "counties": ["Middlesex County"]
+  },
+  "08853": {
+    "counties": ["Somerset County", "Hunterdon County"]
+  },
+  "08854": {
+    "counties": ["Somerset County", "Union County", "Middlesex County"]
+  },
+  "08855": {
+    "counties": ["Middlesex County"]
+  },
+  "08857": {
+    "counties": ["Middlesex County"]
+  },
+  "08858": {
+    "counties": ["Hunterdon County"]
+  },
+  "08859": {
+    "counties": ["Middlesex County"]
+  },
+  "08861": {
+    "counties": ["Middlesex County"]
+  },
+  "08862": {
+    "counties": ["Middlesex County"]
+  },
+  "08863": {
+    "counties": ["Middlesex County"]
+  },
+  "08865": {
+    "counties": ["Warren County"]
+  },
+  "08867": {
+    "counties": ["Hunterdon County"]
+  },
+  "08868": {
+    "counties": ["Hunterdon County"]
+  },
+  "08869": {
+    "counties": ["Somerset County"]
+  },
+  "08870": {
+    "counties": ["Hunterdon County"]
+  },
+  "08872": {
+    "counties": ["Middlesex County"]
+  },
+  "08873": {
+    "counties": ["Somerset County"]
+  },
+  "08875": {
+    "counties": ["Somerset County"]
+  },
+  "08876": {
+    "counties": ["Somerset County", "Hunterdon County"]
+  },
+  "08879": {
+    "counties": ["Middlesex County"]
+  },
+  "08880": {
+    "counties": ["Somerset County"]
+  },
+  "08882": {
+    "counties": ["Middlesex County"]
+  },
+  "08884": {
+    "counties": ["Middlesex County"]
+  },
+  "08885": {
+    "counties": ["Hunterdon County"]
+  },
+  "08886": {
+    "counties": ["Warren County"]
+  },
+  "08887": {
+    "counties": ["Hunterdon County"]
+  },
+  "08888": {
+    "counties": ["Hunterdon County"]
+  },
+  "08889": {
+    "counties": ["Hunterdon County", "Somerset County"]
+  },
+  "08899": {
+    "counties": ["Middlesex County"]
+  },
+  "08901": {
+    "counties": ["Somerset County", "Middlesex County"]
+  },
+  "08902": {
+    "counties": ["Middlesex County"]
+  },
+  "08903": {
+    "counties": ["Middlesex County"]
+  },
+  "08904": {
+    "counties": ["Middlesex County"]
+  },
+  "08906": {
+    "counties": ["Middlesex County"]
+  },
+  "08933": {
+    "counties": ["Middlesex County"]
+  }
+}

@@ -145,6 +145,10 @@ function main() {
           .option("vaccinespotter-states", {
             type: "string",
             describe: "Overrides the `--states` option for vaccinespotter",
+          })
+          .option("rite-aid-states", {
+            type: "string",
+            describe: "Overrides the `--states` option for riteAidApi",
           }),
       handler: run,
     })
