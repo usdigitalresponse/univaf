@@ -102,7 +102,7 @@ function formatCapacity(provider) {
     date: apiData.date,
     available: apiData.available_slots > 0 ? Available.yes : Available.no,
     available_count: apiData.available_slots,
-    unavailable_slots: apiData.total_slots - apiData.available_slots,
+    unavailable_count: apiData.total_slots - apiData.available_slots,
   }));
 }
 
