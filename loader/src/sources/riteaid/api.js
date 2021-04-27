@@ -55,7 +55,7 @@ function formatStore(provider) {
       "2021/04/27 12:31:21",
       "yyyy/MM/dd hh:mm:ss",
       { zone: "America/New_York" }
-    );
+    ).toString();
   }
 
   return {
@@ -136,13 +136,9 @@ async function checkAvailability(handler, options) {
   return results;
 }
 
-module.exports = { checkAvailability };
-
-// Allow extra function to be exported in the test environment.
-if (process.env.NODE_ENV === "test") {
-  module.exports = {
-    ...module.exports,
-    formatAvailable,
-    formatStore,
-  };
-}
+module.exports = {
+  checkAvailability,
+  queryState,
+  formatAvailable,
+  formatStore,
+};
