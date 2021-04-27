@@ -52,7 +52,7 @@ export interface LocationAvailability {
   id: number;
   provider_location_id: string;
   source: string;
-  updated_at: Date;
+  valid_at: Date;
   checked_at: Date;
   available: Availability;
   meta: object;

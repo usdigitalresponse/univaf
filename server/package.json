@@ -22,7 +22,12 @@
     "watch-test": "npm run test -- --watchAll",
     "watch-ts": "tsc -w",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "db:seed": "npm run build && node dist/scripts/seed-database.js"
+    "db:seed": "npm run build && node dist/scripts/seed-database.js",
+    "knex": "knex",
+    "migrate": "knex migrate:latest",
+    "migrate:up": "knex migrate:up",
+    "migrate:down": "knex migrate:down",
+    "migrate:list": "knex migrate:list"
   },
   "dependencies": {
     "@sentry/node": "^6.2.5",
@@ -36,6 +41,7 @@
     "errorhandler": "1.5.1",
     "express": "4.17.1",
     "express-validator": "6.9.2",
+    "knex": "^0.95.4",
     "lodash": "4.17.20",
     "pg": "^8.5.1",
     "winston": "3.3.3"

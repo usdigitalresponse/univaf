@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 if [ -z "${DB_NAME}" ]; then
   echo "Please set the DB_NAME environment variable."
   exit 1
 fi
 
-case "$ENV" in
+case "${ENV-}" in
   production) export CMD="" ;; # in prod, just run against the live db
+     localdb) export CMD="" ;; # same for local, non-dockerized db
            *) export CMD="docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume $(pwd)/db:/db postgres" ;;
 esac
 
@@ -29,4 +31,5 @@ $CMD psql -d $DB_NAME -f ./db/schema.sql \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
 
+npm run migrate
 npm run db:seed
