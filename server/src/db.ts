@@ -147,8 +147,8 @@ export async function listLocations({
     FROM provider_locations pl
       LEFT OUTER JOIN availability
         ON pl.id = availability.provider_location_id
-        AND availability.updated_at = (
-          SELECT MAX(updated_at)
+        AND availability.valid_at = (
+          SELECT MAX(valid_at)
           FROM availability avail_inner
           WHERE
             avail_inner.provider_location_id = pl.id
@@ -205,25 +205,25 @@ export async function updateAvailability(
   {
     source,
     available,
-    updated_at,
+    valid_at,
     checked_at,
     meta = null,
     is_public = true,
   }: {
     source: string;
     available: Availability;
-    updated_at: Date;
+    valid_at: Date;
     checked_at: Date;
     meta: any;
     is_public: boolean;
   }
 ): Promise<{ action: string; locationId: string }> {
   if (!source) throw new ValueError("You must set `source`");
-  if (!available) throw new ValueError("You must setprovide `available`");
+  if (!available) throw new ValueError("You must set `available`");
   if (!checked_at) throw new ValueError("You must set `checked_at`");
 
-  if (!updated_at) {
-    updated_at = checked_at;
+  if (!valid_at) {
+    valid_at = checked_at;
   }
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
@@ -241,15 +241,15 @@ export async function updateAvailability(
       UPDATE availability
       SET
         available = $1,
-        updated_at = $2,
+        valid_at = $2,
         checked_at = $3,
         meta = $4,
         is_public = $5
-      WHERE id = $6 AND updated_at < $2
+      WHERE id = $6 AND valid_at < $2
       `,
       [
         available,
-        updated_at,
+        valid_at,
         checked_at,
         meta,
         is_public,
@@ -271,13 +271,13 @@ export async function updateAvailability(
           provider_location_id,
           source,
           available,
-          updated_at,
+          valid_at,
           checked_at,
           meta,
           is_public
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [id, source, available, updated_at, checked_at, meta, is_public]
+        [id, source, available, valid_at, checked_at, meta, is_public]
       );
       return { locationId: id, action: "create" };
     } catch (error) {
@@ -297,7 +297,7 @@ export async function listAvailability({
     "provider_location_id",
     "source",
     "available",
-    "updated_at",
+    "valid_at",
     "checked_at",
     "meta",
   ];
@@ -313,7 +313,7 @@ export async function listAvailability({
     SELECT ${fields.join(", ")}
     FROM availability
     ${where ? `WHERE ${where}` : ""}
-    ORDER BY updated_at DESC
+    ORDER BY valid_at DESC
   `);
   return result.rows;
 }

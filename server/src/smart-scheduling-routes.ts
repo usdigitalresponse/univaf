@@ -238,10 +238,10 @@ export async function listSlots(req: Request, res: Response) {
             valueInteger: capacity,
           },
         ];
-        if (provider.availability?.updated_at) {
+        if (provider.availability?.valid_at) {
           extension.push({
             url: CURRENT_AS_OF,
-            valueInstant: provider.availability.updated_at,
+            valueInstant: provider.availability.valid_at,
           });
         }
 
