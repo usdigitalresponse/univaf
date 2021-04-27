@@ -6,7 +6,7 @@ if [ -z "${DB_NAME}" ]; then
   exit 1
 fi
 
-case "$ENV" in
+case "${ENV-}" in
   production) export CMD="" ;; # in prod, just run against the live db
      localdb) export CMD="" ;; # same for local, non-dockerized db
            *) export CMD="docker run -it --network host --rm -e PGPASSWORD=$DB_PASSWORD --volume $(pwd)/db:/db postgres" ;;
@@ -31,4 +31,5 @@ $CMD psql -d $DB_NAME -f ./db/schema.sql \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
 
+npm run migrate
 npm run db:seed
