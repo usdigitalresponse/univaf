@@ -326,7 +326,7 @@ export async function getAvailabilityForLocation(
     "provider_location_id",
     "source",
     "available",
-    "updated_at",
+    "valid_at",
     "checked_at",
     "meta",
   ];
@@ -341,8 +341,8 @@ export async function getAvailabilityForLocation(
   const result = await connection.query(
     `SELECT ${fields.join(", ")}
     FROM availability
-    ${where.length ? where.join(" AND ") : ""}
-    ORDER BY updated_at DESC`,
+    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+    ORDER BY valid_at DESC`,
     [locationId]
   );
   return result.rows;
