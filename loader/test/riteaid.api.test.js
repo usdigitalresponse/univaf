@@ -1,5 +1,5 @@
 const nock = require("nock");
-const { queryState, formatStore } = require("../src/sources/riteaid/api");
+const { queryState } = require("../src/sources/riteaid/api");
 
 describe("Rite Aid Source", () => {
   const API_URL = "https://api.riteaid.com/test";
