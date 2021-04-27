@@ -36,7 +36,7 @@ describe("Rite Aid Source", () => {
     expect(locations[0]).toStrictEqual({
       id: "rite_aid:116",
       external_ids: {
-        rite_aid: 116,
+        rite_aid: "116",
       },
       location_type: "PHARMACY",
       name: "Rite Aid #116",
