@@ -116,6 +116,13 @@ export const update = async (req: AppRequest, res: Response) => {
   }
 
   if (data.availability) {
+    // Accommodate old formats that sources might still be sending.
+    // TODO: remove once loaders have all been migrated.
+    if (data.availability.updated_at) {
+      data.availability.valid_at = data.availability.updated_at;
+      delete data.availability.updated_at;
+    }
+
     try {
       const operation = await db.updateAvailability(data.id, data.availability);
       result.availability = operation;
