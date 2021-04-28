@@ -31,4 +31,4 @@ ENV API_KEYS=""
 ENV DB_NAME="appointment-availability"
 
 # run our built server
-CMD node ./dist/src/server.js
+CMD npm run migrate && node ./dist/src/server.js
