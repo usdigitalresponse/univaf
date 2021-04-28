@@ -245,7 +245,7 @@ export async function updateAvailability(
         checked_at = $3,
         meta = $4,
         is_public = $5
-      WHERE id = $6 AND valid_at < $2
+      WHERE id = $6 AND checked_at < $2
       `,
       [
         available,
