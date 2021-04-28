@@ -173,7 +173,7 @@ describe("Rite Aid Source", () => {
           ],
         },
         source: "rite-aid-api",
-        updated_at: "2021-04-27T12:31:21.000-04:00",
+        updated_at: "2021-04-23T14:52:05.000Z",
       },
     });
 

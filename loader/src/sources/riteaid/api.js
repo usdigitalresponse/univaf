@@ -1,5 +1,6 @@
 const { DateTime } = require("luxon");
 const got = require("got");
+const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
 // const { logger } = require("../logging");
 const { Available, LocationType } = require("../../model");
@@ -49,13 +50,25 @@ function formatStore(provider) {
   }
 
   const checked_at = DateTime.utc().toString();
-  let valid_at = checked_at;
+  let valid_at;
+  let validTime;
   if (/^\d{4}\/\d\d\/\d\d \d\d:\d\d:\d\d$/.test(provider.last_updated)) {
-    valid_at = DateTime.fromFormat(
-      "2021/04/27 12:31:21",
+    validTime = DateTime.fromFormat(
+      provider.last_updated,
       "yyyy/MM/dd hh:mm:ss",
       { zone: "America/New_York" }
-    ).toString();
+    );
+  } else if (provider.last_updated) {
+    validTime = DateTime.fromISO(provider.last_updated);
+  }
+
+  if (validTime.isValid) {
+    valid_at = validTime.toUTC().toString();
+  } else {
+    const message = `Error parsing "last_updated": ${validTime.invalidReason}: ${validTime.invalidExplanation}`;
+    console.error(message);
+    Sentry.captureMessage(message, Sentry.Severity.ERROR);
+    valid_at = checked_at;
   }
 
   return {
