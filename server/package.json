@@ -29,6 +29,11 @@
     "migrate:down": "knex migrate:down",
     "migrate:list": "knex migrate:list"
   },
+  "jest": {
+    "globals": {
+        "NODE_ENV": "test"
+    }
+  },
   "dependencies": {
     "@sentry/node": "^6.2.5",
     "@sentry/tracing": "^6.2.5",
