@@ -31,7 +31,7 @@
   },
   "jest": {
     "globals": {
-        "NODE_ENV": "test"
+      "NODE_ENV": "test"
     }
   },
   "dependencies": {
