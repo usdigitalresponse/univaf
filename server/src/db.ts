@@ -6,14 +6,38 @@ import {
 } from "./interfaces";
 import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
+import Knex from "knex";
 
-export const connection = new Pool({
+const testDatabaseName = "test";
+export let connection = new Pool({
   host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
+  database: process.env.NODE_ENV == 'test' ? testDatabaseName : process.env.DB_NAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT && parseInt(process.env.DB_PORT),
 });
+
+export function assertIsTestDatabase() {
+  let error = false;
+  return connection.query("SELECT current_database() as name;")
+  .then(result => {
+    const databaseName = result.rows[0].name;
+    if (databaseName != testDatabaseName) {
+      throw new Error(`Expected to be connected to the test database. Currently connected to ${databaseName}!`)
+    }
+  })
+}
+
+export async function clearTestDatabase() {
+  await assertIsTestDatabase();
+
+  await connection.query("DROP SCHEMA IF EXISTS public CASCADE");
+  await connection.query("CREATE SCHEMA public");
+
+  // @ts-ignore connection.options is not a known property
+  const knex = Knex({client: 'pg', connection: connection.options});
+  await knex.migrate.latest()
+}
 
 const providerLocationFields = [
   "id",

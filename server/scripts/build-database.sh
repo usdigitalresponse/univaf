@@ -15,16 +15,27 @@ esac
 export PGPASSWORD=$DB_PASSWORD
 
 # drop the existing database
-$CMD dropdb \
+$CMD dropdb  --if-exists \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
-  $DB_NAME || true
+  $DB_NAME
 
 # create the new database
 $CMD createdb \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
   $DB_NAME
+
+# same for test database
+$CMD dropdb --if-exists \
+  --user=$DB_USERNAME \
+  --host=$DB_HOST \
+  test
+
+$CMD createdb \
+  --user=$DB_USERNAME \
+  --host=$DB_HOST \
+  test
 
 npm run migrate
 npm run db:seed
