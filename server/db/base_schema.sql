@@ -1,3 +1,6 @@
+-- Base Schema (pre-migrations)
+-- We load this SQL file in the very first knex migration as a bootstrap
+
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- Lists each location where someone can get a vaccination.
