@@ -67,106 +67,106 @@ jobs:
           cd ui
           NODE_ENV=production npm build
 
-  lint:
-    name: Run linters
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+  # lint:
+  #   name: Run linters
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 14
 
-      - name: Cache Dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.npm
-            ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-v1
-            ${{ runner.os }}-npm-
+  #     - name: Cache Dependencies
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ~/.npm
+  #           ~/.cache
+  #         key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-npm-v1
+  #           ${{ runner.os }}-npm-
 
-      - name: Install dependencies
-        run: |
-          cd server
-          npm ci
-          cd ../loader
-          npm ci
-          cd ../ui
-          npm ci
+  #     - name: Install dependencies
+  #       run: |
+  #         cd server
+  #         npm ci
+  #         cd ../loader
+  #         npm ci
+  #         cd ../ui
+  #         npm ci
 
-      # We have ESLint and Prettier installed separately in each subproject,
-      # but this action can only run once per job. So we run the versions
-      # installed in the server project on both at once, and have some weird
-      # arguments.
-      - name: Lint JS Code
-        uses: wearerequired/lint-action@v1
-        with:
-          eslint: true
-          eslint_dir: server/
-          eslint_args: . ../loader/ ../ui/
-          prettier: true
-          prettier_dir: server/
-          prettier_args: . ../loader/ ../ui/
+  #     # We have ESLint and Prettier installed separately in each subproject,
+  #     # but this action can only run once per job. So we run the versions
+  #     # installed in the server project on both at once, and have some weird
+  #     # arguments.
+  #     - name: Lint JS Code
+  #       uses: wearerequired/lint-action@v1
+  #       with:
+  #         eslint: true
+  #         eslint_dir: server/
+  #         eslint_args: . ../loader/ ../ui/
+  #         prettier: true
+  #         prettier_dir: server/
+  #         prettier_args: . ../loader/ ../ui/
 
-  lint_workflows:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: cschleiden/actions-linter@v1
-        with:
-          workflows: '[".github/workflows/*.yaml", ".github/workflows/*.yml"]'
+  # lint_workflows:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: cschleiden/actions-linter@v1
+  #       with:
+  #         workflows: '[".github/workflows/*.yaml", ".github/workflows/*.yml"]'
 
-  build_docker:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Instead of building all combinations of a set of options, just build
-        # these particular combinations.
-        include:
-          - repository: appointment-db-seed
-            dockerfile: "./server/Dockerfile.seed-db"
-            build_path: "./server"
+  # build_docker:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       # Instead of building all combinations of a set of options, just build
+  #       # these particular combinations.
+  #       include:
+  #         - repository: appointment-db-seed
+  #           dockerfile: "./server/Dockerfile.seed-db"
+  #           build_path: "./server"
 
-          - repository: appointment-server
-            dockerfile: "./server/Dockerfile"
-            build_path: "./server"
+  #         - repository: appointment-server
+  #           dockerfile: "./server/Dockerfile"
+  #           build_path: "./server"
 
-          - repository: appointment-loader
-            dockerfile: "./loader/Dockerfile"
-            build_path: "./loader"
-    env:
-      IMAGE_TAG: ${{ github.sha }}
-    steps:
-      - uses: actions/checkout@v2
+  #         - repository: appointment-loader
+  #           dockerfile: "./loader/Dockerfile"
+  #           build_path: "./loader"
+  #   env:
+  #     IMAGE_TAG: ${{ github.sha }}
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-west-2
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+  #     - name: Login to Amazon ECR
+  #       id: login-ecr
+  #       uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and push ${{ matrix.repository }}
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ matrix.repository }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ${{ matrix.dockerfile }} ${{ matrix.build_path }}
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+  #     - name: Build and push ${{ matrix.repository }}
+  #       env:
+  #         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #         ECR_REPOSITORY: ${{ matrix.repository }}
+  #       run: |
+  #         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ${{ matrix.dockerfile }} ${{ matrix.build_path }}
+  #         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Tag and push ${{ matrix.repository }} latest
-        if: ${{ github.ref == 'refs/heads/main' }}
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ matrix.repository }}
-        run: |
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+  #     - name: Tag and push ${{ matrix.repository }} latest
+  #       if: ${{ github.ref == 'refs/heads/main' }}
+  #       env:
+  #         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #         ECR_REPOSITORY: ${{ matrix.repository }}
+  #       run: |
+  #         docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+  #         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
