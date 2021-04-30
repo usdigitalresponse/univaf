@@ -17,7 +17,7 @@ console.log("Postgres connection:", {
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT && parseInt(process.env.DB_PORT),
 });
-throw new Error("Stop Early");
+// throw new Error("Stop Early");
 
 export let connection = new Pool({
   host: process.env.DB_HOST,
