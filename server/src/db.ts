@@ -9,6 +9,16 @@ import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 
 const testDatabaseName = "test";
+console.log("Postgres connection:", {
+  host: process.env.DB_HOST,
+  database:
+    process.env.NODE_ENV == "test" ? testDatabaseName : process.env.DB_NAME,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT && parseInt(process.env.DB_PORT),
+});
+throw new Error("Stop Early");
+
 export let connection = new Pool({
   host: process.env.DB_HOST,
   database:
