@@ -9,6 +9,23 @@ name: Continuous Integration
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      # PostGIS service for use with server tests
+      postgres:
+        image: "postgis/postgis:13-3.1"
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v2
 
@@ -36,13 +53,6 @@ jobs:
           npm ci
           cd ../ui
           npm ci
-
-      - name: Setup PostgreSQL with Postgis
-        uses: huaxk/postgis-action@v1
-        with:
-          postgresql db: "test"
-          postgresql user: "test"
-          postgresql password: ${{ secrets.TEST_DB_PASSWORD }}
 
       - name: Run server tests
         run: |

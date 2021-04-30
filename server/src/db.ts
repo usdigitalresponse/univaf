@@ -40,7 +40,6 @@ export async function clearTestDatabase() {
   await connection.query("DROP SCHEMA IF EXISTS public CASCADE");
   await connection.query("CREATE SCHEMA public");
 
-  // @ts-ignore connection.options is not a known property
   const knex = Knex({ client: "pg", connection: dbConnectionOptions });
   await knex.migrate.latest();
 }
