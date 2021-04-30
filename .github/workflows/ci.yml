@@ -42,6 +42,7 @@ jobs:
         with:
           postgresql db: "test"
           postgresql user: "test"
+          postgresql password: ${{ secrets.TEST_DB_PASSWORD }}
 
       - name: Run server tests
         run: |
@@ -52,7 +53,7 @@ jobs:
           DB_PORT: 5432
           DB_USERNAME: "test"
           DB_NAME: "test"
-          DB_PASSWORD: ""
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
 
       - name: Run loader tests
         run: |
