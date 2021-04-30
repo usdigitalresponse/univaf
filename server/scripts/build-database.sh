@@ -26,10 +26,5 @@ $CMD createdb \
   --host=$DB_HOST \
   $DB_NAME
 
-# seed the database!
-$CMD psql -d $DB_NAME -f ./db/schema.sql \
-  --user=$DB_USERNAME \
-  --host=$DB_HOST \
-
 npm run migrate
 npm run db:seed

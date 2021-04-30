@@ -1,7 +1,10 @@
+-- Base Schema (pre-migrations)
+-- We load this SQL file in the very first knex migration as a bootstrap
+
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- Lists each location where someone can get a vaccination.
-CREATE TABLE provider_locations (
+CREATE TABLE IF NOT EXISTS provider_locations (
     -- Useful identifer. Where possible, it should be something deterministic
     -- based on the location's data, like "CVS:1234" for CVS pharmacy #1234.
     id varchar(64) PRIMARY KEY,
@@ -50,7 +53,7 @@ CREATE TABLE provider_locations (
 
 -- `availability` lists appointment availability checks for each record in
 -- `provider_locations`. Records are unique by provider location and source.
-CREATE TABLE availability (
+CREATE TABLE IF NOT EXISTS availability (
     id SERIAL PRIMARY KEY,
     -- Foreign key to the provider location.
     provider_location_id varchar(64) NOT NULL,

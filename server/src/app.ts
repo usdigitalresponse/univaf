@@ -31,15 +31,17 @@ function handleErrors(handler: PromiseHandler): RequestHandler {
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.
-function logRequest(_request: Request, response: Response, next: NextFunction) {
+function logRequest(request: Request, response: Response, next: NextFunction) {
   const start = new Date();
-  response.on("finish", () => {
-    console.error(
-      `${start.toISOString()} - ${new Date().toISOString()} ${
-        response.statusCode
-      } POST /update`
-    );
-  });
+  if (process.env.NODE_ENV != "test") {
+    response.on("finish", () => {
+      console.error(
+        `${start.toISOString()} - ${new Date().toISOString()} ${
+          response.statusCode
+        } ${request.method} ${request.url}`
+      );
+    });
+  }
   next();
 }
 
