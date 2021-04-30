@@ -38,7 +38,7 @@ function logRequest(_request: Request, response: Response, next: NextFunction) {
       console.error(
         `${start.toISOString()} - ${new Date().toISOString()} ${
           response.statusCode
-        } POST /update`
+        } ${_request.method} ${_request.url}`
       );
     });
   }
