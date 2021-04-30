@@ -38,9 +38,9 @@ jobs:
           npm ci
 
       - name: Setup PostgreSQL with Postgis
-        uses: huaxk/postgis-action@v1
+        uses: huaxk/postgis-action@master
         with:
-          postgresql version: 13
+          postgresql version: "13-3.1"
           postgresql db: "test"
           postgresql user: "test"
           postgresql password: "testpassword"
