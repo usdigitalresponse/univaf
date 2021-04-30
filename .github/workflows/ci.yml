@@ -49,6 +49,7 @@ jobs:
           cd server
           npm run test
         env:
+          NODE_ENV: test
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USERNAME: test
