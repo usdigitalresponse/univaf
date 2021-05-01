@@ -28,6 +28,11 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Test DB is reachable
+        run: psql -d postgresql://test@localhost:5432/test -c 'SELECT current_database() as name;'
+        env:
+          PGPASSWORD: testpassword
+
       - uses: actions/checkout@v2
 
       - name: Install Node.js
