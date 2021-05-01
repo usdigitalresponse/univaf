@@ -9,14 +9,16 @@ import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 
 const testDatabaseName = "test";
-export let connection = new Pool({
+const dbConnectionOptions = {
   host: process.env.DB_HOST,
   database:
     process.env.NODE_ENV == "test" ? testDatabaseName : process.env.DB_NAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT && parseInt(process.env.DB_PORT),
-});
+};
+
+export let connection = new Pool(dbConnectionOptions);
 
 export function assertIsTestDatabase() {
   let error = false;
@@ -39,7 +41,7 @@ export async function clearTestDatabase() {
   await connection.query("CREATE SCHEMA public");
 
   // @ts-ignore connection.options is not a known property
-  const knex = Knex({ client: "pg", connection: connection.options });
+  const knex = Knex({ client: "pg", connection: dbConnectionOptions });
   await knex.migrate.latest();
 }
 
