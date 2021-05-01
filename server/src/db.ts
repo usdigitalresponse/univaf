@@ -19,14 +19,15 @@ console.log("Postgres connection:", {
 });
 // throw new Error("Stop Early");
 
-export let connection = new Pool({
+const connectionOptions = {
   host: process.env.DB_HOST,
   database:
     process.env.NODE_ENV == "test" ? testDatabaseName : process.env.DB_NAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT && parseInt(process.env.DB_PORT),
-});
+};
+export let connection = new Pool(connectionOptions);
 
 export function assertIsTestDatabase() {
   let error = false;
@@ -47,7 +48,7 @@ export async function clearTestDatabase() {
   await assertIsTestDatabase();
 
   console.log("Connecting via Knex");
-  const knex = Knex({ client: "pg", connection: connection.options });
+  const knex = Knex({ client: "pg", connection: connectionOptions });
   const result = await knex.raw("SELECT current_database() as name;");
   console.log("Result:", result);
 
