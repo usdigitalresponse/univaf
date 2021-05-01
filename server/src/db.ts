@@ -43,13 +43,20 @@ export function assertIsTestDatabase() {
 }
 
 export async function clearTestDatabase() {
+  console.log("Connecting via PG");
   await assertIsTestDatabase();
+
+  console.log("Connecting via Knex");
+  const knex = Knex({ client: "pg", connection: connection.options });
+  const result = await knex.raw("SELECT current_database() as name;");
+  console.log("Result:", result);
 
   await connection.query("DROP SCHEMA IF EXISTS public CASCADE");
   await connection.query("CREATE SCHEMA public");
 
   // @ts-ignore connection.options is not a known property
-  const knex = Knex({ client: "pg", connection: connection.options });
+  console.log("Connecting via Knex to run migrations");
+  // const knex = Knex({ client: "pg", connection: connection.options });
   await knex.migrate.latest();
 }
 
