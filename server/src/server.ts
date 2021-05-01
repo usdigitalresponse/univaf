@@ -1,17 +1,17 @@
 import app from "./app";
 import process from "process";
-import { connection } from "./db";
+import { knex } from "./db";
 
 /**
  * Kill on SIGINT
  */
 
 process.on("SIGINT", () => {
-  console.log("Received SIGINT: process exiting");
-  connection
-    .end()
+  console.log("Received SIGINT: process exiting...");
+  knex
+    .destroy()
     .then(() => process.exit(0))
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error);
       process.exit(1);
     });

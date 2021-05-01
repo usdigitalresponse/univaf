@@ -3,7 +3,6 @@ import { getApiKeys } from "../src/config";
 import app from "../src/app";
 
 import {
-  connection,
   clearTestDatabase,
   createLocation,
   updateAvailability,
