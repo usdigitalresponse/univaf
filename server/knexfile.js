@@ -15,4 +15,11 @@ const base = {
 module.exports = {
   development: base,
   production: base,
+  test: {
+    ...base,
+    connection: {
+      ...base.connection,
+      database: `${base.connection.database}-test`,
+    },
+  },
 };

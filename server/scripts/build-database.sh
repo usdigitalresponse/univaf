@@ -30,12 +30,12 @@ $CMD createdb \
 $CMD dropdb --if-exists \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
-  test
+  $DB_NAME-test
 
 $CMD createdb \
   --user=$DB_USERNAME \
   --host=$DB_HOST \
-  test
+  $DB_NAME-test
 
 npm run migrate
 npm run db:seed
