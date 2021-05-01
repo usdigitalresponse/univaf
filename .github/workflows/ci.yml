@@ -54,6 +54,7 @@ jobs:
           DB_USERNAME: "test"
           DB_NAME: "test"
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          DEBUG: "knex:*"
 
       - name: Run loader tests
         run: |

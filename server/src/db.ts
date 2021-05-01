@@ -41,7 +41,7 @@ export async function clearTestDatabase() {
   await connection.query("CREATE SCHEMA public");
 
   // @ts-ignore connection.options is not a known property
-  const knex = Knex({ client: "pg", connection: dbConnectionOptions });
+  const knex = Knex({ client: "pg", connection: connection.options });
   await knex.migrate.latest();
 }
 
