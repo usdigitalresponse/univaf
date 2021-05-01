@@ -37,7 +37,8 @@ export async function clearTestDatabase() {
 
 function loadDbConfig() {
   const knexfile = require("../knexfile");
-  return knexfile[process.env.NODE_ENV];
+  const nodeEnv = process.env.NODE_ENV || "development";
+  return knexfile[nodeEnv];
 }
 
 const providerLocationFields = [
