@@ -59,7 +59,7 @@ jobs:
           cd server
           npm run test
         env:
-          DB_HOST: localhost
+          DB_HOST: postgres
           DB_PORT: 5432
           DB_USERNAME: "test"
           DB_NAME: "test"
