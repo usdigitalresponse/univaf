@@ -8,11 +8,11 @@ import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 
-export const knex = Knex(loadDbConfig());
+export const db = Knex(loadDbConfig());
 
 export function assertIsTestDatabase() {
   let error = false;
-  return knex.raw("SELECT current_database() as name;").then((result) => {
+  return db.raw("SELECT current_database() as name;").then((result) => {
     const databaseName: string = result.rows[0].name;
     if (!databaseName.endsWith("-test")) {
       throw new Error(
@@ -25,10 +25,10 @@ export function assertIsTestDatabase() {
 export async function clearTestDatabase() {
   await assertIsTestDatabase();
 
-  await knex.raw("DROP SCHEMA IF EXISTS public CASCADE");
-  await knex.raw("CREATE SCHEMA public");
+  await db.raw("DROP SCHEMA IF EXISTS public CASCADE");
+  await db.raw("CREATE SCHEMA public");
 
-  await knex.migrate.latest();
+  await db.migrate.latest();
 }
 
 function loadDbConfig() {
@@ -98,7 +98,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     return providerLocationAllFields.includes(key);
   });
 
-  await knex.raw(
+  await db.raw(
     `INSERT INTO provider_locations (
       ${sqlFields.map((x) => x[0]).join(", ")}
     )
@@ -129,7 +129,7 @@ export async function updateLocation(data: any): Promise<ProviderLocation> {
     return providerLocationAllFields.includes(key);
   });
   const setExpression = sqlFields.map(([key, _]) => `${key} = ?`);
-  const result = await knex.raw(
+  const result = await db.raw(
     `UPDATE provider_locations
     SET ${setExpression}
     WHERE id = ?`,
@@ -161,7 +161,7 @@ export async function listLocations({
     .map((name) => `pl.${name}`)
     .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
 
-  const result = await knex.raw(
+  const result = await db.raw(
     `
     SELECT ${fields.join(", ")}, row_to_json(availability.*) availability
     FROM provider_locations pl
@@ -248,7 +248,7 @@ export async function updateAvailability(
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.
-  const existingAvailability = await knex.raw(
+  const existingAvailability = await db.raw(
     `SELECT id, provider_location_id, source
     FROM availability
     WHERE provider_location_id = ? AND source = ?`,
@@ -256,7 +256,7 @@ export async function updateAvailability(
   );
 
   if (existingAvailability.rows.length > 0) {
-    const result = await knex.raw(
+    const result = await db.raw(
       `
       UPDATE availability
       SET
@@ -286,7 +286,7 @@ export async function updateAvailability(
     }
   } else {
     try {
-      const result = await knex.raw(
+      const result = await db.raw(
         `INSERT INTO availability (
           provider_location_id,
           source,
@@ -329,7 +329,7 @@ export async function listAvailability({
     where = "is_public = true";
   }
 
-  const result = await knex.raw(`
+  const result = await db.raw(`
     SELECT ${fields.join(", ")}
     FROM availability
     ${where ? `WHERE ${where}` : ""}
@@ -358,7 +358,7 @@ export async function getAvailabilityForLocation(
     where.push("is_public = true");
   }
 
-  const result = await knex.raw(
+  const result = await db.raw(
     `SELECT ${fields.join(", ")}
     FROM availability
     ${where.length ? `WHERE ${where.join(" AND ")}` : ""}

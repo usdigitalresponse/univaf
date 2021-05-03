@@ -1,6 +1,6 @@
 import app from "./app";
 import process from "process";
-import { knex } from "./db";
+import { db } from "./db";
 
 /**
  * Kill on SIGINT
@@ -8,8 +8,7 @@ import { knex } from "./db";
 
 process.on("SIGINT", () => {
   console.log("Received SIGINT: process exiting...");
-  knex
-    .destroy()
+  db.destroy()
     .then(() => process.exit(0))
     .catch((error: Error) => {
       console.error(error);
