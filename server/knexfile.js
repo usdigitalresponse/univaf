@@ -21,5 +21,6 @@ module.exports = {
       ...base.connection,
       database: `${base.connection.database}-test`,
     },
+    pool: { min: 1, max: 1 },
   },
 };
