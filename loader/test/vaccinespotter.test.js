@@ -2,32 +2,38 @@ const { formatStore } = require("../src/sources/vaccinespotter/index");
 const { expectDatetimeString } = require("./support");
 
 describe("VaccineSpotter", () => {
+  const basicVaccineSpotterStore = {
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [-124.13914369, 40.78085044],
+    },
+    properties: {
+      id: 2736954,
+      url: "https://www.walgreens.com/findcare/vaccination/covid-19",
+      city: "EUREKA",
+      name: "Walgreen Drug Store",
+      state: "CA",
+      address: "2525 HARRIS ST",
+      provider: "walgreens",
+      time_zone: "America/Los_Angeles",
+      postal_code: "95503",
+      provider_brand: "walgreens",
+      carries_vaccine: null,
+      provider_brand_id: 47,
+      provider_brand_name: "Walgreens",
+      provider_location_id: "5863",
+    },
+  };
   it("should format a Walgreens store", () => {
     const result = formatStore({
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [-124.13914369, 40.78085044],
-      },
+      ...basicVaccineSpotterStore,
       properties: {
-        id: 2736954,
-        url: "https://www.walgreens.com/findcare/vaccination/covid-19",
-        city: "EUREKA",
-        name: "Walgreen Drug Store",
-        state: "CA",
-        address: "2525 HARRIS ST",
-        provider: "walgreens",
-        time_zone: "America/Los_Angeles",
-        postal_code: "95503",
-        provider_brand: "walgreens",
-        carries_vaccine: null,
+        ...basicVaccineSpotterStore.properties,
         appointment_types: {
           all_doses: true,
           "2nd_dose_only": true,
         },
-        provider_brand_id: 47,
-        provider_brand_name: "Walgreens",
-        provider_location_id: "5863",
         appointments_available: true,
         appointment_vaccine_types: {
           moderna: true,
@@ -208,5 +214,51 @@ describe("VaccineSpotter", () => {
         },
       },
     });
+  });
+
+  it("should have no doses entry if there was no dose info", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        appointment_types: {},
+        appointments_available: true,
+        appointment_vaccine_types: {
+          moderna: true,
+        },
+        appointments_last_fetched: "2021-05-04T07:10:03.196+00:00",
+        appointments_last_modified: "2021-05-04T07:10:03.196+00:00",
+        appointments_available_all_doses: null,
+        appointments_available_2nd_dose_only: null,
+        appointments: [
+          {
+            time: "2021-05-05T08:50:00.000-07:00",
+            type: "Moderna",
+            vaccine_types: ["moderna"],
+            appointment_types: [],
+          },
+          {
+            time: "2021-05-05T09:05:00.000-07:00",
+            type: "Moderna",
+            vaccine_types: ["moderna"],
+            appointment_types: [],
+          },
+          {
+            time: "2021-05-06T08:35:00.000-07:00",
+            type: "Moderna",
+            vaccine_types: ["moderna"],
+            appointment_types: [],
+          },
+          {
+            time: "2021-05-06T08:50:00.000-07:00",
+            type: "Moderna",
+            vaccine_types: ["moderna"],
+            appointment_types: [],
+          },
+        ],
+      },
+    });
+
+    expect(result.availability.doses).toEqual(undefined);
   });
 });

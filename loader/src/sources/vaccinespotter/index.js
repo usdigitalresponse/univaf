@@ -101,10 +101,12 @@ const formatters = {
     const meta = { capacity };
     if (capacity) {
       meta.slots = formatSlots(store.properties.appointments);
-      meta.products = Array.from(
-        new Set(capacity.flatMap((data) => data.products))
-      );
-      meta.doses = Array.from(new Set(capacity.map((data) => data.dose)));
+      const allProducts = capacity
+        .flatMap((data) => data.products)
+        .filter((x) => !!x);
+      const allDoses = capacity.map((data) => data.dose).filter((x) => !!x);
+      if (allProducts.length) meta.products = Array.from(new Set(allProducts));
+      if (allDoses.length) meta.doses = Array.from(new Set(allDoses));
     }
 
     return {
