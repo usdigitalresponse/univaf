@@ -8,31 +8,27 @@ import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 
-const dbConfig = loadDbConfig();
-export let connection = new Pool(dbConfig.connection);
+export const db = Knex(loadDbConfig());
 
 export function assertIsTestDatabase() {
   let error = false;
-  return connection
-    .query("SELECT current_database() as name;")
-    .then((result) => {
-      const databaseName: string = result.rows[0].name;
-      if (!databaseName.endsWith("-test")) {
-        throw new Error(
-          `Expected to be connected to the test database. Currently connected to ${databaseName}!`
-        );
-      }
-    });
+  return db.raw("SELECT current_database() as name;").then((result) => {
+    const databaseName: string = result.rows[0].name;
+    if (!databaseName.endsWith("-test")) {
+      throw new Error(
+        `Expected to be connected to the test database. Currently connected to ${databaseName}!`
+      );
+    }
+  });
 }
 
 export async function clearTestDatabase() {
   await assertIsTestDatabase();
 
-  await connection.query("DROP SCHEMA IF EXISTS public CASCADE");
-  await connection.query("CREATE SCHEMA public");
+  await db.raw("DROP SCHEMA IF EXISTS public CASCADE");
+  await db.raw("CREATE SCHEMA public");
 
-  const knex = Knex(dbConfig);
-  await knex.migrate.latest();
+  await db.migrate.latest();
 }
 
 function loadDbConfig() {
@@ -92,7 +88,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
   if (!data.name) throw new ValueError("Locations must have a `name`");
 
   const now = new Date();
-  const sqlData = {
+  const sqlData: { string: string } = {
     ...data,
     position: formatSqlPoint(data.position),
     created_at: now,
@@ -102,12 +98,12 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     return providerLocationAllFields.includes(key);
   });
 
-  await connection.query(
+  await db.raw(
     `INSERT INTO provider_locations (
       ${sqlFields.map((x) => x[0]).join(", ")}
     )
-    VALUES (${sqlFields.map((_, index) => `$${index + 1}`).join(", ")})`,
-    sqlFields.map((x) => x[1])
+    VALUES (${sqlFields.map((_) => "?").join(", ")})`,
+    sqlFields.map((x) => x[1] || null)
   );
   return await getLocationById(data.id);
 }
@@ -132,14 +128,12 @@ export async function updateLocation(data: any): Promise<ProviderLocation> {
   const sqlFields = Object.entries(sqlData).filter(([key, _]) => {
     return providerLocationAllFields.includes(key);
   });
-  const setExpression = sqlFields.map(
-    ([key, _], index) => `${key} = $${index + 2}`
-  );
-  const result = await connection.query(
+  const setExpression = sqlFields.map(([key, _]) => `${key} = ?`);
+  const result = await db.raw(
     `UPDATE provider_locations
     SET ${setExpression}
-    WHERE id = $1`,
-    [id, ...sqlFields.map((x) => x[1])]
+    WHERE id = ?`,
+    [...sqlFields.map((x) => x[1]), id]
   );
   return result.rows[0];
 }
@@ -167,7 +161,7 @@ export async function listLocations({
     .map((name) => `pl.${name}`)
     .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
 
-  const result = await connection.query(
+  const result = await db.raw(
     `
     SELECT ${fields.join(", ")}, row_to_json(availability.*) availability
     FROM provider_locations pl
@@ -187,7 +181,7 @@ export async function listLocations({
     values || []
   );
 
-  return result.rows.map((row) => {
+  return result.rows.map((row: any) => {
     // The SELECT expression always creates an object; not sure if there's a
     // good way to get it to output `NULL` instead for this case.
     if (!row.position.longitude) row.position = null;
@@ -214,7 +208,7 @@ export async function getLocationById(
   const rows = await listLocations({
     includePrivate,
     limit: 1,
-    where: ["pl.id = $1"],
+    where: ["pl.id = ?"],
     values: [id],
   });
   return rows[0];
@@ -254,33 +248,33 @@ export async function updateAvailability(
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.
-  const existingAvailability = await connection.query(
+  const existingAvailability = await db.raw(
     `SELECT id, provider_location_id, source
     FROM availability
-    WHERE provider_location_id = $1 AND source = $2`,
+    WHERE provider_location_id = ? AND source = ?`,
     [id, source]
   );
 
   if (existingAvailability.rows.length > 0) {
-    const result = await connection.query(
+    const result = await db.raw(
       `
       UPDATE availability
       SET
-        available = $1,
-        valid_at = $2,
-        checked_at = $3,
-        meta = $4,
-        is_public = $5
-      WHERE id = $6 AND checked_at < $2
+        available = :available,
+        valid_at = :valid_at,
+        checked_at = :checked_at,
+        meta = :meta,
+        is_public = :is_public
+      WHERE id = :id AND checked_at < :valid_at
       `,
-      [
+      {
         available,
         valid_at,
         checked_at,
         meta,
         is_public,
-        existingAvailability.rows[0].id,
-      ]
+        id: existingAvailability.rows[0].id,
+      }
     );
 
     if (result.rowCount === 0) {
@@ -292,7 +286,7 @@ export async function updateAvailability(
     }
   } else {
     try {
-      const result = await connection.query(
+      const result = await db.raw(
         `INSERT INTO availability (
           provider_location_id,
           source,
@@ -302,7 +296,7 @@ export async function updateAvailability(
           meta,
           is_public
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [id, source, available, valid_at, checked_at, meta, is_public]
       );
       return { locationId: id, action: "create" };
@@ -335,7 +329,7 @@ export async function listAvailability({
     where = "is_public = true";
   }
 
-  const result = await connection.query(`
+  const result = await db.raw(`
     SELECT ${fields.join(", ")}
     FROM availability
     ${where ? `WHERE ${where}` : ""}
@@ -356,7 +350,7 @@ export async function getAvailabilityForLocation(
     "checked_at",
     "meta",
   ];
-  let where = ["provider_location_id = $1"];
+  let where = ["provider_location_id = ?"];
 
   if (includePrivate) {
     fields.push("is_public");
@@ -364,7 +358,7 @@ export async function getAvailabilityForLocation(
     where.push("is_public = true");
   }
 
-  const result = await connection.query(
+  const result = await db.raw(
     `SELECT ${fields.join(", ")}
     FROM availability
     ${where.length ? `WHERE ${where.join(" AND ")}` : ""}

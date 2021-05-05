@@ -3,7 +3,6 @@ import { getApiKeys } from "../src/config";
 import app from "../src/app";
 
 import {
-  connection,
   clearTestDatabase,
   createLocation,
   updateAvailability,
@@ -22,13 +21,9 @@ describe("GET /locations", () => {
     await createLocation(TestLocation);
     await updateAvailability(TestLocation.id, TestLocation.availability);
 
-    return request(app)
-      .get("/locations")
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toHaveLength(1);
-        done();
-      });
+    const res = await request(app).get("/locations").expect(200);
+    expect(res.body).toHaveLength(1);
+    done();
   });
 });
 
@@ -37,18 +32,17 @@ describe("GET /locations/:id", () => {
     await createLocation(TestLocation);
     await updateAvailability(TestLocation.id, TestLocation.availability);
 
-    return request(app)
+    const res = await request(app)
       .get(`/locations/${TestLocation.id}`)
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toHaveProperty("id", TestLocation.id);
-        expect(res.body).toHaveProperty("name", TestLocation.name);
-        expect(res.body).toHaveProperty(
-          "location_type",
-          TestLocation.location_type
-        );
-        done();
-      });
+      .expect(200);
+    expect(res.body).toHaveProperty("id", TestLocation.id);
+    expect(res.body).toHaveProperty("name", TestLocation.name);
+    expect(res.body).toHaveProperty(
+      "location_type",
+      TestLocation.location_type
+    );
+
+    done();
   });
 });
 
@@ -67,14 +61,59 @@ describe("POST /update", () => {
       })
       .expect(200);
 
-    return request(app)
+    const res = await request(app)
       .get(`/locations/${TestLocation.id}`)
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toHaveProperty("id", TestLocation.id);
-        expect(res.body).toHaveProperty("name", newName);
-        done();
-      });
+      .expect(200);
+    expect(res.body).toHaveProperty("id", TestLocation.id);
+    expect(res.body).toHaveProperty("name", newName);
+
+    done();
+  });
+
+  it("updates availability successfully", async (done) => {
+    await createLocation(TestLocation);
+
+    await request(app)
+      .post("/update")
+      .set("Accept", "application/json")
+      .set("x-api-key", getApiKeys()[0])
+      .send({
+        id: TestLocation.id,
+        availability: {
+          id: TestLocation.id,
+          source: "NJVSS Export",
+          available: "NO",
+          checked_at: new Date(),
+        },
+      })
+      .expect(200);
+
+    let res = await request(app)
+      .get(`/locations/${TestLocation.id}`)
+      .expect(200);
+    expect(res.body).toHaveProperty("id", TestLocation.id);
+    expect(res.body.availability).toHaveProperty("available", "NO");
+
+    await request(app)
+      .post("/update")
+      .set("Accept", "application/json")
+      .set("x-api-key", getApiKeys()[0])
+      .send({
+        id: TestLocation.id,
+        availability: {
+          id: TestLocation.id,
+          source: "NJVSS Export",
+          available: "UNKNOWN",
+          checked_at: new Date(),
+        },
+      })
+      .expect(200);
+
+    res = await request(app).get(`/locations/${TestLocation.id}`).expect(200);
+    expect(res.body).toHaveProperty("id", TestLocation.id);
+    expect(res.body.availability).toHaveProperty("available", "UNKNOWN");
+
+    done();
   });
 });
 

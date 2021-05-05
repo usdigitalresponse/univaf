@@ -1,17 +1,16 @@
 import app from "./app";
 import process from "process";
-import { connection } from "./db";
+import { db } from "./db";
 
 /**
  * Kill on SIGINT
  */
 
 process.on("SIGINT", () => {
-  console.log("Received SIGINT: process exiting");
-  connection
-    .end()
+  console.log("Received SIGINT: process exiting...");
+  db.destroy()
     .then(() => process.exit(0))
-    .catch((error) => {
+    .catch((error: Error) => {
       console.error(error);
       process.exit(1);
     });
