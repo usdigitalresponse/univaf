@@ -15,6 +15,64 @@ async function queryState(state) {
   }
 }
 
+/**
+ * Create a slot list based on the source data from VaccineSpotter, if any.
+ * @param {Array} [apiSlots] Array of VaccineSpotter-style slot data.
+ * @returns {Array}
+ */
+function formatSlots(apiSlots) {
+  if (!apiSlots) return undefined;
+
+  // Source data is an array of objects like:
+  // {
+  //   "time": "2021-05-04T09:50:00.000-04:00",
+  //   "type": "Moderna",
+  //   // Array of vaccine products offered
+  //   "vaccine_types": [ "moderna" ],
+  //   // Always a single string indicating what doses are allowed
+  //   "appointment_types": [ "all_doses" ]
+  // }
+  return apiSlots.map((data) => ({
+    start: data.time,
+    // end: undefined,  // No end time in source data
+    available: Available.yes, // We only have these for available slots
+    // available_count: 1,  // Omit since it's always 1
+    products: data.vaccine_types,
+    dose: data.appointment_types && data.appointment_types[0],
+  }));
+}
+
+/**
+ * Format a summarized list of appointments by day.
+ * @param {Array} apiSlots
+ * @returns {Array}
+ */
+function formatCapacity(apiSlots) {
+  if (!apiSlots) return undefined;
+
+  const categorized = Object.create(null);
+  for (const slot of apiSlots) {
+    // Assume `time` is ISO 8601 in location's local timezone.
+    // (This may need fancier parsing if that turns out to be untrue.)
+    const date = slot.time.slice(0, 10);
+    const key = `${date}::${slot.type}`;
+    if (key in categorized) {
+      categorized[key].available_count += 1;
+    } else {
+      categorized[key] = {
+        date,
+        available: Available.yes,
+        available_count: 1,
+        products: slot.vaccine_types,
+        dose: slot.appointment_types && slot.appointment_types[0],
+      };
+    }
+  }
+  return Object.keys(categorized)
+    .sort()
+    .map((key) => categorized[key]);
+}
+
 const formatters = {
   _base(store, additions = null) {
     let available = Available.unknown;
@@ -39,28 +97,16 @@ const formatters = {
     }
 
     // Default to `undefined` (rather than null) to suppress output in JSON.
-    const meta = {
-      appointment_types: store.properties.appointment_types || undefined,
-      vaccine_types: store.properties.appointment_vaccine_types || undefined,
-      appointments: store.properties.appointments || undefined,
-    };
-    // Summarize appointments when detailed data is available.
-    if (store.properties.appointments) {
-      const categorized = Object.create(null);
-      for (const appointment of store.properties.appointments) {
-        // Assume `time` is ISO 8601 in location's local timezone.
-        // (This may need fancier parsing if that turns out to be untrue.)
-        const date = appointment.time.slice(0, 10);
-        const key = `${date}::${appointment.type}`;
-        if (key in categorized) {
-          categorized[key].available += 1;
-        } else {
-          categorized[key] = { date, type: appointment.type, available: 1 };
-        }
-      }
-      meta.capacity = Object.keys(categorized)
-        .sort()
-        .map((key) => categorized[key]);
+    const capacity = formatCapacity(store.properties.appointments);
+    const meta = { capacity };
+    if (capacity) {
+      meta.slots = formatSlots(store.properties.appointments);
+      const allProducts = capacity
+        .flatMap((data) => data.products)
+        .filter((x) => !!x);
+      const allDoses = capacity.map((data) => data.dose).filter((x) => !!x);
+      if (allProducts.length) meta.products = Array.from(new Set(allProducts));
+      if (allDoses.length) meta.doses = Array.from(new Set(allDoses));
     }
 
     return {
@@ -212,4 +258,7 @@ async function checkAvailability(handler, options) {
   return results;
 }
 
-module.exports = { checkAvailability };
+module.exports = {
+  checkAvailability,
+  formatStore,
+};
