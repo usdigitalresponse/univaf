@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
-    }
+    },
+    "allowJs": true
   },
-  "include": ["src/**/*", "scripts/**/*"]
+  "include": ["src/**/*", "scripts/**/*", "knexfile.js"]
 }
