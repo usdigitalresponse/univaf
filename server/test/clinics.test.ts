@@ -1,6 +1,7 @@
 import request from "supertest";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
+import { startTransaction, rollbackTransaction } from "../src/db";
 
 import {
   clearTestDatabase,
@@ -10,11 +11,14 @@ import {
 
 import { Availability } from "../src/interfaces";
 
-beforeEach(async (done) => {
+beforeAll(async (done) => {
   // N.B. there is only one test database. multiple tests using it simultaneously may lead to unexpected results.
   await clearTestDatabase();
   done();
 });
+
+beforeEach(startTransaction);
+afterEach(rollbackTransaction);
 
 describe("GET /locations", () => {
   it("responds with a list of locations", async (done) => {
