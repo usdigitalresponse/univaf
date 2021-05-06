@@ -1,8 +1,10 @@
-import request from "supertest";
+import got from "got";
 import app from "../src/app";
+import { serverTest } from "./lib";
 
-describe("GET /", () => {
-  it("should return 200 OK", (done) => {
-    return request(app).get("/").expect(200, done);
+serverTest(app).describe("GET /", function () {
+  it("should return 200 OK", async () => {
+    const res = await this.client.extend({ responseType: "text" }).get("");
+    expect(res.statusCode).toBe(200);
   });
 });

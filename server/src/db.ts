@@ -31,18 +31,16 @@ export async function clearTestDatabase() {
   await db.migrate.latest();
 }
 
-export async function startTransaction(done?: Function) {
-  await db.raw("BEGIN");
-  if (done) {
-    done();
-  }
+export async function closeDatabase() {
+  await db.destroy();
 }
 
-export async function rollbackTransaction(done?: Function) {
+export async function startTransaction() {
+  await db.raw("BEGIN");
+}
+
+export async function rollbackTransaction() {
   await db.raw("ROLLBACK");
-  if (done) {
-    done();
-  }
 }
 
 function loadDbConfig() {
