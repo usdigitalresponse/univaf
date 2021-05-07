@@ -1,11 +1,12 @@
 import { serverTest } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
-import { startTransaction, rollbackTransaction } from "../src/db";
 
 import {
   clearTestDatabase,
   closeDatabase,
+  startTransaction,
+  rollbackTransaction,
   createLocation,
   updateAvailability,
 } from "../src/db";
