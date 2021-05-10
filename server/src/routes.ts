@@ -37,11 +37,11 @@ export const list = async (req: AppRequest, res: Response) => {
   let where: Array<string> = [];
   let values = [];
   if (req.query.state) {
-    where.push(`state = $${index++}`);
+    where.push(`state = ?`);
     values.push(req.query.state);
   }
   if (req.query.provider) {
-    where.push(`provider = $${index++}`);
+    where.push(`provider = ?`);
     values.push(req.query.provider);
   }
 
