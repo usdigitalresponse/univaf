@@ -1,14 +1,14 @@
 import got from "got";
 
-export function testClient(app: any): ServerWrappedGotClient {
-  return new ServerWrappedGotClient(app);
+export function testClient(app: any, config?: any): ServerWrappedGotClient {
+  return new ServerWrappedGotClient(app, config);
 }
 
 class ServerWrappedGotClient {
   serverPromise: Promise<any>;
   clientPromise: Promise<typeof got>;
 
-  constructor(app: any) {
+  constructor(app: any, config?: any) {
     this.serverPromise = new Promise((resolve) => {
       const server = app.listen(0, () => {
         resolve(server);
@@ -16,10 +16,14 @@ class ServerWrappedGotClient {
     });
 
     this.clientPromise = this.serverPromise.then((server) => {
-      return got.extend({
+      let client = got.extend({
         prefixUrl: `http://127.0.0.1:${server.address().port}`,
         responseType: "json",
       });
+      if (config) {
+        client = client.extend(config);
+      }
+      return client;
     });
   }
 
