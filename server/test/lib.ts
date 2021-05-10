@@ -3,6 +3,8 @@ import type { Application } from "express";
 import type { Server } from "http";
 import got, { Got } from "got";
 
+import { db, clearTestDatabase } from "../src/db";
+
 interface Context {
   server?: Server;
   client?: Got;
@@ -35,4 +37,11 @@ export function useServerForTests(app: Application): Context {
   });
 
   return context;
+}
+
+export function installTestDatabaseHooks() {
+  beforeAll(clearTestDatabase);
+  afterAll(async () => await db.destroy());
+  beforeEach(async () => await db.raw("BEGIN"));
+  afterEach(async () => await db.raw("ROLLBACK"));
 }

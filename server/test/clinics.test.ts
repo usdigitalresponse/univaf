@@ -1,24 +1,12 @@
-import { useServerForTests } from "./lib";
+import { useServerForTests, installTestDatabaseHooks } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 
-import {
-  clearTestDatabase,
-  closeDatabase,
-  startTransaction,
-  rollbackTransaction,
-  createLocation,
-  getLocationById,
-  updateAvailability,
-} from "../src/db";
+import { createLocation, getLocationById, updateAvailability } from "../src/db";
 
 import { Availability } from "../src/interfaces";
 
-beforeAll(clearTestDatabase);
-afterAll(closeDatabase);
-
-beforeEach(startTransaction);
-afterEach(rollbackTransaction);
+installTestDatabaseHooks();
 
 describe("GET /locations", () => {
   const context = useServerForTests(app);

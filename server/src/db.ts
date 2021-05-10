@@ -41,18 +41,6 @@ export async function clearTestDatabase() {
   await db.migrate.latest();
 }
 
-export async function closeDatabase() {
-  await db.destroy();
-}
-
-export async function startTransaction() {
-  await db.raw("BEGIN");
-}
-
-export async function rollbackTransaction() {
-  await db.raw("ROLLBACK");
-}
-
 function loadDbConfig() {
   const knexfile = require("../knexfile");
   const nodeEnv = process.env.NODE_ENV || "development";
