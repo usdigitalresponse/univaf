@@ -42,7 +42,7 @@
     "express": "4.17.1",
     "express-validator": "6.9.2",
     "knex": "^0.95.4",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "nanoid": "^3.1.22",
     "pg": "^8.5.1",
     "winston": "3.3.3"
