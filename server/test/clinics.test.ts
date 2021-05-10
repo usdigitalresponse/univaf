@@ -18,6 +18,32 @@ describe("GET /locations", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveLength(1);
   });
+
+  it("responds with a list of locations filtered by state", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+
+    let res = await context.client.get("locations?state=AK");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveLength(0);
+
+    res = await context.client.get("locations?state=NJ");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveLength(1);
+  });
+
+  it("responds with a list of locations filtered by provider", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+
+    let res = await context.client.get("locations?provider=MISSING");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveLength(0);
+
+    res = await context.client.get("locations?provider=NJVSS");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveLength(1);
+  });
 });
 
 describe("GET /locations/:id", () => {
