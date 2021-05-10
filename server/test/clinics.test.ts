@@ -1,4 +1,4 @@
-import { serverTest } from "./lib";
+import { useServerForTests } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 
@@ -19,22 +19,26 @@ afterAll(closeDatabase);
 beforeEach(startTransaction);
 afterEach(rollbackTransaction);
 
-serverTest(app).describe("GET /locations", function () {
+describe("GET /locations", () => {
+  const context = useServerForTests(app);
+
   it("responds with a list of locations", async () => {
     await createLocation(TestLocation);
     await updateAvailability(TestLocation.id, TestLocation.availability);
-    const res = await this.client.get("locations");
+    const res = await context.client.get("locations");
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveLength(1);
   });
 });
 
-serverTest(app).describe("GET /locations/:id", function () {
+describe("GET /locations/:id", () => {
+  const context = useServerForTests(app);
+
   it("responds with location status", async () => {
     await createLocation(TestLocation);
     await updateAvailability(TestLocation.id, TestLocation.availability);
 
-    const res = await this.client.get(`locations/${TestLocation.id}`);
+    const res = await context.client.get(`locations/${TestLocation.id}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("id", TestLocation.id);
     expect(res.body).toHaveProperty("name", TestLocation.name);
@@ -45,7 +49,9 @@ serverTest(app).describe("GET /locations/:id", function () {
   });
 });
 
-serverTest(app).describe("POST /update", function () {
+describe("POST /update", () => {
+  const context = useServerForTests(app);
+
   const headers = {
     Accept: "application/json",
     "x-api-key": getApiKeys()[0],
@@ -55,7 +61,7 @@ serverTest(app).describe("POST /update", function () {
     await createLocation(TestLocation);
     const newName = "New Name";
 
-    let res = await this.client.post("update?update_location=1", {
+    let res = await context.client.post("update?update_location=1", {
       headers,
       json: {
         id: TestLocation.id,
@@ -64,7 +70,7 @@ serverTest(app).describe("POST /update", function () {
     });
     expect(res.statusCode).toBe(200);
 
-    res = await this.client.get(`locations/${TestLocation.id}`);
+    res = await context.client.get(`locations/${TestLocation.id}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("id", TestLocation.id);
     expect(res.body).toHaveProperty("name", newName);
@@ -73,7 +79,7 @@ serverTest(app).describe("POST /update", function () {
   it("updates availability successfully", async () => {
     await createLocation(TestLocation);
 
-    let res = await this.client.post("update", {
+    let res = await context.client.post("update", {
       headers,
       json: {
         id: TestLocation.id,
@@ -87,13 +93,13 @@ serverTest(app).describe("POST /update", function () {
     });
     expect(res.statusCode).toBe(200);
 
-    res = await this.client.get(`locations/${TestLocation.id}`);
+    res = await context.client.get(`locations/${TestLocation.id}`);
     expect(res.statusCode).toBe(200);
 
     expect(res.body).toHaveProperty("id", TestLocation.id);
     expect(res.body.availability).toHaveProperty("available", "NO");
 
-    res = await this.client.post("update", {
+    res = await context.client.post("update", {
       headers,
       json: {
         id: TestLocation.id,
@@ -107,7 +113,7 @@ serverTest(app).describe("POST /update", function () {
     });
     expect(res.statusCode).toBe(200);
 
-    res = await this.client.get(`locations/${TestLocation.id}`);
+    res = await context.client.get(`locations/${TestLocation.id}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("id", TestLocation.id);
     expect(res.body.availability).toHaveProperty("available", "UNKNOWN");

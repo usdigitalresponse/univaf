@@ -1,39 +1,38 @@
-import { Server as HttpsServer } from "https";
-import got from "got";
+import type { AddressInfo } from "net";
+import type { Application } from "express";
+import type { Server } from "http";
+import got, { Got } from "got";
 
-interface ServerTest {
-  describe: (description: string, fn: Function) => void;
+interface Context {
+  server?: Server;
+  client?: Got;
 }
 
-export function serverTest(app: any): ServerTest {
-  return {
-    describe: function (description: string, fn: Function) {
-      describe(description, function () {
-        beforeEach((done) => {
-          this.server = app.listen(0, () => {
-            this.client = got.extend({
-              prefixUrl: `http://127.0.0.1:${this.server.address().port}`,
-              responseType: "json",
-            });
-            done();
-          });
-        });
+export function useServerForTests(app: Application): Context {
+  const context: Context = {};
 
-        afterEach((done) => {
-          const port = this.server.address().port;
-          if (this.server) {
-            this.server.close((error?: Error) => {
-              // Jest needs a tick after server shutdown to detect
-              // that the resources have been released.
-              setTimeout(() => done(error), 0);
-            });
-          } else {
-            done();
-          }
-        });
-
-        fn.bind(this)();
+  beforeEach((done) => {
+    context.server = app.listen(0, () => {
+      const { port } = context.server.address() as AddressInfo;
+      context.client = got.extend({
+        prefixUrl: `http://127.0.0.1:${port}`,
+        responseType: "json",
       });
-    },
-  };
+      done();
+    });
+  });
+
+  afterEach((done) => {
+    if (context.server) {
+      context.server.close((error?: Error) => {
+        // Jest needs a tick after server shutdown to detect
+        // that the resources have been released.
+        setTimeout(() => done(error), 0);
+      });
+    } else {
+      done();
+    }
+  });
+
+  return context;
 }
