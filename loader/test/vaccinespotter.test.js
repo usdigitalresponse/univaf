@@ -261,4 +261,41 @@ describe("VaccineSpotter", () => {
 
     expect(result.availability.doses).toEqual(undefined);
   });
+
+  it("should not fail on locations with malformed `appointments` data", () => {
+    const result = formatStore({
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [-124.13914369, 40.78085044],
+      },
+      properties: {
+        id: 141675345,
+        url: "https://www.healthmartcovidvaccine.com/",
+        city: "DUNELLEN",
+        name: "RAY PHARMACY",
+        state: "NJ",
+        address: "187 North Ave",
+        provider: "health_mart",
+        time_zone: "",
+        postal_code: "08812",
+        appointments: [{ time: null }, { time: null }, { time: null }],
+        provider_brand: "health_mart",
+        carries_vaccine: null,
+        appointment_types: { unknown: true },
+        provider_brand_id: 96517,
+        provider_brand_name: "Health Mart",
+        provider_location_id: "7366",
+        appointments_available: true,
+        appointment_vaccine_types: { unknown: true },
+        appointments_last_fetched: "2021-05-10T05:50:53.025+00:00",
+        appointments_last_modified: "2021-05-10T05:50:53.025+00:00",
+        appointments_available_all_doses: true,
+        appointments_available_2nd_dose_only: false,
+      },
+    });
+
+    expect(result.availability).not.toHaveProperty("slots");
+    expect(result.availability).not.toHaveProperty("capacity");
+  });
 });
