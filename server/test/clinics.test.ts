@@ -23,8 +23,8 @@ afterEach(rollbackTransaction);
 
 describe("GET /locations", () => {
   it("responds with a list of locations", async (done) => {
-    await createLocation(TestLocation);
-    await updateAvailability(TestLocation.id, TestLocation.availability);
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
 
     const res = await request(app).get("/locations").expect(200);
     expect(res.body).toHaveLength(1);
@@ -34,13 +34,11 @@ describe("GET /locations", () => {
 
 describe("GET /locations/:id", () => {
   it("responds with location status", async (done) => {
-    await createLocation(TestLocation);
-    await updateAvailability(TestLocation.id, TestLocation.availability);
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
 
-    const res = await request(app)
-      .get(`/locations/${TestLocation.id}`)
-      .expect(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
+    const res = await request(app).get(`/locations/${location.id}`).expect(200);
+    expect(res.body).toHaveProperty("id", location.id);
     expect(res.body).toHaveProperty("name", TestLocation.name);
     expect(res.body).toHaveProperty(
       "location_type",
@@ -53,7 +51,7 @@ describe("GET /locations/:id", () => {
 
 describe("POST /update", () => {
   it("updates location metadata successfully", async (done) => {
-    await createLocation(TestLocation);
+    const location = await createLocation(TestLocation);
     const newName = "New Name";
 
     await request(app)
@@ -61,31 +59,28 @@ describe("POST /update", () => {
       .set("Accept", "application/json")
       .set("x-api-key", getApiKeys()[0])
       .send({
-        id: TestLocation.id,
+        id: location.id,
         name: newName,
       })
       .expect(200);
 
-    const res = await request(app)
-      .get(`/locations/${TestLocation.id}`)
-      .expect(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
+    const res = await request(app).get(`/locations/${location.id}`).expect(200);
+    expect(res.body).toHaveProperty("id", location.id);
     expect(res.body).toHaveProperty("name", newName);
 
     done();
   });
 
   it("updates availability successfully", async (done) => {
-    await createLocation(TestLocation);
+    const location = await createLocation(TestLocation);
 
     await request(app)
       .post("/update")
       .set("Accept", "application/json")
       .set("x-api-key", getApiKeys()[0])
       .send({
-        id: TestLocation.id,
+        id: location.id,
         availability: {
-          id: TestLocation.id,
           source: "NJVSS Export",
           available: "NO",
           checked_at: new Date(),
@@ -93,10 +88,8 @@ describe("POST /update", () => {
       })
       .expect(200);
 
-    let res = await request(app)
-      .get(`/locations/${TestLocation.id}`)
-      .expect(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
+    let res = await request(app).get(`/locations/${location.id}`).expect(200);
+    expect(res.body).toHaveProperty("id", location.id);
     expect(res.body.availability).toHaveProperty("available", "NO");
 
     await request(app)
@@ -104,9 +97,8 @@ describe("POST /update", () => {
       .set("Accept", "application/json")
       .set("x-api-key", getApiKeys()[0])
       .send({
-        id: TestLocation.id,
+        id: location.id,
         availability: {
-          id: TestLocation.id,
           source: "NJVSS Export",
           available: "UNKNOWN",
           checked_at: new Date(),
@@ -114,17 +106,17 @@ describe("POST /update", () => {
       })
       .expect(200);
 
-    res = await request(app).get(`/locations/${TestLocation.id}`).expect(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
+    res = await request(app).get(`/locations/${location.id}`).expect(200);
+    expect(res.body).toHaveProperty("id", location.id);
     expect(res.body.availability).toHaveProperty("available", "UNKNOWN");
 
     done();
   });
 
-  it("updates location metadata based on `external_ids` if `id` does not exist", async (done) => {
-    await createLocation(TestLocation);
+  it("updates location metadata based on `external_ids` if location matching `id` does not exist", async (done) => {
+    const location = await createLocation(TestLocation);
     const newName = "New Name";
-    const externalIds = Object.entries(TestLocation.external_ids);
+    const externalId = Object.entries(TestLocation.external_ids)[0];
 
     await request(app)
       .post("/update?update_location=1")
@@ -133,22 +125,22 @@ describe("POST /update", () => {
       .send({
         id: "abc123",
         external_ids: {
-          [externalIds[0][0]]: externalIds[0][1],
+          [externalId[0]]: externalId[1],
         },
         name: newName,
       })
       .expect(200);
 
-    const result = await getLocationById(TestLocation.id);
+    const result = await getLocationById(location.id);
     expect(result).toHaveProperty("name", newName);
 
     done();
   });
 
-  it("updates location metadata based on `external_ids` if `id` is not present", async (done) => {
-    await createLocation(TestLocation);
+  it("updates location metadata based on `external_ids` if `id` is not in update data", async (done) => {
+    const location = await createLocation(TestLocation);
     const newName = "New Name";
-    const externalIds = Object.entries(TestLocation.external_ids);
+    const externalId = Object.entries(TestLocation.external_ids)[0];
 
     await request(app)
       .post("/update?update_location=1")
@@ -156,13 +148,13 @@ describe("POST /update", () => {
       .set("x-api-key", getApiKeys()[0])
       .send({
         external_ids: {
-          [externalIds[0][0]]: externalIds[0][1],
+          [externalId[0]]: externalId[1],
         },
         name: newName,
       })
       .expect(200);
 
-    const result = await getLocationById(TestLocation.id);
+    const result = await getLocationById(location.id);
     expect(result).toHaveProperty("name", newName);
 
     done();
