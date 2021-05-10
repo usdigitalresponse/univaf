@@ -1,39 +1,47 @@
-import { Server as HttpsServer } from "https";
 import got from "got";
 
-interface ServerTest {
-  describe: (description: string, fn: Function) => void;
+export function testClient(app: any): ServerWrappedGotClient {
+  return new ServerWrappedGotClient(app);
 }
 
-export function serverTest(app: any): ServerTest {
-  return {
-    describe: function (description: string, fn: Function) {
-      describe(description, function () {
-        beforeEach((done) => {
-          this.server = app.listen(0, () => {
-            this.client = got.extend({
-              prefixUrl: `http://127.0.0.1:${this.server.address().port}`,
-              responseType: "json",
-            });
-            done();
-          });
-        });
+class ServerWrappedGotClient {
+  serverPromise: Promise<any>;
+  clientPromise: Promise<typeof got>;
 
-        afterEach((done) => {
-          const port = this.server.address().port;
-          if (this.server) {
-            this.server.close((error?: Error) => {
-              // Jest needs a tick after server shutdown to detect
-              // that the resources have been released.
-              setTimeout(() => done(error), 0);
-            });
-          } else {
-            done();
-          }
-        });
-
-        fn.bind(this)();
+  constructor(app: any) {
+    this.serverPromise = new Promise((resolve) => {
+      const server = app.listen(0, () => {
+        resolve(server);
       });
-    },
-  };
+    });
+
+    this.clientPromise = this.serverPromise.then((server) => {
+      return got.extend({
+        prefixUrl: `http://127.0.0.1:${server.address().port}`,
+        responseType: "json",
+      });
+    });
+  }
+
+  async _shutdownWithResult(result: any) {
+    const server = await this.serverPromise;
+    return new Promise<any>((resolve, reject) => {
+      server.close((error?: Error) => {
+        if (error) reject(error);
+        resolve(result);
+      });
+    });
+  }
+
+  proxiedRequest(method: string) {
+    return async function (...args: any) {
+      const client = await this.clientPromise;
+      const res = await client[method](...args);
+      return this._shutdownWithResult(res);
+    };
+  }
+
+  get = this.proxiedRequest("get");
+  post = this.proxiedRequest("post");
+  put = this.proxiedRequest("put");
 }
