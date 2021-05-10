@@ -102,7 +102,7 @@ export async function listLocations(req: Request, res: Response) {
   let where: Array<string> = [];
   let values = [];
   if (req.params.state) {
-    where.push(`state = $${index++}`);
+    where.push(`state = ?`);
     values.push(req.params.state);
   }
 
@@ -169,7 +169,7 @@ export async function listSchedules(req: Request, res: Response) {
   let where: Array<string> = [];
   let values = [];
   if (req.params.state) {
-    where.push(`state = $${index++}`);
+    where.push(`state = ?`);
     values.push(req.params.state);
   }
 
@@ -213,7 +213,7 @@ export async function listSlots(req: Request, res: Response) {
   let where: Array<string> = [];
   let values = [];
   if (req.params.state) {
-    where.push(`state = $${index++}`);
+    where.push(`state = ?}`);
     values.push(req.params.state);
   }
 

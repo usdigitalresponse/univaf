@@ -4,6 +4,7 @@ import {
   ProviderLocation,
   LocationAvailability,
 } from "./interfaces";
+import { nanoid } from "nanoid";
 import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
@@ -108,9 +109,24 @@ function selectSqlPoint(column: string): string {
 export async function createLocation(data: any): Promise<ProviderLocation> {
   if (!data.name) throw new ValueError("Locations must have a `name`");
 
+  // If an ID is not specified, generate a random one.
+  let id = data.id;
+  if (!id) {
+    let unique = false;
+    while (!unique) {
+      id = nanoid();
+      const result = await db.raw(
+        `SELECT id FROM provider_locations WHERE id = ? LIMIT 1`,
+        [id]
+      );
+      unique = !result.rows.length;
+    }
+  }
+
   const now = new Date();
   const sqlData: { string: string } = {
     ...data,
+    id,
     position: formatSqlPoint(data.position),
     created_at: now,
     updated_at: now,
@@ -126,7 +142,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     VALUES (${sqlFields.map((_) => "?").join(", ")})`,
     sqlFields.map((x) => x[1] || null)
   );
-  return await getLocationById(data.id);
+  return await getLocationById(id);
 }
 
 /**
@@ -231,6 +247,40 @@ export async function getLocationById(
     limit: 1,
     where: ["pl.id = ?"],
     values: [id],
+  });
+  return rows[0];
+}
+
+/**
+ * Returns a single provider location that has at least one external ID matching
+ * one of the provided IDs.
+ * @param external_ids
+ * @returns ProviderLocation | undefined
+ */
+export async function getLocationByExternalIds(
+  externalIds: { string: string },
+  { includePrivate = false } = {}
+): Promise<ProviderLocation | undefined> {
+  const wheres = [];
+  const ids = [];
+  for (const [idSystem, idValue] of Object.entries(externalIds)) {
+    // VTrckS PINs are not unique for this use-case, and so should not be
+    // queried here. It's a quirk of history and past misunderstanding that we
+    // have them in `external_ids`.
+    if (idSystem === "vtrcks") continue;
+
+    wheres.push("pl.external_ids @> ?");
+    ids.push({ [idSystem]: idValue });
+  }
+
+  // Bail out early if there was nothing to actually query on.
+  if (!ids.length) return null;
+
+  const rows = await listLocations({
+    includePrivate,
+    limit: 1,
+    where: [`( ${wheres.join(" OR ")} )`],
+    values: ids,
   });
   return rows[0];
 }

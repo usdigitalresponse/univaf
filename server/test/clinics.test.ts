@@ -8,6 +8,7 @@ import {
   startTransaction,
   rollbackTransaction,
   createLocation,
+  getLocationById,
   updateAvailability,
 } from "../src/db";
 
@@ -23,8 +24,8 @@ describe("GET /locations", () => {
   const context = useServerForTests(app);
 
   it("responds with a list of locations", async () => {
-    await createLocation(TestLocation);
-    await updateAvailability(TestLocation.id, TestLocation.availability);
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
     const res = await context.client.get("locations");
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveLength(1);
@@ -35,12 +36,12 @@ describe("GET /locations/:id", () => {
   const context = useServerForTests(app);
 
   it("responds with location status", async () => {
-    await createLocation(TestLocation);
-    await updateAvailability(TestLocation.id, TestLocation.availability);
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
 
-    const res = await context.client.get(`locations/${TestLocation.id}`);
+    const res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
+    expect(res.body).toHaveProperty("id", location.id);
     expect(res.body).toHaveProperty("name", TestLocation.name);
     expect(res.body).toHaveProperty(
       "location_type",
@@ -58,33 +59,32 @@ describe("POST /update", () => {
   };
 
   it("updates location metadata successfully", async () => {
-    await createLocation(TestLocation);
+    const location = await createLocation(TestLocation);
     const newName = "New Name";
 
     let res = await context.client.post("update?update_location=1", {
       headers,
       json: {
-        id: TestLocation.id,
+        id: location.id,
         name: newName,
       },
     });
     expect(res.statusCode).toBe(200);
 
-    res = await context.client.get(`locations/${TestLocation.id}`);
+    res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
+    expect(res.body).toHaveProperty("id", location.id);
     expect(res.body).toHaveProperty("name", newName);
   });
 
   it("updates availability successfully", async () => {
-    await createLocation(TestLocation);
+    const location = await createLocation(TestLocation);
 
     let res = await context.client.post("update", {
       headers,
       json: {
-        id: TestLocation.id,
+        id: location.id,
         availability: {
-          id: TestLocation.id,
           source: "NJVSS Export",
           available: "NO",
           checked_at: new Date(),
@@ -93,18 +93,17 @@ describe("POST /update", () => {
     });
     expect(res.statusCode).toBe(200);
 
-    res = await context.client.get(`locations/${TestLocation.id}`);
+    res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
 
-    expect(res.body).toHaveProperty("id", TestLocation.id);
-    expect(res.body.availability).toHaveProperty("available", "NO");
+    expect(res.body).toHaveProperty("id", location.id);
+    expect(res.body).toHaveProperty("availability.available", "NO");
 
     res = await context.client.post("update", {
       headers,
       json: {
-        id: TestLocation.id,
+        id: location.id,
         availability: {
-          id: TestLocation.id,
           source: "NJVSS Export",
           available: "UNKNOWN",
           checked_at: new Date(),
@@ -113,15 +112,76 @@ describe("POST /update", () => {
     });
     expect(res.statusCode).toBe(200);
 
-    res = await context.client.get(`locations/${TestLocation.id}`);
+    res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("id", TestLocation.id);
-    expect(res.body.availability).toHaveProperty("available", "UNKNOWN");
+    expect(res.body).toHaveProperty("id", location.id);
+    expect(res.body).toHaveProperty("availability.available", "UNKNOWN");
+  });
+
+  it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {
+    const location = await createLocation(TestLocation);
+    const newName = "New Name";
+    const externalId = Object.entries(TestLocation.external_ids)[0];
+
+    const res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
+        id: "abc123",
+        external_ids: {
+          [externalId[0]]: externalId[1],
+        },
+        name: newName,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result).toHaveProperty("name", newName);
+  });
+
+  it("updates location metadata based on `external_ids` if `id` is not in update data", async () => {
+    const location = await createLocation(TestLocation);
+    const newName = "New Name";
+    const externalId = Object.entries(TestLocation.external_ids)[0];
+
+    const res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
+        external_ids: {
+          [externalId[0]]: externalId[1],
+        },
+        name: newName,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result).toHaveProperty("name", newName);
+  });
+
+  it("should not update based on vtrcks PINs", async () => {
+    await createLocation(TestLocation);
+    const newName = "New Name";
+
+    const res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
+        external_ids: {
+          vtrcks: TestLocation.external_ids.vtrcks,
+        },
+        name: newName,
+      },
+    });
+    expect(res.statusCode).toBe(201);
   });
 });
 
 const TestLocation = {
   id: "47c59c23cbd4672173cc93b8a39b60ddf481dd56",
+  external_ids: {
+    njiis: "nj1234",
+    vtrcks: "456",
+  },
   provider: "NJVSS",
   location_type: "mass_vax",
   name: "Gloucester County Megasite",
