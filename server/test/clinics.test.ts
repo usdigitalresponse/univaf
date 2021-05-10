@@ -1,182 +1,166 @@
-import request from "supertest";
+import { useServerForTests, installTestDatabaseHooks } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
-import { startTransaction, rollbackTransaction } from "../src/db";
 
-import {
-  clearTestDatabase,
-  createLocation,
-  getLocationById,
-  updateAvailability,
-} from "../src/db";
+import { createLocation, getLocationById, updateAvailability } from "../src/db";
 
 import { Availability } from "../src/interfaces";
 
-beforeAll(async (done) => {
-  // N.B. there is only one test database. multiple tests using it simultaneously may lead to unexpected results.
-  await clearTestDatabase();
-  done();
-});
-
-beforeEach(startTransaction);
-afterEach(rollbackTransaction);
+installTestDatabaseHooks();
 
 describe("GET /locations", () => {
-  it("responds with a list of locations", async (done) => {
+  const context = useServerForTests(app);
+
+  it("responds with a list of locations", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
-
-    const res = await request(app).get("/locations").expect(200);
+    const res = await context.client.get("locations");
+    expect(res.statusCode).toBe(200);
     expect(res.body).toHaveLength(1);
-    done();
   });
 });
 
 describe("GET /locations/:id", () => {
-  it("responds with location status", async (done) => {
+  const context = useServerForTests(app);
+
+  it("responds with location status", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
 
-    const res = await request(app).get(`/locations/${location.id}`).expect(200);
+    const res = await context.client.get(`locations/${location.id}`);
+    expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("id", location.id);
     expect(res.body).toHaveProperty("name", TestLocation.name);
     expect(res.body).toHaveProperty(
       "location_type",
       TestLocation.location_type
     );
-
-    done();
   });
 });
 
 describe("POST /update", () => {
-  it("updates location metadata successfully", async (done) => {
+  const context = useServerForTests(app);
+
+  const headers = {
+    Accept: "application/json",
+    "x-api-key": getApiKeys()[0],
+  };
+
+  it("updates location metadata successfully", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
 
-    await request(app)
-      .post("/update?update_location=1")
-      .set("Accept", "application/json")
-      .set("x-api-key", getApiKeys()[0])
-      .send({
+    let res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
         id: location.id,
         name: newName,
-      })
-      .expect(200);
+      },
+    });
+    expect(res.statusCode).toBe(200);
 
-    const res = await request(app).get(`/locations/${location.id}`).expect(200);
+    res = await context.client.get(`locations/${location.id}`);
+    expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("id", location.id);
     expect(res.body).toHaveProperty("name", newName);
-
-    done();
   });
 
-  it("updates availability successfully", async (done) => {
+  it("updates availability successfully", async () => {
     const location = await createLocation(TestLocation);
 
-    await request(app)
-      .post("/update")
-      .set("Accept", "application/json")
-      .set("x-api-key", getApiKeys()[0])
-      .send({
+    let res = await context.client.post("update", {
+      headers,
+      json: {
         id: location.id,
         availability: {
           source: "NJVSS Export",
           available: "NO",
           checked_at: new Date(),
         },
-      })
-      .expect(200);
+      },
+    });
+    expect(res.statusCode).toBe(200);
 
-    let res = await request(app).get(`/locations/${location.id}`).expect(200);
+    res = await context.client.get(`locations/${location.id}`);
+    expect(res.statusCode).toBe(200);
+
     expect(res.body).toHaveProperty("id", location.id);
-    expect(res.body.availability).toHaveProperty("available", "NO");
+    expect(res.body).toHaveProperty("availability.available", "NO");
 
-    await request(app)
-      .post("/update")
-      .set("Accept", "application/json")
-      .set("x-api-key", getApiKeys()[0])
-      .send({
+    res = await context.client.post("update", {
+      headers,
+      json: {
         id: location.id,
         availability: {
           source: "NJVSS Export",
           available: "UNKNOWN",
           checked_at: new Date(),
         },
-      })
-      .expect(200);
+      },
+    });
+    expect(res.statusCode).toBe(200);
 
-    res = await request(app).get(`/locations/${location.id}`).expect(200);
+    res = await context.client.get(`locations/${location.id}`);
+    expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("id", location.id);
-    expect(res.body.availability).toHaveProperty("available", "UNKNOWN");
-
-    done();
+    expect(res.body).toHaveProperty("availability.available", "UNKNOWN");
   });
 
-  it("updates location metadata based on `external_ids` if location matching `id` does not exist", async (done) => {
+  it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
     const externalId = Object.entries(TestLocation.external_ids)[0];
 
-    await request(app)
-      .post("/update?update_location=1")
-      .set("Accept", "application/json")
-      .set("x-api-key", getApiKeys()[0])
-      .send({
+    const res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
         id: "abc123",
         external_ids: {
           [externalId[0]]: externalId[1],
         },
         name: newName,
-      })
-      .expect(200);
+      },
+    });
+    expect(res.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
     expect(result).toHaveProperty("name", newName);
-
-    done();
   });
 
-  it("updates location metadata based on `external_ids` if `id` is not in update data", async (done) => {
+  it("updates location metadata based on `external_ids` if `id` is not in update data", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
     const externalId = Object.entries(TestLocation.external_ids)[0];
 
-    await request(app)
-      .post("/update?update_location=1")
-      .set("Accept", "application/json")
-      .set("x-api-key", getApiKeys()[0])
-      .send({
+    const res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
         external_ids: {
           [externalId[0]]: externalId[1],
         },
         name: newName,
-      })
-      .expect(200);
+      },
+    });
+    expect(res.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
     expect(result).toHaveProperty("name", newName);
-
-    done();
   });
 
-  it("should not update based on vtrcks PINs", async (done) => {
+  it("should not update based on vtrcks PINs", async () => {
     await createLocation(TestLocation);
     const newName = "New Name";
 
-    await request(app)
-      .post("/update?update_location=1")
-      .set("Accept", "application/json")
-      .set("x-api-key", getApiKeys()[0])
-      .send({
+    const res = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
         external_ids: {
           vtrcks: TestLocation.external_ids.vtrcks,
         },
         name: newName,
-      })
-      .expect(201);
-
-    done();
+      },
+    });
+    expect(res.statusCode).toBe(201);
   });
 });
 

@@ -26,24 +26,19 @@ export function assertIsTestDatabase() {
 export async function clearTestDatabase() {
   await assertIsTestDatabase();
 
-  await db.raw("DROP SCHEMA IF EXISTS public CASCADE");
-  await db.raw("CREATE SCHEMA public");
+  const res = await db.raw(
+    "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public'"
+  );
+
+  await Promise.all(
+    res.rows.map(async (row: any) => {
+      if (row.tablename != "spatial_ref_sys") {
+        return db.raw(`DROP TABLE ${row.tablename} CASCADE`);
+      }
+    })
+  );
 
   await db.migrate.latest();
-}
-
-export async function startTransaction(done?: Function) {
-  await db.raw("BEGIN");
-  if (done) {
-    done();
-  }
-}
-
-export async function rollbackTransaction(done?: Function) {
-  await db.raw("ROLLBACK");
-  if (done) {
-    done();
-  }
 }
 
 function loadDbConfig() {
