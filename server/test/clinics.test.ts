@@ -167,6 +167,25 @@ describe("POST /update", () => {
 
     done();
   });
+
+  it("should not update based on vtrcks PINs", async (done) => {
+    await createLocation(TestLocation);
+    const newName = "New Name";
+
+    await request(app)
+      .post("/update?update_location=1")
+      .set("Accept", "application/json")
+      .set("x-api-key", getApiKeys()[0])
+      .send({
+        external_ids: {
+          vtrcks: TestLocation.external_ids.vtrcks,
+        },
+        name: newName,
+      })
+      .expect(201);
+
+    done();
+  });
 });
 
 const TestLocation = {
