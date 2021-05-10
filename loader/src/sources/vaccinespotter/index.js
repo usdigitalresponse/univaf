@@ -1,8 +1,13 @@
 const got = require("got");
-
+const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const { titleCase } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
+
+function warn(message, context) {
+  console.warn(`VaccineSpotter: ${message}`, context);
+  Sentry.captureMessage(message, Sentry.Severity.Info);
+}
 
 async function queryState(state) {
   try {
@@ -13,6 +18,40 @@ async function queryState(state) {
   } catch (error) {
     console.error(`Error fetching Vaccine Spotter data`, error);
   }
+}
+
+/**
+ * Check whether the appointment slots data for a location is present and valid.
+ * If there's useful slot data, this returns `true`. If there's slot data that
+ * is formatted in an unexpected way, this logs a warning.
+ * @param {Array<any>|undefined} store
+ * @returns {boolean}
+ */
+function validateSlots(apiSlots) {
+  if (!apiSlots || !apiSlots.length) return false;
+
+  const prefix = "Malformed appointments:";
+  for (const slot of apiSlots) {
+    // Validate slot formatting; bail out if there's a problem.
+    if (!slot.time) {
+      warn(`${prefix} slot is missing 'time'`);
+      return false;
+    }
+    if (slot.vaccine_types && !Array.isArray(slot.vaccine_types)) {
+      warn(`${prefix} slot 'vaccine_types' is not an array`);
+      return false;
+    }
+    if (
+      slot.appointment_types &&
+      (!Array.isArray(slot.appointment_types) ||
+        slot.appointment_types.length > 1)
+    ) {
+      warn(`${prefix} slot 'appointment_types' is not an array w/ one entry`);
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -68,6 +107,10 @@ function formatCapacity(apiSlots) {
       };
     }
   }
+
+  const keys = Object.keys(categorized);
+  if (!keys.length) return undefined;
+
   return Object.keys(categorized)
     .sort()
     .map((key) => categorized[key]);
@@ -96,10 +139,10 @@ const formatters = {
       id = `vaccinespotter:${store.properties.id}`;
     }
 
-    // Default to `undefined` (rather than null) to suppress output in JSON.
-    const capacity = formatCapacity(store.properties.appointments);
-    const meta = { capacity };
-    if (capacity) {
+    const meta = {};
+    if (validateSlots(store.properties.appointments)) {
+      const capacity = formatCapacity(store.properties.appointments);
+      meta.capacity = capacity;
       meta.slots = formatSlots(store.properties.appointments);
       const allProducts = capacity
         .flatMap((data) => data.products)
@@ -229,7 +272,17 @@ function formatStore(store) {
     formatters[store.properties.provider_brand] ||
     formatters[store.properties.provider] ||
     formatters._base;
-  return formatter(store);
+
+  let result;
+  Sentry.withScope((scope) => {
+    scope.setContext("location", {
+      id: data.id,
+      name: data.name,
+      provider: data.provider,
+    });
+    result = formatter(store);
+  });
+  return result;
 }
 
 async function checkAvailability(handler, options) {
