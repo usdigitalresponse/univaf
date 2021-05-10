@@ -1,4 +1,4 @@
-const { Available, LocationType } = require("../../model");
+const { Available, LocationType, VaccineProduct } = require("../../model");
 const crypto = require("crypto");
 const csvParse = require("csv-parse/lib/sync");
 const getStream = require("get-stream");
@@ -187,12 +187,10 @@ function filterActualNjvssLocations(locations) {
         NJVSS reports availability for a new site: "${location.name}" at
         "${location.vras_provideraddress}"
       `);
+      return true;
     }
 
-    return (
-      location.available > 0 ||
-      location.vras_allowschedulingforcountyresidentsonly != null
-    );
+    return false;
   });
 
   // Sanity-check that we don't have any previously known locations that didn't
@@ -205,15 +203,6 @@ function filterActualNjvssLocations(locations) {
   }
 
   return filtered;
-}
-
-function createId(location, simpleName, simpleAddress) {
-  simpleName = simpleName || matchable(location.name);
-  simpleAddress = simpleAddress || matchableAddress(location.address_lines);
-  return crypto
-    .createHash("sha1")
-    .update(`${simpleName} ${simpleAddress}`)
-    .digest("hex");
 }
 
 /**
@@ -351,7 +340,46 @@ function getDescriptionDetails(text) {
   return result.trim();
 }
 
-const addressPattern = /^(.*),\s([^,]+),\s+NJ\s+(\d+)\s*$/;
+function createId(location, simpleName, simpleAddress) {
+  simpleName = simpleName || matchable(location.name);
+  simpleAddress = simpleAddress || matchableAddress(location.address_lines);
+  return crypto
+    .createHash("sha1")
+    .update(`${simpleName} ${simpleAddress}`)
+    .digest("hex");
+}
+
+const spaceRegex = /\s+/g;
+
+function createNjIisId(location) {
+  return `${location.provider_id}:${location.name}`
+    .replace(spaceRegex, "_")
+    .toUpperCase();
+}
+
+/**
+ * @param {string} text Data from the vras_typetext field of the NJVSS export.
+ * @returns an array of strings representing which vaccines are available
+ */
+function parseVaccineProducts(text) {
+  let result = [];
+
+  if (text.includes("<li>Moderna COVID-19 Vaccine</li>")) {
+    result.push(VaccineProduct.moderna);
+  }
+
+  if (text.includes("<li>Pfizer-BioNTech COVID-19 Vaccine</li>")) {
+    result.push(VaccineProduct.pfizer);
+  }
+
+  if (text.includes("<li>Janssen (J&J) COVID-19 Vaccine</li>")) {
+    result.push(VaccineProduct.janssen);
+  }
+
+  return result;
+}
+
+const addressPattern = /^(.*),\s([^,]+),\s+NJ\s+(\d+(-\d{4})?)\s*$/;
 
 /**
  * Parse a location address from NJVSS. (Luckily these are all very regularly
@@ -374,6 +402,8 @@ function parseAddress(address) {
   };
 }
 
+const walmartPattern = /(walmart(\/Sams)?) #?(\d+)\s*$/i;
+
 /**
  * Get availability for locations scheduled through NJVSS.
  * @returns {Promise<Array<object>>}
@@ -394,14 +424,24 @@ async function checkAvailability(handler, _options) {
     // manually entered data in the DB will be better). This may need some
     // changes on the API side, too.
     const address = parseAddress(location.vras_provideraddress);
+    const products = parseVaccineProducts(location.vras_typetext);
+
+    // Description in the API is dynamic -- if there's no availability, it's a
+    // message about that instead of actual information about the location.
+    // Only add it if there is availability.
+    let description = undefined;
+    if (location.available) {
+      description = getDescriptionDetails(location.vras_typetext || "");
+    }
+
+    const external_ids = { njiss: createNjIisId(location) };
+    const walmartMatch = location.name.match(walmartPattern);
+    if (walmartMatch) {
+      external_ids.walmart = walmartMatch[3];
+    }
+
     const record = {
-      // TODO: The NJVSS/VRAS exports don't have any kind of IDs, but we'll be
-      // adding them. When they've been added, use them to assign an `id` and
-      // `external_ids`.
-      // For now, we try and match existing saved records by name/address and
-      // invent an ID if we don't match. See call to `findLocationIds` below.
-      // id: "",
-      // external_ids: {},
+      external_ids,
       provider: NJVSS_PROVIDER,
       location_type: location.name.toLowerCase().includes("megasite")
         ? LocationType.massVax
@@ -409,7 +449,7 @@ async function checkAvailability(handler, _options) {
       name: location.name,
       address_lines: address.lines,
       city: address.city,
-      state: "NJ",
+      state: address.state,
       postal_code: address.zip,
       county: titleCase(location.county),
       position: {
@@ -421,18 +461,21 @@ async function checkAvailability(handler, _options) {
       booking_phone: "1-855-568-0545",
       booking_url: NJVSS_WEBSITE,
       // eligibility: null
-      description: getDescriptionDetails(location.vras_typetext || ""),
-      requires_waitlist: true,
+      description,
+      requires_waitlist: false,
       // meta: null,
       // is_public: true,
 
       availability: {
         source: "njvss-export",
-        // TODO: See if we can get a field added to the export forr this
+        // TODO: See if we can get a field added to the export for this
         // updated_at: null,
         checked_at: checkTime,
         available: location.available > 0 ? Available.yes : Available.no,
-        // meta: {},
+        meta: {
+          available_count: location.available,
+          products: products.length ? products : undefined,
+        },
         // is_public: true
       },
     };
