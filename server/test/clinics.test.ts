@@ -6,6 +6,7 @@ import { startTransaction, rollbackTransaction } from "../src/db";
 import {
   clearTestDatabase,
   createLocation,
+  getLocationById,
   updateAvailability,
 } from "../src/db";
 
@@ -119,10 +120,61 @@ describe("POST /update", () => {
 
     done();
   });
+
+  it("updates location metadata based on `external_ids` if `id` does not exist", async (done) => {
+    await createLocation(TestLocation);
+    const newName = "New Name";
+    const externalIds = Object.entries(TestLocation.external_ids);
+
+    await request(app)
+      .post("/update?update_location=1")
+      .set("Accept", "application/json")
+      .set("x-api-key", getApiKeys()[0])
+      .send({
+        id: "abc123",
+        external_ids: {
+          [externalIds[0][0]]: externalIds[0][1],
+        },
+        name: newName,
+      })
+      .expect(200);
+
+    const result = await getLocationById(TestLocation.id);
+    expect(result).toHaveProperty("name", newName);
+
+    done();
+  });
+
+  it("updates location metadata based on `external_ids` if `id` is not present", async (done) => {
+    await createLocation(TestLocation);
+    const newName = "New Name";
+    const externalIds = Object.entries(TestLocation.external_ids);
+
+    await request(app)
+      .post("/update?update_location=1")
+      .set("Accept", "application/json")
+      .set("x-api-key", getApiKeys()[0])
+      .send({
+        external_ids: {
+          [externalIds[0][0]]: externalIds[0][1],
+        },
+        name: newName,
+      })
+      .expect(200);
+
+    const result = await getLocationById(TestLocation.id);
+    expect(result).toHaveProperty("name", newName);
+
+    done();
+  });
 });
 
 const TestLocation = {
   id: "47c59c23cbd4672173cc93b8a39b60ddf481dd56",
+  external_ids: {
+    njiis: "nj1234",
+    vtrcks: "456",
+  },
   provider: "NJVSS",
   location_type: "mass_vax",
   name: "Gloucester County Megasite",
