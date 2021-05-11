@@ -434,7 +434,12 @@ async function checkAvailability(handler, _options) {
       description = getDescriptionDetails(location.vras_typetext || "");
     }
 
-    const external_ids = { njiss: createNjIisId(location) };
+    const external_ids = {
+      // NJ IIS locations sometimes run multiple ad-hoc locations, and so have
+      // the same IIS identifier. `njiis_covid` adds in the location name to
+      // make the identifier unique.
+      njiis_covid: createNjIisId(location),
+    };
     const walmartMatch = location.name.match(walmartPattern);
     if (walmartMatch) {
       external_ids.walmart = walmartMatch[3];
@@ -463,7 +468,7 @@ async function checkAvailability(handler, _options) {
       // eligibility: null
       description,
       requires_waitlist: false,
-      // meta: null,
+      meta: { njiis: location.provider_id },
       // is_public: true,
 
       availability: {
