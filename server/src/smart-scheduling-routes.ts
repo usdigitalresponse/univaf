@@ -98,7 +98,6 @@ export function manifest(req: Request, res: Response) {
 }
 
 export async function listLocations(req: Request, res: Response) {
-  let index = 1;
   let where: Array<string> = [];
   let values = [];
   if (req.params.state) {
@@ -165,7 +164,6 @@ export async function listLocations(req: Request, res: Response) {
 }
 
 export async function listSchedules(req: Request, res: Response) {
-  let index = 1;
   let where: Array<string> = [];
   let values = [];
   if (req.params.state) {
@@ -209,11 +207,10 @@ export async function listSchedules(req: Request, res: Response) {
 }
 
 export async function listSlots(req: Request, res: Response) {
-  let index = 1;
   let where: Array<string> = [];
   let values = [];
   if (req.params.state) {
-    where.push(`state = ?}`);
+    where.push(`state = ?`);
     values.push(req.params.state);
   }
 
