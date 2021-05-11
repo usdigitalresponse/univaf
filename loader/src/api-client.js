@@ -37,9 +37,10 @@ class ApiClient {
     return body;
   }
 
-  async sendUpdate(data, _options) {
+  async sendUpdate(data, options) {
     const response = await got.post({
       url: `${this.url}/update`,
+      searchParams: options,
       headers: {
         "x-api-key": this.key,
         "User-Agent": this.userAgent,

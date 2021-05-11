@@ -484,7 +484,7 @@ async function checkAvailability(handler, _options) {
 
   result = await findLocationIds(result);
   for (const record of result) {
-    handler(record);
+    handler(record, { update_location: true });
   }
 
   return result;
