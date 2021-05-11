@@ -97,40 +97,27 @@ function selectSqlPoint(column: string): string {
 export async function createLocation(data: any): Promise<ProviderLocation> {
   if (!data.name) throw new ValueError("Locations must have a `name`");
 
-  // If an ID is not specified, generate a random one.
-  let id = data.id;
-  if (!id) {
-    let unique = false;
-    while (!unique) {
-      id = nanoid();
-      const result = await db.raw(
-        `SELECT id FROM provider_locations WHERE id = ? LIMIT 1`,
-        [id]
-      );
-      unique = !result.rows.length;
-    }
-  }
-
   const now = new Date();
-  const sqlData: { string: string } = {
+  const sqlData: { [index: string]: string } = {
     ...data,
-    id,
     position: formatSqlPoint(data.position),
     created_at: now,
     updated_at: now,
   };
+  delete sqlData.id;
   const sqlFields = Object.entries(sqlData).filter(([key, _]) => {
     return providerLocationAllFields.includes(key);
   });
 
-  await db.raw(
+  const inserted = await db.raw(
     `INSERT INTO provider_locations (
       ${sqlFields.map((x) => x[0]).join(", ")}
     )
-    VALUES (${sqlFields.map((_) => "?").join(", ")})`,
+    VALUES (${sqlFields.map((_) => "?").join(", ")})
+    RETURNING id`,
     sqlFields.map((x) => x[1] || null)
   );
-  return await getLocationById(id);
+  return await getLocationById(inserted.rows[0].id);
 }
 
 /**
@@ -200,12 +187,12 @@ export async function listLocations({
     SELECT ${fields.join(", ")}, row_to_json(availability.*) availability
     FROM provider_locations pl
       LEFT OUTER JOIN availability
-        ON pl.id = availability.provider_location_id
+        ON pl.id = availability.location_id
         AND availability.valid_at = (
           SELECT MAX(valid_at)
           FROM availability avail_inner
           WHERE
-            avail_inner.provider_location_id = pl.id
+            avail_inner.location_id = pl.id
             ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
         )
     ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
@@ -222,7 +209,7 @@ export async function listLocations({
 
     if (row.availability) {
       delete row.availability.id;
-      delete row.availability.provider_location_id;
+      delete row.availability.location_id;
       delete row.availability.is_public;
     }
 
@@ -317,9 +304,9 @@ export async function updateAvailability(
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.
   const existingAvailability = await db.raw(
-    `SELECT id, provider_location_id, source
+    `SELECT id, location_id, source
     FROM availability
-    WHERE provider_location_id = ? AND source = ?`,
+    WHERE location_id = ? AND source = ?`,
     [id, source]
   );
 
@@ -356,7 +343,7 @@ export async function updateAvailability(
     try {
       const result = await db.raw(
         `INSERT INTO availability (
-          provider_location_id,
+          location_id,
           source,
           available,
           valid_at,
@@ -382,7 +369,7 @@ export async function listAvailability({
   includePrivate = false,
 } = {}): Promise<LocationAvailability[]> {
   let fields = [
-    "provider_location_id",
+    "location_id",
     "source",
     "available",
     "valid_at",
@@ -411,14 +398,14 @@ export async function getAvailabilityForLocation(
   { includePrivate = false } = {}
 ): Promise<LocationAvailability[]> {
   let fields = [
-    "provider_location_id",
+    "location_id",
     "source",
     "available",
     "valid_at",
     "checked_at",
     "meta",
   ];
-  let where = ["provider_location_id = ?"];
+  let where = ["location_id = ?"];
 
   if (includePrivate) {
     fields.push("is_public");
