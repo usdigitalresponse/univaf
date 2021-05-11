@@ -76,14 +76,20 @@ async function run(options) {
           if (saveResult.error?.code === "out_of_date") continue;
 
           const data = saveResult.sent;
-          const source = data.availability
-            ? ` from ${data.availability.source}`
-            : "";
-          const message = `Error sending "${data.name}"${source}: ${
-            saveResult.statusCode
-          } ${saveResult.error?.message || "unknown reason"}`;
-          console.error(message);
-          Sentry.captureMessage(message, Sentry.Severity.Error);
+          const message = `Error sending: ${
+            saveResult.error?.message || "unknown reason"
+          }`;
+          const logData = {
+            status_code: saveResult.statusCode,
+            source: data.availability.source,
+            location_id: data.id,
+            location_name: data.name,
+          };
+          console.error(message, JSON.stringify(logData));
+          Sentry.captureMessage(message, {
+            level: Sentry.Severity.Error,
+            contexts: { send_error: logData },
+          });
           success = false;
         }
       }
