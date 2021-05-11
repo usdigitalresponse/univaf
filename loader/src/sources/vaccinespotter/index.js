@@ -303,7 +303,7 @@ async function checkAvailability(handler, options) {
     let walgreens = stores.features
       .map(formatStore)
       .filter((item) => !!item)
-      .forEach(handler);
+      .forEach((item) => handler(item));
 
     results = results.concat(walgreens);
   }

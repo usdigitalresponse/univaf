@@ -112,7 +112,7 @@ export const update = async (req: AppRequest, res: Response) => {
     location = await db.getLocationByExternalIds(data.external_ids);
   }
   if (!location) {
-    await db.createLocation(data);
+    location = await db.createLocation(data);
     result.location.action = "created";
   } else if (req.query.update_location) {
     // Only update an existing location if explicitly requested to do so via
