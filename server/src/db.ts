@@ -137,7 +137,10 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
  * Update data about a provider location.
  * @param data ProviderLocation-like object with data to update
  */
-export async function updateLocation(data: any): Promise<ProviderLocation> {
+export async function updateLocation(
+  data: any,
+  { mergeSubfields = true } = {}
+): Promise<ProviderLocation> {
   const id = data.id;
   if (!data.id) throw new Error("Location must have an ID to update");
 
@@ -153,7 +156,13 @@ export async function updateLocation(data: any): Promise<ProviderLocation> {
   const sqlFields = Object.entries(sqlData).filter(([key, _]) => {
     return providerLocationAllFields.includes(key);
   });
-  const setExpression = sqlFields.map(([key, _]) => `${key} = ?`);
+  const setExpression = sqlFields.map(([key, _]) => {
+    // Merge external_ids and meta, rather than replacing.
+    if (mergeSubfields && (key === "external_ids" || key === "meta")) {
+      return `${key} = ${key} || ?`;
+    }
+    return `${key} = ?`;
+  });
   const result = await db.raw(
     `UPDATE provider_locations
     SET ${setExpression}

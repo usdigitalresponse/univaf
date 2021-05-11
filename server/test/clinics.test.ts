@@ -188,6 +188,48 @@ describe("POST /update", () => {
     });
     expect(res.statusCode).toBe(201);
   });
+
+  it("merges new values into the existing list of external_ids", async () => {
+    const location = await createLocation(TestLocation);
+
+    const response = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        external_ids: {
+          testid: "this is a test",
+        },
+      },
+    });
+    expect(response.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result.external_ids).toEqual({
+      ...TestLocation.external_ids,
+      testid: "this is a test",
+    });
+  });
+
+  it("merges new values into the existing meta field", async () => {
+    const location = await createLocation(TestLocation);
+
+    const response = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        meta: {
+          test: "this is a test",
+        },
+      },
+    });
+    expect(response.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result.meta).toEqual({
+      ...TestLocation.meta,
+      test: "this is a test",
+    });
+  });
 });
 
 const TestLocation = {
@@ -211,6 +253,9 @@ const TestLocation = {
   description: "This location is available for 1st and 2nd dose recipients.",
   requires_waitlist: true,
   is_public: true,
+  meta: {
+    something: "some value",
+  },
   availability: {
     source: "NJVSS Export",
     checked_at: new Date(),
@@ -219,5 +264,4 @@ const TestLocation = {
     is_public: true,
     meta: {},
   },
-  meta: {},
 };
