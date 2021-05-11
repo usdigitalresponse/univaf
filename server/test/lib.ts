@@ -16,6 +16,7 @@ export function useServerForTests(app: Application): Context {
   beforeEach((done) => {
     context.server = app.listen(0, () => {
       const { port } = context.server.address() as AddressInfo;
+      app.set("port", port);
       context.client = got.extend({
         prefixUrl: `http://127.0.0.1:${port}`,
         responseType: "json",
