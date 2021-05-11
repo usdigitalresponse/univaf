@@ -14,6 +14,8 @@ const Available = {
 
 /**
  * Type of location where vaccines are available.
+ * @readonly
+ * @enum {string}
  */
 const LocationType = {
   pharmacy: "PHARMACY",
@@ -21,7 +23,19 @@ const LocationType = {
   clinic: "CLINIC",
 };
 
+/**
+ * Types of vaccine products a location might offer.
+ * @readonly
+ * @enum {string}
+ */
+const VaccineProduct = {
+  pfizer: "pfizer",
+  moderna: "moderna",
+  janssen: "jj",
+};
+
 module.exports = {
   Available,
   LocationType,
+  VaccineProduct,
 };

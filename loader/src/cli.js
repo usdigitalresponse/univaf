@@ -39,14 +39,14 @@ let updateQueue = null;
 function createDatabaseSender() {
   const client = ApiClient.fromEnv();
   updateQueue = client.updateQueue();
-  return function handler(locationData) {
-    updateQueue.push(locationData);
+  return function handler(locationData, options) {
+    updateQueue.push(locationData, options);
   };
 }
 
 function compoundHandler(...handlers) {
-  return function handler(locationData) {
-    handlers.forEach((handle) => handle(locationData));
+  return function handler(...args) {
+    handlers.forEach((handle) => handle(...args));
   };
 }
 
