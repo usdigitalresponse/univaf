@@ -39,6 +39,11 @@ exports.up = async function (knex) {
   await knex.raw(`ALTER TABLE provider_locations RENAME COLUMN id_new TO id`);
   // Make new id column the primary key
   await knex.raw(`ALTER TABLE provider_locations ADD PRIMARY KEY (id)`);
+  // Add external_ids entry for old ID as `{ univaf_v0: "<old ID>" }`
+  await knex.raw(`
+    UPDATE provider_locations
+      SET external_ids = external_ids || jsonb_build_object('univaf_v0', id_old)
+  `);
   // Drop the old foreign key and set the new column as a foreign key
   await knex.raw(`
     ALTER TABLE availability
