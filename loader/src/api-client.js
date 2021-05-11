@@ -38,6 +38,10 @@ class ApiClient {
   }
 
   async sendUpdate(data, options) {
+    if (options != null && typeof options !== "object") {
+      throw new TypeError("`options` must be an object");
+    }
+
     const response = await got.post({
       url: `${this.url}/update`,
       searchParams: options,

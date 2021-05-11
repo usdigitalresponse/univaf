@@ -324,7 +324,7 @@ export async function updateAvailability(
         checked_at = :checked_at,
         meta = :meta,
         is_public = :is_public
-      WHERE id = :id AND checked_at < :valid_at
+      WHERE id = :id AND checked_at < :checked_at
       `,
       {
         available,

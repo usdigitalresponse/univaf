@@ -359,7 +359,7 @@ async function checkAvailability(handler, _options) {
     if (rawResults) {
       const clinicResults = convertToStandardSchema(rawResults);
       Object.assign(standardResults, clinicResults);
-      Object.values(clinicResults).forEach(handler);
+      Object.values(clinicResults).forEach((item) => handler(item));
     }
 
     await sleep(randomInt(3, 7) * 1000);

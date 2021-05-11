@@ -142,7 +142,7 @@ async function checkAvailability(handler, options) {
   let results = [];
   for (const state of states) {
     let stores = await queryState(state);
-    stores.forEach(handler);
+    stores.forEach((store) => handler(store));
     results = results.concat(stores);
   }
 
