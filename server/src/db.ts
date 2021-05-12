@@ -182,25 +182,35 @@ export async function listLocations({
     .map((name) => `pl.${name}`)
     .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
 
-  const result = await db.raw(
-    `
-    SELECT ${fields.join(", ")}, row_to_json(availability.*) availability
-    FROM provider_locations pl
-      LEFT OUTER JOIN availability
-        ON pl.id = availability.location_id
-        AND availability.valid_at = (
-          SELECT MAX(valid_at)
-          FROM availability avail_inner
-          WHERE
-            avail_inner.location_id = pl.id
-            ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
-        )
-    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-    ORDER BY pl.updated_at DESC
-    ${limit ? `LIMIT ${limit}` : ""}
-    `,
-    values || []
-  );
+  let result;
+  try {
+    result = await db.raw(
+      `
+      SELECT
+        ${fields.join(", ")},
+        json_strip_nulls(row_to_json(availability.*)) availability
+      FROM provider_locations pl
+        LEFT OUTER JOIN availability
+          ON pl.id = availability.location_id
+          AND availability.valid_at = (
+            SELECT MAX(valid_at)
+            FROM availability avail_inner
+            WHERE
+              avail_inner.location_id = pl.id
+              ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
+          )
+      ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+      ORDER BY pl.updated_at DESC
+      ${limit ? `LIMIT ${limit}` : ""}
+      `,
+      values || []
+    );
+  } catch (error) {
+    // If it was just a malformed UUID, treat that like no results.
+    if (error.routine === "string_to_uuid") return [];
+
+    throw error;
+  }
 
   return result.rows.map((row: any) => {
     // The SELECT expression always creates an object; not sure if there's a

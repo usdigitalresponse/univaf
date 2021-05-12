@@ -5,6 +5,8 @@ import * as db from "./db";
 import { ApiError } from "./exceptions";
 import { AppRequest } from "./middleware";
 
+const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
+
 /**
  * Send an error response.
  * @param response HTTP Response to write to
@@ -104,7 +106,7 @@ export const update = async (req: AppRequest, res: Response) => {
   // FIXME: need to make this a single PG operation or add locks around it. It's
   // possible for two concurrent updates to both try and create a location.
   let location;
-  if (data.id) {
+  if (data.id && UUID_PATTERN.test(data.id)) {
     location = await db.getLocationById(data.id);
   }
   if (!location && data.external_ids) {
