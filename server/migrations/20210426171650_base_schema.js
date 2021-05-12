@@ -1,10 +1,6 @@
-const fs = require("fs");
-const path = require("path");
+const sql = require("./lib/sql");
 
-exports.up = function (knex) {
-  const baseSchemaPath = path.join(__dirname, "../db/base_schema.sql");
-  return knex.raw(fs.readFileSync(baseSchemaPath, "utf8"));
-};
+exports.up = sql.fileMigration("base_schema.sql");
 
 exports.down = function (knex) {
   return knex.schema.dropTable("availability").dropTable("provider_locations");

@@ -50,7 +50,7 @@ export interface ProviderLocation {
 
 export interface LocationAvailability {
   id: number;
-  provider_location_id: string;
+  location_id: string;
   source: string;
   valid_at: Date;
   checked_at: Date;

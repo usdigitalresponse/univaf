@@ -140,7 +140,7 @@ describe("POST /update", () => {
     const res = await context.client.post("update?update_location=1", {
       headers,
       json: {
-        id: "abc123",
+        id: "32C0495C-A1F4-45D4-9962-F8DCBF0E1E6F",
         external_ids: {
           [externalId[0]]: externalId[1],
         },
@@ -233,7 +233,7 @@ describe("POST /update", () => {
 });
 
 const TestLocation = {
-  id: "47c59c23cbd4672173cc93b8a39b60ddf481dd56",
+  id: "DB053F3A-2DBD-416D-BB34-36579809CC87",
   external_ids: {
     njiis: "nj1234",
     vtrcks: "456",

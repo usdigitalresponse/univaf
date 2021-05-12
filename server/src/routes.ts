@@ -33,7 +33,6 @@ export const list = async (req: AppRequest, res: Response) => {
     return sendError(res, "Not authorized for private data", 403);
   }
 
-  let index = 1;
   let where: Array<string> = [];
   let values = [];
   if (req.query.state) {
