@@ -230,6 +230,28 @@ describe("POST /update", () => {
       test: "this is a test",
     });
   });
+
+  it("falls back to external_ids when id is not a UUID", async () => {
+    const location = await createLocation(TestLocation);
+
+    const response = await context.client.post("update?update_location=1", {
+      headers,
+      json: {
+        id: "abc123",
+        external_ids: { njiis: "nj1234" },
+        meta: {
+          test: "this is a test",
+        },
+      },
+    });
+    expect(response.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result.meta).toEqual({
+      ...TestLocation.meta,
+      test: "this is a test",
+    });
+  });
 });
 
 const TestLocation = {
