@@ -238,6 +238,7 @@ describe("POST /update", () => {
       headers,
       json: {
         id: "abc123",
+        external_ids: { njiis: "nj1234" },
         meta: {
           test: "this is a test",
         },
