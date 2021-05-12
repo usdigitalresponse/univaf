@@ -3,6 +3,8 @@ import {
   Position,
   ProviderLocation,
   LocationAvailability,
+  CapacityRecord,
+  SlotRecord,
 } from "./interfaces";
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
@@ -374,7 +376,12 @@ export async function updateAvailability(
     source,
     available,
     valid_at,
-    checked_at,
+    checked_at = null,
+    available_count = null,
+    products = null,
+    doses = null,
+    capacity = null,
+    slots = null,
     meta = null,
     is_public = true,
   }: {
@@ -382,6 +389,11 @@ export async function updateAvailability(
     available: Availability;
     valid_at: Date;
     checked_at: Date;
+    available_count: number;
+    products: Array<string>;
+    doses: Array<string>;
+    capacity: Array<CapacityRecord>;
+    slots: Array<SlotRecord>;
     meta: any;
     is_public: boolean;
   }
@@ -409,6 +421,11 @@ export async function updateAvailability(
       UPDATE availability
       SET
         available = :available,
+        available_count = :available_count,
+        products = :products,
+        doses = :doses,
+        capacity = :capacity,
+        slots = :slots,
         valid_at = :valid_at,
         checked_at = :checked_at,
         meta = :meta,
@@ -417,6 +434,12 @@ export async function updateAvailability(
       `,
       {
         available,
+        available_count,
+        products,
+        doses,
+        // Knex typings can't handle a complex type for the array contents. :(
+        capacity: capacity as Array<any>,
+        slots: slots as Array<any>,
         valid_at,
         checked_at,
         meta,
@@ -434,18 +457,36 @@ export async function updateAvailability(
     }
   } else {
     try {
-      const result = await db.raw(
+      await db.raw(
         `INSERT INTO availability (
           location_id,
           source,
           available,
+          available_count,
+          products,
+          doses,
+          capacity,
+          slots,
           valid_at,
           checked_at,
           meta,
           is_public
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [id, source, available, valid_at, checked_at, meta, is_public]
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          id,
+          source,
+          available,
+          available_count,
+          products,
+          doses,
+          capacity,
+          slots,
+          valid_at,
+          checked_at,
+          meta,
+          is_public,
+        ]
       );
       return { locationId: id, action: "create" };
     } catch (error) {
