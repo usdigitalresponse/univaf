@@ -199,8 +199,8 @@ export async function listLocations({
       FROM provider_locations pl
         LEFT OUTER JOIN latest_availability
           ON pl.id = latest_availability.location_id
-      WHERE latest_availability.rank < 2
-        ${where.length ? `AND ${where.join(" AND ")}` : ""}
+          AND latest_availability.rank < 2
+      ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
       ORDER BY pl.created_at ASC, pl.id ASC
       ${limit ? `LIMIT ${limit}` : ""}
       `,
