@@ -186,20 +186,21 @@ export async function listLocations({
   try {
     result = await db.raw(
       `
+      WITH latest_availability AS (
+        SELECT
+        rank() OVER ( PARTITION BY location_id ORDER BY valid_at DESC ),
+        location_id, source, available, checked_at, valid_at
+        FROM availability
+        ${!includePrivate ? `WHERE availability.is_public = true` : ""}
+      )
       SELECT
         ${fields.join(", ")},
-        json_strip_nulls(row_to_json(availability.*)) availability
+        json_strip_nulls(row_to_json(latest_availability.*)) availability
       FROM provider_locations pl
-        LEFT OUTER JOIN availability
-          ON pl.id = availability.location_id
-          AND availability.valid_at = (
-            SELECT MAX(valid_at)
-            FROM availability avail_inner
-            WHERE
-              avail_inner.location_id = pl.id
-              ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
-          )
-      ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+        LEFT OUTER JOIN latest_availability
+          ON pl.id = latest_availability.location_id
+      WHERE latest_availability.rank < 2
+        ${where.length ? `AND ${where.join(" AND ")}` : ""}
       ORDER BY pl.created_at ASC, pl.id ASC
       ${limit ? `LIMIT ${limit}` : ""}
       `,
@@ -221,6 +222,7 @@ export async function listLocations({
       delete row.availability.id;
       delete row.availability.location_id;
       delete row.availability.is_public;
+      delete row.availability.rank;
     }
 
     return row;
