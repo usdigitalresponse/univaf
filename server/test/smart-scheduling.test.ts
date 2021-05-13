@@ -27,7 +27,7 @@ describe("GET /smart-scheduling/$bulk-publish", () => {
 function ndjsonParse(s: string): any {
   return s
     .split("\n")
-    .filter((l) => !!l)
+    .filter(Boolean)
     .map((l) => JSON.parse(l));
 }
 
