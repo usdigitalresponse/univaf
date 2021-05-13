@@ -200,7 +200,7 @@ export async function listLocations({
               ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
           )
       ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-      ORDER BY pl.updated_at DESC
+      ORDER BY pl.created_at ASC, pl.id ASC
       ${limit ? `LIMIT ${limit}` : ""}
       `,
       values || []
