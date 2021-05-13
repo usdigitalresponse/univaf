@@ -9,6 +9,8 @@ import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 
+const DEFAULT_BATCH_SIZE = 2000;
+
 export const db = Knex(loadDbConfig());
 
 export function assertIsTestDatabase() {
@@ -227,6 +229,85 @@ export async function listLocations({
 
     return row;
   });
+}
+
+/**
+ * Yield batches of locations, ultimately iterating through the entire table
+ * (unless `limit` is set, in which case it will yield only that many records).
+ * This lets us have long-running connections that stream out results, but that
+ * do not tie up the database.
+ *
+ * If a client needs to pause and restart later, they can use the `next`
+ * property in each yielded batch. It can be passed into this function as the
+ * `start` parameter, and iteration will resume from the next record.
+ *
+ * @example
+ * let nextKey;
+ * for await (const batch of iterateLocationBatches()) {
+ *   if (needToPause) {
+ *     nextKey = batch.next;
+ *     break;
+ *   }
+ * }
+ * // resume from where the above iterator left off:
+ * for await (const batch of iterateLocationBatches({ start: nextKey })) {
+ *   // do something
+ * }
+ */
+export async function* iterateLocationBatches({
+  includePrivate = false,
+  batchSize = DEFAULT_BATCH_SIZE,
+  limit = 0,
+  start = "",
+  where = [] as string[],
+  values = [] as any[],
+} = {}) {
+  let batchWhere = where;
+  let batchValues = values;
+  let nextValues: Array<any>;
+
+  // Parse a key for where to start. This should be a `batch.next` value from
+  // one of the batches this iterator yields.
+  if (start) {
+    nextValues = start.split(",").map((x) => x.trim());
+    if (nextValues.length !== 2) {
+      throw new ValueError("malformed pagination key", { value: start });
+    }
+  }
+
+  let total = 0;
+  while (true) {
+    if (limit) batchSize = Math.min(batchSize, limit - total);
+    if (nextValues) {
+      batchWhere = where.concat(["(created_at, id) > (?, ?)"]);
+      batchValues = values.concat(nextValues);
+    }
+
+    const batch: Array<ProviderLocation> = await listLocations({
+      includePrivate,
+      where: batchWhere,
+      values: batchValues,
+      limit: batchSize,
+    });
+
+    total += batch.length;
+    if (batch.length < batchSize) {
+      nextValues = null;
+    } else {
+      nextValues = [
+        batch[batch.length - 1].created_at.toISOString(),
+        batch[batch.length - 1].id,
+      ];
+    }
+
+    yield {
+      locations: batch,
+      next: nextValues && nextValues.join(","),
+    };
+
+    // Stop if there is no more data.
+    if (!nextValues) break;
+  }
 }
 
 /**

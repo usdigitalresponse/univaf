@@ -1,6 +1,7 @@
 "use strict";
 
 import { Response, Request, RequestHandler, NextFunction } from "express";
+import { URLSearchParams } from "url";
 import * as db from "./db";
 import { ApiError } from "./exceptions";
 import { ProviderLocation } from "./interfaces";
@@ -46,47 +47,53 @@ export const list = async (req: AppRequest, res: Response) => {
     where.push(`provider = ?`);
     values.push(req.query.provider);
   }
+  const start = req.query.page_next as string;
 
-  // Load results in chunks and stream them out, so we don't get tied up with
+  // Load results in batches and stream them out, so we don't get tied up with
   // big result sets.
-  // TODO: proper pagination.
-  const baseWhere = where;
-  const baseValues = values;
   let started = false;
-  const limit = 2000;
   const startTime = Date.now();
-  while (true) {
-    const chunk: Array<ProviderLocation> = await db.listLocations({
-      includePrivate,
-      where,
-      values,
-      limit,
-    });
-    if (!started) {
-      res.setHeader("Content-Type", "application/json");
-      res.write("[");
-    }
-    for (const row of chunk) {
-      if (started) res.write(",");
-      res.write("\n" + JSON.stringify(row));
-      started = true;
+  const resultsIterator = await db.iterateLocationBatches({
+    includePrivate,
+    where,
+    values,
+    start,
+  });
+
+  const writeStart = () => {
+    res.setHeader("Content-Type", "application/json");
+    res.write("[");
+    started = true;
+  };
+
+  for await (const batch of resultsIterator) {
+    for (const location of batch.locations) {
+      if (started) {
+        // Write the comma first so we don't wind up with one at the end of the
+        // list of results (since that's not valid JSON).
+        res.write(",");
+      } else {
+        // Wait until the first query to write headers and the start of the JSON.
+        // If the query throws, we won't have written these and so can still
+        // respond with our normal error handling.
+        writeStart();
+      }
+      res.write("\n" + JSON.stringify(location));
     }
 
-    // Stop if there is no more data.
-    if (chunk.length < limit) break;
-
-    // Stop if we've been reading for too long. (Also write an error entry)
-    if (Date.now() - startTime > 25 * 1000) {
-      res.write(JSON.stringify({ error: "Timeout while listing locations!" }));
+    // Stop if we've been reading for too long and write an error entry.
+    if (Date.now() - startTime > 25 * 1000 && batch.next) {
+      const query = new URLSearchParams({
+        ...req.query,
+        page_next: batch.next,
+      });
+      const nextUrl = `${req.baseUrl}${req.path}?${query}`;
+      res.write("\n," + JSON.stringify({ __next__: nextUrl }));
       break;
     }
-
-    where = baseWhere.concat(["(created_at, id) > (?, ?)"]);
-    values = baseValues.concat([
-      chunk[chunk.length - 1].created_at,
-      chunk[chunk.length - 1].id,
-    ]);
   }
+
+  if (!started) writeStart();
   res.end("\n]\n");
 };
 
