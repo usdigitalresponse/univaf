@@ -3,6 +3,7 @@
 import { Response, Request, RequestHandler, NextFunction } from "express";
 import * as db from "./db";
 import { ApiError } from "./exceptions";
+import { ProviderLocation } from "./interfaces";
 import { AppRequest } from "./middleware";
 
 const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
@@ -36,7 +37,7 @@ export const list = async (req: AppRequest, res: Response) => {
   }
 
   let where: Array<string> = [];
-  let values = [];
+  let values: Array<any> = [];
   if (req.query.state) {
     where.push(`state = ?`);
     values.push(req.query.state);
@@ -46,8 +47,47 @@ export const list = async (req: AppRequest, res: Response) => {
     values.push(req.query.provider);
   }
 
-  const providers = await db.listLocations({ includePrivate, where, values });
-  res.json(providers);
+  // Load results in chunks and stream them out, so we don't get tied up with
+  // big result sets.
+  // TODO: proper pagination.
+  const baseWhere = where;
+  const baseValues = values;
+  let started = false;
+  const limit = 2000;
+  const startTime = Date.now();
+  while (true) {
+    const chunk: Array<ProviderLocation> = await db.listLocations({
+      includePrivate,
+      where,
+      values,
+      limit,
+    });
+    if (!started) {
+      res.setHeader("Content-Type", "application/json");
+      res.write("[");
+    }
+    for (const row of chunk) {
+      if (started) res.write(",");
+      res.write("\n" + JSON.stringify(row));
+      started = true;
+    }
+
+    // Stop if there is no more data.
+    if (chunk.length < limit) break;
+
+    // Stop if we've been reading for too long. (Also write an error entry)
+    if (Date.now() - startTime > 25 * 1000) {
+      res.write(JSON.stringify({ error: "Timeout while listing locations!" }));
+      break;
+    }
+
+    where = baseWhere.concat(["(created_at, id) > (?, ?)"]);
+    values = baseValues.concat([
+      chunk[chunk.length - 1].created_at,
+      chunk[chunk.length - 1].id,
+    ]);
+  }
+  res.end("\n]\n");
 };
 
 /**
