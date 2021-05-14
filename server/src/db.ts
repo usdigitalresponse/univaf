@@ -491,7 +491,6 @@ export async function updateAvailability(
       return { locationId: id, action: "create" };
     } catch (error) {
       if (error.message.includes("availability_location_id_fkey")) {
-        console.error(`SQL Error: ${error.message}`);
         throw new NotFoundError(`Could not find location ${id}`);
       }
       throw error;
