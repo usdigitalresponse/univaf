@@ -261,6 +261,7 @@ export async function* iterateLocationBatches({
   where = [] as string[],
   values = [] as any[],
 } = {}) {
+  // Keep track of the query conditions for the current batch of results.
   let batchWhere = where;
   let batchValues = values;
   let nextValues: Array<any>;
@@ -276,7 +277,10 @@ export async function* iterateLocationBatches({
 
   let total = 0;
   while (true) {
+    // Shrink the batch size if it would go over the total limit.
     if (limit) batchSize = Math.min(batchSize, limit - total);
+    if (batchSize <= 0) return;
+
     if (nextValues) {
       batchWhere = where.concat(["(pl.created_at, pl.id) > (?, ?)"]);
       batchValues = values.concat(nextValues);

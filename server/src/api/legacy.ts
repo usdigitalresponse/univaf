@@ -1,11 +1,11 @@
 "use strict";
 
-import { Response, Request, RequestHandler, NextFunction } from "express";
+import { Response, Router } from "express";
 import { URLSearchParams } from "url";
-import * as db from "./db";
-import { ApiError } from "./exceptions";
-import { ProviderLocation } from "./interfaces";
-import { AppRequest } from "./middleware";
+import * as db from "../db";
+import { ApiError } from "../exceptions";
+import { AppRequest } from "../middleware";
+import { asyncHandler } from "../utils";
 
 const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
 
@@ -222,14 +222,4 @@ export const update = async (req: AppRequest, res: Response) => {
     res.status(201);
   }
   res.json(result);
-};
-
-/**
- * Basic healthcheck to indicate the server is OK.
- * @param req
- * @param res
- */
-export const healthcheck = async (req: AppRequest, res: Response) => {
-  // TODO: include the db status before declaring ourselves "up"
-  res.status(200).send("OK!");
 };
