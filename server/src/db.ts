@@ -279,7 +279,7 @@ export async function* iterateLocationBatches({
   while (true) {
     if (limit) batchSize = Math.min(batchSize, limit - total);
     if (nextValues) {
-      batchWhere = where.concat(["(created_at, id) > (?, ?)"]);
+      batchWhere = where.concat(["(pl.created_at, pl.id) > (?, ?)"]);
       batchValues = values.concat(nextValues);
     }
 
