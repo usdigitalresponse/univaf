@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 import { Response, Router } from "express";
 import { URLSearchParams } from "url";
@@ -51,9 +51,7 @@ function getPaginationParameters(request: AppRequest) {
   return { limit, pageNext };
 }
 
-function getListLocationInput(req: AppRequest, _res: Response) {
-  const includePrivate = shouldIncludePrivate(req);
-
+function getListLocationInput(req: AppRequest) {
   let where: Array<string> = [];
   let values: Array<any> = [];
   if (req.query.state) {
@@ -65,24 +63,13 @@ function getListLocationInput(req: AppRequest, _res: Response) {
     values.push(req.query.provider);
   }
 
-  let limit: number = 0;
-  if (req.query.limit) {
-    limit = parseInt(req.query.limit as string, 10) || 0;
-    if (limit <= 0) {
-      throw new ValueError("The 'limit' query param must be > 0");
-    }
-  }
-
-  const start = req.query.page_next as string;
-
-  return { includePrivate, where, values, limit, start };
+  return { where, values };
 }
 
 export async function listStream(req: AppRequest, res: Response) {
-  const input = getListLocationInput(req, res);
-  if (!input) return;
-
-  const { includePrivate, where, values, limit, start } = input;
+  const includePrivate = shouldIncludePrivate(req);
+  const { where, values } = getListLocationInput(req);
+  const { limit, pageNext } = getPaginationParameters(req);
 
   // Load results in batches and stream them out, so we don't get tied up with
   // big result sets.
@@ -93,7 +80,7 @@ export async function listStream(req: AppRequest, res: Response) {
     where,
     values,
     limit,
-    start,
+    start: pageNext,
   });
 
   const write = (data: any) => {
@@ -140,10 +127,9 @@ export async function listStream(req: AppRequest, res: Response) {
  * Index returns the full list of everything in our database
  */
 export const list = async (req: AppRequest, res: Response) => {
-  const input = getListLocationInput(req, res);
-  if (!input) return;
-
-  const { includePrivate, where, values, start, limit } = input;
+  const includePrivate = shouldIncludePrivate(req);
+  const { where, values } = getListLocationInput(req);
+  const { limit, pageNext } = getPaginationParameters(req);
 
   const result = await db
     .iterateLocationBatches({
@@ -151,7 +137,7 @@ export const list = async (req: AppRequest, res: Response) => {
       where,
       values,
       limit,
-      start,
+      start: pageNext,
     })
     .next();
   const batch = result.value || { locations: [], next: null };
