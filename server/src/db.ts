@@ -1,3 +1,4 @@
+import { strict as assert } from "assert";
 import {
   Availability,
   AvailabilityInput,
@@ -261,6 +262,9 @@ export async function* iterateLocationBatches({
   where = [] as string[],
   values = [] as any[],
 } = {}) {
+  assert(Number.isInteger(batchSize) && batchSize > 0, "batchSize must be > 0");
+  assert(Number.isInteger(limit) && limit >= 0, "limit must be >= 0");
+
   // Keep track of the query conditions for the current batch of results.
   let batchWhere = where;
   let batchValues = values;
@@ -277,9 +281,11 @@ export async function* iterateLocationBatches({
 
   let total = 0;
   while (true) {
-    // Shrink the batch size if it would go over the total limit.
-    if (limit) batchSize = Math.min(batchSize, limit - total);
-    if (batchSize <= 0) return;
+    if (limit) {
+      assert(total <= limit, "total should never exceed limit");
+      // Shrink the batch size if it would go over the total limit.
+      batchSize = Math.min(batchSize, limit - total);
+    }
 
     if (nextValues) {
       batchWhere = where.concat(["(pl.created_at, pl.id) > (?, ?)"]);
@@ -309,7 +315,7 @@ export async function* iterateLocationBatches({
     };
 
     // Stop if there is no more data.
-    if (!nextValues) break;
+    if (!nextValues || total === limit) break;
   }
 }
 
