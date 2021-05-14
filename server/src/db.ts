@@ -193,7 +193,7 @@ export async function listLocations({
       WITH latest_availability AS (
         SELECT
         rank() OVER ( PARTITION BY location_id ORDER BY valid_at DESC ),
-        location_id, source, available, checked_at, valid_at
+        *
         FROM availability
         ${!includePrivate ? `WHERE availability.is_public = true` : ""}
       )

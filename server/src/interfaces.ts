@@ -16,7 +16,7 @@ export interface Position {
 }
 
 export interface CapacityRecord {
-  date: Date;
+  date: Date | string;
   available: Availability;
   available_count?: number;
   unavailable_count?: number;
@@ -25,8 +25,8 @@ export interface CapacityRecord {
 }
 
 export interface SlotRecord {
-  start: Date;
-  end?: Date;
+  start: Date | string;
+  end?: Date | string;
   available: Availability;
   available_count?: number;
   unavailable_count?: number;

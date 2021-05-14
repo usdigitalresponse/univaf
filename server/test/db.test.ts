@@ -27,6 +27,7 @@ describe("db.updateAvailability", () => {
       source: "NJVSS Export",
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
+      meta: {},
     });
   });
 
@@ -68,12 +69,37 @@ describe("db.updateAvailability", () => {
     expect(availability).toHaveProperty("valid_at", time);
   });
 
-  it.skip("should accept detailed availability info", async () => {
-    throw new Error("Not implemented");
-  });
-
-  it.skip("should ensure basic types", async () => {
-    throw new Error("Not implemented");
+  it("should accept detailed availability info", async () => {
+    const location = await createLocation(TestLocation);
+    const data = {
+      source: "test-source",
+      valid_at: "2021-05-14T06:45:51.273+00:00",
+      checked_at: "2021-05-14T06:45:51.273+00:00",
+      available: Availability.YES,
+      available_count: 5,
+      products: ["moderna", "pfizer"],
+      doses: ["first_dose_only"],
+      capacity: [
+        {
+          date: "2021-05-14",
+          available: Availability.YES,
+          available_count: 5,
+          products: ["moderna", "pfizer"],
+          dose: "first_dose_only",
+        },
+      ],
+      slots: [
+        {
+          start: "2021-05-14T06:45:51.273+00:00",
+          available: Availability.YES,
+          products: ["moderna", "pfizer"],
+          dose: "first_dose_only",
+        },
+      ],
+    };
+    await updateAvailability(location.id, data);
+    const { availability } = await getLocationById(location.id);
+    expect(availability).toEqual(data);
   });
 
   it.skip("should validate slot types", async () => {
