@@ -19,7 +19,7 @@ module "cvs_api_loader" {
 
   name          = "cvs-api"
   loader_source = "cvsApi"
-  api_url       = "http://${aws_alb.main.dns_name}/api/edge"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(3 minutes)"
@@ -37,7 +37,7 @@ module "njvss_loader" {
 
   name          = "njvss"
   loader_source = "njvss"
-  api_url       = "http://${aws_alb.main.dns_name}/api/edge"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(3 minutes)"
@@ -56,7 +56,7 @@ module "vaccinespotter_loader" {
   name          = "vaccinespotter"
   command       = ["--states", "AZ,CO,NJ,PA"]
   loader_source = "vaccinespotter"
-  api_url       = "http://${aws_alb.main.dns_name}/api/edge"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(2 minutes)"
@@ -71,7 +71,7 @@ module "rite_aid_loader" {
   name          = "riteAidApi"
   loader_source = "riteAidApi"
   command       = ["--states", "CA,CT,DE,ID,MA,MD,MI,NJ,NY,OH,OR,PA,VA,VT,WA"]
-  api_url       = "http://${aws_alb.main.dns_name}/api/edge"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(2 minutes)"
