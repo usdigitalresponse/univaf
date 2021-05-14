@@ -3,7 +3,7 @@
 import { Response, Router } from "express";
 import { URLSearchParams } from "url";
 import * as db from "../db";
-import { ApiError, ValueError } from "../exceptions";
+import { ApiError, AuthorizationError, ValueError } from "../exceptions";
 import { ProviderLocation } from "../interfaces";
 import { AppRequest } from "../middleware";
 import { asyncHandler } from "../utils";
@@ -29,12 +29,30 @@ function sendError(response: Response, error: any, httpStatus?: number): void {
   }
 }
 
-function getListLocationInput(req: AppRequest, res: Response) {
+function shouldIncludePrivate(req: AppRequest) {
   const includePrivate = req.query.include_private === "true";
   if (includePrivate && !req.authorization) {
-    sendError(res, "Not authorized for private data", 403);
-    return;
+    throw new AuthorizationError("Not authorized for private data");
   }
+  return includePrivate;
+}
+
+function getPaginationParameters(request: AppRequest) {
+  let limit: number = 0;
+  if (request.query.limit) {
+    limit = parseInt(request.query.limit as string, 10) || 0;
+    if (limit <= 0) {
+      throw new ValueError("The 'limit' query param must be > 0");
+    }
+  }
+
+  const pageNext = request.query.page_next as string;
+
+  return { limit, pageNext };
+}
+
+function getListLocationInput(req: AppRequest, _res: Response) {
+  const includePrivate = shouldIncludePrivate(req);
 
   let where: Array<string> = [];
   let values: Array<any> = [];
@@ -271,5 +289,34 @@ export const update = async (req: AppRequest, res: Response) => {
 // export async function listAvailabilityStream(req: AppRequest, res: Response) {}
 // }
 
-// TODO
-// export const listAvailability = async (req: AppRequest, res: Response) => {}
+/**
+ * List all current availability statuses.
+ */
+export const listAvailability = async (
+  request: AppRequest,
+  response: Response
+) => {
+  const includePrivate = shouldIncludePrivate(request);
+  let { limit, pageNext } = getPaginationParameters(request);
+  limit = limit || 2000;
+
+  let dbQuery = db.db("availability").orderBy("id", "asc").limit(limit);
+  if (pageNext) dbQuery = dbQuery.where("id", ">", pageNext);
+  if (!includePrivate) dbQuery = dbQuery.where("is_public", true);
+
+  const data = await dbQuery;
+
+  let links: { next?: string } = {};
+  if (data.length === limit) {
+    const query = new URLSearchParams({
+      ...request.query,
+      page_next: data[data.length - 1].id,
+    });
+    links.next = `${request.baseUrl}${request.path}?${query}`;
+  }
+
+  return response.json({
+    links,
+    data,
+  });
+};

@@ -70,8 +70,8 @@ app.post("/update", asyncHandler(apiLegacy.update));
 app.get("/api/edge/locations", asyncHandler(apiEdge.list));
 app.get("/api/edge/locations.ndjson", asyncHandler(apiEdge.listStream));
 app.get("/api/edge/locations/:id", asyncHandler(apiEdge.getById));
-// app.get("/api/edge/availability", asyncHandler(routes.listAvailability));
-// app.get("/api/edge/availability.ndjson", asyncHandler(routes.listAvailabilityStream));
+app.get("/api/edge/availability", asyncHandler(apiEdge.listAvailability));
+// app.get("/api/edge/availability.ndjson", asyncHandler(apiEdge.listAvailabilityStream));
 app.post("/api/edge/update", asyncHandler(apiEdge.update));
 
 // FHIR SMART Scheduling Links API ------------------------------------------
