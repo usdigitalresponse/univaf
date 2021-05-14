@@ -7,9 +7,9 @@ async function readSeedData() {
 }
 
 async function insertSeeds(seedData: Array<any>) {
-  for (let location of seedData) {
-    await createLocation(location);
-    await updateAvailability(location.id, { ...location.availability });
+  for (let locationData of seedData) {
+    const location = await createLocation(locationData);
+    await updateAvailability(location.id, { ...locationData.availability });
     console.log("Inserted:", location.id);
   }
 }
