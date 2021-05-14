@@ -314,7 +314,7 @@ export async function* iterateLocationBatches({
       next: nextValues && nextValues.join(","),
     };
 
-    // Stop if there is no more data.
+    // Stop if there is no more data or if we've reached the maximum requested.
     if (!nextValues || total === limit) break;
   }
 }
