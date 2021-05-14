@@ -3,6 +3,7 @@ import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { TestLocation } from "./fixtures";
+import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
 
@@ -251,7 +252,21 @@ describe("POST /update", () => {
     });
   });
 
-  it.skip("should valid basic types in availability", async () => {
-    throw new Error("Not implemented");
+  it("should valid basic types in availability", async () => {
+    const location = await createLocation(TestLocation);
+    const response = await context.client.post("update", {
+      headers,
+      json: {
+        id: location.id,
+        availability: {
+          source: "test-source",
+          valid_at: new Date().toISOString(),
+          available: Availability.YES,
+          available_count: "hello",
+        },
+      },
+      throwHttpErrors: false,
+    });
+    expect(response.statusCode).toBe(422);
   });
 });

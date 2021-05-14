@@ -1,22 +1,19 @@
 import {
   Availability,
+  AvailabilityInput,
   Position,
   ProviderLocation,
   LocationAvailability,
-  CapacityRecord,
-  SlotRecord,
 } from "./interfaces";
-import { nanoid } from "nanoid";
-import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
+import { validateAvailabilityInput } from "./validation";
 
 const DEFAULT_BATCH_SIZE = 2000;
 
 export const db = Knex(loadDbConfig());
 
 export function assertIsTestDatabase() {
-  let error = false;
   return db.raw("SELECT current_database() as name;").then((result) => {
     const databaseName: string = result.rows[0].name;
     if (!databaseName.endsWith("-test")) {
@@ -372,9 +369,12 @@ export async function getLocationByExternalIds(
  */
 export async function updateAvailability(
   id: string,
-  {
+  data: AvailabilityInput
+): Promise<{ action: string; locationId: string }> {
+  data = validateAvailabilityInput(data);
+  let {
     source,
-    available,
+    available = Availability.UNKNOWN,
     checked_at,
     valid_at = null,
     available_count = null,
@@ -384,27 +384,7 @@ export async function updateAvailability(
     slots = null,
     meta = null,
     is_public = true,
-  }: {
-    source: string;
-    available: Availability;
-    checked_at: Date | string;
-    valid_at?: Date | string;
-    available_count?: number;
-    products?: Array<string>;
-    doses?: Array<string>;
-    capacity?: Array<CapacityRecord>;
-    slots?: Array<SlotRecord>;
-    meta?: any;
-    is_public?: boolean;
-  }
-): Promise<{ action: string; locationId: string }> {
-  if (!source) throw new ValueError("You must set `source`");
-  if (!available) throw new ValueError("You must set `available`");
-  if (!checked_at) throw new ValueError("You must set `checked_at`");
-
-  if (!valid_at) {
-    valid_at = checked_at;
-  }
+  } = data;
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.

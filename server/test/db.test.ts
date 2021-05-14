@@ -2,8 +2,7 @@ import { installTestDatabaseHooks } from "./lib";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { Availability } from "../src/interfaces";
 import { TestLocation } from "./fixtures";
-import { OutOfDateError } from "../src/exceptions";
-import { NotFoundError } from "../src/exceptions";
+import { ValueError, NotFoundError, OutOfDateError } from "../src/exceptions";
 
 installTestDatabaseHooks();
 
@@ -97,7 +96,7 @@ describe("db.updateAvailability", () => {
         },
       ],
     };
-    await updateAvailability(location.id, data);
+    await updateAvailability(location.id, { ...data });
     const { availability } = await getLocationById(location.id);
     expect(availability).toEqual(data);
   });
@@ -120,7 +119,7 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow("what");
+    }).rejects.toThrow(ValueError);
 
     await expect(async () => {
       await updateAvailability(location.id, {
@@ -136,7 +135,7 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow();
+    }).rejects.toThrow(ValueError);
 
     await expect(async () => {
       await updateAvailability(location.id, {
@@ -153,7 +152,7 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow();
+    }).rejects.toThrow(ValueError);
   });
 
   it("should validate capacity types", async () => {
@@ -174,7 +173,7 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow("what");
+    }).rejects.toThrow(ValueError);
 
     await expect(async () => {
       await updateAvailability(location.id, {
@@ -190,7 +189,7 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow();
+    }).rejects.toThrow(ValueError);
 
     await expect(async () => {
       await updateAvailability(location.id, {
@@ -207,7 +206,7 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow();
+    }).rejects.toThrow(ValueError);
 
     await expect(async () => {
       await updateAvailability(location.id, {
@@ -224,10 +223,10 @@ describe("db.updateAvailability", () => {
           },
         ],
       });
-    }).rejects.toThrow();
+    }).rejects.toThrow(ValueError);
   });
 
-  it.skip("should fill in capacity from slots", async () => {
+  it("should fill in capacity from slots", async () => {
     const location = await createLocation(TestLocation);
     const data = {
       source: "test-source",
@@ -266,6 +265,7 @@ describe("db.updateAvailability", () => {
         date: "2021-05-14",
         available: Availability.YES,
         available_count: 1,
+        unavailable_count: 0,
         products: ["moderna", "pfizer"],
         dose: "first_dose_only",
       },
@@ -273,6 +273,7 @@ describe("db.updateAvailability", () => {
         date: "2021-05-15",
         available: Availability.YES,
         available_count: 2,
+        unavailable_count: 0,
         products: ["moderna"],
         dose: "first_dose_only",
       },
@@ -280,39 +281,40 @@ describe("db.updateAvailability", () => {
         date: "2021-05-15",
         available: Availability.YES,
         available_count: 1,
+        unavailable_count: 0,
         products: ["pfizer"],
         dose: "first_dose_only",
       },
     ]);
   });
 
-  it.skip("should fill available, available_count, products, and doses from capacity", async () => {
+  it("should fill available, available_count, products, and doses from capacity", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, {
       source: "test-source",
       checked_at: "2021-05-14T06:45:51.273+00:00",
-      slots: [
+      capacity: [
         {
-          // @ts-expect-error
           date: "2021-05-14",
           available: Availability.YES,
           available_count: 1,
+          unavailable_count: 0,
           products: ["moderna", "pfizer"],
           dose: "first_dose_only",
         },
         {
-          // @ts-expect-error
           date: "2021-05-15",
           available: Availability.YES,
           available_count: 2,
+          unavailable_count: 0,
           products: ["moderna"],
           dose: "first_dose_only",
         },
         {
-          // @ts-expect-error
           date: "2021-05-15",
           available: Availability.YES,
           available_count: 1,
+          unavailable_count: 0,
           products: ["pfizer"],
           dose: "first_dose_only",
         },
@@ -326,22 +328,20 @@ describe("db.updateAvailability", () => {
     expect(availability).toHaveProperty("doses", ["first_dose_only"]);
   });
 
-  it.skip("should fill in available from available_count", async () => {
+  it("should fill in available from available_count", async () => {
     const location = await createLocation(TestLocation);
 
-    // @ts-expect-error
     await updateAvailability(location.id, {
       source: "test-source",
-      checked_at: "2021-05-14T06:45:51.273+00:00",
+      checked_at: "2021-05-14T06:46:00Z",
       available_count: 5,
     });
     let result = await getLocationById(location.id);
     expect(result).toHaveProperty("availability.available", Availability.YES);
 
-    // @ts-expect-error
     await updateAvailability(location.id, {
       source: "test-source",
-      checked_at: "2021-05-14T06:45:51.273+00:00",
+      checked_at: "2021-05-14T06:47:00Z",
       available_count: 0,
     });
     result = await getLocationById(location.id);
