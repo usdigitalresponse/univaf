@@ -102,23 +102,249 @@ describe("db.updateAvailability", () => {
     expect(availability).toEqual(data);
   });
 
-  it.skip("should validate slot types", async () => {
-    throw new Error("Not implemented");
+  it("should validate slot types", async () => {
+    const location = await createLocation(TestLocation);
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        slots: [
+          // @ts-expect-error Allow  malformed data for testing
+          {
+            // Bad timestamp format
+            start: "2021-05-14T06",
+            products: ["moderna", "pfizer"],
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow("what");
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        slots: [
+          {
+            start: "2021-05-14T06:45:51.273+00:00",
+            // @ts-expect-error Allow  malformed data for testing
+            products: "moderna",
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow();
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        slots: [
+          {
+            start: "2021-05-14T06:45:51.273+00:00",
+            // @ts-expect-error Allow  malformed data for testing
+            available: "hello",
+            products: ["moderna"],
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow();
   });
 
-  it.skip("should validate capacity types", async () => {
-    throw new Error("Not implemented");
+  it("should validate capacity types", async () => {
+    const location = await createLocation(TestLocation);
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        capacity: [
+          // @ts-expect-error Allow  malformed data for testing
+          {
+            // Bad date format
+            date: "2021-05-14T06",
+            products: ["moderna", "pfizer"],
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow("what");
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        capacity: [
+          {
+            date: "2021-05-14",
+            // @ts-expect-error Allow  malformed data for testing
+            products: "moderna",
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow();
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        capacity: [
+          {
+            date: "2021-05-14",
+            // @ts-expect-error Allow  malformed data for testing
+            available: "hello",
+            products: ["moderna"],
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow();
+
+    await expect(async () => {
+      await updateAvailability(location.id, {
+        source: "test-source",
+        checked_at: "2021-05-14T06:45:51.273+00:00",
+        available: Availability.YES,
+        capacity: [
+          {
+            date: "2021-05-14",
+            available: Availability.YES,
+            available_count: -1,
+            products: ["moderna"],
+            dose: "first_dose_only",
+          },
+        ],
+      });
+    }).rejects.toThrow();
   });
 
   it.skip("should fill in capacity from slots", async () => {
-    throw new Error("Not implemented");
+    const location = await createLocation(TestLocation);
+    const data = {
+      source: "test-source",
+      checked_at: "2021-05-14T06:45:51.273+00:00",
+      slots: [
+        {
+          start: "2021-05-14T06:45:51.273+00:00",
+          available: Availability.YES,
+          products: ["moderna", "pfizer"],
+          dose: "first_dose_only",
+        },
+        {
+          start: "2021-05-15T06:45:51.273+00:00",
+          available: Availability.YES,
+          products: ["moderna"],
+          dose: "first_dose_only",
+        },
+        {
+          start: "2021-05-15T07:45:51.273+00:00",
+          available: Availability.YES,
+          products: ["moderna"],
+          dose: "first_dose_only",
+        },
+        {
+          start: "2021-05-15T08:45:51.273+00:00",
+          available: Availability.YES,
+          products: ["pfizer"],
+          dose: "first_dose_only",
+        },
+      ],
+    };
+    await updateAvailability(location.id, data);
+    const { availability } = await getLocationById(location.id);
+    expect(availability.capacity).toEqual([
+      {
+        date: "2021-05-14",
+        available: Availability.YES,
+        available_count: 1,
+        products: ["moderna", "pfizer"],
+        dose: "first_dose_only",
+      },
+      {
+        date: "2021-05-15",
+        available: Availability.YES,
+        available_count: 2,
+        products: ["moderna"],
+        dose: "first_dose_only",
+      },
+      {
+        date: "2021-05-15",
+        available: Availability.YES,
+        available_count: 1,
+        products: ["pfizer"],
+        dose: "first_dose_only",
+      },
+    ]);
   });
 
-  it.skip("should fill availability, availability_count, products, and doses from capacity", async () => {
-    throw new Error("Not implemented");
+  it.skip("should fill available, available_count, products, and doses from capacity", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: "2021-05-14T06:45:51.273+00:00",
+      slots: [
+        {
+          // @ts-expect-error
+          date: "2021-05-14",
+          available: Availability.YES,
+          available_count: 1,
+          products: ["moderna", "pfizer"],
+          dose: "first_dose_only",
+        },
+        {
+          // @ts-expect-error
+          date: "2021-05-15",
+          available: Availability.YES,
+          available_count: 2,
+          products: ["moderna"],
+          dose: "first_dose_only",
+        },
+        {
+          // @ts-expect-error
+          date: "2021-05-15",
+          available: Availability.YES,
+          available_count: 1,
+          products: ["pfizer"],
+          dose: "first_dose_only",
+        },
+      ],
+    });
+
+    const { availability } = await getLocationById(location.id);
+    expect(availability).toHaveProperty("available", Availability.YES);
+    expect(availability).toHaveProperty("available_count", 4);
+    expect(availability).toHaveProperty("products", ["moderna", "pfizer"]);
+    expect(availability).toHaveProperty("doses", ["first_dose_only"]);
   });
 
-  it.skip("should fill in availability from availability_count", async () => {
-    throw new Error("Not implemented");
+  it.skip("should fill in available from available_count", async () => {
+    const location = await createLocation(TestLocation);
+
+    // @ts-expect-error
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: "2021-05-14T06:45:51.273+00:00",
+      available_count: 5,
+    });
+    let result = await getLocationById(location.id);
+    expect(result).toHaveProperty("availability.available", Availability.YES);
+
+    // @ts-expect-error
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: "2021-05-14T06:45:51.273+00:00",
+      available_count: 0,
+    });
+    result = await getLocationById(location.id);
+    expect(result).toHaveProperty("availability.available", Availability.NO);
   });
 });
