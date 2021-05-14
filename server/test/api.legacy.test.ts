@@ -234,22 +234,4 @@ describe("POST /update", () => {
       test: "this is a test",
     });
   });
-
-  it("should valid basic types in availability", async () => {
-    const location = await createLocation(TestLocation);
-    const response = await context.client.post("update", {
-      headers,
-      json: {
-        id: location.id,
-        availability: {
-          source: "test-source",
-          valid_at: new Date().toISOString(),
-          available: Availability.YES,
-          available_count: "hello",
-        },
-      },
-      throwHttpErrors: false,
-    });
-    expect(response.statusCode).toBe(422);
-  });
 });

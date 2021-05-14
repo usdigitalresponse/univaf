@@ -182,6 +182,13 @@ export const getById = async (req: AppRequest, res: Response) => {
   }
 };
 
+function promoteFromMeta(data: any, field: string) {
+  if (data.meta && data.meta[field] != null) {
+    data[field] = data.meta[field];
+    delete data.meta[field];
+  }
+}
+
 /**
  * Updates a given location's availability
  *
@@ -189,7 +196,6 @@ export const getById = async (req: AppRequest, res: Response) => {
  * @param req
  * @param res
  */
-
 export const update = async (req: AppRequest, res: Response) => {
   if (!req.authorization) {
     return sendError(res, "Not authorized to update data", 403);
@@ -243,6 +249,12 @@ export const update = async (req: AppRequest, res: Response) => {
       data.availability.valid_at = data.availability.updated_at;
       delete data.availability.updated_at;
     }
+
+    promoteFromMeta(data.availability, "slots");
+    promoteFromMeta(data.availability, "capacity");
+    promoteFromMeta(data.availability, "available_count");
+    promoteFromMeta(data.availability, "products");
+    promoteFromMeta(data.availability, "doses");
 
     try {
       const operation = await db.updateAvailability(
