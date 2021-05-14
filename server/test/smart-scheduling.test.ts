@@ -25,7 +25,10 @@ describe("GET /smart-scheduling/$bulk-publish", () => {
 });
 
 function ndjsonParse(s: string): any {
-  return s.split("\n").map((l) => JSON.parse(l));
+  return s
+    .split("\n")
+    .filter(Boolean)
+    .map((l) => JSON.parse(l));
 }
 
 describe("GET /smart-scheduling/locations/states/:state.ndjson", () => {
@@ -86,7 +89,7 @@ describe("GET /smart-scheduling/slots/states/:state.ndjson", () => {
 });
 
 const TestLocation = {
-  id: "47c59c23cbd4672173cc93b8a39b60ddf481dd56",
+  id: "DB053F3A-2DBD-416D-BB34-36579809CC87",
   external_ids: {
     njiis: "nj1234",
     vtrcks: "456",

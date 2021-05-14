@@ -9,6 +9,8 @@ import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 
+const DEFAULT_BATCH_SIZE = 2000;
+
 export const db = Knex(loadDbConfig());
 
 export function assertIsTestDatabase() {
@@ -186,21 +188,22 @@ export async function listLocations({
   try {
     result = await db.raw(
       `
+      WITH latest_availability AS (
+        SELECT
+        rank() OVER ( PARTITION BY location_id ORDER BY valid_at DESC ),
+        location_id, source, available, checked_at, valid_at
+        FROM availability
+        ${!includePrivate ? `WHERE availability.is_public = true` : ""}
+      )
       SELECT
         ${fields.join(", ")},
-        json_strip_nulls(row_to_json(availability.*)) availability
+        json_strip_nulls(row_to_json(latest_availability.*)) availability
       FROM provider_locations pl
-        LEFT OUTER JOIN availability
-          ON pl.id = availability.location_id
-          AND availability.valid_at = (
-            SELECT MAX(valid_at)
-            FROM availability avail_inner
-            WHERE
-              avail_inner.location_id = pl.id
-              ${!includePrivate ? `AND avail_inner.is_public = true` : ""}
-          )
+        LEFT OUTER JOIN latest_availability
+          ON pl.id = latest_availability.location_id
+          AND latest_availability.rank < 2
       ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-      ORDER BY pl.updated_at DESC
+      ORDER BY pl.created_at ASC, pl.id ASC
       ${limit ? `LIMIT ${limit}` : ""}
       `,
       values || []
@@ -221,10 +224,90 @@ export async function listLocations({
       delete row.availability.id;
       delete row.availability.location_id;
       delete row.availability.is_public;
+      delete row.availability.rank;
     }
 
     return row;
   });
+}
+
+/**
+ * Yield batches of locations, ultimately iterating through the entire table
+ * (unless `limit` is set, in which case it will yield only that many records).
+ * This lets us have long-running connections that stream out results, but that
+ * do not tie up the database.
+ *
+ * If a client needs to pause and restart later, they can use the `next`
+ * property in each yielded batch. It can be passed into this function as the
+ * `start` parameter, and iteration will resume from the next record.
+ *
+ * @example
+ * let nextKey;
+ * for await (const batch of iterateLocationBatches()) {
+ *   if (needToPause) {
+ *     nextKey = batch.next;
+ *     break;
+ *   }
+ * }
+ * // resume from where the above iterator left off:
+ * for await (const batch of iterateLocationBatches({ start: nextKey })) {
+ *   // do something
+ * }
+ */
+export async function* iterateLocationBatches({
+  includePrivate = false,
+  batchSize = DEFAULT_BATCH_SIZE,
+  limit = 0,
+  start = "",
+  where = [] as string[],
+  values = [] as any[],
+} = {}) {
+  let batchWhere = where;
+  let batchValues = values;
+  let nextValues: Array<any>;
+
+  // Parse a key for where to start. This should be a `batch.next` value from
+  // one of the batches this iterator yields.
+  if (start) {
+    nextValues = start.split(",").map((x) => x.trim());
+    if (nextValues.length !== 2) {
+      throw new ValueError("malformed pagination key", { value: start });
+    }
+  }
+
+  let total = 0;
+  while (true) {
+    if (limit) batchSize = Math.min(batchSize, limit - total);
+    if (nextValues) {
+      batchWhere = where.concat(["(created_at, id) > (?, ?)"]);
+      batchValues = values.concat(nextValues);
+    }
+
+    const batch: Array<ProviderLocation> = await listLocations({
+      includePrivate,
+      where: batchWhere,
+      values: batchValues,
+      limit: batchSize,
+    });
+
+    total += batch.length;
+    if (batch.length < batchSize) {
+      nextValues = null;
+    } else {
+      nextValues = [
+        batch[batch.length - 1].created_at.toISOString(),
+        batch[batch.length - 1].id,
+      ];
+    }
+
+    yield {
+      locations: batch,
+      next: nextValues && nextValues.join(","),
+    };
+
+    // Stop if there is no more data.
+    if (!nextValues) break;
+  }
 }
 
 /**
