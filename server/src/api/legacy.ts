@@ -1,13 +1,10 @@
 "use strict";
 
-import { Response, Router } from "express";
+import { Response } from "express";
 import { URLSearchParams } from "url";
 import * as db from "../db";
 import { ApiError } from "../exceptions";
 import { AppRequest } from "../middleware";
-import { asyncHandler } from "../utils";
-
-const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
 
 /**
  * Send an error response.
@@ -96,130 +93,4 @@ export const list = async (req: AppRequest, res: Response) => {
 
   if (!started) writeStart();
   res.end("\n]\n");
-};
-
-/**
- * Returns a single provider based upon the id
- * @param req
- * @param res
- */
-
-export const getById = async (req: AppRequest, res: Response) => {
-  const id = req.params["id"];
-  if (!id) {
-    return sendError(res, "Missing param 'id'", 422);
-  }
-
-  const includePrivate = req.query.include_private === "true";
-  if (includePrivate && !req.authorization) {
-    return sendError(res, "Not authorized for private data", 403);
-  }
-
-  const provider = await db.getLocationById(id, { includePrivate });
-  if (!provider) {
-    return sendError(res, `No provider location with ID '${id}'`, 404);
-  } else {
-    res.json(provider);
-  }
-};
-
-function promoteFromMeta(data: any, field: string) {
-  if (data.meta && data.meta[field] != null) {
-    data[field] = data.meta[field];
-    delete data.meta[field];
-  }
-}
-
-/**
- * Updates a given location's availability
- *
- * TODO: add some sort of auth/key
- * @param req
- * @param res
- */
-export const update = async (req: AppRequest, res: Response) => {
-  if (!req.authorization) {
-    return sendError(res, "Not authorized to update data", 403);
-  }
-
-  const data = req.body;
-
-  if (
-    !data.id &&
-    !(data.external_ids && Object.keys(data.external_ids).length)
-  ) {
-    return sendError(
-      res,
-      "You must set `id` or `external_ids` in the data",
-      422
-    );
-  }
-
-  const result: any = { location: { action: null } };
-
-  // FIXME: need to make this a single PG operation or add locks around it. It's
-  // possible for two concurrent updates to both try and create a location.
-  let location;
-  if (data.id && UUID_PATTERN.test(data.id)) {
-    location = await db.getLocationById(data.id);
-  }
-  if (!location && data.external_ids) {
-    location = await db.getLocationByExternalIds(data.external_ids);
-  }
-  if (!location) {
-    location = await db.createLocation(data);
-    result.location.action = "created";
-  } else if (req.query.update_location) {
-    // Only update an existing location if explicitly requested to do so via
-    // querystring and if there is other data for it.
-    // (In most cases, we expect the DB will have manual updates that make it
-    // a better source of truth for locations than the source data, hence the
-    // need to opt in to updating here.)
-    const fields = Object.keys(data).filter((key) => key !== "availability");
-    if (fields.length > 1) {
-      data.id = location.id;
-      await db.updateLocation(data);
-      result.location.action = "updated";
-    }
-  }
-
-  if (data.availability) {
-    // Accommodate old formats that sources might still be sending.
-    // TODO: remove once loaders have all been migrated.
-    if (data.availability.updated_at) {
-      data.availability.valid_at = data.availability.updated_at;
-      delete data.availability.updated_at;
-    }
-
-    promoteFromMeta(data.availability, "slots");
-    promoteFromMeta(data.availability, "capacity");
-    promoteFromMeta(data.availability, "available_count");
-    promoteFromMeta(data.availability, "products");
-    promoteFromMeta(data.availability, "doses");
-
-    try {
-      const operation = await db.updateAvailability(
-        location.id,
-        data.availability
-      );
-      result.availability = operation;
-    } catch (error) {
-      if (error instanceof ApiError) {
-        return sendError(res, error);
-      }
-      if (error instanceof TypeError) {
-        return sendError(res, error, 422);
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  if (
-    result.location?.action === "created" ||
-    result.availability?.action === "created"
-  ) {
-    res.status(201);
-  }
-  res.json(result);
 };

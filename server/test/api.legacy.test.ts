@@ -45,24 +45,7 @@ describe("GET /locations", () => {
   });
 });
 
-describe("GET /locations/:id", () => {
-  const context = useServerForTests(app);
-
-  it("responds with location status", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, TestLocation.availability);
-
-    const res = await context.client.get(`locations/${location.id}`);
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("id", location.id);
-    expect(res.body).toHaveProperty("name", TestLocation.name);
-    expect(res.body).toHaveProperty(
-      "location_type",
-      TestLocation.location_type
-    );
-  });
-});
-
+// TODO: remove this route and these tests in a subsequent test
 describe("POST /update", () => {
   const context = useServerForTests(app);
 
@@ -86,8 +69,8 @@ describe("POST /update", () => {
 
     res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("id", location.id);
-    expect(res.body).toHaveProperty("name", newName);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.name", newName);
   });
 
   it("updates availability successfully", async () => {
@@ -109,8 +92,8 @@ describe("POST /update", () => {
     res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
 
-    expect(res.body).toHaveProperty("id", location.id);
-    expect(res.body).toHaveProperty("availability.available", "NO");
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.availability.available", "NO");
 
     res = await context.client.post("update", {
       headers,
@@ -127,8 +110,8 @@ describe("POST /update", () => {
 
     res = await context.client.get(`locations/${location.id}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("id", location.id);
-    expect(res.body).toHaveProperty("availability.available", "UNKNOWN");
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.availability.available", "UNKNOWN");
   });
 
   it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {

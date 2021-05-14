@@ -63,8 +63,11 @@ app.get("/health", (req: Request, res: Response) => {
 // Legacy top-level API ------------------------------------------
 // TODO: Remove these when we're confident people aren't using them.
 app.get("/locations", asyncHandler(apiLegacy.list));
-app.get("/locations/:id", asyncHandler(apiLegacy.getById));
-app.post("/update", asyncHandler(apiLegacy.update));
+app.get("/locations/:id", (req: Request, res: Response) => {
+  res.redirect(`/api/edge/locations/${req.params.id}`);
+});
+// Note this one uses the newer edge API to ease our transition.
+app.post("/update", asyncHandler(apiEdge.update));
 
 // Current, non-stable API ------------------------------------------
 app.get("/api/edge/locations", asyncHandler(apiEdge.list));
