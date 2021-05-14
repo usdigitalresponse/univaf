@@ -15,6 +15,25 @@ export interface Position {
   latitude: number;
 }
 
+export interface CapacityRecord {
+  date: Date | string;
+  available: Availability;
+  available_count?: number;
+  unavailable_count?: number;
+  products?: Array<string>;
+  dose?: string;
+}
+
+export interface SlotRecord {
+  start: Date | string;
+  end?: Date | string;
+  available: Availability;
+  available_count?: number;
+  unavailable_count?: number;
+  products?: Array<string>;
+  dose?: string;
+}
+
 /**
  * Provider interface corresponds to a single provider
  *
@@ -55,6 +74,25 @@ export interface LocationAvailability {
   valid_at: Date;
   checked_at: Date;
   available: Availability;
+  available_count?: number;
+  products?: Array<string>;
+  doses?: Array<string>;
+  capacity?: Array<CapacityRecord>;
+  slots?: Array<SlotRecord>;
   meta: object;
   is_public: boolean;
+}
+
+export interface AvailabilityInput {
+  source: string;
+  checked_at: Date | string;
+  valid_at?: Date | string;
+  available?: Availability;
+  available_count?: number;
+  products?: Array<string>;
+  doses?: Array<string>;
+  capacity?: Array<CapacityRecord>;
+  slots?: Array<SlotRecord>;
+  meta?: any;
+  is_public?: boolean;
 }

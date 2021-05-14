@@ -1,9 +1,8 @@
 import { useServerForTests, installTestDatabaseHooks } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
-
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
-
+import { TestLocation } from "./fixtures";
 import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
@@ -252,38 +251,22 @@ describe("POST /update", () => {
       test: "this is a test",
     });
   });
-});
 
-const TestLocation = {
-  id: "DB053F3A-2DBD-416D-BB34-36579809CC87",
-  external_ids: {
-    njiis: "nj1234",
-    vtrcks: "456",
-  },
-  provider: "NJVSS",
-  location_type: "mass_vax",
-  name: "Gloucester County Megasite",
-  address_lines: [
-    "Rowan College of South Jersey",
-    "1400 Tanyard Road",
-    "Sewell",
-  ],
-  state: "NJ",
-  county: "Gloucester",
-  booking_phone: "",
-  booking_url: "https://covidvaccine.nj.gov/",
-  description: "This location is available for 1st and 2nd dose recipients.",
-  requires_waitlist: true,
-  is_public: true,
-  meta: {
-    something: "some value",
-  },
-  availability: {
-    source: "NJVSS Export",
-    checked_at: new Date(),
-    valid_at: new Date(),
-    available: Availability.YES,
-    is_public: true,
-    meta: {},
-  },
-};
+  it("should valid basic types in availability", async () => {
+    const location = await createLocation(TestLocation);
+    const response = await context.client.post("update", {
+      headers,
+      json: {
+        id: location.id,
+        availability: {
+          source: "test-source",
+          valid_at: new Date().toISOString(),
+          available: Availability.YES,
+          available_count: "hello",
+        },
+      },
+      throwHttpErrors: false,
+    });
+    expect(response.statusCode).toBe(422);
+  });
+});

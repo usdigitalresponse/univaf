@@ -1,20 +1,19 @@
 import {
   Availability,
+  AvailabilityInput,
   Position,
   ProviderLocation,
   LocationAvailability,
 } from "./interfaces";
-import { nanoid } from "nanoid";
-import { Pool } from "pg";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
+import { validateAvailabilityInput } from "./validation";
 
 const DEFAULT_BATCH_SIZE = 2000;
 
 export const db = Knex(loadDbConfig());
 
 export function assertIsTestDatabase() {
-  let error = false;
   return db.raw("SELECT current_database() as name;").then((result) => {
     const databaseName: string = result.rows[0].name;
     if (!databaseName.endsWith("-test")) {
@@ -191,7 +190,7 @@ export async function listLocations({
       WITH latest_availability AS (
         SELECT
         rank() OVER ( PARTITION BY location_id ORDER BY valid_at DESC ),
-        location_id, source, available, checked_at, valid_at
+        *
         FROM availability
         ${!includePrivate ? `WHERE availability.is_public = true` : ""}
       )
@@ -370,62 +369,49 @@ export async function getLocationByExternalIds(
  */
 export async function updateAvailability(
   id: string,
-  {
+  data: AvailabilityInput
+): Promise<{ action: string; locationId: string }> {
+  data = validateAvailabilityInput(data);
+  let {
     source,
-    available,
-    valid_at,
+    available = Availability.UNKNOWN,
     checked_at,
+    valid_at = null,
+    available_count = null,
+    products = null,
+    doses = null,
+    capacity = null,
+    slots = null,
     meta = null,
     is_public = true,
-  }: {
-    source: string;
-    available: Availability;
-    valid_at: Date;
-    checked_at: Date;
-    meta: any;
-    is_public: boolean;
-  }
-): Promise<{ action: string; locationId: string }> {
-  if (!source) throw new ValueError("You must set `source`");
-  if (!available) throw new ValueError("You must set `available`");
-  if (!checked_at) throw new ValueError("You must set `checked_at`");
-
-  if (!valid_at) {
-    valid_at = checked_at;
-  }
+  } = data;
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.
-  const existingAvailability = await db.raw(
-    `SELECT id, location_id, source
-    FROM availability
-    WHERE location_id = ? AND source = ?`,
-    [id, source]
-  );
+  const existingAvailability = await db("availability")
+    .select("id", "location_id", "source")
+    .where({ location_id: id, source })
+    .first();
 
-  if (existingAvailability.rows.length > 0) {
-    const result = await db.raw(
-      `
-      UPDATE availability
-      SET
-        available = :available,
-        valid_at = :valid_at,
-        checked_at = :checked_at,
-        meta = :meta,
-        is_public = :is_public
-      WHERE id = :id AND checked_at < :checked_at
-      `,
-      {
+  if (existingAvailability) {
+    const rowCount = await db("availability")
+      .where("id", existingAvailability.id)
+      .andWhere("checked_at", "<", checked_at)
+      .update({
         available,
+        available_count,
+        products,
+        doses,
+        // Knex typings can't handle a complex type for the array contents. :(
+        capacity: capacity as Array<any>,
+        slots: slots as Array<any>,
         valid_at,
         checked_at,
         meta,
         is_public,
-        id: existingAvailability.rows[0].id,
-      }
-    );
+      });
 
-    if (result.rowCount === 0) {
+    if (rowCount === 0) {
       throw new OutOfDateError(
         "Newer availability data has already been recorded"
       );
@@ -434,23 +420,23 @@ export async function updateAvailability(
     }
   } else {
     try {
-      const result = await db.raw(
-        `INSERT INTO availability (
-          location_id,
-          source,
-          available,
-          valid_at,
-          checked_at,
-          meta,
-          is_public
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [id, source, available, valid_at, checked_at, meta, is_public]
-      );
+      await db("availability").insert({
+        location_id: id,
+        source,
+        available,
+        available_count,
+        products,
+        doses,
+        capacity,
+        slots,
+        valid_at,
+        checked_at,
+        meta,
+        is_public,
+      });
       return { locationId: id, action: "create" };
     } catch (error) {
-      if (error.message.includes('constraint "fk_provider_location"')) {
-        console.error(`SQL Error: ${error.message}`);
+      if (error.message.includes("availability_location_id_fkey")) {
         throw new NotFoundError(`Could not find location ${id}`);
       }
       throw error;
