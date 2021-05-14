@@ -388,31 +388,16 @@ export async function updateAvailability(
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.
-  const existingAvailability = await db.raw(
-    `SELECT id, location_id, source
-    FROM availability
-    WHERE location_id = ? AND source = ?`,
-    [id, source]
-  );
+  const existingAvailability = await db("availability")
+    .select("id", "location_id", "source")
+    .where({ location_id: id, source })
+    .first();
 
-  if (existingAvailability.rows.length > 0) {
-    const result = await db.raw(
-      `
-      UPDATE availability
-      SET
-        available = :available,
-        available_count = :available_count,
-        products = :products,
-        doses = :doses,
-        capacity = :capacity,
-        slots = :slots,
-        valid_at = :valid_at,
-        checked_at = :checked_at,
-        meta = :meta,
-        is_public = :is_public
-      WHERE id = :id AND checked_at < :checked_at
-      `,
-      {
+  if (existingAvailability) {
+    const rowCount = await db("availability")
+      .where("id", existingAvailability.id)
+      .andWhere("checked_at", "<", checked_at)
+      .update({
         available,
         available_count,
         products,
@@ -424,11 +409,9 @@ export async function updateAvailability(
         checked_at,
         meta,
         is_public,
-        id: existingAvailability.rows[0].id,
-      }
-    );
+      });
 
-    if (result.rowCount === 0) {
+    if (rowCount === 0) {
       throw new OutOfDateError(
         "Newer availability data has already been recorded"
       );
@@ -437,37 +420,20 @@ export async function updateAvailability(
     }
   } else {
     try {
-      await db.raw(
-        `INSERT INTO availability (
-          location_id,
-          source,
-          available,
-          available_count,
-          products,
-          doses,
-          capacity,
-          slots,
-          valid_at,
-          checked_at,
-          meta,
-          is_public
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          id,
-          source,
-          available,
-          available_count,
-          products,
-          doses,
-          capacity,
-          slots,
-          valid_at,
-          checked_at,
-          meta,
-          is_public,
-        ]
-      );
+      await db("availability").insert({
+        location_id: id,
+        source,
+        available,
+        available_count,
+        products,
+        doses,
+        capacity,
+        slots,
+        valid_at,
+        checked_at,
+        meta,
+        is_public,
+      });
       return { locationId: id, action: "create" };
     } catch (error) {
       if (error.message.includes("availability_location_id_fkey")) {
