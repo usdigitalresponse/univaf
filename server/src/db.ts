@@ -375,8 +375,8 @@ export async function updateAvailability(
   {
     source,
     available,
-    valid_at,
-    checked_at = null,
+    checked_at,
+    valid_at = null,
     available_count = null,
     products = null,
     doses = null,
@@ -387,15 +387,15 @@ export async function updateAvailability(
   }: {
     source: string;
     available: Availability;
-    valid_at: Date;
-    checked_at: Date;
-    available_count: number;
-    products: Array<string>;
-    doses: Array<string>;
-    capacity: Array<CapacityRecord>;
-    slots: Array<SlotRecord>;
-    meta: any;
-    is_public: boolean;
+    checked_at: Date | string;
+    valid_at?: Date | string;
+    available_count?: number;
+    products?: Array<string>;
+    doses?: Array<string>;
+    capacity?: Array<CapacityRecord>;
+    slots?: Array<SlotRecord>;
+    meta?: any;
+    is_public?: boolean;
   }
 ): Promise<{ action: string; locationId: string }> {
   if (!source) throw new ValueError("You must set `source`");
@@ -490,7 +490,7 @@ export async function updateAvailability(
       );
       return { locationId: id, action: "create" };
     } catch (error) {
-      if (error.message.includes('constraint "fk_provider_location"')) {
+      if (error.message.includes("availability_location_id_fkey")) {
         console.error(`SQL Error: ${error.message}`);
         throw new NotFoundError(`Could not find location ${id}`);
       }

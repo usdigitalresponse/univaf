@@ -10,6 +10,12 @@ const base = {
   migrations: {
     tableName: "migrations",
   },
+  pool: {
+    afterCreate(conn, done) {
+      // Ensure Postgres formats times in UTC.
+      conn.query('SET timezone="UTC";', done);
+    },
+  },
 };
 
 module.exports = {
@@ -21,6 +27,6 @@ module.exports = {
       ...base.connection,
       database: `${base.connection.database}-test`,
     },
-    pool: { min: 1, max: 1 },
+    pool: { ...base.pool, min: 1, max: 1 },
   },
 };
