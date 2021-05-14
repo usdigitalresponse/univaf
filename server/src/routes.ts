@@ -81,7 +81,8 @@ export const list = async (req: AppRequest, res: Response) => {
       res.write("\n" + JSON.stringify(location));
     }
 
-    // Stop if we've been reading for too long and write an error entry.
+    // Stop if we've been reading for too long and write an object with a URL
+    // the client can resume from.
     if (Date.now() - startTime > 25 * 1000 && batch.next) {
       const query = new URLSearchParams({
         ...req.query,
