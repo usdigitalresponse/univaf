@@ -230,17 +230,23 @@ function productsFromCapacity(capacity: Array<CapacityRecord>): Array<string> {
       for (const product of item.products) all.add(product);
     }
   }
-  // This isn't totally valid, but in practical terms we go to SQL next, and
-  // that'll validate that it's an array of strings.
-  return [...all] as Array<string>;
+  if (all.size) {
+    // This isn't totally valid, but in practical terms we go to SQL next, and
+    // that'll validate that it's an array of strings.
+    return [...all] as Array<string>;
+  }
+  return undefined;
 }
 
 function dosesFromCapacity(capacity: Array<CapacityRecord>): Array<string> {
   let all = new Set();
   for (const item of capacity) if (item.dose) all.add(item.dose);
-  // This isn't totally valid, but in practical terms we go to SQL next, and
-  // that'll validate that it's an array of strings.
-  return [...all] as Array<string>;
+  if (all.size) {
+    // This isn't totally valid, but in practical terms we go to SQL next, and
+    // that'll validate that it's an array of strings.
+    return [...all] as Array<string>;
+  }
+  return undefined;
 }
 
 function countCapacity(capacity: Array<CapacityRecord>): number {
