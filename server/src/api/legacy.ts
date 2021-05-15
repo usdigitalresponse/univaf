@@ -5,6 +5,10 @@ import { URLSearchParams } from "url";
 import * as db from "../db";
 import { ApiError } from "../exceptions";
 import { AppRequest } from "../middleware";
+import { Pagination } from "../utils";
+
+/** Maximum time for streaming lists to run for in seconds. */
+const MAX_STREAMING_TIME = 25 * 1000;
 
 /**
  * Send an error response.
@@ -44,7 +48,7 @@ export const list = async (req: AppRequest, res: Response) => {
     where.push(`provider = ?`);
     values.push(req.query.provider);
   }
-  const start = req.query.page_next as string;
+  const { pageNext: start } = Pagination.getParameters(req);
 
   // Load results in batches and stream them out, so we don't get tied up with
   // big result sets.
@@ -80,13 +84,9 @@ export const list = async (req: AppRequest, res: Response) => {
 
     // Stop if we've been reading for too long and write an object with a URL
     // the client can resume from.
-    if (Date.now() - startTime > 25 * 1000 && batch.next) {
-      const query = new URLSearchParams({
-        ...req.query,
-        page_next: batch.next,
-      });
-      const nextUrl = `${req.baseUrl}${req.path}?${query}`;
-      res.write("\n," + JSON.stringify({ __next__: nextUrl }));
+    if (Date.now() - startTime > MAX_STREAMING_TIME && batch.next) {
+      const links = Pagination.createLinks(req, batch);
+      res.write("\n," + JSON.stringify({ __next__: links.next }));
       break;
     }
   }

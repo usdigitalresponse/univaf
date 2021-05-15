@@ -6,7 +6,10 @@ import * as db from "../db";
 import { ApiError, AuthorizationError, ValueError } from "../exceptions";
 import { ProviderLocation } from "../interfaces";
 import { AppRequest } from "../middleware";
-import { asyncHandler } from "../utils";
+import { Pagination } from "../utils";
+
+/** Maximum time for streaming lists to run for in seconds. */
+const MAX_STREAMING_TIME = 25 * 1000;
 
 const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
 
@@ -37,41 +40,6 @@ function shouldIncludePrivate(req: AppRequest) {
   return includePrivate;
 }
 
-function getPaginationParameters(request: Request) {
-  let limit: number = 0;
-  if (request.query.limit) {
-    limit = parseInt(request.query.limit as string, 10) || 0;
-    if (limit <= 0) {
-      throw new ValueError("The 'limit' query param must be > 0");
-    }
-  }
-
-  const pageNext = request.query.page_next as string;
-
-  return { limit, pageNext };
-}
-
-interface PaginationLinks {
-  prev?: string;
-  next?: string;
-}
-
-function addQueryToCurrentUrl(request: Request, newQuery: any): string {
-  const query = new URLSearchParams({ ...request.query, ...newQuery });
-  return `${request.baseUrl}${request.path}?${query}`;
-}
-
-function createPaginationLinks(
-  request: Request,
-  keys: { next?: string }
-): PaginationLinks {
-  let links: PaginationLinks = {};
-  if (keys.next) {
-    links.next = addQueryToCurrentUrl(request, { page_next: keys.next });
-  }
-  return links;
-}
-
 function getListLocationInput(req: Request) {
   let where: Array<string> = [];
   let values: Array<any> = [];
@@ -90,7 +58,7 @@ function getListLocationInput(req: Request) {
 export async function listStream(req: AppRequest, res: Response) {
   const includePrivate = shouldIncludePrivate(req);
   const { where, values } = getListLocationInput(req);
-  const { limit, pageNext } = getPaginationParameters(req);
+  const { limit, pageNext } = Pagination.getParameters(req);
 
   // Load results in batches and stream them out, so we don't get tied up with
   // big result sets.
@@ -130,8 +98,8 @@ export async function listStream(req: AppRequest, res: Response) {
     }
 
     // Stop if we've been reading for too long and write an error entry.
-    if (Date.now() - startTime > 25 * 1000 && batch.next) {
-      const links = createPaginationLinks(req, { next: batch.next });
+    if (Date.now() - startTime > MAX_STREAMING_TIME && batch.next) {
+      const links = Pagination.createLinks(req, { next: batch.next });
       await write(JSON.stringify({ __next__: links.next }) + "\n");
       break;
     }
@@ -146,7 +114,7 @@ export async function listStream(req: AppRequest, res: Response) {
 export const list = async (req: AppRequest, res: Response) => {
   const includePrivate = shouldIncludePrivate(req);
   const { where, values } = getListLocationInput(req);
-  const { limit, pageNext } = getPaginationParameters(req);
+  const { limit, pageNext } = Pagination.getParameters(req);
 
   const result = await db
     .iterateLocationBatches({
@@ -160,7 +128,7 @@ export const list = async (req: AppRequest, res: Response) => {
   const batch = result.value || { locations: [], next: null };
 
   return res.json({
-    links: createPaginationLinks(req, { next: batch.next }),
+    links: Pagination.createLinks(req, { next: batch.next }),
     data: batch.locations,
   });
 };
@@ -303,7 +271,7 @@ export const listAvailability = async (
   response: Response
 ) => {
   const includePrivate = shouldIncludePrivate(request);
-  let { limit, pageNext } = getPaginationParameters(request);
+  let { limit, pageNext } = Pagination.getParameters(request);
   limit = limit || 2000;
 
   let dbQuery = db.db("availability").orderBy("id", "asc").limit(limit);
@@ -314,7 +282,7 @@ export const listAvailability = async (
   const lastItem = data[data.length - 1];
 
   return response.json({
-    links: createPaginationLinks(request, { next: lastItem?.id }),
+    links: Pagination.createLinks(request, { next: lastItem?.id }),
     data,
   });
 };
