@@ -1,6 +1,6 @@
 "use strict";
 
-import { Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import { URLSearchParams } from "url";
 import * as db from "../db";
 import { ApiError, AuthorizationError, ValueError } from "../exceptions";
@@ -37,7 +37,7 @@ function shouldIncludePrivate(req: AppRequest) {
   return includePrivate;
 }
 
-function getPaginationParameters(request: AppRequest) {
+function getPaginationParameters(request: Request) {
   let limit: number = 0;
   if (request.query.limit) {
     limit = parseInt(request.query.limit as string, 10) || 0;
@@ -56,13 +56,13 @@ interface PaginationLinks {
   next?: string;
 }
 
-function addQueryToCurrentUrl(request: AppRequest, newQuery: any): string {
+function addQueryToCurrentUrl(request: Request, newQuery: any): string {
   const query = new URLSearchParams({ ...request.query, ...newQuery });
   return `${request.baseUrl}${request.path}?${query}`;
 }
 
 function createPaginationLinks(
-  request: AppRequest,
+  request: Request,
   keys: { next?: string }
 ): PaginationLinks {
   let links: PaginationLinks = {};
@@ -72,7 +72,7 @@ function createPaginationLinks(
   return links;
 }
 
-function getListLocationInput(req: AppRequest) {
+function getListLocationInput(req: Request) {
   let where: Array<string> = [];
   let values: Array<any> = [];
   if (req.query.state) {
