@@ -51,6 +51,27 @@ function getPaginationParameters(request: AppRequest) {
   return { limit, pageNext };
 }
 
+interface PaginationLinks {
+  prev?: string;
+  next?: string;
+}
+
+function addQueryToCurrentUrl(request: AppRequest, newQuery: any): string {
+  const query = new URLSearchParams({ ...request.query, ...newQuery });
+  return `${request.baseUrl}${request.path}?${query}`;
+}
+
+function createPaginationLinks(
+  request: AppRequest,
+  keys: { next?: string }
+): PaginationLinks {
+  let links: PaginationLinks = {};
+  if (keys.next) {
+    links.next = addQueryToCurrentUrl(request, { page_next: keys.next });
+  }
+  return links;
+}
+
 function getListLocationInput(req: AppRequest) {
   let where: Array<string> = [];
   let values: Array<any> = [];
@@ -110,12 +131,8 @@ export async function listStream(req: AppRequest, res: Response) {
 
     // Stop if we've been reading for too long and write an error entry.
     if (Date.now() - startTime > 25 * 1000 && batch.next) {
-      const query = new URLSearchParams({
-        ...req.query,
-        page_next: batch.next,
-      });
-      const nextUrl = `${req.baseUrl}${req.path}?${query}`;
-      await write(JSON.stringify({ __next__: nextUrl }) + "\n");
+      const links = createPaginationLinks(req, { next: batch.next });
+      await write(JSON.stringify({ __next__: links.next }) + "\n");
       break;
     }
   }
@@ -142,17 +159,8 @@ export const list = async (req: AppRequest, res: Response) => {
     .next();
   const batch = result.value || { locations: [], next: null };
 
-  let links: { next?: string } = {};
-  if (batch.next) {
-    const query = new URLSearchParams({
-      ...req.query,
-      page_next: batch.next,
-    });
-    links.next = `${req.baseUrl}${req.path}?${query}`;
-  }
-
   return res.json({
-    links,
+    links: createPaginationLinks(req, { next: batch.next }),
     data: batch.locations,
   });
 };
@@ -303,18 +311,10 @@ export const listAvailability = async (
   if (!includePrivate) dbQuery = dbQuery.where("is_public", true);
 
   const data = await dbQuery;
-
-  let links: { next?: string } = {};
-  if (data.length === limit) {
-    const query = new URLSearchParams({
-      ...request.query,
-      page_next: data[data.length - 1].id,
-    });
-    links.next = `${request.baseUrl}${request.path}?${query}`;
-  }
+  const lastItem = data[data.length - 1];
 
   return response.json({
-    links,
+    links: createPaginationLinks(request, { next: lastItem?.id }),
     data,
   });
 };
