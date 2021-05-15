@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { createLocation, updateAvailability } from "../src/db";
+import { createLocation, updateAvailability, db } from "../src/db";
 
 async function readSeedData() {
   const raw = await fs.readFile("./fixtures/seeds.json", "utf8");
@@ -19,7 +19,9 @@ async function run() {
   await insertSeeds(data);
 }
 
-run().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+run()
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(() => db.destroy());
