@@ -26,6 +26,14 @@ export class ApiError extends Error {
 }
 
 /**
+ * An action is not permitted for the current user.
+ */
+export class AuthorizationError extends ApiError {
+  httpStatus = 403;
+  code = "not_authorized";
+}
+
+/**
  * A resource could not be found.
  */
 export class NotFoundError extends ApiError {

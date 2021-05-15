@@ -1,33 +1,15 @@
-import express, {
-  NextFunction,
-  RequestHandler,
-  Request,
-  Response,
-} from "express";
+import express, { NextFunction, Request, Response } from "express";
 import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
 import { authorizeRequest } from "./middleware";
-import * as routes from "./routes";
+import * as apiEdge from "./api/edge";
+import * as apiLegacy from "./api/legacy";
+import { asyncHandler } from "./utils";
 import bodyParser from "body-parser";
 
 Sentry.init();
-
-type PromiseHandler = (
-  req: Request,
-  res: Response,
-  next?: NextFunction
-) => void | Promise<any>;
-
-function handleErrors(handler: PromiseHandler): RequestHandler {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const result = handler(req, res, next);
-    if (result instanceof Promise) {
-      result.catch(next);
-    }
-  };
-}
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.
@@ -68,12 +50,27 @@ app.get("/", (_req: Request, res: Response) =>
 app.get("/debugme", (_req: Request, res: Response) => {
   throw new Error("TESTING SENTRY AGAIN");
 });
-app.get("/health", routes.healthcheck);
-app.get("/locations", handleErrors(routes.list));
-app.get("/locations/:id", handleErrors(routes.getById));
-// app.get("/availability", handleErrors(routes.listAvailability));
-// app.post("/locations", handleErrors(routes.create))
-app.post("/update", handleErrors(routes.update));
+app.get("/health", (req: Request, res: Response) => {
+  // TODO: include the db status before declaring ourselves "up"
+  res.status(200).send("OK!");
+});
+
+// Legacy top-level API ------------------------------------------
+// TODO: Remove these when we're confident people aren't using them.
+app.get("/locations", asyncHandler(apiLegacy.list));
+app.get("/locations/:id", (req: Request, res: Response) => {
+  res.redirect(`/api/edge/locations/${req.params.id}`);
+});
+// Note this one uses the newer edge API to ease our transition.
+app.post("/update", asyncHandler(apiEdge.update));
+
+// Current, non-stable API ------------------------------------------
+app.get("/api/edge/locations", asyncHandler(apiEdge.list));
+app.get("/api/edge/locations.ndjson", asyncHandler(apiEdge.listStream));
+app.get("/api/edge/locations/:id", asyncHandler(apiEdge.getById));
+app.get("/api/edge/availability", asyncHandler(apiEdge.listAvailability));
+// app.get("/api/edge/availability.ndjson", asyncHandler(apiEdge.listAvailabilityStream));
+app.post("/api/edge/update", asyncHandler(apiEdge.update));
 
 // FHIR SMART Scheduling Links API ------------------------------------------
 // https://github.com/smart-on-fhir/smart-scheduling-links/
@@ -88,16 +85,16 @@ import {
 const smartSchedulingApi = express.Router();
 app.use("/smart-scheduling", smartSchedulingApi);
 
-smartSchedulingApi.get("/([$])bulk-publish", handleErrors(manifest));
+smartSchedulingApi.get("/([$])bulk-publish", asyncHandler(manifest));
 smartSchedulingApi.get(
   "/locations/states/:state.ndjson",
-  handleErrors(listLocations)
+  asyncHandler(listLocations)
 );
 smartSchedulingApi.get(
   "/schedules/states/:state.ndjson",
-  handleErrors(listSchedules)
+  asyncHandler(listSchedules)
 );
-smartSchedulingApi.get("/slots/states/:state.ndjson", handleErrors(listSlots));
+smartSchedulingApi.get("/slots/states/:state.ndjson", asyncHandler(listSlots));
 smartSchedulingApi.use((_req: Request, res: Response) =>
   sendFhirError(res, 404, {
     severity: "fatal",
