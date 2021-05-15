@@ -4,12 +4,10 @@ import { Request, Response } from "express";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
 import { AppRequest } from "../middleware";
-import { Pagination } from "../utils";
+import { Pagination, UUID_PATTERN } from "../utils";
 
 /** Maximum time for streaming lists to run for in seconds. */
 const MAX_STREAMING_TIME = 25 * 1000;
-
-const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
 
 /**
  * Send an error response.

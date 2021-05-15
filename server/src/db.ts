@@ -9,6 +9,7 @@ import {
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 import { validateAvailabilityInput } from "./validation";
+import { UUID_PATTERN } from "./utils";
 
 const DEFAULT_BATCH_SIZE = 2000;
 
@@ -106,7 +107,12 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     created_at: now,
     updated_at: now,
   };
-  delete sqlData.id;
+
+  if (!UUID_PATTERN.test(sqlData.id)) {
+    // the database will auto-assign a random uuid
+    delete sqlData.id;
+  }
+
   const sqlFields = Object.entries(sqlData).filter(([key, _]) => {
     return providerLocationAllFields.includes(key);
   });
