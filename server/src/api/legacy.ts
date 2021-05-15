@@ -1,7 +1,6 @@
 "use strict";
 
 import { Response } from "express";
-import { URLSearchParams } from "url";
 import * as db from "../db";
 import { ApiError } from "../exceptions";
 import { AppRequest } from "../middleware";

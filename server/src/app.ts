@@ -1,9 +1,4 @@
-import express, {
-  NextFunction,
-  RequestHandler,
-  Request,
-  Response,
-} from "express";
+import express, { NextFunction, Request, Response } from "express";
 import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
