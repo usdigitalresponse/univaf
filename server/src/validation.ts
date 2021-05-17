@@ -251,8 +251,14 @@ function dosesFromCapacity(capacity: Array<CapacityRecord>): Array<string> {
 
 function countCapacity(capacity: Array<CapacityRecord>): number {
   let total = 0;
-  for (const item of capacity) total += item.available_count;
-  return total;
+  let hasTotal = false;
+  for (const item of capacity) {
+    if (item.available_count) {
+      total += item.available_count;
+      hasTotal = true;
+    }
+  }
+  return hasTotal ? total : undefined;
 }
 
 export function validateAvailabilityInput(data: any): AvailabilityInput {
@@ -285,7 +291,8 @@ export function validateAvailabilityInput(data: any): AvailabilityInput {
   }
 
   if (data.available_count == null && data.capacity) {
-    data.available_count = countCapacity(data.capacity);
+    const count = countCapacity(data.capacity);
+    if (count) data.available_count = count;
   }
   if (data.available_count < 0) {
     throw new ValueError("available_count must be > 0");
