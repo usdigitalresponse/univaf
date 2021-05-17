@@ -195,7 +195,7 @@ function formatLocation(validTime, locationInfo) {
     booking_url: CVS_BOOKING_URL,
 
     availability: {
-      source: "cvs-smart-api",
+      source: "univaf-cvs-smart",
       valid_at: validTime,
       checked_at: checkTime,
       is_public: true,
