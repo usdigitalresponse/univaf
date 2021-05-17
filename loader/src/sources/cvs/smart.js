@@ -290,4 +290,5 @@ async function checkAvailability(handler, options) {
 
 module.exports = {
   checkAvailability,
+  CVS_SMART_API_URL,
 };
