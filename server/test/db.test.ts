@@ -353,6 +353,24 @@ describe("db.updateAvailability", () => {
     expect(availability).not.toHaveProperty("available_count");
   });
 
+  it("should fill in available_count if capacity counts are 0", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: "2021-05-14T06:45:51.273+00:00",
+      capacity: [
+        {
+          date: "2021-05-14",
+          available: Availability.NO,
+          available_count: 0,
+        },
+      ],
+    });
+
+    const { availability } = await getLocationById(location.id);
+    expect(availability).toHaveProperty("available_count", 0);
+  });
+
   it("should fill in available from available_count", async () => {
     const location = await createLocation(TestLocation);
 

@@ -253,7 +253,7 @@ function countCapacity(capacity: Array<CapacityRecord>): number {
   let total = 0;
   let hasTotal = false;
   for (const item of capacity) {
-    if (item.available_count) {
+    if (item.available_count != null) {
       total += item.available_count;
       hasTotal = true;
     }
@@ -292,7 +292,7 @@ export function validateAvailabilityInput(data: any): AvailabilityInput {
 
   if (data.available_count == null && data.capacity) {
     const count = countCapacity(data.capacity);
-    if (count) data.available_count = count;
+    if (count != null) data.available_count = count;
   }
   if (data.available_count < 0) {
     throw new ValueError("available_count must be > 0");
