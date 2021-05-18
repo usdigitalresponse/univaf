@@ -238,6 +238,7 @@ function formatLocation(validTime, locationInfo) {
       source: "univaf-cvs-smart",
       valid_at: validTime,
       checked_at: checkTime,
+      is_public: true,
       available,
       capacity,
     },
