@@ -161,8 +161,8 @@ test("simple schema conversion", () => {
     availability: {
       available: "YES",
       checked_at: expectDatetimeString(),
-      source: "cvs-scraper",
-      updated_at: expectDatetimeString(),
+      source: "univaf-cvs-scraper",
+      valid_at: expectDatetimeString(),
     },
     booking_phone: CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
     booking_url: CVS_BOOKING_URL,
@@ -195,8 +195,8 @@ test("correctness of unavailable slots", () => {
     availability: {
       available: "NO",
       checked_at: expectDatetimeString(),
-      source: "cvs-scraper",
-      updated_at: expectDatetimeString(),
+      source: "univaf-cvs-scraper",
+      valid_at: expectDatetimeString(),
     },
     booking_phone: CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
     booking_url: CVS_BOOKING_URL,

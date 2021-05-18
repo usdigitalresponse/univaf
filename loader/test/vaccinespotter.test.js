@@ -124,8 +124,8 @@ describe("VaccineSpotter", () => {
         },
       },
       availability: {
-        source: "vaccinespotter",
-        updated_at: "2021-05-04T07:10:03.196+00:00",
+        source: "univaf-vaccinespotter",
+        valid_at: "2021-05-04T07:10:03.196+00:00",
         checked_at: expectDatetimeString(),
         available: "YES",
         meta: {

@@ -172,8 +172,8 @@ describe("Rite Aid Source", () => {
             },
           ],
         },
-        source: "rite-aid-api",
-        updated_at: "2021-04-23T14:52:05.000Z",
+        source: "univaf-rite-aid-api",
+        valid_at: "2021-04-23T14:52:05.000Z",
       },
     });
 

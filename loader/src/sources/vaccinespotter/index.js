@@ -185,8 +185,8 @@ const formatters = {
         ...additions?.external_ids,
       },
       availability: {
-        source: "vaccinespotter",
-        updated_at: store.properties.appointments_last_fetched,
+        source: "univaf-vaccinespotter",
+        valid_at: store.properties.appointments_last_fetched,
         checked_at: new Date().toISOString(),
         available,
         meta,

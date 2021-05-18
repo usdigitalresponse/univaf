@@ -472,9 +472,9 @@ async function checkAvailability(handler, _options) {
       // is_public: true,
 
       availability: {
-        source: "njvss-export",
+        source: "univaf-njvss",
         // TODO: See if we can get a field added to the export for this
-        // updated_at: null,
+        // valid_at: null,
         checked_at: checkTime,
         available: location.available > 0 ? Available.yes : Available.no,
         meta: {
