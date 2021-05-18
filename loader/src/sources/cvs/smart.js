@@ -211,12 +211,6 @@ function formatLocation(validTime, locationInfo) {
     }
   }
 
-  // TODO: remove this when NJ is ready to move forward. This API is currently
-  // returning different results than the older CVS API for a lot of locations,
-  // so until we understand why, we'll keep the old API as the public source
-  // for NJ data. (NJ is the only state we have a key for using the old API.)
-  const isPublic = smartLocation.address.state !== "NJ";
-
   const checkTime = new Date().toISOString();
   return {
     id: `CVS:${id}`,
@@ -244,7 +238,6 @@ function formatLocation(validTime, locationInfo) {
       source: "univaf-cvs-smart",
       valid_at: validTime,
       checked_at: checkTime,
-      is_public: isPublic,
       available,
       capacity,
     },

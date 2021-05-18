@@ -14,23 +14,25 @@
 #   subnets = aws_subnet.public.*.id
 # }
 
-module "cvs_api_loader" {
-  source = "./modules/loader"
+# Disable the CVS API loader; the CVS SMART API loader is covering the same
+# data and doing it better for now.
+# module "cvs_api_loader" {
+#   source = "./modules/loader"
 
-  name          = "cvs-api"
-  loader_source = "cvsApi"
-  api_url       = "http://${aws_alb.main.dns_name}"
-  api_key       = var.api_key
-  sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(3 minutes)"
-  cluster_arn   = aws_ecs_cluster.main.arn
-  role          = aws_iam_role.ecs_task_execution_role.arn
-  subnets       = aws_subnet.public.*.id
-  env_vars = {
-    CVS_API_URL = "https://api.cvshealth.com/"
-    CVS_API_KEY = var.cvs_api_key
-  }
-}
+#   name          = "cvs-api"
+#   loader_source = "cvsApi"
+#   api_url       = "http://${aws_alb.main.dns_name}"
+#   api_key       = var.api_key
+#   sentry_dsn    = var.loader_sentry_dsn
+#   schedule      = "rate(3 minutes)"
+#   cluster_arn   = aws_ecs_cluster.main.arn
+#   role          = aws_iam_role.ecs_task_execution_role.arn
+#   subnets       = aws_subnet.public.*.id
+#   env_vars = {
+#     CVS_API_URL = "https://api.cvshealth.com/"
+#     CVS_API_KEY = var.cvs_api_key
+#   }
+# }
 
 module "cvs_smart_loader" {
   source = "./modules/loader"
@@ -41,7 +43,7 @@ module "cvs_smart_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(3 minutes)"
+  schedule      = "rate(2 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
