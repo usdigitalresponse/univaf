@@ -13,4 +13,5 @@ module "db" {
   allocated_storage             = var.db_size
   instance_class                = var.db_instance
   ingress_allow_security_groups = [aws_security_group.ecs_tasks.id]
+  performance_insights_enabled  = true
 }

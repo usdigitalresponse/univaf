@@ -40,13 +40,14 @@ resource "aws_db_instance" "main" {
   identifier = var.name
 
   # Database
-  engine                      = var.engine
-  engine_version              = var.engine_version
-  allow_major_version_upgrade = var.allow_major_version_upgrade
-  username                    = coalesce(var.username, var.name)
-  password                    = var.password
-  multi_az                    = var.multi_az
-  name                        = coalesce(var.database, var.name)
+  engine                       = var.engine
+  engine_version               = var.engine_version
+  allow_major_version_upgrade  = var.allow_major_version_upgrade
+  username                     = coalesce(var.username, var.name)
+  password                     = var.password
+  multi_az                     = var.multi_az
+  name                         = coalesce(var.database, var.name)
+  performance_insights_enabled = var.performance_insights_enabled
 
   # Backups / maintenance
   backup_retention_period   = var.backup_retention_period

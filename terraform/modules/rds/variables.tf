@@ -111,3 +111,8 @@ variable "subnet_ids" {
   description = "A list of subnet IDs"
   type        = list(string)
 }
+
+variable "performance_insights_enabled" {
+  description = "Enable RDS performance insights"
+  default     = false
+}
