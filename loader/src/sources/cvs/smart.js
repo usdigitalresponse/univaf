@@ -19,6 +19,16 @@ const CAPACITY_EXTENSION =
 const BOOKING_DEEP_LINK_EXTENSION =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link";
 
+// Use symbols to link slots -> schedules -> locations to avoid circular
+// references when serializing or logging data.
+const locationReference = Symbol("schedule");
+const scheduleReference = Symbol("schedule");
+
+/**
+ * Parse a Newline-Delimited JSON (NDJSON) document.
+ * @param {string} text
+ * @returns {Array<any>}
+ */
 function parseJsonLines(text) {
   return text
     .split("\n")
@@ -32,6 +42,13 @@ function parseJsonLines(text) {
     });
 }
 
+/**
+ * Lightweight wrapper for a SMART Scheduling Links API.
+ * This does some basic management around manifest caching and really basic
+ * response parsing, but nothing too fancy.
+ *
+ * SMART SL Docs: https://github.com/smart-on-fhir/smart-scheduling-links/
+ */
 class SmartSchedulingLinksApi {
   constructor(url) {
     this.url = url;
@@ -86,6 +103,12 @@ class SmartSchedulingLinksApi {
   }
 }
 
+/**
+ * Determine whether a SMART SL `Schedule` object represents COVID-19
+ * vaccinations.
+ * @param {any} schedule
+ * @returns {boolean}
+ */
 function isCovidSchedule(schedule) {
   return schedule.serviceType.some((service) =>
     service.coding.some(
@@ -95,6 +118,12 @@ function isCovidSchedule(schedule) {
   );
 }
 
+/**
+ * Get a list of objects representing the locations available in a SMART SL API
+ * along with their associaated schedules and slots.
+ * @param {SmartSchedulingLinksApi} api
+ * @returns {Array<{location: any, schedules: Array<any>, slots: Array<any>}>}
+ */
 async function getLocations(api) {
   const locations = Object.create(null);
   for await (const location of api.listLocations()) {
@@ -110,7 +139,7 @@ async function getLocations(api) {
       const location = locations[locationId];
       if (location) {
         location.schedules.push(schedule);
-        schedule._location = location;
+        schedule[locationReference] = location;
       } else {
         console.error(`Found schedule with unknown location: ${schedule.id}`);
       }
@@ -121,14 +150,12 @@ async function getLocations(api) {
     }
   }
 
-  const slots = [];
   for await (const slot of api.listSlots()) {
     const scheduleId = slot.schedule.reference.split("/")[1];
     const schedule = schedules[scheduleId];
     if (schedule) {
-      slot._schedule = schedule;
-      slots.push(slot);
-      schedule._location.slots.push(slot);
+      slot[scheduleReference] = schedule;
+      schedule[locationReference].slots.push(slot);
     } else {
       console.error(`No schedule for slot ${slot.id}`);
     }
@@ -136,8 +163,12 @@ async function getLocations(api) {
 
   return locations;
 }
-// getCovidSlots().then((x) => console.log("done", (data = x)));
 
+/**
+ * Get an array of UNIVAF-formatted locations & availabilities from the
+ * SMART SL API.
+ * @returns {Array<any>}
+ */
 async function getData() {
   const api = new SmartSchedulingLinksApi(CVS_SMART_API_URL);
   const manifest = await api.getManifest();
@@ -165,6 +196,12 @@ function formatLocation(validTime, locationInfo) {
     if (entry.system === "phone") booking_phone = entry.value;
   }
 
+  let position = smartLocation.position || undefined;
+  if (position) {
+    // FHIR geo-coordinates have an optional altitude, which we don't accept.
+    delete position.altitude;
+  }
+
   const capacity = formatCapacity(locationInfo.slots);
   let available = Available.no;
   for (const slot of capacity) {
@@ -173,6 +210,12 @@ function formatLocation(validTime, locationInfo) {
       break;
     }
   }
+
+  // TODO: remove this when NJ is ready to move forward. This API is currently
+  // returning different results than the older CVS API for a lot of locations,
+  // so until we understand why, we'll keep the old API as the public source
+  // for NJ data. (NJ is the only state we have a key for using the old API.)
+  const isPublic = smartLocation.address.state !== "NJ";
 
   const checkTime = new Date().toISOString();
   return {
@@ -187,8 +230,9 @@ function formatLocation(validTime, locationInfo) {
     state: smartLocation.address.state,
     postal_code: smartLocation.address.postalCode,
 
-    // county: ,
-    // position: null,
+    // These aren't currently available
+    county: smartLocation.address.district || undefined,
+    position,
 
     // The API includes this info, but we have a better version of the URL to
     // use instead (links you diretly into the screener instead of a confusing
@@ -200,7 +244,7 @@ function formatLocation(validTime, locationInfo) {
       source: "univaf-cvs-smart",
       valid_at: validTime,
       checked_at: checkTime,
-      is_public: true,
+      is_public: isPublic,
       available,
       capacity,
     },
@@ -227,6 +271,10 @@ function formatCapacity(slots) {
             },
           });
         } else if (capacity > 1) {
+          // The CVS API currently returns 0 (no appointments) or 1 (*some*
+          // appointments) rather than actual capacity estimates. It doesn't
+          // indicate this in any way, so watch for unexpected values in case
+          // something in their implementation to be more detailed.
           console.warn(`Got unexpected > 1 capacity for CVS: ${slot}`);
           Sentry.captureMessage(`Unexpected > 1 capacity for CVS`, {
             level: Sentry.Severity.Info,
@@ -251,7 +299,7 @@ function formatCapacity(slots) {
     }
 
     // TODO: look at the slot's schedule to determine product/dose.
-    // CVS's current implementation doesn't specity those, but a more general
+    // CVS's current implementation doesn't specify those, but a more general
     // SMART Scheduling Links client will need to support it.
 
     if (byDate[date]) {
