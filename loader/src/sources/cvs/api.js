@@ -127,8 +127,8 @@ function parseApiLocation(location, lastUpdated) {
     booking_url: CVS_BOOKING_URL,
 
     availability: {
-      source: "cvs-api",
-      updated_at: lastUpdated || checkTime,
+      source: "univaf-cvs-api",
+      valid_at: lastUpdated || checkTime,
       checked_at: checkTime,
       available,
       is_public: true,

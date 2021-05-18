@@ -91,14 +91,11 @@ function formatStore(provider) {
     info_url: provider.contact.info_url,
 
     availability: {
-      source: "rite-aid-api",
-      updated_at: valid_at,
+      source: "univaf-rite-aid-api",
+      valid_at,
       checked_at,
       available: formatAvailable(provider),
-      meta: {
-        // TODO: this will soon be raised up to the parent object.
-        capacity: formatCapacity(provider),
-      },
+      capacity: formatCapacity(provider),
     },
   };
 }

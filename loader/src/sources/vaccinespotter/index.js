@@ -139,17 +139,26 @@ const formatters = {
       id = `vaccinespotter:${store.properties.id}`;
     }
 
-    const meta = {};
+    const availability = {
+      source: "univaf-vaccinespotter",
+      valid_at: store.properties.appointments_last_fetched,
+      checked_at: new Date().toISOString(),
+      available,
+    };
     if (validateSlots(store.properties.appointments)) {
       const capacity = formatCapacity(store.properties.appointments);
-      meta.capacity = capacity;
-      meta.slots = formatSlots(store.properties.appointments);
+      availability.capacity = capacity;
+      availability.slots = formatSlots(store.properties.appointments);
       const allProducts = capacity
         .flatMap((data) => data.products)
         .filter((x) => !!x);
       const allDoses = capacity.map((data) => data.dose).filter((x) => !!x);
-      if (allProducts.length) meta.products = Array.from(new Set(allProducts));
-      if (allDoses.length) meta.doses = Array.from(new Set(allDoses));
+      if (allProducts.length) {
+        availability.products = Array.from(new Set(allProducts));
+      }
+      if (allDoses.length) {
+        availability.doses = Array.from(new Set(allDoses));
+      }
     }
 
     return {
@@ -185,11 +194,7 @@ const formatters = {
         ...additions?.external_ids,
       },
       availability: {
-        source: "vaccinespotter",
-        updated_at: store.properties.appointments_last_fetched,
-        checked_at: new Date().toISOString(),
-        available,
-        meta,
+        ...availability,
         ...additions?.availability,
       },
     };

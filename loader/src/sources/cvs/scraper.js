@@ -282,8 +282,8 @@ function convertToStandardSchema(cvsResult) {
       booking_url: CVS_BOOKING_URL,
 
       availability: {
-        source: "cvs-scraper",
-        updated_at: nowStr,
+        source: "univaf-cvs-scraper",
+        valid_at: nowStr,
         checked_at: nowStr,
         available: Available.yes,
       },
@@ -329,8 +329,8 @@ function createCannedUnavailableStore() {
         booking_url: CVS_BOOKING_URL,
 
         availability: {
-          source: "cvs-scraper",
-          updated_at: nowStr,
+          source: "univaf-cvs-scraper",
+          valid_at: nowStr,
           checked_at: nowStr,
           available: Available.no,
         },
