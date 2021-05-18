@@ -149,7 +149,9 @@ async function getData() {
 
 function formatLocation(validTime, locationInfo) {
   const smartLocation = locationInfo.location;
-  const external_ids = { cvs: smartLocation.id };
+  const id = smartLocation.id.padStart(5, "0");
+
+  const external_ids = { cvs: id };
   for (const identifier of smartLocation.identifier) {
     let system = identifier.system;
     if (identifier.system === VTRCKS_SYSTEM) {
@@ -174,8 +176,8 @@ function formatLocation(validTime, locationInfo) {
 
   const checkTime = new Date().toISOString();
   return {
-    id: `CVS:${smartLocation.id}`,
-    name: `CVS ${smartLocation.id}`,
+    id: `CVS:${id}`,
+    name: `CVS #${smartLocation.id}`,
     external_ids,
     provider: "CVS",
     location_type: LocationType.pharmacy,
