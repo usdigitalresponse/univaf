@@ -36,15 +36,15 @@ describe("CVS SMART Scheduling Links API", () => {
     const result = await checkAvailability(() => null, { states: "VA" });
     expect(result).toEqual([
       {
-        id: "CVS:2004",
+        id: "CVS:02004",
         external_ids: {
-          cvs: "2004",
+          cvs: "02004",
           vtrcks: "CV1002004",
         },
 
         location_type: "PHARMACY",
         provider: "CVS",
-        name: "CVS 2004",
+        name: "CVS #2004",
         address_lines: ["3117 LOCKHEED BLVD."],
         city: "ALEXANDRIA",
         postal_code: "22306",
