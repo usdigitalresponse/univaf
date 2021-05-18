@@ -92,13 +92,10 @@ function formatStore(provider) {
 
     availability: {
       source: "univaf-rite-aid-api",
-      valid_at: valid_at,
+      valid_at,
       checked_at,
       available: formatAvailable(provider),
-      meta: {
-        // TODO: this will soon be raised up to the parent object.
-        capacity: formatCapacity(provider),
-      },
+      capacity: formatCapacity(provider),
     },
   };
 }

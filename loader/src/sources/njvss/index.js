@@ -477,11 +477,8 @@ async function checkAvailability(handler, _options) {
         // valid_at: null,
         checked_at: checkTime,
         available: location.available > 0 ? Available.yes : Available.no,
-        meta: {
-          available_count: location.available,
-          products: products.length ? products : undefined,
-        },
-        // is_public: true
+        available_count: location.available,
+        products: products.length ? products : undefined,
       },
     };
     result.push(record);
