@@ -36,7 +36,7 @@ import lib  # internal
 # set paths
 path_raw = lib.path_root + 'data/univaf_raw/'
 path_out = lib.path_root + 'data/univaf_clean/'
-locations_path = path_out + 'locations.csv'
+locations_path = path_out + 'locations_univaf.csv'
 
 locations = {}
 
