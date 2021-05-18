@@ -9,7 +9,10 @@ import {
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
 import { validateAvailabilityInput } from "./validation";
+import { loadDbConfig } from "./config";
 import { UUID_PATTERN } from "./utils";
+
+import * as availabilityLog from "./availability-log";
 
 const DEFAULT_BATCH_SIZE = 2000;
 
@@ -42,12 +45,6 @@ export async function clearTestDatabase() {
   );
 
   await db.migrate.latest();
-}
-
-function loadDbConfig() {
-  const knexfile = require("../knexfile");
-  const nodeEnv = process.env.NODE_ENV || "development";
-  return knexfile[nodeEnv];
 }
 
 const providerLocationFields = [
@@ -401,6 +398,8 @@ export async function updateAvailability(
     meta = null,
     is_public = true,
   } = data;
+
+  availabilityLog.write(id, data);
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.

@@ -4,6 +4,7 @@ import type { Server } from "http";
 import got, { Got } from "got";
 
 import { db, clearTestDatabase } from "../src/db";
+import { availabilityDb } from "../src/availability-log";
 
 interface Context {
   server?: Server;
@@ -42,7 +43,16 @@ export function useServerForTests(app: Application): Context {
 
 export function installTestDatabaseHooks() {
   beforeAll(clearTestDatabase);
-  afterAll(async () => await db.destroy());
-  beforeEach(async () => await db.raw("BEGIN"));
-  afterEach(async () => await db.raw("ROLLBACK"));
+  afterAll(async () => {
+    await db.destroy();
+    await availabilityDb.destroy();
+  });
+  beforeEach(async () => {
+    await db.raw("BEGIN");
+    await availabilityDb.raw("BEGIN");
+  });
+  afterEach(async () => {
+    await db.raw("ROLLBACK");
+    await availabilityDb.raw("ROLLBACK");
+  });
 }
