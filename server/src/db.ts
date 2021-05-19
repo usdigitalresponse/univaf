@@ -353,40 +353,40 @@ export async function getLocationByExternalIds(
   externalIds: { string: string },
   { includePrivate = false } = {}
 ): Promise<ProviderLocation | undefined> {
-  let fields: Array<any> = providerLocationFields;
+  // Some IDs are not unique enough to identify a single location (e.g.
+  // VTrckS PINs), so remove them from the set of external IDs to query.
+  // (It's a bit of a historical mistake that these are here instead of in
+  // the `meta` field.)
+  const queryableIds = Object.entries(externalIds).filter(([system, _]) => {
+    return system !== "vtrcks";
+  });
 
+  // Bail out early if there was nothing to actually query on.
+  if (!queryableIds.length) return null;
+
+  // Determine the fields to select.
+  let fields: Array<any> = providerLocationFields;
   if (includePrivate) {
     fields = fields.concat(providerLocationPrivateFields);
   }
 
-  // Reformat fields as select expressions to get the right data back.
-  fields = fields.map((name) =>
-    name === "position" ? db.raw(selectSqlPoint("position")) : name
-  );
-
-  // const query = db("provider_locations").select(db.raw(fields.join(",")));
-  const query = db("provider_locations").select(fields);
-
-  let hasQueryableIds = false;
-  for (const [idSystem, idValue] of Object.entries(externalIds)) {
-    // VTrckS PINs are not unique for this use-case, and so should not be
-    // queried here. It's a quirk of history and past misunderstanding that we
-    // have them in `external_ids`.
-    if (idSystem === "vtrcks") continue;
-
-    // @ts-expect-error
-    query.orWhere("external_ids", "@>", { [idSystem]: idValue });
-    hasQueryableIds = true;
-  }
-
-  // Bail out early if there was nothing to actually query on.
-  if (!hasQueryableIds) return null;
-
-  if (!includePrivate) {
-    query.andWhere("is_public", true);
-  }
-
-  return await query.first();
+  return await db("provider_locations")
+    .select(
+      fields.map((name) =>
+        // Ensure we return geo coordinates in an easy-to-handle format.
+        name === "position" ? db.raw(selectSqlPoint(name)) : name
+      )
+    )
+    .modify((builder) => {
+      if (!includePrivate) builder.where("is_public", true);
+    })
+    .andWhere((builder) => {
+      for (const [system, id] of queryableIds) {
+        // @ts-expect-error: Knex's typings aren't quite right here :(
+        builder.orWhere("external_ids", "@>", { [system]: id });
+      }
+    })
+    .first();
 }
 
 /**
