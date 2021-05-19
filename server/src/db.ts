@@ -12,6 +12,7 @@ import { validateAvailabilityInput } from "./validation";
 import { loadDbConfig } from "./config";
 import { UUID_PATTERN } from "./utils";
 
+import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
 
 const DEFAULT_BATCH_SIZE = 2000;
