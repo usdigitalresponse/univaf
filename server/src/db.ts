@@ -399,7 +399,11 @@ export async function updateAvailability(
     is_public = true,
   } = data;
 
-  availabilityLog.write(id, data);
+  // Write a log of this update, but don't delay the main update waiting for it.
+  availabilityLog.write(id, data).catch((error) => {
+    console.error(error);
+    Sentry.captureException(error);
+  });
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.

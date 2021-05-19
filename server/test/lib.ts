@@ -43,16 +43,31 @@ export function useServerForTests(app: Application): Context {
 
 export function installTestDatabaseHooks() {
   beforeAll(clearTestDatabase);
+  // Wait for all promises to settle, but reject afterward if at
+  // least one of them rejected.
+  function allResolved(promises) {
+    return Promise.allSettled(promises).then((results) => {
+      for (const result of results) {
+        if (result.status === "rejected") throw result.reason;
+      }
+    });
+  }
   afterAll(async () => {
-    await db.destroy();
-    await availabilityDb.destroy();
+    await allresolved([
+      db.destroy(),
+      availabilityDb.destroy()
+    ]);
   });
   beforeEach(async () => {
-    await db.raw("BEGIN");
-    await availabilityDb.raw("BEGIN");
+    await allresolved([
+      db.raw("BEGIN"),
+      availabilityDb.raw("BEGIN")
+    ]);
   });
   afterEach(async () => {
-    await db.raw("ROLLBACK");
-    await availabilityDb.raw("ROLLBACK");
+    await allresolved([
+      db.raw("ROLLBACK"),
+      availabilityDb.raw("ROLLBACK")
+    ]);
   });
 }
