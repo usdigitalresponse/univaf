@@ -91,7 +91,7 @@ module "api_task" {
 
   env_vars = {
     # Bump RELEASE to force update the image/restart the service.
-    RELEASE     = "19"
+    RELEASE     = "20"
     DB_HOST     = module.db.host
     DB_NAME     = module.db.db_name
     DB_USERNAME = var.db_user

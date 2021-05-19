@@ -353,28 +353,40 @@ export async function getLocationByExternalIds(
   externalIds: { string: string },
   { includePrivate = false } = {}
 ): Promise<ProviderLocation | undefined> {
-  const wheres = [];
-  const ids = [];
-  for (const [idSystem, idValue] of Object.entries(externalIds)) {
-    // VTrckS PINs are not unique for this use-case, and so should not be
-    // queried here. It's a quirk of history and past misunderstanding that we
-    // have them in `external_ids`.
-    if (idSystem === "vtrcks") continue;
-
-    wheres.push("pl.external_ids @> ?");
-    ids.push({ [idSystem]: idValue });
-  }
+  // Some IDs are not unique enough to identify a single location (e.g.
+  // VTrckS PINs), so remove them from the set of external IDs to query.
+  // (It's a bit of a historical mistake that these are here instead of in
+  // the `meta` field.)
+  const queryableIds = Object.entries(externalIds).filter(([system, _]) => {
+    return system !== "vtrcks";
+  });
 
   // Bail out early if there was nothing to actually query on.
-  if (!ids.length) return null;
+  if (!queryableIds.length) return null;
 
-  const rows = await listLocations({
-    includePrivate,
-    limit: 1,
-    where: [`( ${wheres.join(" OR ")} )`],
-    values: ids,
-  });
-  return rows[0];
+  // Determine the fields to select.
+  let fields: Array<any> = providerLocationFields;
+  if (includePrivate) {
+    fields = fields.concat(providerLocationPrivateFields);
+  }
+
+  return await db("provider_locations")
+    .select(
+      fields.map((name) =>
+        // Ensure we return geo coordinates in an easy-to-handle format.
+        name === "position" ? db.raw(selectSqlPoint(name)) : name
+      )
+    )
+    .modify((builder) => {
+      if (!includePrivate) builder.where("is_public", true);
+    })
+    .andWhere((builder) => {
+      for (const [system, id] of queryableIds) {
+        // @ts-expect-error: Knex's typings aren't quite right here :(
+        builder.orWhere("external_ids", "@>", { [system]: id });
+      }
+    })
+    .first();
 }
 
 /**
