@@ -353,28 +353,40 @@ export async function getLocationByExternalIds(
   externalIds: { string: string },
   { includePrivate = false } = {}
 ): Promise<ProviderLocation | undefined> {
-  const wheres = [];
-  const ids = [];
+  let fields: Array<any> = providerLocationFields;
+
+  if (includePrivate) {
+    fields = fields.concat(providerLocationPrivateFields);
+  }
+
+  // Reformat fields as select expressions to get the right data back.
+  fields = fields.map((name) =>
+    name === "position" ? db.raw(selectSqlPoint("position")) : name
+  );
+
+  // const query = db("provider_locations").select(db.raw(fields.join(",")));
+  const query = db("provider_locations").select(fields);
+
+  let hasQueryableIds = false;
   for (const [idSystem, idValue] of Object.entries(externalIds)) {
     // VTrckS PINs are not unique for this use-case, and so should not be
     // queried here. It's a quirk of history and past misunderstanding that we
     // have them in `external_ids`.
     if (idSystem === "vtrcks") continue;
 
-    wheres.push("pl.external_ids @> ?");
-    ids.push({ [idSystem]: idValue });
+    // @ts-expect-error
+    query.orWhere("external_ids", "@>", { [idSystem]: idValue });
+    hasQueryableIds = true;
   }
 
   // Bail out early if there was nothing to actually query on.
-  if (!ids.length) return null;
+  if (!hasQueryableIds) return null;
 
-  const rows = await listLocations({
-    includePrivate,
-    limit: 1,
-    where: [`( ${wheres.join(" OR ")} )`],
-    values: ids,
-  });
-  return rows[0];
+  if (!includePrivate) {
+    query.andWhere("is_public", true);
+  }
+
+  return await query.first();
 }
 
 /**
