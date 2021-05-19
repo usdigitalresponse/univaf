@@ -29,3 +29,9 @@ export function getHostUrl(request?: Request): string {
 
   return hostUrl;
 }
+
+export function loadDbConfig() {
+  const knexfile = require("../knexfile");
+  const nodeEnv = process.env.NODE_ENV || "development";
+  return knexfile[nodeEnv];
+}
