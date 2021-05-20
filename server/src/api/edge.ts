@@ -208,8 +208,7 @@ export const update = async (req: AppRequest, res: Response) => {
     // need to opt in to updating here.)
     const fields = Object.keys(data).filter((key) => key !== "availability");
     if (fields.length > 1) {
-      data.id = location.id;
-      await db.updateLocation(data);
+      await db.updateLocation(location, data);
       result.location.action = "updated";
     }
   }

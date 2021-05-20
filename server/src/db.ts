@@ -50,7 +50,6 @@ export async function clearTestDatabase() {
 
 const providerLocationFields = [
   "id",
-  "external_ids",
   "provider",
   "location_type",
   "name",
@@ -123,20 +122,44 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     RETURNING id`,
     sqlFields.map((x) => x[1] || null)
   );
-  return await getLocationById(inserted.rows[0].id);
+
+  const locationId = inserted.rows[0].id;
+  await setExternalIds(locationId, data.external_ids);
+  return await getLocationById(locationId);
+}
+
+/**
+ * Set external ids for a provider location.
+ * Note that this will remove any existing external ids for the location.
+ * @param id Provider location ID
+ * @param externalIds {system: value}
+ */
+export async function setExternalIds(
+  id: string,
+  externalIds: { string: string }
+): Promise<void> {
+  await db("external_ids").where("provider_location_id", id).del();
+  await db("external_ids").insert(
+    Object.entries(externalIds).map(([system, value]: [string, string]) => {
+      return {
+        provider_location_id: id,
+        system,
+        value,
+      };
+    })
+  );
 }
 
 /**
  * Update data about a provider location.
+ * @param location ProviderLocation
  * @param data ProviderLocation-like object with data to update
  */
 export async function updateLocation(
+  location: ProviderLocation,
   data: any,
   { mergeSubfields = true } = {}
-): Promise<ProviderLocation> {
-  const id = data.id;
-  if (!data.id) throw new Error("Location must have an ID to update");
-
+): Promise<void> {
   const now = new Date();
   const sqlData = {
     ...data,
@@ -147,22 +170,30 @@ export async function updateLocation(
   }
 
   const sqlFields = Object.entries(sqlData).filter(([key, _]) => {
-    return providerLocationAllFields.includes(key);
+    return providerLocationAllFields.includes(key) && key != "id";
   });
   const setExpression = sqlFields.map(([key, _]) => {
-    // Merge external_ids and meta, rather than replacing.
-    if (mergeSubfields && (key === "external_ids" || key === "meta")) {
+    // Merge meta, rather than replacing.
+    if (mergeSubfields && key === "meta") {
       return `${key} = ${key} || ?`;
     }
     return `${key} = ?`;
   });
+
   const result = await db.raw(
     `UPDATE provider_locations
     SET ${setExpression}
-    WHERE id = ?`,
-    [...sqlFields.map((x) => x[1]), id]
+    WHERE id = ?
+    `,
+    [...sqlFields.map((x: [any, any]) => x[1]), location.id]
   );
-  return result.rows[0];
+
+  if ("external_ids" in data) {
+    await setExternalIds(location.id, {
+      ...location.external_ids,
+      ...data.external_ids,
+    });
+  }
 }
 
 /**
@@ -219,6 +250,9 @@ export async function listLocations({
     throw error;
   }
 
+  const locationIds = result.rows.map((r: any) => r.id);
+  const externalIds = await getExternalIdsByLocation(locationIds);
+
   return result.rows.map((row: any) => {
     // The SELECT expression always creates an object; not sure if there's a
     // good way to get it to output `NULL` instead for this case.
@@ -230,6 +264,8 @@ export async function listLocations({
       delete row.availability.is_public;
       delete row.availability.rank;
     }
+
+    row.external_ids = externalIds[row.id] || {};
 
     return row;
   });
@@ -369,22 +405,56 @@ export async function getLocationByExternalIds(
   }
 
   return await db("provider_locations")
+    .join(
+      "external_ids",
+      "external_ids.provider_location_id",
+      "provider_locations.id"
+    )
     .select(
-      fields.map((name) =>
+      fields.map((name) => {
+        name = `provider_locations.${name}`;
         // Ensure we return geo coordinates in an easy-to-handle format.
-        name === "position" ? db.raw(selectSqlPoint(name)) : name
-      )
+        return name === "position" ? db.raw(selectSqlPoint(name)) : name;
+      })
     )
     .modify((builder) => {
       if (!includePrivate) builder.where("is_public", true);
     })
     .andWhere((builder) => {
       for (const [system, id] of queryableIds) {
-        // @ts-expect-error: Knex's typings aren't quite right here :(
-        builder.orWhere("external_ids", "@>", { [system]: id });
+        builder.orWhere("external_ids.system", "=", system);
       }
     })
     .first();
+}
+
+interface ExternalIdsByLocation {
+  [locationId: string]: { [system: string]: string };
+}
+/**
+ * Returns a mapping of provider location id to external ids
+ * @param locationIds (string | string[])
+ * @returns ExternalIdsByLocation
+ */
+export async function getExternalIdsByLocation(
+  externalIds: string | string[]
+): Promise<ExternalIdsByLocation> {
+  const selectIds = Array.isArray(externalIds) ? externalIds : [externalIds];
+
+  const rows = await db("external_ids")
+    .select("provider_location_id", "system", "value")
+    .whereIn("provider_location_id", selectIds);
+
+  const out: ExternalIdsByLocation = {};
+  for (const row of rows) {
+    if (!(row.provider_location_id in out)) {
+      out[row.provider_location_id] = {};
+    }
+
+    out[row.provider_location_id][row.system] = row.value;
+  }
+
+  return out;
 }
 
 /**

@@ -10,12 +10,17 @@ installTestDatabaseHooks();
 describe("GET /api/edge/locations", () => {
   const context = useServerForTests(app);
 
-  it("responds with a list of locations", async () => {
+  it("responds with a list of locations containing external_ids", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
     const res = await context.client.get<any>("api/edge/locations");
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(1);
+
+    expect(res.body.data[0]).toHaveProperty(
+      "external_ids",
+      TestLocation.external_ids
+    );
   });
 
   it("responds with a list of locations filtered by state", async () => {

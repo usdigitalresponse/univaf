@@ -42,7 +42,7 @@ export interface SlotRecord {
 
 export interface ProviderLocation {
   id: string;
-  external_ids: object;
+  external_ids: { [system: string]: string };
   provider: string;
   location_type: LocationType;
   name: string;
