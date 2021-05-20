@@ -36,7 +36,7 @@ app.enable("trust proxy");
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
 app.use(compression());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "500kb" }));
 app.use(cors());
 app.use(authorizeRequest);
 
@@ -123,9 +123,20 @@ if (app.get("env") === "development") {
   app.use(errorHandler());
 } else {
   app.use((error: any, req: Request, res: Response, _next: NextFunction) => {
-    console.error("ERRROR:", error);
-    if (error && error.httpStatus) {
-      res.status(error.httpStatus).json({
+    console.error("ERROR:", error);
+
+    // Get status code from error. This is stolen from Sentry.
+    const errorStatus =
+      error &&
+      (error.httpStatus ||
+        error.status ||
+        error.statusCode ||
+        error.status_code ||
+        (error.output && error.output.statusCode));
+    const statusCode = errorStatus && parseInt(errorStatus as string, 10);
+
+    if (statusCode) {
+      res.status(statusCode).json({
         error: { message: error.message, code: error.code },
       });
     } else {
