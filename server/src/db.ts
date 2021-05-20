@@ -160,22 +160,19 @@ export async function updateLocation(
   data: any,
   { mergeSubfields = true } = {}
 ): Promise<void> {
-  const sqlData = {
-    ...data,
-    updated_at: new Date(),
-  };
+  const sqlData: any = { updated_at: new Date() };
 
-  if ("position" in sqlData) {
-    sqlData.position = formatSqlPoint(sqlData.position);
-  }
+  for (let [key, value] of Object.entries(data)) {
+    if (key == "position") {
+      value = formatSqlPoint(data.position);
+    }
 
-  if ("meta" in sqlData && mergeSubfields) {
-    sqlData.meta = db.raw('"meta" || ?', JSON.stringify(sqlData.meta));
-  }
+    if (key == "meta") {
+      value = db.raw('"meta" || ?', JSON.stringify(data.meta));
+    }
 
-  for (const key of Object.keys(sqlData)) {
-    if (key == "id" || !providerLocationAllFields.includes(key)) {
-      delete sqlData[key];
+    if (key != "id" && providerLocationAllFields.includes(key)) {
+      sqlData[key] = value;
     }
   }
 
