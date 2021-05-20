@@ -160,33 +160,26 @@ export async function updateLocation(
   data: any,
   { mergeSubfields = true } = {}
 ): Promise<void> {
-  const now = new Date();
   const sqlData = {
     ...data,
-    updated_at: now,
+    updated_at: new Date(),
   };
+
   if ("position" in sqlData) {
     sqlData.position = formatSqlPoint(sqlData.position);
   }
 
-  const sqlFields = Object.entries(sqlData).filter(([key, _]) => {
-    return providerLocationAllFields.includes(key) && key != "id";
-  });
-  const setExpression = sqlFields.map(([key, _]) => {
-    // Merge meta, rather than replacing.
-    if (mergeSubfields && key === "meta") {
-      return `${key} = ${key} || ?`;
-    }
-    return `${key} = ?`;
-  });
+  if ("meta" in sqlData && mergeSubfields) {
+    sqlData.meta = db.raw('"meta" || ?', JSON.stringify(sqlData.meta));
+  }
 
-  const result = await db.raw(
-    `UPDATE provider_locations
-    SET ${setExpression}
-    WHERE id = ?
-    `,
-    [...sqlFields.map((x: [any, any]) => x[1]), location.id]
-  );
+  for (const key of Object.keys(sqlData)) {
+    if (key == "id" || !providerLocationAllFields.includes(key)) {
+      delete sqlData[key];
+    }
+  }
+
+  await db("provider_locations").where("id", location.id).update(sqlData);
 
   if ("external_ids" in data) {
     await setExternalIds(location.id, {
