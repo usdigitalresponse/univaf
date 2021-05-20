@@ -287,4 +287,23 @@ describe("POST /api/edge/update", () => {
     });
     expect(response.statusCode).toBe(422);
   });
+
+  it("should update position", async () => {
+    const location = await createLocation(TestLocation);
+    const newPosition = { longitude: 30, latitude: 26 };
+
+    let res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        position: newPosition,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    res = await context.client.get(`api/edge/locations/${location.id}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.position", newPosition);
+  });
 });
