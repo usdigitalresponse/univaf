@@ -1,3 +1,4 @@
+const { Available } = require("../src/model");
 const { formatStore } = require("../src/sources/vaccinespotter/index");
 const { expectDatetimeString } = require("./support");
 
@@ -295,5 +296,45 @@ describe("VaccineSpotter", () => {
 
     expect(result.availability).not.toHaveProperty("slots");
     expect(result.availability).not.toHaveProperty("capacity");
+  });
+
+  it("should handle locations with date-based appointments data", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        appointments: [
+          {
+            date: "2021-05-05",
+            type: "Moderna",
+            vaccine_types: ["moderna"],
+            appointment_types: [],
+          },
+          {
+            time: "2021-05-06",
+            type: "Moderna",
+            vaccine_types: ["moderna"],
+            appointment_types: [],
+          },
+        ],
+      },
+    });
+
+    // We should recognize that this is not slot-level data.
+    expect(result.availability.slots).toEqual(undefined);
+    expect(result.availability.capacity).toEqual([
+      {
+        date: "2021-05-05",
+        available: Available.yes,
+        products: ["moderna"],
+        available_count: 1,
+      },
+      {
+        date: "2021-05-06",
+        available: Available.yes,
+        products: ["moderna"],
+        available_count: 1,
+      },
+    ]);
   });
 });

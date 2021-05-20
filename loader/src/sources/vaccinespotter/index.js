@@ -20,33 +20,67 @@ async function queryState(state) {
   }
 }
 
+// Fields we expect to be on VaccineSpotter appointment slots records.
+const slotFields = new Set([
+  "time",
+  "date",
+  "type",
+  "vaccine_types",
+  "appointment_types",
+]);
+
 /**
  * Check whether the appointment slots data for a location is present and valid.
  * If there's useful slot data, this returns `true`. If there's slot data that
  * is formatted in an unexpected way, this logs a warning.
- * @param {Array<any>|undefined} store
+ * @param {any} apiLocation
  * @returns {boolean}
  */
-function validateSlots(apiSlots) {
+function validateSlots(apiLocation) {
+  const apiSlots = apiLocation.appointments;
   if (!apiSlots || !apiSlots.length) return false;
 
-  const prefix = "Malformed appointments:";
+  let error;
+  let warning;
   for (const slot of apiSlots) {
     // Validate slot formatting; bail out if there's a problem.
-    if (!slot.time) {
-      warn(`${prefix} slot is missing 'time'`);
-      return false;
+    if (!slot.time && !slot.date) {
+      error = "slot is missing either 'time' or 'date'";
+      break;
     }
     if (slot.vaccine_types && !Array.isArray(slot.vaccine_types)) {
-      warn(`${prefix} slot 'vaccine_types' is not an array`);
-      return false;
+      error = "slot 'vaccine_types' is not an array";
+      break;
     }
     if (
       slot.appointment_types &&
       (!Array.isArray(slot.appointment_types) ||
         slot.appointment_types.length > 1)
     ) {
-      warn(`${prefix} slot 'appointment_types' is not an array w/ one entry`);
+      error = "slot 'appointment_types' is not an array w/ one entry";
+      break;
+    }
+
+    // If there's extra data we didn't expect, log a warning so we know to
+    // update our code to make use of it, but don't fail validation.
+    for (const field of Object.keys(slot)) {
+      if (!slotFields.has(field)) {
+        warning = `Unexpected field '${field}' on slots`;
+        // Stop after we find one warning -- we're really just trying to get
+        // notfied that this needs a closer look, at which point we'll see what
+        // else has changed.
+        break;
+      }
+    }
+  }
+
+  if (warning || error) {
+    const context = { id: apiLocation.id, provider: apiLocation.provider };
+    if (warning) {
+      warn(warning, context);
+    }
+    if (error) {
+      warn(error, context);
       return false;
     }
   }
@@ -60,7 +94,8 @@ function validateSlots(apiSlots) {
  * @returns {Array}
  */
 function formatSlots(apiSlots) {
-  if (!apiSlots) return undefined;
+  // Some locations have capacity by date instead of individual slots.
+  if (!apiSlots || !apiSlots.every((slot) => slot.time)) return undefined;
 
   // Source data is an array of objects like:
   // {
@@ -91,9 +126,12 @@ function formatCapacity(apiSlots) {
 
   const categorized = Object.create(null);
   for (const slot of apiSlots) {
-    // Assume `time` is ISO 8601 in location's local timezone.
-    // (This may need fancier parsing if that turns out to be untrue.)
-    const date = slot.time.slice(0, 10);
+    let date = slot.date;
+    if (!date && slot.time) {
+      // `time` is ISO 8601 in location's local timezone.
+      date = slot.time.slice(0, 10);
+    }
+
     const key = `${date}::${slot.type}`;
     if (key in categorized) {
       categorized[key].available_count += 1;
@@ -145,10 +183,15 @@ const formatters = {
       checked_at: new Date().toISOString(),
       available,
     };
-    if (validateSlots(store.properties.appointments)) {
+    if (validateSlots(store.properties)) {
       const capacity = formatCapacity(store.properties.appointments);
       availability.capacity = capacity;
-      availability.slots = formatSlots(store.properties.appointments);
+
+      const slots = formatSlots(store.properties.appointments);
+      if (slots) {
+        availability.slots = slots;
+      }
+
       const allProducts = capacity
         .flatMap((data) => data.products)
         .filter((x) => !!x);
