@@ -337,4 +337,19 @@ describe("VaccineSpotter", () => {
       },
     ]);
   });
+
+  it("should handle locations with `null` for their brand", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        provider: "health_mart",
+        provider_brand: null,
+        provider_brand_id: null,
+        provider_brand_name: null,
+      },
+    });
+
+    expect(result).toHaveProperty("provider", "health_mart");
+  });
 });

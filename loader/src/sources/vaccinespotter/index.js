@@ -165,9 +165,14 @@ const formatters = {
 
     // Determine what identifier type to use for `external_ids`.
     let provider = store.properties.provider.trim().toLowerCase();
-    let providerBrand = store.properties.provider_brand.trim().toLowerCase();
-    if (!providerBrand.includes(provider)) {
-      providerBrand = `${provider}_${providerBrand}`;
+    let providerBrand = store.properties.provider_brand;
+    if (!providerBrand) {
+      providerBrand = provider;
+    } else {
+      providerBrand = providerBrand.trim().toLowerCase();
+      if (!providerBrand.includes(provider)) {
+        providerBrand = `${provider}_${providerBrand}`;
+      }
     }
 
     let id;
