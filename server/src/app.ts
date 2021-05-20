@@ -36,7 +36,7 @@ app.enable("trust proxy");
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
 app.use(compression());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "500kb" }));
 app.use(cors());
 app.use(authorizeRequest);
 
