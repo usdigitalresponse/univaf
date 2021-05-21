@@ -55,7 +55,7 @@ describe("GET /api/edge/locations", () => {
 describe("GET /api/edge/locations/:id", () => {
   const context = useServerForTests(app);
 
-  it("responds with location status", async () => {
+  it("responds with location status containing external_ids", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
 
@@ -68,6 +68,10 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.body).toHaveProperty(
       "data.location_type",
       TestLocation.location_type
+    );
+    expect(res.body).toHaveProperty(
+      "data.external_ids",
+      TestLocation.external_ids
     );
   });
 });
