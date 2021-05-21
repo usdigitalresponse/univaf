@@ -5,7 +5,7 @@ import got, { Got } from "got";
 
 import { db } from "../src/db";
 import { availabilityDb } from "../src/availability-log";
-import { Knex } from "knex";
+import { Knex, knex } from "knex";
 
 interface Context {
   server?: Server;
@@ -67,5 +67,17 @@ export function installTestDatabaseHooks() {
   });
   afterEach(async () => {
     await allResolved(conns.map((c) => c.raw("ROLLBACK")));
+  });
+
+  mockDbTransactions();
+}
+
+function mockDbTransactions() {
+  // mock out db.transaction since we only use one connection when testing
+  // we use defineProperty here because it's defined as read-only
+  Object.defineProperty(db, "transaction", {
+    value: async (f: Function) => {
+      return await f(db);
+    },
   });
 }
