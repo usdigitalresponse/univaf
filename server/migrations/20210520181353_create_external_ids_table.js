@@ -4,7 +4,7 @@ exports.up = async function (knex) {
     t.uuid("provider_location_id");
     t.text("system");
     t.text("value");
-    t.timestamps((useTimestamps = true), (defaultToNow = true));
+    t.timestamps(true, true);
 
     t.index(
       ["provider_location_id", "system"],
