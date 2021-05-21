@@ -74,6 +74,28 @@ describe("GET /api/edge/locations/:id", () => {
       TestLocation.external_ids
     );
   });
+
+  it("can be found by external_id containing external_ids", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+
+    const externalId = Object.entries(TestLocation.external_ids)[0];
+
+    const res = await context.client.get<any>(
+      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.name", TestLocation.name);
+    expect(res.body).toHaveProperty(
+      "data.location_type",
+      TestLocation.location_type
+    );
+    expect(res.body).toHaveProperty(
+      "data.external_ids",
+      TestLocation.external_ids
+    );
+  });
 });
 
 describe("POST /api/edge/update", () => {

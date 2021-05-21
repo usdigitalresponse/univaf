@@ -146,11 +146,22 @@ export const getById = async (req: AppRequest, res: Response) => {
     return sendError(res, "Not authorized for private data", 403);
   }
 
-  const provider = await db.getLocationById(id, { includePrivate });
+  let provider: any = await db.getLocationById(id, { includePrivate });
+  if (!provider) {
+    // try to split the id and use it as an external id
+    const parts = id.split(":");
+    if (parts.length == 2) {
+      provider = await db.getLocationByExternalIds(
+        { [parts[0]]: parts[1] },
+        { includePrivate, includeExternalIds: true }
+      );
+    }
+  }
+
   if (!provider) {
     return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
-    res.json({ data: provider });
+    return res.json({ data: provider });
   }
 };
 

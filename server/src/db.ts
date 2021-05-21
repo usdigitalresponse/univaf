@@ -358,6 +358,8 @@ export async function getLocationById(
   id: string,
   { includePrivate = false } = {}
 ): Promise<ProviderLocation | undefined> {
+  if (!UUID_PATTERN.test(id)) return;
+
   const rows = await listLocations({
     includePrivate,
     limit: 1,
@@ -374,8 +376,8 @@ export async function getLocationById(
  * @returns ProviderLocation | undefined
  */
 export async function getLocationByExternalIds(
-  externalIds: { string: string },
-  { includePrivate = false } = {}
+  externalIds: { [k: string]: string },
+  { includePrivate = false, includeExternalIds = false } = {}
 ): Promise<ProviderLocation | undefined> {
   // Some IDs are not unique enough to identify a single location (e.g.
   // VTrckS PINs), so remove them from the set of external IDs to query.
@@ -394,7 +396,7 @@ export async function getLocationByExternalIds(
     fields = fields.concat(providerLocationPrivateFields);
   }
 
-  return await db("provider_locations")
+  const location = await db("provider_locations")
     .join(
       "external_ids",
       "external_ids.provider_location_id",
@@ -416,6 +418,13 @@ export async function getLocationByExternalIds(
       }
     })
     .first();
+
+  if (includeExternalIds) {
+    const externalIds = await getExternalIdsByLocation(location.id);
+    location.external_ids = externalIds[location.id];
+  }
+
+  return location;
 }
 
 interface ExternalIdsByLocation {
