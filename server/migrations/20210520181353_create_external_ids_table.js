@@ -6,10 +6,8 @@ exports.up = async function (knex) {
     t.text("value");
     t.timestamps(true, true);
 
-    t.index(
-      ["provider_location_id", "system"],
-      "external_ids_provider_system_index"
-    );
+    t.index(["provider_location_id"]);
+    t.index(["system", "value"]);
   });
 
   await migrateExternalIds(knex);
