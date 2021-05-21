@@ -167,7 +167,7 @@ export async function updateLocation(
       value = formatSqlPoint(data.position);
     }
 
-    if (key == "meta") {
+    if (key == "meta" && mergeSubfields) {
       value = db.raw('"meta" || ?', JSON.stringify(data.meta));
     }
 
