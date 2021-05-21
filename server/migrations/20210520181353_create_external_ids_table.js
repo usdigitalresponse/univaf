@@ -6,7 +6,7 @@ exports.up = async function (knex) {
     t.text("value");
     t.timestamps(true, true);
 
-    t.index(["provider_location_id"]);
+    t.unique(["provider_location_id", "system"]);
     t.index(["system", "value"]);
     t.foreign("provider_location_id").references("provider_locations.id");
   });

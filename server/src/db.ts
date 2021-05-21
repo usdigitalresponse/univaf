@@ -109,16 +109,18 @@ export async function setExternalIds(
   id: string,
   externalIds: { string: string }
 ): Promise<void> {
-  await db("external_ids").where("provider_location_id", id).del();
-  await db("external_ids").insert(
-    Object.entries(externalIds).map(([system, value]: [string, string]) => {
-      return {
-        provider_location_id: id,
-        system,
-        value,
-      };
-    })
-  );
+  await db("external_ids")
+    .insert(
+      Object.entries(externalIds).map(([system, value]: [string, string]) => {
+        return {
+          provider_location_id: id,
+          system,
+          value,
+        };
+      })
+    )
+    .onConflict(["provider_location_id", "system"])
+    .merge();
 }
 
 /**
