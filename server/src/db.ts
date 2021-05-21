@@ -19,35 +19,6 @@ const DEFAULT_BATCH_SIZE = 2000;
 
 export const db = Knex(loadDbConfig());
 
-export function assertIsTestDatabase() {
-  return db.raw("SELECT current_database() as name;").then((result) => {
-    const databaseName: string = result.rows[0].name;
-    if (!databaseName.endsWith("-test")) {
-      throw new Error(
-        `Expected to be connected to the test database. Currently connected to ${databaseName}!`
-      );
-    }
-  });
-}
-
-export async function clearTestDatabase() {
-  await assertIsTestDatabase();
-
-  const res = await db.raw(
-    "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public'"
-  );
-
-  await Promise.all(
-    res.rows.map(async (row: any) => {
-      if (row.tablename != "spatial_ref_sys") {
-        return db.raw(`DROP TABLE ${row.tablename} CASCADE`);
-      }
-    })
-  );
-
-  await db.migrate.latest();
-}
-
 const providerLocationFields = [
   "id",
   "provider",

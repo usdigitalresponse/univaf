@@ -3,7 +3,7 @@ import type { Application } from "express";
 import type { Server } from "http";
 import got, { Got } from "got";
 
-import { db, clearTestDatabase } from "../src/db";
+import { db } from "../src/db";
 import { availabilityDb } from "../src/availability-log";
 import { Knex } from "knex";
 
@@ -43,7 +43,6 @@ export function useServerForTests(app: Application): Context {
 }
 
 export function installTestDatabaseHooks() {
-  beforeAll(clearTestDatabase);
   // Wait for all promises to settle, but reject afterward if at
   // least one of them rejected.
   function allResolved(promises: Promise<void>[]) {
