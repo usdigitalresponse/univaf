@@ -8,6 +8,7 @@ exports.up = async function (knex) {
 
     t.index(["provider_location_id"]);
     t.index(["system", "value"]);
+    t.foreign("provider_location_id").references("provider_locations.id");
   });
 
   await migrateExternalIds(knex);
