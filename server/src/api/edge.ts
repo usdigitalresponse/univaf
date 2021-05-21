@@ -9,6 +9,8 @@ import { Pagination, UUID_PATTERN } from "../utils";
 /** Maximum time for streaming lists to run for in seconds. */
 const MAX_STREAMING_TIME = 25 * 1000;
 
+const EXTERNAL_ID_PATTERN = /^(?<system>[^:]+):(?<value>.+)$/;
+
 /**
  * Send an error response.
  * @param response HTTP Response to write to
@@ -146,16 +148,17 @@ export const getById = async (req: AppRequest, res: Response) => {
     return sendError(res, "Not authorized for private data", 403);
   }
 
-  let provider: any = await db.getLocationById(id, { includePrivate });
-  if (!provider) {
-    // try to split the id and use it as an external id
-    const parts = id.split(":");
-    if (parts.length == 2) {
-      provider = await db.getLocationByExternalIds(
-        { [parts[0]]: parts[1] },
-        { includePrivate, includeExternalIds: true }
-      );
-    }
+  let provider: any = null;
+  const m = id.match(EXTERNAL_ID_PATTERN);
+  if (m) {
+    provider = await db.getLocationByExternalIds(
+      { [m.groups.system]: m.groups.value },
+      { includePrivate, includeExternalIds: true }
+    );
+  }
+
+  if (!provider && UUID_PATTERN.test(id)) {
+    provider = await db.getLocationById(id, { includePrivate });
   }
 
   if (!provider) {
