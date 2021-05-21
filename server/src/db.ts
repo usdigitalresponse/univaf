@@ -407,9 +407,9 @@ interface ExternalIdsByLocation {
  * @returns ExternalIdsByLocation
  */
 export async function getExternalIdsByLocation(
-  externalIds: string | string[]
+  locationIds: string | string[]
 ): Promise<ExternalIdsByLocation> {
-  const selectIds = Array.isArray(externalIds) ? externalIds : [externalIds];
+  const selectIds = Array.isArray(locationIds) ? locationIds : [locationIds];
 
   const rows = await db("external_ids")
     .select("provider_location_id", "system", "value")
