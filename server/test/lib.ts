@@ -75,6 +75,7 @@ export function installTestDatabaseHooks() {
 function mockDbTransactions() {
   // mock out db.transaction since we only use one connection when testing
   // we use defineProperty here because it's defined as read-only
+  // TODO: Find a way to carry per-request db connection state so that we don't need this
   Object.defineProperty(db, "transaction", {
     value: async (f: Function) => {
       return await f(db);
