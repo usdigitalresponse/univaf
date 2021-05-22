@@ -39,7 +39,7 @@ module "cvs_smart_loader" {
 
   name          = "cvs-smart-api"
   loader_source = "cvsSmart"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY"]
+  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
@@ -71,7 +71,7 @@ module "vaccinespotter_loader" {
   source = "./modules/loader"
 
   name          = "vaccinespotter"
-  command       = ["--states", "NJ,PA,AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT"]
+  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "vaccinespotter"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -87,7 +87,7 @@ module "rite_aid_loader" {
 
   name          = "riteAidApi"
   loader_source = "riteAidApi"
-  command       = ["--states", "CA,CT,DE,ID,MA,MD,MI,NJ,NY,OH,OR,PA,VA,VT,WA"]
+  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
