@@ -352,4 +352,35 @@ describe("VaccineSpotter", () => {
 
     expect(result).toHaveProperty("provider", "health_mart");
   });
+
+  it("it should name unnamed locations by the brand name", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        name: "",
+        provider_brand_name: "Harvey's",
+      },
+    });
+
+    expect(result.name).toEqual("Harvey's");
+  });
+
+  it("it should calculate an ID for southeasern_grocers brands", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        name: "",
+        provider: "southeastern_grocers",
+        provider_brand: "harveys",
+        provider_brand_id: 1386,
+        provider_brand_name: "Harveys",
+        provider_location_id: "3-1688",
+      },
+    });
+
+    expect(result).toHaveProperty("name", "Harveys #1688");
+    expect(result).toHaveProperty("external_ids.harveys", "1688");
+  });
 });

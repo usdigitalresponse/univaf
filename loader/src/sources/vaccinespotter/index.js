@@ -154,6 +154,19 @@ function formatCapacity(apiSlots) {
     .map((key) => categorized[key]);
 }
 
+/**
+ * Filter out some stores with bad data.
+ * @param {any} store
+ * @returns {boolean}
+ */
+function hasUsefulData(store) {
+  return (
+    store.properties.appointments_available ||
+    store.properties.city ||
+    store.properties.address
+  );
+}
+
 const formatters = {
   _base(store, additions = null) {
     let available = Available.unknown;
@@ -212,7 +225,7 @@ const formatters = {
     return {
       id,
       location_type: LocationType.pharmacy,
-      name: store.properties.name,
+      name: store.properties.name || store.properties.provider_brand_name,
       provider: providerBrand,
       address_lines: store.properties.address && [
         titleCase(store.properties.address),
@@ -306,6 +319,22 @@ const formatters = {
     });
   },
 
+  southeastern_grocers(store) {
+    // Most Southeastern Groces stores have no name, and have the provider
+    // location ID set as "<providerId>-<storeNumber>".
+    // See: https://github.com/GUI/covid-vaccine-spotter/blob/491212c8baf75b3bacd31273901675ba35cde5fc/src/providers/SoutheasternGrocers/Stores.js#L129-L132
+    const data = store.properties;
+    let name = data.name || data.provider_brand_name;
+    const storeNumber = (data.provider_location_id || "").split("-")[1];
+    const external_ids = {};
+    if (storeNumber) {
+      name = `${name} #${storeNumber}`;
+      external_ids[data.provider_brand] = storeNumber.toString();
+    }
+
+    return formatters._base(store, { name, external_ids });
+  },
+
   cvs() {
     // VaccineSpotter data for CVS is not currently very good; we rely on the
     // CVS API instead.
@@ -353,12 +382,13 @@ async function checkAvailability(handler, options) {
   let results = [];
   for (const state of states) {
     let stores = await queryState(state);
-    let walgreens = stores.features
+    let formatted = stores.features
+      .filter(hasUsefulData)
       .map(formatStore)
       .filter((item) => !!item)
       .forEach((item) => handler(item));
 
-    results = results.concat(walgreens);
+    results = results.concat(formatted);
   }
 
   return results;
