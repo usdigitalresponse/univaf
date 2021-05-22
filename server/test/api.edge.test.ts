@@ -2,7 +2,7 @@ import { useServerForTests, installTestDatabaseHooks } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
-import { TestLocation } from "./fixtures";
+import { TestLocation, TestLocation2 } from "./fixtures";
 import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
@@ -122,6 +122,30 @@ describe("GET /api/edge/locations/:id", () => {
       "data.external_ids",
       TestLocation.external_ids
     );
+  });
+
+  it("responds correctly with multiple locations", async () => {
+    const location1 = await createLocation(TestLocation);
+    let res = await context.client.get<any>("api/edge/locations");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+
+    const location2 = await createLocation(TestLocation2);
+    res = await context.client.get<any>("api/edge/locations");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveLength(2);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/njiis:${TestLocation.external_ids.njiis}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location1.id);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/njiis:${TestLocation2.external_ids.njiis}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location2.id);
   });
 });
 

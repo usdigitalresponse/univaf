@@ -39,3 +39,35 @@ export const TestLocation = {
     meta: {},
   },
 };
+
+export const TestLocation2 = {
+  id: "0cd44819-4761-45f3-8544-cf1793310d31",
+  external_ids: {
+    njiis: "nj5678",
+    vtrcks: "789",
+    rite_aid: "576",
+    univaf_v0: "rite_aid:576",
+  },
+  provider: "RiteAid",
+  location_type: "PHARMACY",
+  name: "Rite Aid #576",
+  address_lines: ["605 North Colony Road"],
+  city: "Wallingford",
+  state: "CT",
+  postal_code: "06492-3109",
+  info_phone: "(203) 265-3600",
+  info_url: "https://www.riteaid.com/covid-19",
+  booking_phone: "(203) 265-3600",
+  booking_url: "https://www.riteaid.com/pharmacy/covid-qualifier",
+  requires_waitlist: false,
+  created_at: "2021-04-27T20:20:32.498Z",
+  updated_at: "2021-04-27T20:20:32.498Z",
+  availability: {
+    source: "rite-aid-api",
+    valid_at: "2021-05-15T02:31:44+00:00",
+    checked_at: "2021-05-15T02:32:14.449+00:00",
+    available: "YES",
+    meta: {},
+    available_count: 191,
+  },
+};
