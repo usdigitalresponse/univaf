@@ -387,12 +387,16 @@ export async function getLocationByExternalIds(
     })
     .andWhere((builder) => {
       for (const [system, id] of queryableIds) {
-        builder.orWhere("external_ids.system", "=", system);
+        builder.orWhere((builder) => {
+          builder
+            .where("external_ids.system", "=", system)
+            .andWhere("external_ids.value", "=", id);
+        });
       }
     })
     .first();
 
-  if (includeExternalIds) {
+  if (location && includeExternalIds) {
     const externalIds = await getExternalIdsByLocation(location.id);
     location.external_ids = externalIds[location.id];
   }
