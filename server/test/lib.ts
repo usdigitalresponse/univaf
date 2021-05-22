@@ -22,6 +22,7 @@ export function useServerForTests(app: Application): Context {
       context.client = got.extend({
         prefixUrl: `http://127.0.0.1:${port}`,
         responseType: "json",
+        throwHttpErrors: false,
       });
       done();
     });

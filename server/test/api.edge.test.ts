@@ -96,6 +96,33 @@ describe("GET /api/edge/locations/:id", () => {
       TestLocation.external_ids
     );
   });
+
+  it("does not mistakenly select by external_id", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+
+    const externalId = Object.entries(TestLocation.external_ids)[0];
+
+    let res = await context.client.get<any>(
+      `api/edge/locations/thisthing:doesntexist`
+    );
+    expect(res.statusCode).toBe(404);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/${externalId[0]}:doesntexist`
+    );
+    expect(res.statusCode).toBe(404);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty(
+      "data.external_ids",
+      TestLocation.external_ids
+    );
+  });
 });
 
 describe("POST /api/edge/update", () => {
