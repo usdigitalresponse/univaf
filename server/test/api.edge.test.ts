@@ -2,7 +2,7 @@ import { useServerForTests, installTestDatabaseHooks } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
-import { TestLocation } from "./fixtures";
+import { TestLocation, TestLocation2 } from "./fixtures";
 import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
@@ -10,12 +10,17 @@ installTestDatabaseHooks();
 describe("GET /api/edge/locations", () => {
   const context = useServerForTests(app);
 
-  it("responds with a list of locations", async () => {
+  it("responds with a list of locations containing external_ids", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
     const res = await context.client.get<any>("api/edge/locations");
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(1);
+
+    expect(res.body.data[0]).toHaveProperty(
+      "external_ids",
+      TestLocation.external_ids
+    );
   });
 
   it("responds with a list of locations filtered by state", async () => {
@@ -50,7 +55,7 @@ describe("GET /api/edge/locations", () => {
 describe("GET /api/edge/locations/:id", () => {
   const context = useServerForTests(app);
 
-  it("responds with location status", async () => {
+  it("responds with location status containing external_ids", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
 
@@ -64,6 +69,83 @@ describe("GET /api/edge/locations/:id", () => {
       "data.location_type",
       TestLocation.location_type
     );
+    expect(res.body).toHaveProperty(
+      "data.external_ids",
+      TestLocation.external_ids
+    );
+  });
+
+  it("can be found by external_id containing external_ids", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+
+    const externalId = Object.entries(TestLocation.external_ids)[0];
+
+    const res = await context.client.get<any>(
+      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.name", TestLocation.name);
+    expect(res.body).toHaveProperty(
+      "data.location_type",
+      TestLocation.location_type
+    );
+    expect(res.body).toHaveProperty(
+      "data.external_ids",
+      TestLocation.external_ids
+    );
+  });
+
+  it("does not mistakenly select by external_id", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+
+    const externalId = Object.entries(TestLocation.external_ids)[0];
+
+    let res = await context.client.get<any>(
+      `api/edge/locations/thisthing:doesntexist`
+    );
+    expect(res.statusCode).toBe(404);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/${externalId[0]}:doesntexist`
+    );
+    expect(res.statusCode).toBe(404);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty(
+      "data.external_ids",
+      TestLocation.external_ids
+    );
+  });
+
+  it("responds correctly with multiple locations", async () => {
+    const location1 = await createLocation(TestLocation);
+    let res = await context.client.get<any>("api/edge/locations");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+
+    const location2 = await createLocation(TestLocation2);
+    res = await context.client.get<any>("api/edge/locations");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveLength(2);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/njiis:${TestLocation.external_ids.njiis}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location1.id);
+
+    res = await context.client.get<any>(
+      `api/edge/locations/njiis:${TestLocation2.external_ids.njiis}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location2.id);
   });
 });
 
@@ -281,5 +363,24 @@ describe("POST /api/edge/update", () => {
       throwHttpErrors: false,
     });
     expect(response.statusCode).toBe(422);
+  });
+
+  it("should update position", async () => {
+    const location = await createLocation(TestLocation);
+    const newPosition = { longitude: 30, latitude: 26 };
+
+    let res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        position: newPosition,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    res = await context.client.get(`api/edge/locations/${location.id}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("data.id", location.id);
+    expect(res.body).toHaveProperty("data.position", newPosition);
   });
 });

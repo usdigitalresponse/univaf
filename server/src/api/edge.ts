@@ -9,6 +9,8 @@ import { Pagination, UUID_PATTERN } from "../utils";
 /** Maximum time for streaming lists to run for in seconds. */
 const MAX_STREAMING_TIME = 25 * 1000;
 
+const EXTERNAL_ID_PATTERN = /^(?<system>[^:]+):(?<value>.+)$/;
+
 /**
  * Send an error response.
  * @param response HTTP Response to write to
@@ -146,11 +148,23 @@ export const getById = async (req: AppRequest, res: Response) => {
     return sendError(res, "Not authorized for private data", 403);
   }
 
-  const provider = await db.getLocationById(id, { includePrivate });
+  let provider: any = null;
+  const m = id.match(EXTERNAL_ID_PATTERN);
+  if (m) {
+    provider = await db.getLocationByExternalIds(
+      { [m.groups.system]: m.groups.value },
+      { includePrivate, includeExternalIds: true }
+    );
+  }
+
+  if (!provider && UUID_PATTERN.test(id)) {
+    provider = await db.getLocationById(id, { includePrivate });
+  }
+
   if (!provider) {
     return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
-    res.json({ data: provider });
+    return res.json({ data: provider });
   }
 };
 
@@ -208,8 +222,7 @@ export const update = async (req: AppRequest, res: Response) => {
     // need to opt in to updating here.)
     const fields = Object.keys(data).filter((key) => key !== "availability");
     if (fields.length > 1) {
-      data.id = location.id;
-      await db.updateLocation(data);
+      await db.updateLocation(location, data);
       result.location.action = "updated";
     }
   }
