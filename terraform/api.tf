@@ -112,6 +112,10 @@ resource "aws_ecs_service" "main" {
   desired_count   = var.api_count
   launch_type     = "FARGATE"
 
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
   network_configuration {
     security_groups  = [aws_security_group.ecs_tasks.id]
     subnets          = aws_subnet.private.*.id
