@@ -3,12 +3,8 @@
 
   "variable": {
     "api_release_version": {
-      "description": "API Release Version - Bump to force update the image/restart the service.",
-      "default": "25"
-    },
-    "api_image": {
-      "description": "Docker image to run in the ECS cluster",
-      "default": "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server:74718894b434b27477ed09174a056c57537e66c1"
+      "description": "API Release Version",
+      "default": "e4e4e53d3c83036ecf937347119eff49899cc604"
     }
   }
 }
