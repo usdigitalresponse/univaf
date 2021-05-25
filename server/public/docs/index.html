@@ -18,30 +18,5 @@
   <body>
     <redoc spec-url="/docs/openapi.yaml"></redoc>
     <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
-
-    <!-- <div id="swagger-ui"></div>
-
-    <script src="<%= asset_path('home.js') %>"></script>
-    <script>
-      window.onload = function() {
-        // Build a system
-        const ui = SwaggerUIBundle({
-          url: '<%= asset_path('swagger.yml') %>',
-          validatorUrl: '',
-          dom_id: '#swagger-ui',
-          presets: [
-            SwaggerUIBundle.presets.apis,
-            SwaggerUIStandalonePreset
-          ],
-          plugins: [
-            SwaggerUIBundle.plugins.DownloadUrl
-          ],
-          layout: "StandaloneLayout",
-          deepLinking: true
-        })
-
-        window.ui = ui
-      }
-    </script> -->
   </body>
 </html>
