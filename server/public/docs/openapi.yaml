@@ -1,0 +1,443 @@
+openapi: 3.0.0
+servers: []
+info:
+  version: "0.1.0"
+  title: "COVID-19 Vaccine Appointment Availability API"
+  description: |
+    This API provides combined information about COVID-19 vaccination appointment availability at locations across the United States in a single, standard format. Data is sourced from a variety of official data sources (e.g. from CVS Pharmacy) and unofficial data sources (e.g. web scraping and volunteer phone banking). This API is built and maintained by [U.S. Digital Response](https://usdigitalresponse.org) in partnership with the State of New Jersey Office of Innovation, VaccineSpotter.org, and Vaccinate the States.
+
+    Data is currently sourced from:
+    - CVS Pharmacy
+    - Walgreens Pharmacy
+    - Rite Aid Pharmacy
+    - State of New Jersey Vaccine Scheduling System
+    - VaccineSpotter.org
+  contact:
+    email: rbrackett@usdigitalresponse.org
+  license:
+    name: MIT
+    url: "https://opensource.org/licenses/MIT"
+paths:
+  "/api/edge/locations":
+    get:
+      summary: List locations + availability
+      description: |
+        List out known locations, including their current appointment availability. This responds in paginated batches of 2,000 locations. Use the `links.next` property to get a URL to the next page of results.
+      parameters:
+        - in: query
+          name: state
+          description: Get locations in a particular state. Should be the USPS abbreviation for that state, e.g. `NJ` for New Jersey.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 2000
+        - in: query
+          name: page_next
+          description: Indicates where to resume from in a paginated request.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of locations + availability
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocationsPage"
+
+        "422":
+          description: bad input parameter
+  "/api/edge/locations.ndjson":
+    get:
+      summary: List locations + availability
+      description: |
+        List out known locations, including their current appointment availability. This streams out as many results as possible as newline-delimted JSON objects for 25 seconds. If it hasn't returned all results in that timeframe, the last object will be:
+        ```
+        { "__next__": "<url_to_resume_from>" }
+        ```
+      parameters:
+        - in: query
+          name: state
+          description: Get locations in a particular state. Should be the USPS abbreviation for that state, e.g. `NJ` for New Jersey.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 2000
+        - in: query
+          name: page_next
+          description: Indicates where to resume from in a paginated request.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of locations + availability
+          content:
+            application/x-ndjson:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "422":
+          description: bad input parameter
+  "/api/edge/locations/{id}":
+    get:
+      summary: Get a single location
+      description: |
+        Get a single location and its current availability.
+      parameters:
+        - in: path
+          name: id
+          description: ID of the location to get
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Location
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Location"
+
+        "422":
+          description: bad input parameter
+  "/api/edge/availability":
+    get:
+      summary: List availability records
+      description: |
+        List the latest availability for each location + source combination. Note this may list multiple results per location. (The `/locations` endpoint list the single latest availability for the location, regardless of source).
+
+        This is a paginated response. Use the `links.next` property to get the URL for the next page of results, if any.
+      parameters:
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 2000
+        - in: query
+          name: page_next
+          description: Indicates where to resume from in a paginated request.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of availability recods
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilityPage"
+
+        "422":
+          description: bad input parameter
+  "/api/edge/update":
+    post:
+      summary: Update availability
+      description: |
+        Adds/updates availability data for a given location and source. If the location doesn’t exist, it will be created. Including the `update_location=true` query parameter will cause existing locations to be updated with any new data in the POST body.
+
+        The POST body should be a single Location + Availability record, similar to what’s returned from `/api/edge/locations/{id}` (but without the wrapper object that has the `data` property).
+
+        Locations are looked up by `location.id` if present, or by any of the entries in `location.external_ids`.
+      responses:
+        "200":
+          description: item updated
+        "201":
+          description: item created
+        "422":
+          description: invalid input
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+        description: Location and availability to update/add.
+  "/smart-schedluing/$bulk-publish":
+    get:
+      summary: "SMART Scheduling Links"
+      description: |
+        Provides location data according to the [SMART Scheduling Links standard](https://github.com/smart-on-fhir/smart-scheduling-links/specification.md). Please see https://github.com/smart-on-fhir/smart-scheduling-links/ for details.
+      responses:
+        "200":
+          description: SMART Scheduling Links manifest
+components:
+  schemas:
+    CapacityRecord:
+      type: object
+      description: |
+        Represents how many appointments for a particular set of vaccine
+        products and dose types are available on a given date. There may be
+        muliple capacity records for a given date with different products.
+      properties:
+        date:
+          type: string
+          format: date
+          description: Date for which this capacity is valid.
+          example: "2021-04-21"
+        available:
+          type: string
+          enum: ["YES", "NO"]
+          description: |
+            Indicates whether appointments are currently available for booking
+            on this date.
+        available_count:
+          type: integer
+          format: int32
+          description: |
+            Total number of open appointment slots on this date. Not present if
+            not known.
+        unavailable_count:
+          type: integer
+          format: int32
+          description: |
+            Total number of non-open appointment slots on this date. Not
+            present if not known.
+        products:
+          type: array
+          items:
+            type: string
+          description: |
+            List of vaccine products available on this date. Not present if not
+            known. Current possible values include: `moderna`, `pfizer`, `jj`.
+        dose:
+          type: string
+          description: |
+            Dose type appointments are available for. Not present if not known.
+            Current possible values: `all_doses`, `first_dose_only`,
+            `second_dose_only`.
+    SlotRecord:
+      type: object
+      description: |
+        Represents the most fine-grained information about appointments from a
+        particular source. This often represents single appointment slots, but
+        may represent more coarse-grained timeframes (e.g. a morning or
+        afternoon).
+      properties:
+        start:
+          type: string
+          format: date-time
+          description: Time at which this slot starts.
+          example: "2021-04-21T09:00:00Z"
+        end:
+          type: string
+          format: date-time
+          description: Time at which this slot ends.
+          example: "2021-04-21T09:15:00Z"
+        available:
+          type: string
+          enum: ["YES", "NO"]
+          description: |
+            Indicates whether this slot is available to be booked.
+        available_count:
+          type: integer
+          format: int32
+          description: |
+            Total number of open appointments in the timeframe this slot
+            represents. Not present if the unknown or the slot represents a
+            single appointment.
+        unavailable_count:
+          type: integer
+          format: int32
+          description: |
+            Total number of non-open appointments in the timeframe this slot
+            represents. Not present if the unknown or the slot represents a
+            single appointment.
+        products:
+          type: array
+          items:
+            type: string
+          description: |
+            List of vaccine products available for this slot. Not present if not
+            known. Current possible values include: `moderna`, `pfizer`, `jj`.
+        dose:
+          type: string
+          description: |
+            Dose type available for this slot. Not present if not known.
+            Current possible values: `all_doses`, `first_dose_only`,
+            `second_dose_only`.
+    Availability:
+      type: object
+      required:
+        - source
+        - checked_at
+        - available
+      properties:
+        location_id:
+          type: string
+          format: uuid
+          description: |
+            Location this availability applies to. Not present if the
+            availability is a property of a location object, e.g. in requests
+            to `/api/edge/locations`.
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        source:
+          type: string
+          description: Name of the API client or scraper that generated this data.
+        valid_at:
+          type: string
+          format: date-time
+          description: Time this data was last known to be valid.
+          example: "2021-04-21T09:12:33.001Z"
+        checked_at:
+          type: string
+          format: date-time
+          description: |
+            Time the source was last checked for this data. (When `source` is a
+            scraper, this and `valid_at` will usually be the same. When it is
+            an API or some other method that includes data about when it was
+            last accurate, `valid_at` reflects that time and `checked_at`
+            reflects the time that source was queried. For most applications,
+            you should monitor `valid_at` rather than `checked_at`.)
+          example: "2021-04-21T09:12:33.001Z"
+        available:
+          type: string
+          enum: ["YES", "NO", "UNKNOWN"]
+          description: |
+            Indicates whether appointments are currently available for booking.
+        available_count:
+          type: integer
+          format: int32
+          description: |
+            Total number of open appointment slots. Not present if not known.
+        products:
+          type: array
+          items:
+            type: string
+          description: |
+            List of vaccine products available. Not present if not known.
+            Current possible values include: `moderna`, `pfizer`, `jj`.
+        doses:
+          type: array
+          items:
+            type: string
+          description: |
+            List of dose types appointments are available for. Not present if
+            not known. Current possible values: `all_doses`, `first_dose_only`,
+            `second_dose_only`.
+        capacity:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapacityRecord"
+          description: |
+            Day-by-day appointment availability. Not present if not known.
+        slots:
+          type: array
+          items:
+            $ref: "#/components/schemas/SlotRecord"
+          description: |
+            As fine-grained information about appointments as available from
+            the source. Not present if the same as `capacity`. This may
+            represent individual appointment slots or larger timeframes.
+        meta:
+          type: object
+          description: Any additional free-form data the source might provide.
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        external_ids:
+          type: object
+          description: |
+            Identifiers this location is known by in other systems. The keys in
+            this object name other systems, e.g. `cvs` (for CVS store numbers),
+            `vtrcks` (for VTrckS PINs), etc. Values are the IDs in those
+            systems. Keys are always lower-case, values are always strings.
+        provider:
+          type: string
+        location_type:
+          type: string
+          enum: ["PHARMACY", "CLINIC", "MASS_VAX"]
+        name:
+          type: string
+        address_lines:
+          type: array
+          items:
+            type: string
+        city:
+          type: string
+        state:
+          type: string
+        postal_code:
+          type: string
+        county:
+          type: string
+        position:
+          type: object
+          properties:
+            longitude:
+              type: number
+              format: float
+            latitude:
+              type: number
+              format: float
+        info_phone:
+          type: string
+        info_url:
+          type: string
+        booking_phone:
+          type: string
+        booking_url:
+          type: string
+        description:
+          type: string
+        requires_waitlist:
+          type: boolean
+        meta:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        availability:
+          $ref: "#/components/schemas/Availability"
+    LocationsPage:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              format: url
+              description: URL to the next page of results. May be relative URL.
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+    AvailabilityPage:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              format: url
+              description: URL to the next page of results. May be relative URL.
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Availability"
