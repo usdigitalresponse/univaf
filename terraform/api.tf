@@ -83,15 +83,14 @@ module "api_task" {
   source = "./modules/task"
 
   name   = "api"
-  image  = var.api_image
+  image  = "${var.api_image}:${var.api_release_version}"
   role   = aws_iam_role.ecs_task_execution_role.arn
   cpu    = var.cpu
   memory = var.memory
   port   = var.api_port
 
   env_vars = {
-    # Bump RELEASE to force update the image/restart the service.
-    RELEASE     = "24"
+    RELEASE     = var.api_release_version
     DB_HOST     = module.db.host
     DB_NAME     = module.db.db_name
     DB_USERNAME = var.db_user

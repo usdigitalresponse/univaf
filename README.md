@@ -123,14 +123,24 @@ $ NODE_ENV=production npm run build
 That will create a JS file and an HTML file in the `ui/dist/` directory. The HTML file is an example, while the JS file is a standalone UI. (The idea here is to keep it portable; a site could embed the UI by simple adding a `<script>` tag to a page.)
 
 
-#### UI Deployment
-
-The UI is currently deployed directly to GitHub Pages with an actions workflow, so you can view the demo at https://usdigitalresponse.github.io/appointment-availability-infra/.
 
 
 ## Deploying to Production
 
-TODO
+### Deploying the Server & Loaders
+
+Our infrastructure deploys are managed via Terraform Cloud, and new Terraform plans are triggered by changing the configured API version.
+By convention, the API version is the git hash of the commit you want to deploy, and we have a simple deployment script `scripts/deploy_infra.sh`
+that manages everything for you. The workflow is as follows:
+
+1. Merge your latest pull request.
+2. On the `main` branch, run `scripts/deploy_infra.sh`, which will create a new commit.
+3. Push the commit it makes to `origin`.
+4. Locate the related Run on Terraform.io and Confirm it to initiate the deploy.
+
+### Deploying the UI
+
+The UI is currently deployed directly to GitHub Pages with an actions workflow, so you can view the demo at https://usdigitalresponse.github.io/appointment-availability-infra/.
 
 ## Design
 
