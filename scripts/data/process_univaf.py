@@ -38,6 +38,8 @@ path_out = lib.path_root + 'data/univaf_clean/'
 locations_path = path_out + 'locations_univaf.csv'
 
 locations = {}
+eid_to_id = {}
+max_key = -1
 
 
 def do_date(ds):
@@ -45,14 +47,7 @@ def do_date(ds):
     Process a single date
     """
     print("[INFO] doing %s" % ds)
-
-    # read 'external id to int id' mapping
-    # run python make_ids.py to create the ids_external.csv file
-    eid_to_id = {}
-    with open(path_out + 'ids_external.csv', 'r') as f:
-        reader = csv.DictReader(f, delimiter=',')
-        for row in reader:
-            eid_to_id[row['external_id']] = row['id']
+    global max_key
 
     # open output file
     fn_out = "%savailabilities_%s.csv" % (path_out, ds)
@@ -82,24 +77,39 @@ def do_date(ds):
                         # right now it just downloads it and process the next time
                         # right now it assumes there are only two pages
                     continue
-                # convert id
+
+                # this very ugly logic disambiguates ids (like in this issue:
+                # https://github.com/usdigitalresponse/appointment-availability-infra/issues/120)
+                # convert main id, depending on API version
                 if lib.is_uuid(row['id']):
                     sid = 'uuid:%s' % row['id']
                 else:
                     sid = 'univaf_v0:%s' % row['id']
-                if sid not in eid_to_id:
-                    print("[WARN] in %s - id %s not found.." % (fn, sid))
-                    # TODO - maybe add it instead??
+                ids = [sid] + ["%s:%s" % x for x in row['external_ids'].items()]
+                overlap = lib.intersect(ids, eid_to_id.keys())
+                # if there are new external_ids, add them to the dictionary
+                if len(overlap) != len(ids):
+                    # if haven't seen any before, make new integer id
+                    if not len(overlap):
+                        siid = max_key
+                        max_key = max_key + 1
+                    else:
+                        # take any of them, hopefully the same...
+                        siid = eid_to_id[overlap[0]]
+                    for x in ids:
+                        eid_to_id[x] = str(siid)
+                # take the inter version of the canonical id
                 iid = int(eid_to_id[sid])
 
                 #
                 # extract location data
                 #
                 # NOTE: assumes that location meta-data stays stable,
-                #       and takes the last known non-null values as true
+                #       and takes the first known values as true
                 # TODO: should maybe check and give a warning if not
-                #if iid not in locations:
-                if True:
+                # TODO: might want to revert to *last* known values
+                if iid not in locations:
+                #if True:
                     # set fields to None by default
                     [uuid, name, provider, type, address, city, county,
                      state, zip, lat, lng] = [None] * 11
@@ -149,7 +159,7 @@ def do_date(ds):
                     }
 
                 #
-                # extract "any" availability data
+                # extract availability data
                 #
                 time_raw = dateutil.parser.parse(row['availability']['valid_at'])
                 # compute local offset
@@ -201,6 +211,10 @@ def do_date(ds):
     print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))
     # write updated locations file
     lib.write_locations(locations, locations_path)
+    # write updated external id file
+    with open(path_out + 'ids_external.csv', 'w') as f:
+        writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        sink = [writer.writerow(x) for x in eid_to_id.items()]
 
 
 if __name__ == "__main__":
@@ -219,7 +233,12 @@ if __name__ == "__main__":
         print("[INFO] clean_run=T, so no old locations are being read")
     else:
         print("[INFO] clean_run=F, so keep previously collected location data")
+        # read prior locations
         locations = lib.read_locations(locations_path)
+        max_key = max(locations.keys())
+        # read prior external-id to numeric id mapping 
+        with open(path_out + 'ids_external.csv', 'r') as f:
+            eid_to_id2 = dict(list(csv.reader(f)))
     # iterate over days
     for date in dates:
         do_date(date)
