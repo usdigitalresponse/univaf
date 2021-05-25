@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from "express";
 import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
-import path from "path";
 import * as Sentry from "@sentry/node";
 import { authorizeRequest } from "./middleware";
 import * as apiEdge from "./api/edge";
@@ -55,10 +54,7 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 // Documentation -------------------------------------------------
-app.use(
-  "/docs",
-  express.static(path.resolve(__dirname, "..", "..", "public", "docs"))
-);
+app.use("/docs", express.static("public/docs"));
 
 // Legacy top-level API ------------------------------------------
 // TODO: Remove these when we're confident people aren't using them.
