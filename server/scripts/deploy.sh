@@ -2,7 +2,6 @@
 set -euo pipefail
 
 SERVER_DEPLOY_TFJSON_PATH=terraform/server_deploy.tf.json
-DOCKER_IMAGE_HOST=681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server
 
 require_clean_work_tree () {
     # from git-sh-setup.sh: https://www.spinics.net/lists/git/msg142043.html
@@ -37,8 +36,6 @@ require_clean_work_tree;
 
 cd "$(git rev-parse --show-toplevel)"
 
-PREV_VERSION=$(npx json variable.api_release_version.default < "$SERVER_DEPLOY_TFJSON_PATH" )
-NEXT_VERSION=$((PREV_VERSION+1))
 NEXT_REV=$(git rev-parse HEAD)
 
 cat << EOF > "$SERVER_DEPLOY_TFJSON_PATH"
@@ -47,17 +44,13 @@ cat << EOF > "$SERVER_DEPLOY_TFJSON_PATH"
 
   "variable": {
     "api_release_version": {
-      "description": "API Release Version - Bump to force update the image/restart the service.",
-      "default": "$NEXT_VERSION"
-    },
-    "api_image": {
-      "description": "Docker image to run in the ECS cluster",
-      "default": "$DOCKER_IMAGE_HOST:$NEXT_REV"
+      "description": "API Release Version",
+      "default": "$NEXT_REV"
     }
   }
 }
 EOF
 
 git add "$SERVER_DEPLOY_TFJSON_PATH"
-git commit -m "Deploy server version $NEXT_VERSION"
+git commit -m "Deploy server version $NEXT_REV"
 

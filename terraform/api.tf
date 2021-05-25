@@ -83,7 +83,7 @@ module "api_task" {
   source = "./modules/task"
 
   name   = "api"
-  image  = var.api_image
+  image  = "${var.api_image}:${var.api_release_version}"
   role   = aws_iam_role.ecs_task_execution_role.arn
   cpu    = var.cpu
   memory = var.memory
