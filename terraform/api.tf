@@ -90,8 +90,7 @@ module "api_task" {
   port   = var.api_port
 
   env_vars = {
-    # Bump RELEASE to force update the image/restart the service.
-    RELEASE     = "24"
+    RELEASE     = var.api_release_version
     DB_HOST     = module.db.host
     DB_NAME     = module.db.db_name
     DB_USERNAME = var.db_user
