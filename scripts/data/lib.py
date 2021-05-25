@@ -41,12 +41,13 @@ def write_locations(locations, locations_path):
     Write the new locations file.
     """
     header = ['id', 'uuid', 'name', 'provider', 'type',
-              'address', 'city', 'county', 'state', 'zip', 'lat', 'lng']
+              'address', 'city', 'county', 'state', 'zip', 'lat', 'lng',
+              'timezone']
     with open(locations_path, 'w') as f:
         writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         sink = writer.writerow(header)
         for id in sorted(locations.keys()):
-            row = [id] + [locations[id][key] for key in header[1:]]
+            row = [id] + [locations[id][key] if key in locations[id] else '' for key in header[1:]]
             sink = writer.writerow(row)
     print("[INFO] wrote %d locations to %s" % (len(locations), locations_path))
 
@@ -84,7 +85,7 @@ def parse_date(parser):
     if len(dates) < 1:
         print("[ERROR] date range has no elements")
         exit()
-    print("[INFO] doing these dates: [%s]" % ', '.join(dates))
+    #print("[INFO] doing these dates: [%s]" % ', '.join(dates))
     return dates
 
 

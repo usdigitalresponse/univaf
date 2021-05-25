@@ -1,6 +1,8 @@
 #
 # Script to process USDR's univaf appointment availability data.
-# Warning! Currently need to run make_ids.py before every run...
+# It processes scraped data by date, iterating over a date-range.
+# There are options to build off a prior location-database (or start
+# a new one), and to extract slot-level data or not.
 #
 #
 # Usage:
@@ -8,11 +10,19 @@
 #   python process_univaf.py [-h] [-s START_DATE] [-e END_DATE] [-c]
 #
 #
+# Produces:
+#
+#   locations_univaf.csv - (id, uuid, name, provider, type, address, city,
+#                           county, state, zip, lat, lng, timezone)
+#   ids_external - (external_id, id)
+#   availabilities_{DATE}.csv - (id, checked_time, availability)
+#   availabilities_slots_{DATE}.csv - (id, checked_time, slot_time, availability)
+#
+#
 # Todo:
 #
-#   [ ] make location merging better
 #   [ ] check duplicate locations
-#   [ ] (how to) store individual appointments?
+#   [ ] store individual slot availabilities?
 #
 #
 # Authors:
@@ -42,15 +52,15 @@ eid_to_id = {}
 max_key = -1
 
 
-def do_date(ds):
+def do_date(ds, slots=False):
     """
     Process a single date
     """
-    print("[INFO] doing %s" % ds)
+    print("[INFO] doing %s WITH%s slots" % (ds, '' if slots else 'OUT'))
     global max_key
 
     # open output file
-    fn_out = "%savailabilities_%s.csv" % (path_out, ds)
+    fn_out = "%savailabilities_%s%s.csv" % (path_out, 'slots_' if slots else '', ds)
     f_avs = open(fn_out, 'w')
     writer = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     n_avs = 0
@@ -112,7 +122,7 @@ def do_date(ds):
                 #if True:
                     # set fields to None by default
                     [uuid, name, provider, type, address, city, county,
-                     state, zip, lat, lng] = [None] * 11
+                     state, zip, lat, lng, timezone] = [None] * 12
                     # extract fields
                     if lib.is_uuid(row['id']):
                         uuid = row['id']
@@ -131,6 +141,8 @@ def do_date(ds):
                         county = row['county'].title()
                     if 'state' in row and row['state'] is not None:
                         state = row['state'].upper()
+                        timezone = us.states.lookup(row['state']).time_zones[0]
+                    # TODO: get timezone from data once it's there
                     if 'postal_code' in row and row['postal_code'] is not None:
                         # NOTE - this throws away information after first 5 digits
                         zip = "%05d" % int(row['postal_code'][:5])
@@ -155,17 +167,18 @@ def do_date(ds):
                         'state': state,
                         'zip': zip,
                         'lat': lat,
-                        'lng': lng
+                        'lng': lng,
+                        'timezone': timezone
                     }
 
                 #
                 # extract availability data
                 #
                 time_raw = dateutil.parser.parse(row['availability']['valid_at'])
-                # compute local offset
-                local_tz = us.states.lookup(row['state']).time_zones[0]
-                time_local = time_raw.astimezone(pytz.timezone(local_tz))
-                offset = int(time_local.utcoffset().total_seconds() / (60 * 60))
+                # compute local offset (off for now)
+                #local_tz = us.states.lookup(row['state']).time_zones[0]
+                #time_local = time_raw.astimezone(pytz.timezone(local_tz))
+                #offset = int(time_local.utcoffset().total_seconds() / (60 * 60))
                 # convert to UTC, so it's all the same
                 time_utc = time_raw.astimezone(pytz.timezone('UTC'))
                 # extract availabilities
@@ -196,7 +209,7 @@ def do_date(ds):
                     raise Exception('No availability found...')
                 writer.writerow((iid,
                                  time_utc.strftime("%Y-%m-%d %H:%M:%S"),
-                                 offset,
+                                 #offset,
                                  availability))
                 n_avs += 1
             except Exception as e:
@@ -224,15 +237,17 @@ if __name__ == "__main__":
     parser.add_argument('-e', '--end_date', help="last date to process")
     parser.add_argument('-c', '--clean_run', action='store_true',
                         help="replace previous locations file")
+    parser.add_argument('-a', '--slots', action='store_true', help="do slot-level data")
     args = parser.parse_args()
     # parse dates
     dates = lib.parse_date(parser)
-    print("[INFO] doing these dates: [%s]" % ', '.join(dates))
+    print("[INFO] doing these dates WITH%s slots: [%s]" %
+          ('' if args.slots else 'OUT', ', '.join(dates)))
     # parse whether to keep previous locations
     if args.clean_run:
-        print("[INFO] clean_run=T, so no old locations are being read")
+        print("[INFO] clean_run=True, so no old locations are being read")
     else:
-        print("[INFO] clean_run=F, so keep previously collected location data")
+        print("[INFO] clean_run=False, so keep previously collected location data")
         # read prior locations
         locations = lib.read_locations(locations_path)
         max_key = max(locations.keys())
@@ -241,4 +256,4 @@ if __name__ == "__main__":
             eid_to_id2 = dict(list(csv.reader(f)))
     # iterate over days
     for date in dates:
-        do_date(date)
+        do_date(date, args.slots)
