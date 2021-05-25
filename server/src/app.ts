@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
+import path from "path";
 import * as Sentry from "@sentry/node";
 import { authorizeRequest } from "./middleware";
 import * as apiEdge from "./api/edge";
@@ -44,16 +45,20 @@ app.use(authorizeRequest);
  * Primary app routes.
  */
 
-app.get("/", (_req: Request, res: Response) =>
-  res.send("COVID-19 Appointments")
-);
-app.get("/debugme", (_req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => res.redirect("/docs/"));
+app.get("/debugme", (_req: Request, _res: Response) => {
   throw new Error("TESTING SENTRY AGAIN");
 });
 app.get("/health", (req: Request, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
   res.status(200).send("OK!");
 });
+
+// Documentation -------------------------------------------------
+app.use(
+  "/docs",
+  express.static(path.resolve(__dirname, "..", "..", "public", "docs"))
+);
 
 // Legacy top-level API ------------------------------------------
 // TODO: Remove these when we're confident people aren't using them.
