@@ -18,21 +18,15 @@
 #   Jan Overgoor - jsovergoor@usdigitalresponse.org
 #
 
-import json
-import urllib.request
 from time import time
 from datetime import datetime
+import lib
 
 # set path
 #path = '/home/overgoor/usdr'  # Stanford SOAL server
 path = '/tmp/af'  # local
 # current time as yyyymmdd_hhmmss
 ts = datetime.utcfromtimestamp(time()).strftime('%Y%m%d_%H%M%S')
-# pull the data
 api_endpoint = 'http://getmyvax.org/locations'
-with urllib.request.urlopen(api_endpoint) as url:
-    data = json.loads(url.read().decode())
-# write the data
 fn_out = '%s/data/univaf_raw/locations_%s.json' % (path, ts)
-with open(fn_out, 'w') as f:
-    f.write(json.dumps(data, indent=2))
+lib.download_json_remotely(api_endpoint, fn_out)

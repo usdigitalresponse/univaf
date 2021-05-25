@@ -10,9 +10,8 @@
 #
 # Todo:
 #
+#   [ ] make location merging better
 #   [ ] check duplicate locations
-#   [ ] what do when location meta-data changes over time?
-#   [ ] reduce the interval at which to read availabilities? hourly?
 #   [ ] (how to) store individual appointments?
 #
 #
@@ -73,6 +72,16 @@ def do_date(ds):
             data_raw = json.load(f)
         for row in data_raw:
             try:
+                # deal with pagination
+                if "__next__" in row:
+                    fn_p2 = fn.split('.')[0] + '_p2.json'
+                    # download if doesn't already exist
+                    if fn_p2 not in os.listdir(path_raw):
+                        url = 'http://getmyvax.org' + row['__next__']
+                        lib.download_json_remotely(url, fn_p2)
+                        # right now it just downloads it and process the next time
+                        # right now it assumes there are only two pages
+                    continue
                 # convert id
                 if lib.is_uuid(row['id']):
                     sid = 'uuid:%s' % row['id']

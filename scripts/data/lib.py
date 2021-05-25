@@ -12,6 +12,7 @@ import csv
 import json
 import datetime
 import dateutil
+import urllib.request
 from uuid import UUID
 
 
@@ -98,6 +99,16 @@ def is_uuid(s, version=4):
     except ValueError:
         return False
     return str(uuid_obj) == s
+
+
+def download_json_remotely(url, path):
+    """
+    Download a json file from the internet.
+    """
+    with urllib.request.urlopen(url) as r:
+        data = json.loads(r.read().decode())
+    with open(path, 'w') as f:
+        f.write(json.dumps(data, indent=2))
 
 
 def intersect(list1, list2):
