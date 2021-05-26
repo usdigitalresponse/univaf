@@ -12,6 +12,7 @@ import csv
 import json
 import datetime
 import dateutil
+from urllib.parse import urljoin
 import urllib.request
 from uuid import UUID
 
@@ -20,12 +21,37 @@ from uuid import UUID
 path_root = '/tmp/af/'  # local
 
 
-def read_locations(locations_path):
+def read_external_ids(path):
+    """
+    Read the current external_id map file.
+    """
+    with open(path, 'r') as f:
+        eid_to_id = dict(list(csv.reader(f)))
+    # fix _index rewriting
+    for iid, eids in eid_to_id.items():
+        scrub_external_ids(eids)
+    return eid_to_id
+
+
+def scrub_external_ids(eids):
+    """
+    Removes the index from "univaf_v.[_.]" keys.
+    """
+    for i in range(len(eids)):
+        if 'univaf' not in eids[i]:
+            continue
+        if 'v' not in eids[i].split(':')[0].split('_')[-1]:
+            # very risky! assumes keys to be "univaf.v._.:.*"
+            eids[i] = eids[i][:9] + eids[i][11:]
+    return eids
+
+
+def read_locations(path):
     """
     Read the pre-existing locations file, if it already exists.
     """
     locations = {}
-    if os.path.exists(locations_path):
+    if os.path.exists(path):
         with open(locations_path, 'r') as f:
             reader = csv.DictReader(f, delimiter=',')
             for row in reader:
@@ -36,20 +62,32 @@ def read_locations(locations_path):
     return locations
 
 
-def write_locations(locations, locations_path):
+def write_locations(locations, path):
     """
     Write the new locations file.
     """
     header = ['id', 'uuid', 'name', 'provider', 'type',
               'address', 'city', 'county', 'state', 'zip', 'lat', 'lng',
               'timezone']
-    with open(locations_path, 'w') as f:
+    with open(path, 'w') as f:
         writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         sink = writer.writerow(header)
         for id in sorted(locations.keys()):
             row = [id] + [locations[id][key] if key in locations[id] else '' for key in header[1:]]
             sink = writer.writerow(row)
-    print("[INFO] wrote %d locations to %s" % (len(locations), locations_path))
+    print("[INFO] wrote %d locations to %s" % (len(locations), path))
+
+
+def read_zipmap():
+    """
+    Read map of zipcodes to timezones.
+    """
+    zipmap = {}
+    with open('vaccinespotter-zipdump.csv', 'r') as f:
+        reader = csv.DictReader(f, delimiter=',')
+        for row in reader:
+            zipmap[row['postal_code']] = row['time_zone']
+    return zipmap
 
 
 def parse_date(parser):
@@ -85,7 +123,6 @@ def parse_date(parser):
     if len(dates) < 1:
         print("[ERROR] date range has no elements")
         exit()
-    #print("[INFO] doing these dates: [%s]" % ', '.join(dates))
     return dates
 
 
@@ -108,6 +145,12 @@ def download_json_remotely(url, path):
     """
     with urllib.request.urlopen(url) as r:
         data = json.loads(r.read().decode())
+    # deal with pagination
+    while "__next__" in data[-1]:
+        url = urljoin('http://getmyvax.org', data[-1]['__next__'])
+        with urllib.request.urlopen(url) as r:
+            data2 = json.loads(r.read().decode())
+        data = data[:-1] + data2
     with open(path, 'w') as f:
         f.write(json.dumps(data, indent=2))
 

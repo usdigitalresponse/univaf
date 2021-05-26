@@ -1,13 +1,22 @@
 #
 # Script to process USDR's univaf appointment availability data.
 # It processes scraped data by date, iterating over a date-range.
-# There are options to build off a prior location-database (or start
-# a new one), and to extract slot-level data or not.
+#
+# By default, it works off an internal location database and integrates new or
+# updated entries accordingly. If --clean_run (-c) is enabled, it *first*
+# processes the very last available file, to get the latest location
+# information, and _then_ it runs through the dates from start to finish.
+#
+# By default, it does not process slot-level data, only the number of
+# available appointments per day. If the --slots (-a) flag is enbled,
+# if prints out slot-level availabilities (usually without counts).
+#
+# NOTE: checked_time is in UTC and slot_time is in local time.
 #
 #
 # Usage:
 #
-#   python process_univaf.py [-h] [-s START_DATE] [-e END_DATE] [-c]
+#   python process_univaf.py [-h] [-s START_DATE] [-e END_DATE] [-c] [-a]
 #
 #
 # Produces:
@@ -31,7 +40,7 @@
 #
 
 import json
-import os
+import glob
 import csv
 import traceback
 import sys
@@ -45,49 +54,43 @@ import lib  # internal
 # set paths
 path_raw = lib.path_root + 'data/univaf_raw/'
 path_out = lib.path_root + 'data/univaf_clean/'
-locations_path = path_out + 'locations_univaf.csv'
 
 locations = {}
 eid_to_id = {}
-max_key = -1
+max_key = 0
 
 
-def do_date(ds, slots=False):
+def do_date(ds, slots=False, dry_run=False):
     """
-    Process a single date
+    Process a single date.
+    If dry_run=True, it runs over the last available file to read loctaion
+    information, without processing availability data
     """
-    print("[INFO] doing %s WITH%s slots" % (ds, '' if slots else 'OUT'))
     global max_key
 
-    # open output file
-    fn_out = "%savailabilities_%s%s.csv" % (path_out, 'slots_' if slots else '', ds)
-    f_avs = open(fn_out, 'w')
-    writer = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    n_avs = 0
+    if dry_run:
+        files = sorted(glob.glob(path_raw + 'locations*'))[-1:]
+        print("[INFO] doing dry run on %s to seed location info" % files[0])
+    else:
+        print("[INFO] doing %s WITH%s slots" % (ds, '' if slots else 'OUT'))
+        # open output file
+        fn_out = "%savailabilities_%s%s.csv" % (path_out, 'slots_' if slots else '', ds)
+        f_avs = open(fn_out, 'w')
+        writer = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        n_avs = 0
+        # construct list of files to read
+        files = sorted(glob.glob('%slocations_%s_*' % (path_raw, ''.join(ds.split('-')))))
+
+    # read zip map
+    zipmap = lib.read_zipmap()
 
     # iterate over scraped data
-    for fn in sorted(os.listdir(path_raw)):
-        if fn == '.DS_Store':
-            continue
-        # only do relevant dates
-        if fn.split('_')[1] != ''.join(ds.split('-')):
-            continue
+    for fn in files:
         print("[INFO]   reading " + fn)
-        with open(path_raw + fn) as f:
+        with open(fn) as f:
             data_raw = json.load(f)
         for row in data_raw:
             try:
-                # deal with pagination
-                if "__next__" in row:
-                    fn_p2 = fn.split('.')[0] + '_p2.json'
-                    # download if doesn't already exist
-                    if fn_p2 not in os.listdir(path_raw):
-                        url = 'http://getmyvax.org' + row['__next__']
-                        lib.download_json_remotely(url, fn_p2)
-                        # right now it just downloads it and process the next time
-                        # right now it assumes there are only two pages
-                    continue
-
                 # this very ugly logic disambiguates ids (like in this issue:
                 # https://github.com/usdigitalresponse/appointment-availability-infra/issues/120)
                 # convert main id, depending on API version
@@ -95,7 +98,8 @@ def do_date(ds, slots=False):
                     sid = 'uuid:%s' % row['id']
                 else:
                     sid = 'univaf_v0:%s' % row['id']
-                ids = [sid] + ["%s:%s" % x for x in row['external_ids'].items()]
+                eids = ["%s:%s" % x for x in row['external_ids'].items()]
+                ids = [sid] + lib.scrub_external_ids(eids)
                 overlap = lib.intersect(ids, eid_to_id.keys())
                 # if there are new external_ids, add them to the dictionary
                 if len(overlap) != len(ids):
@@ -151,10 +155,12 @@ def do_date(ds, slots=False):
                     if ('position' in row and row['position'] is not None and 'longitude' in row['position']):
                         lng = row['position']['longitude']
                     # fix address issue for some NJ listings
-                    if ', NJ' in address and zip is not None:
+                    if ', NJ' in address and zip is None:
                         zip = address[-5:]
                         city = address.split(', ')[1]
                         address = address.split(', ')[0]
+                    if zip is not None and zip in zipmap:
+                        timezone = zipmap[zip]
                     # insert row
                     locations[iid] = {
                         'uuid': uuid,
@@ -174,44 +180,63 @@ def do_date(ds, slots=False):
                 #
                 # extract availability data
                 #
-                time_raw = dateutil.parser.parse(row['availability']['valid_at'])
-                # compute local offset (off for now)
-                #local_tz = us.states.lookup(row['state']).time_zones[0]
-                #time_local = time_raw.astimezone(pytz.timezone(local_tz))
-                #offset = int(time_local.utcoffset().total_seconds() / (60 * 60))
-                # convert to UTC, so it's all the same
-                time_utc = time_raw.astimezone(pytz.timezone('UTC'))
-                # extract availabilities
-                availability = None
-                if row['availability']['available'] in ['YES', 'yes']:
-                    if 'available_count' in row['availability']:
-                        availability = row['availability']['available_count']
-                    elif 'meta' in row['availability'] and row['availability']['meta'] is not None and 'capacity' in row['availability']['meta']:
-                        cap = row['availability']['meta']['capacity']
-                        #elif 'capacity' in row['availability']:
-                        #    cap = row['availability']['capacity']
-                        availability = 0
-                        for em in cap:
-                            if 'available_count' in em:
-                                availability += em['available_count']
-                            elif 'available' in em:
-                                availability += em['available']
-                            else:
-                                raise Exception('No availability counts found...')
-                    else:
-                        availability = '+'
-                elif row['availability']['available'] in ['NO', 'no']:
-                    availability = 0
-                elif row['availability']['available'] == 'UNKNOWN':
-                    availability = None
+                # skip if no availability data or if we're doing a dry run
+                if row['availability'] is None or dry_run:
+                    continue
+                # compute local offset and UTC time for checked_at time
+                check_time_raw = dateutil.parser.parse(row['availability']['valid_at'])
+                local_tz = us.states.lookup(row['state']).time_zones[0]
+                check_time_local = check_time_raw.astimezone(pytz.timezone(local_tz))
+                check_time_offset = int(check_time_local.utcoffset().total_seconds() / (60 * 60))
+                check_time_utc = check_time_raw.astimezone(pytz.timezone('UTC'))
+                # construct output row
+                row_out = [iid,
+                           check_time_utc.strftime("%Y-%m-%d %H:%M:%S"),
+                           check_time_offset]
+
+                if slots:
+                    if 'slots' not in row['availability']:
+                        continue
+                    for slot in row['availability']['slots']:
+                        # compute local offset and UTC time for slot time
+                        slot_time_local = dateutil.parser.parse(slot['start'])
+                        slot_time_offset = int(slot_time_local.utcoffset().total_seconds() / (60 * 60))
+                        slot_time_utc = slot_time_local.astimezone(pytz.timezone('UTC'))
+                        availability = 1 if slot['available'] == 'YES' else 0
+                        # TODO: products?
+                        writer.writerow(row_out + [
+                                          slot_time_utc.strftime("%Y-%m-%d %H:%M"),
+                                          slot_time_offset,
+                                          availability])
+                        n_avs += 1
                 else:
                     availability = None
-                    raise Exception('No availability found...')
-                writer.writerow((iid,
-                                 time_utc.strftime("%Y-%m-%d %H:%M:%S"),
-                                 #offset,
-                                 availability))
-                n_avs += 1
+                    if row['availability']['available'] in ['YES', 'yes']:
+                        if 'available_count' in row['availability']:
+                            availability = row['availability']['available_count']
+                        elif ('meta' in row['availability'] and
+                              row['availability']['meta'] is not None and
+                              'capacity' in row['availability']['meta']):
+                            cap = row['availability']['meta']['capacity']
+                            availability = 0
+                            for em in cap:
+                                if 'available_count' in em:
+                                    availability += em['available_count']
+                                elif 'available' in em:
+                                    availability += em['available']
+                                else:
+                                    raise Exception('No availability counts found...')
+                        else:
+                            availability = '+'
+                    elif row['availability']['available'] in ['NO', 'no']:
+                        availability = 0
+                    elif row['availability']['available'] == 'UNKNOWN':
+                        availability = None
+                    else:
+                        availability = None
+                        raise Exception('No availability found...')
+                    writer.writerow(row_out + [availability])
+                    n_avs += 1
             except Exception as e:
                 print("[ERROR] ", sys.exc_info())
                 traceback.print_exc()
@@ -219,11 +244,12 @@ def do_date(ds, slots=False):
                 print(lib.pp(row))
                 exit()
 
-    # close availabilities file
-    f_avs.close()
-    print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))
+    if not dry_run:
+        # close availabilities file
+        f_avs.close()
+        print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))
     # write updated locations file
-    lib.write_locations(locations, locations_path)
+    lib.write_locations(locations, path_out + 'locations_univaf.csv')
     # write updated external id file
     with open(path_out + 'ids_external.csv', 'w') as f:
         writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
@@ -245,15 +271,15 @@ if __name__ == "__main__":
           ('' if args.slots else 'OUT', ', '.join(dates)))
     # parse whether to keep previous locations
     if args.clean_run:
-        print("[INFO] clean_run=True, so no old locations are being read")
+        print("[INFO] clean_run=True, so starting from an empty location database")
+        do_date("", dry_run=True)
     else:
         print("[INFO] clean_run=False, so keep previously collected location data")
         # read prior locations
-        locations = lib.read_locations(locations_path)
+        locations = lib.read_locations(path_out + 'locations_univaf.csv')
         max_key = max(locations.keys())
         # read prior external-id to numeric id mapping 
-        with open(path_out + 'ids_external.csv', 'r') as f:
-            eid_to_id2 = dict(list(csv.reader(f)))
+        eid_to_id = lib.read_external_ids(path_out + 'ids_external.csv')
     # iterate over days
     for date in dates:
         do_date(date, args.slots)

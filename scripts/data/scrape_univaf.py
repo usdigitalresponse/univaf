@@ -22,11 +22,8 @@ from time import time
 from datetime import datetime
 import lib
 
-# set path
-#path = '/home/overgoor/usdr'  # Stanford SOAL server
-path = '/tmp/af'  # local
 # current time as yyyymmdd_hhmmss
 ts = datetime.utcfromtimestamp(time()).strftime('%Y%m%d_%H%M%S')
 api_endpoint = 'http://getmyvax.org/locations'
-fn_out = '%s/data/univaf_raw/locations_%s.json' % (path, ts)
+fn_out = '%s/data/univaf_raw/locations_%s.json' % (lib.path_root, ts)
 lib.download_json_remotely(api_endpoint, fn_out)
