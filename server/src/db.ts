@@ -85,31 +85,35 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     return providerLocationAllFields.includes(key);
   });
 
-  const inserted = await db.raw(
-    `INSERT INTO provider_locations (
+  return await db.transaction(async (tx) => {
+    const inserted = await tx.raw(
+      `INSERT INTO provider_locations (
       ${sqlFields.map((x) => x[0]).join(", ")}
     )
     VALUES (${sqlFields.map((_) => "?").join(", ")})
     RETURNING id`,
-    sqlFields.map((x) => x[1] || null)
-  );
+      sqlFields.map((x) => x[1] || null)
+    );
 
-  const locationId = inserted.rows[0].id;
-  await setExternalIds(locationId, data.external_ids);
-  return await getLocationById(locationId);
+    const locationId = inserted.rows[0].id;
+    await setExternalIds(locationId, data.external_ids, tx);
+    return await getLocationById(locationId);
+  });
 }
 
 /**
  * Set external ids for a provider location.
  * Note that this will remove any existing external ids for the location.
+ * @param dbConn connection to the database (db object or transaction object)
  * @param id Provider location ID
  * @param externalIds {system: value}
  */
 export async function setExternalIds(
   id: string,
-  externalIds: { string: string }
+  externalIds: { string: string },
+  dbConn: typeof db = db
 ): Promise<void> {
-  await db("external_ids")
+  await dbConn("external_ids")
     .insert(
       Object.entries(externalIds).map(([system, value]: [string, string]) => {
         return {
@@ -149,14 +153,20 @@ export async function updateLocation(
     }
   }
 
-  await db("provider_locations").where("id", location.id).update(sqlData);
+  await db.transaction(async (tx) => {
+    await tx("provider_locations").where("id", location.id).update(sqlData);
 
-  if ("external_ids" in data) {
-    await setExternalIds(location.id, {
-      ...location.external_ids,
-      ...data.external_ids,
-    });
-  }
+    if ("external_ids" in data) {
+      await setExternalIds(
+        location.id,
+        {
+          ...location.external_ids,
+          ...data.external_ids,
+        },
+        tx
+      );
+    }
+  });
 }
 
 /**
