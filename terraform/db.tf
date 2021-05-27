@@ -12,6 +12,9 @@ module "db" {
   engine_version                = "13.1"
   allocated_storage             = var.db_size
   instance_class                = var.db_instance
-  ingress_allow_security_groups = [aws_security_group.ecs_tasks.id]
+  ingress_allow_security_groups = compact([
+    aws_security_group.ecs_tasks.id,
+    var.bastion_security_group_id
+  ])
   performance_insights_enabled  = true
 }
