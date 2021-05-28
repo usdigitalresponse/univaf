@@ -5,8 +5,6 @@
 
 // TODO
 // write a description of the script
-// figure out s3 bucket creation
-// figure out s3 configuration
 // figure out how to schedule the task
 
 const Sentry = require("@sentry/node");
@@ -23,7 +21,6 @@ const db = knex(knexConfig.development);
 
 const stream = require("stream");
 
-const S3_BUCKET_NAME = "aston-usdr-test"; // XXX work on s3 configuration in general
 const FIRST_RUN_DATE = datefns.parseISO("2021-05-14");
 
 Sentry.init();
@@ -77,7 +74,7 @@ async function deleteLoggedAvailabilityRows(upToDate) {
 async function uploadStream(s, path) {
   return s3
     .upload({
-      Bucket: S3_BUCKET_NAME,
+      Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
       Key: path,
       Body: s.pipe(stream.PassThrough()), // PassThrough supports .read(), which aws-sdk.s3 needs
     })
@@ -93,6 +90,11 @@ function pathFor(type, date) {
 }
 
 async function main() {
+  if (!process.env.DATA_SNAPSHOT_S3_BUCKET) {
+    writeLog("DATA_SNAPSHOT_S3_BUCKET environment var required");
+    return;
+  }
+
   const now = new Date();
   const runDate = datefns.sub(now, { days: 1 }); // run for previous day
 
