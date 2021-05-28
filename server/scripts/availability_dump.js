@@ -8,7 +8,6 @@
 // figure out s3 bucket creation
 // figure out s3 configuration
 // figure out how to schedule the task
-// deal with the HUGE table
 
 const Sentry = require("@sentry/node");
 const JSONStream = require("JSONStream");
@@ -66,6 +65,12 @@ async function getAvailabilityLogRunDates(upToDate) {
   return missing;
 }
 
+async function deleteLoggedAvailabilityRows(upToDate) {
+  await db("availability_log")
+    .where("checked_at", "<=", formatDate(upToDate))
+    .del();
+}
+
 async function uploadStream(s, path) {
   return s3
     .upload({
@@ -108,6 +113,9 @@ async function main() {
       pathFor("availability", logRunDate)
     );
   }
+
+  writeLog(`removing availability_log rows up to ${formatDate(runDate)}`);
+  await deleteLoggedAvailabilityRows(runDate);
 }
 
 main()
