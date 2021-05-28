@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 /**
- * XXX describe this script
+ * Script to run on a daily basis that writes out data from some db tables:
+ * provider_locations, external_ids, availability, and availability_log.
+ * The resulting ndjson files land in an S3 bucket specified by the
+ * DATA_SNAPSHOT_S3_BUCKET environment variable.
+ *
+ * For the sake of keeping the table from exploding in size, it can clear old
+ * rows out of availability_log. To enable the deletion, add the `--clear-log`
+ * option when running the command.
  */
 
 // TODO
-// write a description of the script
 // figure out how to schedule the task
 
 const Sentry = require("@sentry/node");
