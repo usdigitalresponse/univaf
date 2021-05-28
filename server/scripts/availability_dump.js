@@ -7,11 +7,9 @@
 // write a description of the script
 // figure out s3 bucket creation
 // figure out s3 configuration
-// what's the plan with external ids?
 // figure out how to schedule the task
 // deal with the HUGE table
 
-const _ = require("lodash");
 const Sentry = require("@sentry/node");
 const JSONStream = require("JSONStream");
 const datefns = require("date-fns");
@@ -35,12 +33,8 @@ function writeLog(...args) {
   console.warn(...args);
 }
 
-function getProviderLocationsStream(path) {
-  // xxx what to do about external_ids?
-  return db("provider_locations")
-    .select("*")
-    .stream()
-    .pipe(JSONStream.stringify(false));
+function getTableStream(table, path) {
+  return db(table).select("*").stream().pipe(JSONStream.stringify(false));
 }
 
 function getAvailabilityLogStream(date) {
@@ -49,7 +43,7 @@ function getAvailabilityLogStream(date) {
     .where("checked_at", ">", formatDate(date))
     .andWhere("checked_at", "<=", formatDate(datefns.add(date, { days: 1 })))
     .stream()
-    .pipe(JSONStream.stringify(false))
+    .pipe(JSONStream.stringify(false));
 }
 
 async function getAvailabilityLogRunDates(upToDate) {
@@ -91,12 +85,19 @@ function pathFor(type, date) {
 }
 
 async function main() {
-  const runDate = datefns.sub(new Date(), { days: 1 }); // run for previous day
+  const now = new Date();
+  const runDate = datefns.sub(now, { days: 1 }); // run for previous day
 
   writeLog(`writing ${pathFor("provider_locations", runDate)}`);
   await uploadStream(
-    getProviderLocationsStream(),
+    getTableStream("provider_locations"),
     pathFor("provider_locations", runDate)
+  );
+
+  writeLog(`writing ${pathFor("external_ids", runDate)}`);
+  await uploadStream(
+    getTableStream("external_ids"),
+    pathFor("external_ids", runDate)
   );
 
   const logRunDates = await getAvailabilityLogRunDates(runDate);
