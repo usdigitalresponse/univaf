@@ -47,7 +47,10 @@ function getAvailabilityLogStream(date) {
 
 async function getAvailabilityLogRunDates(upToDate) {
   const res = await s3
-    .listObjects({ Bucket: S3_BUCKET_NAME, Prefix: "availability/" })
+    .listObjects({
+      Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
+      Prefix: "availability_log/",
+    })
     .promise();
   const existingPaths = new Set(res.Contents.map((f) => f.Key));
 
@@ -58,7 +61,7 @@ async function getAvailabilityLogRunDates(upToDate) {
 
   const missing = [];
   for (date of dateRange) {
-    if (!existingPaths.has(pathFor("availability", date))) {
+    if (!existingPaths.has(pathFor("availability_log", date))) {
       missing.push(date);
     }
   }
@@ -86,31 +89,24 @@ function formatDate(date) {
 }
 
 function pathFor(type, date) {
-  return `${type}/${formatDate(date)}.ndjson`;
+  return `${type}/${type}-${formatDate(date)}.ndjson`;
 }
 
 async function main() {
   const now = new Date();
   const runDate = datefns.sub(now, { days: 1 }); // run for previous day
 
-  writeLog(`writing ${pathFor("provider_locations", runDate)}`);
-  await uploadStream(
-    getTableStream("provider_locations"),
-    pathFor("provider_locations", runDate)
-  );
-
-  writeLog(`writing ${pathFor("external_ids", runDate)}`);
-  await uploadStream(
-    getTableStream("external_ids"),
-    pathFor("external_ids", runDate)
-  );
+  for (table of ["provider_locations", "external_ids", "availability"]) {
+    writeLog(`writing ${pathFor(table, runDate)}`);
+    await uploadStream(getTableStream(table), pathFor(table, runDate));
+  }
 
   const logRunDates = await getAvailabilityLogRunDates(runDate);
   for (const logRunDate of logRunDates) {
-    writeLog(`writing ${pathFor("availability", logRunDate)}`);
+    writeLog(`writing ${pathFor("availability_log", logRunDate)}`);
     await uploadStream(
       getAvailabilityLogStream(logRunDate),
-      pathFor("availability", logRunDate)
+      pathFor("availability_log", logRunDate)
     );
   }
 
