@@ -13,9 +13,9 @@ const Sentry = require("@sentry/node");
 const JSONStream = require("JSONStream");
 const datefns = require("date-fns");
 
-var aws = require("aws-sdk");
+const aws = require("aws-sdk");
 aws.config.update({ region: "us-west-2" });
-s3 = new aws.S3({ apiVersion: "2006-03-01" });
+const s3 = new aws.S3({ apiVersion: "2006-03-01" });
 
 const knex = require("knex");
 const knexConfig = require("../knexfile");
@@ -32,7 +32,7 @@ function writeLog(...args) {
   console.warn(...args);
 }
 
-function getTableStream(table, path) {
+function getTableStream(table) {
   return db(table).select("*").stream().pipe(JSONStream.stringify(false));
 }
 
@@ -60,7 +60,7 @@ async function getAvailabilityLogRunDates(upToDate) {
   });
 
   const missing = [];
-  for (date of dateRange) {
+  for (const date of dateRange) {
     if (!existingPaths.has(pathFor("availability_log", date))) {
       missing.push(date);
     }
@@ -96,7 +96,7 @@ async function main() {
   const now = new Date();
   const runDate = datefns.sub(now, { days: 1 }); // run for previous day
 
-  for (table of ["provider_locations", "external_ids", "availability"]) {
+  for (const table of ["provider_locations", "external_ids", "availability"]) {
     writeLog(`writing ${pathFor(table, runDate)}`);
     await uploadStream(getTableStream(table), pathFor(table, runDate));
   }
