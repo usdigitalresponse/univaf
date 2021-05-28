@@ -90,6 +90,8 @@ function pathFor(type, date) {
 }
 
 async function main() {
+  const clearLog = process.argv.includes("--clear-log");
+
   if (!process.env.DATA_SNAPSHOT_S3_BUCKET) {
     writeLog("DATA_SNAPSHOT_S3_BUCKET environment var required");
     return;
@@ -112,8 +114,10 @@ async function main() {
     );
   }
 
-  writeLog(`removing availability_log rows up to ${formatDate(runDate)}`);
-  await deleteLoggedAvailabilityRows(runDate);
+  if (clearLog) {
+    writeLog(`clearing availability_log rows up to ${formatDate(runDate)}`);
+    await deleteLoggedAvailabilityRows(runDate);
+  }
 }
 
 main()
