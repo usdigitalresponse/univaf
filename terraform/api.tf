@@ -77,8 +77,6 @@ resource "aws_route53_record" "api_domain_record" {
   }
 }
 
-
-
 module "api_task" {
   source = "./modules/task"
 
@@ -102,6 +100,38 @@ module "api_task" {
   }
 
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
+}
+
+module "daily_data_snapshot_task" {
+  source = "./modules/task"
+
+  name    = "daily-data-snapshot"
+  image   = var.api_image
+  command = ["node", "scripts/availability_dump.js"]
+  role    = aws_iam_role.ecs_task_execution_role.arn
+
+  env_vars = {
+    DB_HOST                 = module.db.host
+    DB_NAME                 = module.db.db_name
+    DB_USERNAME             = var.db_user
+    DB_PASSWORD             = var.db_password
+    SENTRY_DSN              = var.api_sentry_dsn
+    DATA_SNAPSHOT_S3_BUCKET = var.data_snapshot_s3_bucket
+    AWS_ACCESS_KEY_ID       = var.data_snapshot_aws_key_id
+    AWS_SECRET_KEY          = var.data_snapshot_aws_secret_key
+    ENV                     = "production"
+  }
+}
+
+module "daily_data_snapshot_schedule" {
+  source = "./modules/schedule"
+
+  name        = module.daily_data_snapshot_task.name
+  schedule    = "cron(0 4 * * *)"
+  role        = aws_iam_role.ecs_task_execution_role.arn
+  cluster_arn = aws_ecs_cluster.main.arn
+  subnets     = aws_subnet.public.*.id
+  task_arn    = module.daily_data_snapshot_task.arn
 }
 
 resource "aws_ecs_service" "main" {
