@@ -10,16 +10,12 @@
  * option when running the command.
  */
 
-// TODO
-// figure out how to schedule the task
-
 const Sentry = require("@sentry/node");
 const JSONStream = require("JSONStream");
 const datefns = require("date-fns");
 
 const aws = require("aws-sdk");
-aws.config.update({ region: "us-west-2" });
-const s3 = new aws.S3({ apiVersion: "2006-03-01" });
+const s3 = new aws.S3();
 
 const knex = require("knex");
 const knexConfig = require("../knexfile");
