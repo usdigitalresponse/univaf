@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  return knex.schema.alterTable("availability_log", async (t) => {
+  return knex.schema.alterTable("availability_log", async () => {
     await knex.raw(
       `CREATE INDEX IF NOT EXISTS availability_log_checked_at_idx ON availability_log (checked_at)`
     );
