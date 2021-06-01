@@ -23,7 +23,7 @@ const db = knex(knexConfig.development);
 
 const stream = require("stream");
 
-const FIRST_RUN_DATE = datefns.parseISO("2021-05-14");
+const FIRST_RUN_DATE = datefns.parseISO("2021-05-19");
 
 Sentry.init();
 
