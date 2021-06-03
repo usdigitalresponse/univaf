@@ -1,5 +1,5 @@
 const nock = require("nock");
-const { queryState } = require("../src/sources/riteaid/api");
+const { checkAvailability, queryState } = require("../src/sources/riteaid/api");
 
 describe("Rite Aid Source", () => {
   const API_URL = "https://api.riteaid.com/test";
@@ -13,6 +13,7 @@ describe("Rite Aid Source", () => {
 
   afterEach(() => {
     Object.assign(process.env, _env);
+    nock.cleanAll();
   });
 
   it("throws on failing API response", async () => {
@@ -178,5 +179,11 @@ describe("Rite Aid Source", () => {
     for (let location of locations) {
       expect(location.availability.checked_at).not.toBeUndefined();
     }
+  });
+
+  it("does not attempt to load states without Rite Aid stores", async () => {
+    nock(API_URL).get("?stateCode=AK").reply(403, "uhoh");
+    const results = await checkAvailability(() => {}, { states: "AK" });
+    expect(results).toHaveLength(0);
   });
 });

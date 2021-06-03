@@ -9,6 +9,28 @@ const { Available, LocationType } = require("../../model");
 // const log = logger.child({ source: "riteaidApi" });
 const log = console;
 
+// States in which Rite Aid has stores.
+const riteAidStates = new Set([
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "ID",
+  "MA",
+  "MD",
+  "MI",
+  "NH",
+  "NJ",
+  "NV",
+  "NY",
+  "OH",
+  "OR",
+  "PA",
+  "VA",
+  "VT",
+  "WA",
+]);
+
 async function queryState(state) {
   const RITE_AID_URL = process.env["RITE_AID_URL"];
   const RITE_AID_KEY = process.env["RITE_AID_KEY"];
@@ -133,8 +155,13 @@ async function checkAvailability(handler, options) {
   } else if (options.states) {
     states = options.states.split(",").map((state) => state.trim());
   }
+  // Rite Aid only has stores in a few states, so filter down to those.
+  states = states.filter((state) => riteAidStates.has(state));
 
-  if (!states.length) console.warn("No states specified for riteAidApi");
+  if (!states.length) {
+    const statesText = Array.from(riteAidStates).join(", ");
+    console.warn(`No states set for riteAidApi (supported: ${statesText})`);
+  }
 
   let results = [];
   for (const state of states) {
