@@ -69,3 +69,16 @@ resource "aws_db_instance" "main" {
   publicly_accessible    = var.publicly_accessible
 }
 
+# Monitor critical metrics and send anomalies to SNS topic
+module "aws_db_instance_alarms" {
+  source            = "lorenzoaiello/rds-alarms/aws"
+  version           = "2.1.0"
+  db_instance_id    = aws_db_instance.main.id
+  db_instance_class = aws_db_instance.main.instance_class
+  actions_alarm     = [aws_sns_topic.alarms_sns.arn]
+  actions_ok        = [aws_sns_topic.alarms_sns.arn]
+}
+
+resource "aws_sns_topic" "alarms_sns" {
+  name = "aws-db-instance-alarms-topic"
+}
