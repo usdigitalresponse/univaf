@@ -36,6 +36,7 @@
     "ajv-formats": "^2.1.0",
     "ajv-keywords": "^5.0.0",
     "async": "3.2.0",
+    "aws-sdk": "^2.917.0",
     "bluebird": "3.7.2",
     "body-parser": "1.19.0",
     "compression": "1.7.4",
@@ -44,9 +45,12 @@
     "errorhandler": "1.5.1",
     "express": "4.17.1",
     "express-validator": "6.9.2",
+    "JSONStream": "^1.3.5",
     "knex": "^0.95.4",
     "lodash": "4.17.21",
+    "luxon": "^1.27.0",
     "pg": "^8.5.1",
+    "pg-query-stream": "^4.1.0",
     "winston": "3.3.3"
   },
   "devDependencies": {
