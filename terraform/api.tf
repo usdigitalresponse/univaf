@@ -107,7 +107,7 @@ module "daily_data_snapshot_task" {
 
   name    = "daily-data-snapshot"
   image   = var.api_image
-  command = ["node", "scripts/availability_dump.js", "--write-to-s3", "--clear-log"]
+  command = ["node", "scripts/availability_dump.js", "--write-to-s3"]
   role    = aws_iam_role.ecs_task_execution_role.arn
 
   env_vars = {
@@ -119,6 +119,7 @@ module "daily_data_snapshot_task" {
     DATA_SNAPSHOT_S3_BUCKET = var.data_snapshot_s3_bucket
     AWS_ACCESS_KEY_ID       = var.data_snapshot_aws_key_id
     AWS_SECRET_KEY          = var.data_snapshot_aws_secret_key
+    AWS_DEFAULT_REGION      = var.aws_region
     ENV                     = "production"
   }
 }
