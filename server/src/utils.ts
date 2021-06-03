@@ -1,5 +1,5 @@
 import { NextFunction, RequestHandler, Request, Response } from "express";
-import { URLSearchParams } from "url";
+import { URLSearchParams, parse as urlParse } from "url";
 import { ValueError } from "./exceptions";
 
 export const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
@@ -78,3 +78,9 @@ export const Pagination = {
     return links;
   },
 };
+
+export function urlDecodePath(req: Request, res: Response, next: NextFunction) {
+  const url = urlParse(req.url);
+  req.url = decodeURIComponent(url.pathname);
+  next();
+}
