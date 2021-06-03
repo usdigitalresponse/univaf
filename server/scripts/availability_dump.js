@@ -12,6 +12,7 @@
 
 const Sentry = require("@sentry/node");
 const aws = require("aws-sdk");
+const fs = require("fs");
 const knex = require("knex");
 const knexConfig = require("../knexfile");
 const luxon = require("luxon");
@@ -81,6 +82,33 @@ async function uploadStream(s, path) {
     .promise();
 }
 
+async function writeStreamToLocal(s, path) {
+  const writeStream = fs.createWriteStream(`output/${path}`);
+  s.pipe(writeStream);
+  return new Promise((resolve, reject) => {
+    s.on("close", resolve);
+    s.on("error", reject);
+  });
+}
+
+async function ensureLocalOutputDirs() {
+  const dirs = [
+    "provider_locations",
+    "external_ids",
+    "availability",
+    "availability_log",
+  ];
+  for (dir of dirs) {
+    try {
+      fs.mkdirSync(`output/${dir}`, { recursive: true });
+    } catch (err) {
+      if (err.code !== "EEXIST") {
+        throw err;
+      }
+    }
+  }
+}
+
 function formatDate(date) {
   return date.toFormat("yyyy-MM-dd");
 }
@@ -96,6 +124,12 @@ function eachDayOfInterval({ start, end }) {
 
 async function main() {
   const clearLog = process.argv.includes("--clear-log");
+  let writeStream = uploadStream;
+
+  if (!process.argv.includes("--write-to-s3")) {
+    writeStream = writeStreamToLocal;
+    await ensureLocalOutputDirs();
+  }
 
   if (!process.env.DATA_SNAPSHOT_S3_BUCKET) {
     writeLog("DATA_SNAPSHOT_S3_BUCKET environment var required");
@@ -107,13 +141,13 @@ async function main() {
 
   for (const table of ["provider_locations", "external_ids", "availability"]) {
     writeLog(`writing ${pathFor(table, runDate)}`);
-    await uploadStream(getTableStream(table), pathFor(table, runDate));
+    await writeStream(getTableStream(table), pathFor(table, runDate));
   }
 
   const logRunDates = await getAvailabilityLogRunDates(runDate);
   for (const logRunDate of logRunDates) {
     writeLog(`writing ${pathFor("availability_log", logRunDate)}`);
-    await uploadStream(
+    await writeStream(
       getAvailabilityLogStream(logRunDate),
       pathFor("availability_log", logRunDate)
     );
