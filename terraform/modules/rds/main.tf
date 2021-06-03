@@ -76,6 +76,7 @@ module "aws_db_instance_alarms" {
   db_instance_id    = aws_db_instance.main.id
   db_instance_class = aws_db_instance.main.instance_class
   actions_alarm     = [aws_sns_topic.alarms_sns.arn]
+  actions_ok        = [aws_sns_topic.alarms_sns.arn]
 }
 
 resource "aws_sns_topic" "alarms_sns" {
