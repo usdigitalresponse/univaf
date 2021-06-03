@@ -128,7 +128,7 @@ module "daily_data_snapshot_schedule" {
   source = "./modules/schedule"
 
   name        = module.daily_data_snapshot_task.name
-  schedule    = "cron(0 4 * * *)"
+  schedule    = "cron(0 4 * * ? *)"
   role        = aws_iam_role.ecs_task_execution_role.arn
   cluster_arn = aws_ecs_cluster.main.arn
   subnets     = aws_subnet.public.*.id
