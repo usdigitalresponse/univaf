@@ -11,21 +11,19 @@
  */
 
 const Sentry = require("@sentry/node");
-const JSONStream = require("JSONStream");
-const datefns = require("date-fns");
-
 const aws = require("aws-sdk");
-const s3 = new aws.S3();
-
+const datefns = require("date-fns");
 const knex = require("knex");
 const knexConfig = require("../knexfile");
-const db = knex(knexConfig.development);
-
+const JSONStream = require("JSONStream");
 const stream = require("stream");
 
-const FIRST_RUN_DATE = datefns.parseISO("2021-05-19");
-
 Sentry.init();
+
+const db = knex(knexConfig.development);
+const s3 = new aws.S3();
+
+const FIRST_RUN_DATE = datefns.parseISO("2021-05-19");
 
 function writeLog(...args) {
   console.warn(...args);
