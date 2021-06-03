@@ -12,9 +12,9 @@
 
 const Sentry = require("@sentry/node");
 const aws = require("aws-sdk");
-const datefns = require("date-fns");
 const knex = require("knex");
 const knexConfig = require("../knexfile");
+const luxon = require("luxon");
 const JSONStream = require("JSONStream");
 const stream = require("stream");
 
@@ -23,7 +23,7 @@ Sentry.init();
 const db = knex(knexConfig.development);
 const s3 = new aws.S3();
 
-const FIRST_RUN_DATE = datefns.parseISO("2021-05-19");
+const FIRST_RUN_DATE = luxon.DateTime.fromISO("2021-05-19", { zone: "utc" });
 
 function writeLog(...args) {
   console.warn(...args);
@@ -37,7 +37,7 @@ function getAvailabilityLogStream(date) {
   return db("availability_log")
     .select("*")
     .where("checked_at", ">", formatDate(date))
-    .andWhere("checked_at", "<=", formatDate(datefns.add(date, { days: 1 })))
+    .andWhere("checked_at", "<=", formatDate(date.plus({ days: 1 })))
     .stream()
     .pipe(JSONStream.stringify(false));
 }
@@ -51,7 +51,7 @@ async function getAvailabilityLogRunDates(upToDate) {
     .promise();
   const existingPaths = new Set(res.Contents.map((f) => f.Key));
 
-  const dateRange = datefns.eachDayOfInterval({
+  const dateRange = eachDayOfInterval({
     start: FIRST_RUN_DATE,
     end: upToDate,
   });
@@ -82,11 +82,16 @@ async function uploadStream(s, path) {
 }
 
 function formatDate(date) {
-  return date.toISOString().substr(0, 10);
+  return date.toFormat("yyyy-MM-dd");
 }
 
 function pathFor(type, date) {
   return `${type}/${type}-${formatDate(date)}.ndjson`;
+}
+
+function eachDayOfInterval({ start, end }) {
+  const interval = start.startOf("day").until(end.endOf("day"));
+  return interval.splitBy({ days: 1 }).map((d) => d.start);
 }
 
 async function main() {
@@ -97,8 +102,8 @@ async function main() {
     return;
   }
 
-  const now = new Date();
-  const runDate = datefns.sub(now, { days: 1 }); // run for previous day
+  const now = luxon.DateTime.utc();
+  const runDate = now.minus({ days: 1 }); // run for previous day
 
   for (const table of ["provider_locations", "external_ids", "availability"]) {
     writeLog(`writing ${pathFor(table, runDate)}`);
