@@ -107,7 +107,7 @@ module "daily_data_snapshot_task" {
 
   name    = "daily-data-snapshot"
   image   = var.api_image
-  command = ["node", "scripts/availability_dump.js"]
+  command = ["node", "scripts/availability_dump.js", "--write-to-s3", "--clear-log"]
   role    = aws_iam_role.ecs_task_execution_role.arn
 
   env_vars = {
