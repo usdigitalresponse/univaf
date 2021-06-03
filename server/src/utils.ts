@@ -84,12 +84,11 @@ export function urlDecodeSpecialPathChars(
   res: Response,
   next: NextFunction
 ) {
-  const REPLACE_MAP = { "%24": "$" };
+  const REPLACE_MAP: { [key: string]: string } = { "%24": "$" };
   const url = urlParse(req.url);
 
-  Object.entries(REPLACE_MAP).forEach(([code, c]) => {
-    const re = new RegExp(code, "g");
-    url.pathname = url.pathname.replace(re, c);
+  url.pathname = url.pathname.replace(/%\d\d/, (matched) => {
+    return REPLACE_MAP[matched] || matched;
   });
 
   req.url = urlFormat(url);
