@@ -91,9 +91,7 @@ module "api_task" {
 
   env_vars = {
     RELEASE     = var.api_release_version
-    # Ideally this should be `module.db.host`, but this is currently pointing
-    # at a manually restored backup.
-    DB_HOST     = "availability-db-2.cljmauino9sh.us-west-2.rds.amazonaws.com"
+    DB_HOST     = module.db.host
     DB_NAME     = module.db.db_name
     DB_USERNAME = var.db_user
     DB_PASSWORD = var.db_password
