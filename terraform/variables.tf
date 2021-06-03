@@ -115,6 +115,11 @@ variable "loader_sentry_dsn" {
   sensitive   = true
 }
 
+variable "bastion_security_group_id" {
+  description = "ID for a security group in AWS that allows access to a bastion server inside our VPC. SSHing into this server will allow access to any services that allow this security group."
+  default     = "sg-06fc404762de692db"
+}
+
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
   default     = ""
