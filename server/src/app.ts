@@ -6,7 +6,7 @@ import * as Sentry from "@sentry/node";
 import { authorizeRequest } from "./middleware";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
-import { asyncHandler, urlDecodePath } from "./utils";
+import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
 
 Sentry.init();
@@ -39,7 +39,7 @@ app.use(compression());
 app.use(bodyParser.json({ limit: "500kb" }));
 app.use(cors());
 app.use(authorizeRequest);
-app.use(urlDecodePath);
+app.use(urlDecodeSpecialPathChars);
 
 /**
  * Primary app routes.
