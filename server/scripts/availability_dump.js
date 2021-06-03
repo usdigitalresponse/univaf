@@ -98,7 +98,7 @@ async function ensureLocalOutputDirs() {
     "availability",
     "availability_log",
   ];
-  for (dir of dirs) {
+  for (const dir of dirs) {
     try {
       fs.mkdirSync(`output/${dir}`, { recursive: true });
     } catch (err) {
