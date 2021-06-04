@@ -56,8 +56,10 @@ describe("availability_log", () => {
 
   it("doesn't log if availability table was not updated", async () => {
     const location = await createLocation(TestLocation);
+    // This should log.
     await updateAvailability(location.id, TestLocation.availability);
 
+    // This should not log.
     await expect(async () => {
       await updateAvailability(location.id, TestLocation.availability);
     }).rejects.toThrow(OutOfDateError);
@@ -66,7 +68,7 @@ describe("availability_log", () => {
     expect(logWritten.length).toEqual(1);
   });
 
-  it("only writes `checked_at` if `valid_at` did not change", async () => {
+  it("logs just `checked_at` when `valid_at` was not new", async () => {
     const location = await createLocation(TestLocation);
     const availability = { ...TestLocation.availability };
     await updateAvailability(location.id, availability);
@@ -86,7 +88,7 @@ describe("availability_log", () => {
     expect(logWritten[1]).toHaveProperty("available", null);
   });
 
-  it("only writes `checked_at` and `valid_at` if data did not change", async () => {
+  it("logs just `checked_at` and `valid_at` if data fields did not change", async () => {
     const location = await createLocation(TestLocation);
     const availability = { ...TestLocation.availability };
     await updateAvailability(location.id, availability);
@@ -108,7 +110,7 @@ describe("availability_log", () => {
     expect(logWritten[1]).toHaveProperty("available_count", null);
   });
 
-  it("only writes all fields if any changed", async () => {
+  it("logs all fields if any data fields changed", async () => {
     const location = await createLocation(TestLocation);
     const availability = { ...TestLocation.availability };
     await updateAvailability(location.id, availability);
