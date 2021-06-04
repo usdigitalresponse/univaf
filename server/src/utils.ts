@@ -1,5 +1,5 @@
 import { NextFunction, RequestHandler, Request, Response } from "express";
-import { URLSearchParams } from "url";
+import { URLSearchParams, format as urlFormat, parse as urlParse } from "url";
 import { ValueError } from "./exceptions";
 
 export const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
@@ -78,3 +78,19 @@ export const Pagination = {
     return links;
   },
 };
+
+export function urlDecodeSpecialPathChars(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const REPLACE_MAP: { [key: string]: string } = { "%24": "$" };
+  const url = urlParse(req.url);
+
+  url.pathname = url.pathname.replace(/%\d\d/g, (matched) => {
+    return REPLACE_MAP[matched] || matched;
+  });
+
+  req.url = urlFormat(url);
+  next();
+}

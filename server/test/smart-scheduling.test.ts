@@ -21,6 +21,14 @@ describe("GET /smart-scheduling/$bulk-publish", () => {
     const { port } = context.server.address() as AddressInfo;
     expect(data.request).toContain(`:${port}`);
   });
+
+  it("handles a urlencoded $ in path", async () => {
+    const res = await context.client.get("smart-scheduling/%24bulk-publish");
+    expect(res.statusCode).toBe(200);
+
+    const data = res.body as any;
+    expect(data.output).toHaveLength(50 * 3); // 50 states, Location/Schedule/Slot
+  });
 });
 
 function ndjsonParse(s: string): any {
