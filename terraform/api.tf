@@ -128,12 +128,27 @@ module "daily_data_snapshot_schedule" {
   source = "./modules/schedule"
 
   name        = module.daily_data_snapshot_task.name
-  schedule    = "cron(30 4 * * ? *)"
+  schedule    = "cron(0 5 * * ? *)"
   role        = aws_iam_role.ecs_task_execution_role.arn
   cluster_arn = aws_ecs_cluster.main.arn
   subnets     = aws_subnet.public.*.id
   task_arn    = module.daily_data_snapshot_task.arn
 }
+
+resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
+  name              = "/ecs/${module.daily_data_snapshot_task.name}"
+  retention_in_days = 30
+
+  tags = {
+    Name = module.daily_data_snapshot_task.name
+  }
+}
+
+resource "aws_cloudwatch_log_stream" "data_snapshot_log_stream" {
+  name           = "${module.daily_data_snapshot_task.name}-log-stream"
+  log_group_name = aws_cloudwatch_log_group.data_snapshot_log_group.name
+}
+
 
 resource "aws_ecs_service" "main" {
   name            = "api"
