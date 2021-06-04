@@ -127,12 +127,13 @@ module "daily_data_snapshot_task" {
 module "daily_data_snapshot_schedule" {
   source = "./modules/schedule"
 
-  name        = module.daily_data_snapshot_task.name
-  schedule    = "cron(0 5 * * ? *)"
-  role        = aws_iam_role.ecs_task_execution_role.arn
-  cluster_arn = aws_ecs_cluster.main.arn
-  subnets     = aws_subnet.public.*.id
-  task_arn    = module.daily_data_snapshot_task.arn
+  name            = module.daily_data_snapshot_task.name
+  schedule        = "cron(0 5 * * ? *)"
+  role            = aws_iam_role.ecs_task_execution_role.arn
+  cluster_arn     = aws_ecs_cluster.main.arn
+  subnets         = aws_subnet.public.*.id
+  security_groups = [aws_security_group.ecs_tasks.id]
+  task_arn        = module.daily_data_snapshot_task.arn
 }
 
 resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {

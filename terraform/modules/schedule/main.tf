@@ -19,6 +19,7 @@ resource "aws_cloudwatch_event_target" "run_task" {
 
     network_configuration {
       subnets          = var.subnets
+      security_groups  = var.security_groups
       assign_public_ip = true
     }
   }
