@@ -14,6 +14,7 @@ import { UUID_PATTERN } from "./utils";
 
 import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
+import { isDeepStrictEqual } from "util";
 
 const DEFAULT_BATCH_SIZE = 2000;
 
@@ -468,19 +469,15 @@ export async function updateAvailability(
     is_public = true,
   } = data;
 
-  // Write a log of this update, but don't delay the main update waiting for it.
-  availabilityLog.write(id, data).catch((error) => {
-    console.error(error);
-    Sentry.captureException(error);
-  });
+  let loggableUpdate = data;
 
   // FIXME: Do everything here in one PG call with INSERT ... ON CONFLICT ...
   // or wrap this in a PG advisory lock to keep consistent across calls.
   const existingAvailability = await db("availability")
-    .select("id", "location_id", "source")
     .where({ location_id: id, source })
     .first();
 
+  let result;
   if (existingAvailability) {
     const rowCount = await db("availability")
       .where("id", existingAvailability.id)
@@ -503,9 +500,25 @@ export async function updateAvailability(
       throw new OutOfDateError(
         "Newer availability data has already been recorded"
       );
-    } else {
-      return { locationId: id, action: "update" };
     }
+
+    // If data was not new, don't log it all; it's a waste of space.
+    // `valid_at` may be a string, so make sure to parse before comparing.
+    if (existingAvailability.valid_at >= new Date(valid_at)) {
+      loggableUpdate = { source, checked_at };
+    } else if (
+      existingAvailability.available === available &&
+      existingAvailability.available_count == available_count &&
+      isDeepStrictEqual(existingAvailability.products, products) &&
+      isDeepStrictEqual(existingAvailability.doses, doses) &&
+      isDeepStrictEqual(existingAvailability.capacity, capacity) &&
+      isDeepStrictEqual(existingAvailability.slots, slots) &&
+      isDeepStrictEqual(existingAvailability.meta, meta)
+    ) {
+      loggableUpdate = { source, checked_at, valid_at };
+    }
+
+    result = { locationId: id, action: "update" };
   } else {
     try {
       await db("availability").insert({
@@ -522,7 +535,7 @@ export async function updateAvailability(
         meta,
         is_public,
       });
-      return { locationId: id, action: "create" };
+      result = { locationId: id, action: "create" };
     } catch (error) {
       if (error.message.includes("availability_location_id_fkey")) {
         throw new NotFoundError(`Could not find location ${id}`);
@@ -530,6 +543,14 @@ export async function updateAvailability(
       throw error;
     }
   }
+
+  // Write a log of this update, but don't wait for the result.
+  availabilityLog.write(id, loggableUpdate).catch((error) => {
+    console.error(error);
+    Sentry.captureException(error);
+  });
+
+  return result;
 }
 
 export async function listAvailability({
