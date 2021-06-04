@@ -18,6 +18,10 @@ variable "subnets" {
 
 }
 
+variable "security_groups" {
+  default = []
+}
+
 variable "task_arn" {
   description = "ARN of the task to schedule"
 }
