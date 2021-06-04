@@ -122,7 +122,7 @@ variable "bastion_security_group_id" {
 
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
-  default     = ""
+  default     = "univaf-data-snapshots"
 }
 
 variable "data_snapshot_aws_key_id" {
