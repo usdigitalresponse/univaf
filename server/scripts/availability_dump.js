@@ -35,6 +35,18 @@ function writeLog(...args) {
   console.warn(...args);
 }
 
+function removeNullPropertiesStream() {
+  return new stream.Transform({
+    objectMode: true,
+    transform(record, _encoding, callback) {
+      for (const key of Object.keys(record)) {
+        if (record[key] === null) delete record[key];
+      }
+      callback(null, record);
+    },
+  });
+}
+
 function getTableStream(table) {
   return db(table).select("*").stream().pipe(JSONStream.stringify(false));
 }
@@ -44,7 +56,9 @@ function getAvailabilityLogStream(date) {
     .select("*")
     .where("checked_at", ">", formatDate(date))
     .andWhere("checked_at", "<=", formatDate(date.plus({ days: 1 })))
+    .orderBy("checked_at", "asc")
     .stream()
+    .pipe(removeNullPropertiesStream())
     .pipe(JSONStream.stringify(false));
 }
 
