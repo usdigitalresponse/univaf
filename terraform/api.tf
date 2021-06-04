@@ -146,7 +146,7 @@ resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
 
 resource "aws_cloudwatch_log_stream" "data_snapshot_log_stream" {
   name           = "${module.daily_data_snapshot_task.name}-log-stream"
-  log_group_name = aws_cloudwatch_log_group.log_group.name
+  log_group_name = aws_cloudwatch_log_group.data_snapshot_log_group.name
 }
 
 
