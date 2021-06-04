@@ -118,7 +118,7 @@ module "daily_data_snapshot_task" {
     SENTRY_DSN              = var.api_sentry_dsn
     DATA_SNAPSHOT_S3_BUCKET = var.data_snapshot_s3_bucket
     AWS_ACCESS_KEY_ID       = var.data_snapshot_aws_key_id
-    AWS_SECRET_KEY          = var.data_snapshot_aws_secret_key
+    AWS_SECRET_ACCESS_KEY   = var.data_snapshot_aws_secret_key
     AWS_DEFAULT_REGION      = var.aws_region
     ENV                     = "production"
   }
