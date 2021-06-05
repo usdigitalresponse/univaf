@@ -43,7 +43,7 @@ describe("CVS SMART Scheduling Links API", () => {
         },
 
         location_type: "PHARMACY",
-        provider: "CVS",
+        provider: "cvs",
         name: "CVS #2004",
         address_lines: ["3117 LOCKHEED BLVD."],
         city: "ALEXANDRIA",

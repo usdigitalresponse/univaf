@@ -314,7 +314,7 @@ function createCannedUnavailableStore() {
         id: `CVS:${storeNumber}`,
         name: `CVS #${storeNumber}`,
         external_ids: { cvs: storeNumber },
-        provider: "CVS",
+        provider: "cvs",
         location_type: LocationType.pharmacy,
 
         // TODO: parse the address to get city and postal code.

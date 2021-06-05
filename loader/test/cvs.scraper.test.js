@@ -176,7 +176,7 @@ test("simple schema conversion", () => {
     name: "CVS #04259",
     position: null,
     postal_code: "07083",
-    provider: "CVS",
+    provider: "cvs",
     state: "NJ",
   });
 });
@@ -210,7 +210,7 @@ test("correctness of unavailable slots", () => {
     name: "CVS #00003",
     position: null,
     postal_code: "08088",
-    provider: "CVS",
+    provider: "cvs",
     state: "NJ",
   });
 });

@@ -90,7 +90,7 @@ describe("CVS API", () => {
         name: "CVS #2196",
         position: null,
         postal_code: "08012",
-        provider: "CVS",
+        provider: "cvs",
         state: "NJ",
       },
       {
@@ -114,7 +114,7 @@ describe("CVS API", () => {
         name: "CVS #2139",
         position: null,
         postal_code: "08857",
-        provider: "CVS",
+        provider: "cvs",
         state: "NJ",
       },
     ]);
