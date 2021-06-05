@@ -1,5 +1,6 @@
 openapi: 3.0.0
-servers: []
+servers:
+  - url: "http://localhost:3000/"
 info:
   version: "0.1.0"
   title: "COVID-19 Vaccine Appointment Availability API"
@@ -307,6 +308,15 @@ components:
             last accurate, `valid_at` reflects that time and `checked_at`
             reflects the time that source was queried. For most applications,
             you should monitor `valid_at` rather than `checked_at`.)
+          example: "2021-04-21T09:12:33.001Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: |
+            The last time the availability actually changed. For example,
+            `checked_at` and `valid_at` should usually be only minutes old, but
+            `updated_at` could be hours old if people are not actively booking
+            appointments at this location.
           example: "2021-04-21T09:12:33.001Z"
         available:
           type: string
