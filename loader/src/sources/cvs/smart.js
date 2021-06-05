@@ -216,7 +216,7 @@ function formatLocation(validTime, locationInfo) {
     id: `CVS:${id}`,
     name: `CVS #${smartLocation.id}`,
     external_ids,
-    provider: "CVS",
+    provider: "cvs",
     location_type: LocationType.pharmacy,
 
     address_lines: smartLocation.address.line,

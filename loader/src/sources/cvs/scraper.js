@@ -268,7 +268,7 @@ function convertToStandardSchema(cvsResult) {
       id: `CVS:${location.StoreNumber}`,
       name: `CVS #${location.StoreNumber}`,
       external_ids: { cvs: location.StoreNumber },
-      provider: "CVS",
+      provider: "cvs",
       location_type: LocationType.pharmacy,
 
       address_lines: [location.addressLine],
