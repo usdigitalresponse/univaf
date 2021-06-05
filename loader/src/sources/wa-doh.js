@@ -2,7 +2,7 @@
 // they have API access.
 
 const got = require("got");
-const { Available, LocationType } = require("../model");
+const { Available, LocationType, VaccineProduct } = require("../model");
 const { warn } = require("../utils");
 const { HttpApiError } = require("../exceptions");
 // XXX: Need to find an acceptable way to handle this
@@ -53,6 +53,7 @@ async function* queryState(state) {
                   city
                   state
                   zipcode
+                  county
                   latitude
                   longitude
                   description
@@ -69,6 +70,22 @@ async function* queryState(state) {
                   directions
                   updatedAt
                   rawDataSourceName
+                  accessibleParking
+                  additionalSupports
+                  commCardAvailable
+                  commCardBrailleAvailable
+                  driveupSite
+                  interpretersAvailable
+                  interpretersDesc
+                  supportUrl
+                  waitingArea
+                  walkupSite
+                  wheelchairAccessible
+                  scheduleOnline
+                  scheduleByPhone
+                  scheduleByEmail
+                  walkIn
+                  waitList
                   __typename
                 }
               }
@@ -115,7 +132,7 @@ function toAvailable(apiValue) {
  * @returns {LocationType}
  */
 function toLocationType(apiValue) {
-  let text = apiValue.toLowerCase();
+  let text = (apiValue || "").toLowerCase();
   if (text === "clinic") return LocationType.clinic;
   else if (text === "pharmacy") return LocationType.pharmacy;
   else if (text === "store") return LocationType.pharmacy;
@@ -125,14 +142,37 @@ function toLocationType(apiValue) {
 }
 
 /**
+ * Convert product name from the API to our names.
+ * @param {string} apiValue
+ * @returns {VaccineProduct}
+ */
+function toProduct(apiValue) {
+  let text = apiValue.toLowerCase();
+  if (text === "pfizer-biontech") return VaccineProduct.pfizer;
+  else if (text === "moderna") return VaccineProduct.moderna;
+  else if (text.includes("johnson & johnson")) return VaccineProduct.janssen;
+
+  console.error(`WA DoH: Unknown product type "${apiValue}"`);
+  return null;
+}
+
+/**
  * Convert a location entry from the API to our data model.
  * @param {Object} data
  * @returns {Object}
  */
 function formatLocation(data) {
+  // Skip some seemingly bad location entries.
+  if (["2255", "2755", "riteaid-5288"].includes(data.locationId)) return;
+
   let provider = data.providerName;
-  if (!provider && (data.locationName || "").toLowerCase().includes("costco")) {
-    provider = "Costco";
+  if (
+    !provider &&
+    ((data.locationName || "").toLowerCase().includes("costco") ||
+      data.rawDataSourceName === "CostcoVaccineAvailabilityFn" ||
+      data.rawDataSourceName === "CostcoLocationsFn")
+  ) {
+    provider = "costco";
   }
   if (!provider) {
     warn(`WA DoH: Unable to determine provider for ${data.locationId}`);
@@ -142,16 +182,37 @@ function formatLocation(data) {
   if (data.addressLine1) address_lines.push(data.addressLine1);
   if (data.addressLine2) address_lines.push(data.addressLine2);
 
-  const state = allStates.find((state) => state.name === data.state);
+  const state = allStates.find(
+    (state) => state.name === data.state || state.usps === data.state
+  );
   if (!state) console.error(`WA DoH: Unknown state "${data.state}"`);
+
+  const external_ids = { wa_doh: data.locationId };
+
+  // The API has IDs like `costco-293`, but the number is not a Costco ID or
+  // store number (it appears to be an ID in appointment-plus). However,
+  // the store contact e-mail DOES have the store number. :P
+  if (provider === "costco") {
+    const storeEmailMatch = data.email.match(/^w0*(\d+)phm@/i);
+    if (storeEmailMatch) {
+      external_ids.costco = storeEmailMatch[1];
+    } else {
+      console.error(
+        `WA DoH: Unable to determine Costco store number for "${data.locationid}"`
+      );
+    }
+  }
+
+  if (data.schedulingLink.toLowerCase().includes("appointment-plus")) {
+    const idMatch = data.locationId.match(/-0*(\d+)$/);
+    if (idMatch) external_ids.appointment_plus = idMatch[1];
+  }
 
   const checkTime = new Date().toISOString();
   return {
     id: data.locationId,
     name: data.locationName,
-    // The API doesn't seem to currently surface store numbers, so just declare
-    // this to be a Washington DoH ID.
-    external_ids: { wa_doh: data.locationId },
+    external_ids,
     provider,
     location_type: toLocationType(data.locationType),
 
@@ -159,17 +220,56 @@ function formatLocation(data) {
     city: data.city,
     state: state?.usps,
     postal_code: data.zipcode,
+    county: data.county || undefined,
 
     position: { latitude: data.latitude, longitude: data.longitude },
     booking_phone: data.phone,
     booking_url: data.schedulingLink,
+    info_url: data.infoLink || undefined,
     description: `${data.description}\n\n${data.directions}`.trim(),
 
+    meta: {
+      // Displayed as: "Accessible parking"
+      accessibleParking: data?.accessibleParking ?? undefined,
+      // Displayed as: "Individuals needing additional support may have family or friends accompany them"
+      additionalSupports: data?.additionalSupports ?? undefined,
+      // Communication cards are placards with symbols people can point to when
+      // they have no language in common with site staff.
+      // Displayed as: "Vaccine communication card available"
+      commCardAvailable: data?.commCardAvailable ?? undefined,
+      commCardBrailleAvailable: data?.commCardBrailleAvailable ?? undefined,
+      // Displayed as: "Drive-up services"
+      driveupSite: data?.driveupSite ?? undefined,
+      // Displayed as: "Interpreters available"
+      interpretersAvailable: data?.interpretersAvailable ?? undefined,
+      // List of supported languages as a string
+      interpretersDesc: data?.interpretersDesc ?? undefined,
+      // Displayed as: "Waiting area available"
+      waitingArea: data?.waitingArea ?? undefined,
+      // Displayed as: "Walk up services"
+      walkupSite: data?.walkupSite ?? undefined,
+      // Displayed as: "Wheelchair accessible"
+      wheelchairAccessible: data?.wheelchairAccessible ?? undefined,
+      // Displayed as: "Schedule online"
+      scheduleOnline: data?.scheduleOnline ?? undefined,
+      // Displayed as: "Schedule by phone"
+      scheduleByPhone: data?.scheduleByPhone ?? undefined,
+      // Displayed as: "Schedule by email"
+      scheduleByEmail: data?.scheduleByEmail ?? undefined,
+      // Displayed as: "Walk-ins accepted"
+      walkIn: data?.walkIn ?? undefined,
+      // This is about waitlists being *available*, not required.
+      // Displayed as: "Waitlist available"
+      waitList: data?.waitList ?? undefined,
+    },
+
     availability: {
-      source: "wa-doh",
+      source: "univaf-wa-doh",
       updated_at: data.updatedAt,
       checked_at: checkTime,
       available: toAvailable(data.vaccineAvailability),
+      products:
+        data.vaccineTypes && data.vaccineTypes.map(toProduct).filter(Boolean),
       is_public: true,
     },
   };
