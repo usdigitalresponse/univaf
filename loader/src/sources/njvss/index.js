@@ -441,6 +441,17 @@ async function checkAvailability(handler, _options) {
       description = getDescriptionDetails(location.vras_typetext || "");
     }
 
+    let location_type = LocationType.clinic;
+    const clean_name = location.name.toLowerCase();
+    if (clean_name.includes("megasite")) {
+      location_type = LocationType.massVax;
+    } else if (
+      clean_name.includes("pharmacy") ||
+      clean_name.includes("drugs")
+    ) {
+      location_type = LocationType.pharmacy;
+    }
+
     const external_ids = {
       // NJ IIS locations sometimes run multiple ad-hoc locations, and so have
       // the same IIS identifier. `njiis_covid` adds in the location name to
@@ -453,6 +464,7 @@ async function checkAvailability(handler, _options) {
     if (walmartMatch) {
       external_ids.walmart = walmartMatch[3];
       provider = PROVIDER.walmart;
+      location_type = LocationType.pharmacy;
 
       if (walmartMatch[2]) {
         external_ids.sams_club = walmartMatch[3];
@@ -463,9 +475,7 @@ async function checkAvailability(handler, _options) {
     const record = {
       external_ids,
       provider,
-      location_type: location.name.toLowerCase().includes("megasite")
-        ? LocationType.massVax
-        : LocationType.clinic,
+      location_type,
       name: location.name,
       address_lines: address.lines,
       city: address.city,
