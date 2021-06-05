@@ -1,4 +1,8 @@
-import { installTestDatabaseHooks } from "./lib";
+import {
+  asyncSleep,
+  expectDatetimeString,
+  installTestDatabaseHooks,
+} from "./lib";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { Availability } from "../src/interfaces";
 import { TestLocation } from "./fixtures";
@@ -26,6 +30,7 @@ describe("db.updateAvailability", () => {
       source: "NJVSS Export",
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
+      updated_at: expectDatetimeString(),
       meta: {},
     });
   });
@@ -68,6 +73,45 @@ describe("db.updateAvailability", () => {
     expect(availability).toHaveProperty("valid_at", time);
   });
 
+  it("should change updated_at based on data fields", async () => {
+    const location = await createLocation(TestLocation);
+    const firstChecked = new Date("2021-05-14T06:45:51.273Z");
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: firstChecked,
+      available: Availability.YES,
+    });
+
+    // `updated_at` should be set.
+    const { availability: result1 } = await getLocationById(location.id);
+    expect(result1).toHaveProperty("updated_at", expectDatetimeString());
+
+    await asyncSleep(100);
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: new Date(firstChecked.getTime() + 10000),
+      available: Availability.YES,
+    });
+
+    // `updated_at` should not have been updated.
+    const { availability: result2 } = await getLocationById(location.id);
+    expect(result2).toHaveProperty("updated_at", result1.updated_at);
+
+    await asyncSleep(100);
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: new Date(firstChecked.getTime() + 20000),
+      // Change data to cause `updated_at` to change.
+      available: Availability.NO,
+    });
+
+    // `updated_at` should have been updated.
+    const { availability: result3 } = await getLocationById(location.id);
+    expect(new Date(result3.updated_at).getTime()).toBeGreaterThan(
+      new Date(result1.updated_at).getTime()
+    );
+  });
+
   it("should accept detailed availability info", async () => {
     const location = await createLocation(TestLocation);
     const data = {
@@ -98,7 +142,10 @@ describe("db.updateAvailability", () => {
     };
     await updateAvailability(location.id, { ...data });
     const { availability } = await getLocationById(location.id);
-    expect(availability).toEqual(data);
+    expect(availability).toEqual({
+      ...data,
+      updated_at: expectDatetimeString(),
+    });
   });
 
   it("should validate slot types", async () => {
