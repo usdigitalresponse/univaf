@@ -1,7 +1,7 @@
 const nock = require("nock");
 const path = require("path");
 
-const DEFAULT_NOCKBACK_PATH = path.join(__dirname, "nockFixtures");
+const DEFAULT_NOCKBACK_PATH = path.join(__dirname, "fixtures", "nock");
 let isNockBackInitialized = false;
 
 module.exports = {
