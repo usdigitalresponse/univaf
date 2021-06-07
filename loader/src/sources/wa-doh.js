@@ -331,4 +331,4 @@ async function checkAvailability(handler, options) {
   return results;
 }
 
-module.exports = { checkAvailability, WaDohApiError };
+module.exports = { API_URL, checkAvailability, WaDohApiError };
