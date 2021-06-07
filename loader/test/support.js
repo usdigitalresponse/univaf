@@ -69,6 +69,7 @@ module.exports = {
         return await testFunction();
       } finally {
         nockDone();
+        nock.cleanAll();
       }
     };
     return [name, wrapper];
