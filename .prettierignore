@@ -6,6 +6,5 @@ coverage
 scratch.*
 *.md
 
-**/fixtures/*.json
-**/nockFixtures/*.json
+**/fixtures/**/*.json
 **/src/sources/cvs/known-stores.js
