@@ -7,4 +7,5 @@ scratch.*
 *.md
 
 **/fixtures/*.json
+**/nockFixtures/*.json
 **/src/sources/cvs/known-stores.js
