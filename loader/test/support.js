@@ -46,7 +46,7 @@ module.exports = {
    * It returns an array with the test name and function so you can use it
    * conveniently with most test runners:
    *
-   *     it(...withRecordedHttp("should do something", async () => {
+   *     it("should do something", withRecordedHttp(async () => {
    *       expect(true).toBe(true);
    *     }));
    *
@@ -60,9 +60,10 @@ module.exports = {
    * @param {() => Promise} testFunction A Promise-returning test function
    * @returns {[string, () => Promise]}
    */
-  withRecordedHttp(name, testFunction) {
+  withRecordedHttp(testFunction) {
     module.exports.setupNockBack();
-    const wrapper = async () => {
+    return async () => {
+      const name = expect.getState().currentTestName;
       const fileName = `${name.replace(/\s+/g, "_").toLowerCase()}.json`;
       const { nockDone } = await nock.back(fileName);
       try {
@@ -72,6 +73,5 @@ module.exports = {
         nock.cleanAll();
       }
     };
-    return [name, wrapper];
   },
 };

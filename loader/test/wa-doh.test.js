@@ -22,7 +22,8 @@ describe("Washington DoH API", () => {
   });
 
   it(
-    ...withRecordedHttp("should successfully format results", async () => {
+    "should successfully format results",
+    withRecordedHttp(async () => {
       const result = await checkAvailability(() => {}, { states: "PR" });
       expect(result).toEqual([
         {
