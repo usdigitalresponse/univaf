@@ -41,7 +41,7 @@ describe("Rite Aid Source", () => {
       },
       location_type: "PHARMACY",
       name: "Rite Aid #116",
-      provider: "RiteAid",
+      provider: "rite_aid",
       address_lines: ["907 North High Street"],
       city: "Millville",
       state: "NJ",

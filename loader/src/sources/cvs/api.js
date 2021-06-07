@@ -113,7 +113,7 @@ function parseApiLocation(location, lastUpdated) {
     id: `CVS:${storeNumber}`,
     name,
     external_ids: { cvs: storeNumber },
-    provider: "CVS",
+    provider: "cvs",
     location_type: LocationType.pharmacy,
 
     address_lines: [location.address],

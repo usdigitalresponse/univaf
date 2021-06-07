@@ -14,7 +14,6 @@ const {
 } = require("../../utils");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
-const NJVSS_PROVIDER = "NJVSS";
 const NJVSS_AWS_KEY_ID =
   process.env["NJVSS_AWS_KEY_ID"] || process.env["AWS_ACCESS_KEY_ID"];
 const NJVSS_AWS_SECRET_KEY =
@@ -22,6 +21,12 @@ const NJVSS_AWS_SECRET_KEY =
 const NJVSS_DATA_REGION = "us-east-1";
 const NJVSS_DATA_BUCKET = "njvss-pinpoint-reports";
 const NJVSS_DATA_KEY = "njvss-available-appointments.csv";
+
+const PROVIDER = {
+  njvss: "njvss",
+  sams: "sams_club",
+  walmart: "walmart",
+};
 
 /**
  * @typedef {Object} NjvssRecord
@@ -224,7 +229,7 @@ async function findLocationIds(locations) {
   let savedLocations;
   try {
     const client = ApiClient.fromEnv();
-    savedLocations = await client.getLocations({ provider: "NJVSS" });
+    savedLocations = await client.getLocations({ provider: PROVIDER.njvss });
   } catch (error) {
     warn(
       `Could not contact API. This may output already known locations with different IDs. (${error})`
@@ -419,6 +424,8 @@ async function checkAvailability(handler, _options) {
 
   let result = [];
   for (const location of locations) {
+    let provider = PROVIDER.njvss;
+
     // FIXME: there are some fields we should not try to update if
     // `_options.send` is true (we expect NJVSS to have messy data, and
     // manually entered data in the DB will be better). This may need some
@@ -434,23 +441,41 @@ async function checkAvailability(handler, _options) {
       description = getDescriptionDetails(location.vras_typetext || "");
     }
 
+    let location_type = LocationType.clinic;
+    const clean_name = location.name.toLowerCase();
+    if (clean_name.includes("megasite")) {
+      location_type = LocationType.massVax;
+    } else if (
+      clean_name.includes("pharmacy") ||
+      clean_name.includes("drugs")
+    ) {
+      location_type = LocationType.pharmacy;
+    }
+
     const external_ids = {
       // NJ IIS locations sometimes run multiple ad-hoc locations, and so have
       // the same IIS identifier. `njiis_covid` adds in the location name to
       // make the identifier unique.
       njiis_covid: createNjIisId(location),
     };
+
+    // Customize provider & external_ids for private providers are using NJVSS.
     const walmartMatch = location.name.match(walmartPattern);
     if (walmartMatch) {
       external_ids.walmart = walmartMatch[3];
+      provider = PROVIDER.walmart;
+      location_type = LocationType.pharmacy;
+
+      if (walmartMatch[2]) {
+        external_ids.sams_club = walmartMatch[3];
+        provider = PROVIDER.sams;
+      }
     }
 
     const record = {
       external_ids,
-      provider: NJVSS_PROVIDER,
-      location_type: location.name.toLowerCase().includes("megasite")
-        ? LocationType.massVax
-        : LocationType.clinic,
+      provider,
+      location_type,
       name: location.name,
       address_lines: address.lines,
       city: address.city,
