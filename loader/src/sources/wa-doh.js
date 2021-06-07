@@ -210,6 +210,45 @@ function formatLocation(data) {
     if (idMatch) external_ids.appointment_plus = idMatch[1];
   }
 
+  const metaFields = [
+    // Displayed as: "Accessible parking"
+    "accessibleParking",
+    // Displayed as: "Individuals needing additional support may have family or friends accompany them"
+    "additionalSupports",
+    // Communication cards are placards with symbols people can point to when
+    // they have no language in common with site staff.
+    // Displayed as: "Vaccine communication card available"
+    "commCardAvailable",
+    "commCardBrailleAvailable",
+    // Displayed as: "Drive-up services"
+    "driveupSite",
+    // Displayed as: "Interpreters available"
+    "interpretersAvailable",
+    // List of supported languages as a string
+    "interpretersDesc",
+    // Displayed as: "Waiting area available"
+    "waitingArea",
+    // Displayed as: "Walk up services"
+    "walkupSite",
+    // Displayed as: "Wheelchair accessible"
+    "wheelchairAccessible",
+    // Displayed as: "Schedule online"
+    "scheduleOnline",
+    // Displayed as: "Schedule by phone"
+    "scheduleByPhone",
+    // Displayed as: "Schedule by email"
+    "scheduleByEmail",
+    // Displayed as: "Walk-ins accepted"
+    "walkIn",
+    // This is about waitlists being *available*, not required.
+    // Displayed as: "Waitlist available"
+    "waitList",
+  ];
+  const meta = {};
+  for (const field of metaFields) {
+    if (data[field] != null) meta[field] = data[field];
+  }
+
   const checkTime = new Date().toISOString();
   return {
     id: data.locationId,
@@ -229,41 +268,7 @@ function formatLocation(data) {
     booking_url: data.schedulingLink,
     info_url: data.infoLink || undefined,
     description: `${data.description}\n\n${data.directions}`.trim(),
-
-    meta: {
-      // Displayed as: "Accessible parking"
-      accessibleParking: data?.accessibleParking ?? undefined,
-      // Displayed as: "Individuals needing additional support may have family or friends accompany them"
-      additionalSupports: data?.additionalSupports ?? undefined,
-      // Communication cards are placards with symbols people can point to when
-      // they have no language in common with site staff.
-      // Displayed as: "Vaccine communication card available"
-      commCardAvailable: data?.commCardAvailable ?? undefined,
-      commCardBrailleAvailable: data?.commCardBrailleAvailable ?? undefined,
-      // Displayed as: "Drive-up services"
-      driveupSite: data?.driveupSite ?? undefined,
-      // Displayed as: "Interpreters available"
-      interpretersAvailable: data?.interpretersAvailable ?? undefined,
-      // List of supported languages as a string
-      interpretersDesc: data?.interpretersDesc ?? undefined,
-      // Displayed as: "Waiting area available"
-      waitingArea: data?.waitingArea ?? undefined,
-      // Displayed as: "Walk up services"
-      walkupSite: data?.walkupSite ?? undefined,
-      // Displayed as: "Wheelchair accessible"
-      wheelchairAccessible: data?.wheelchairAccessible ?? undefined,
-      // Displayed as: "Schedule online"
-      scheduleOnline: data?.scheduleOnline ?? undefined,
-      // Displayed as: "Schedule by phone"
-      scheduleByPhone: data?.scheduleByPhone ?? undefined,
-      // Displayed as: "Schedule by email"
-      scheduleByEmail: data?.scheduleByEmail ?? undefined,
-      // Displayed as: "Walk-ins accepted"
-      walkIn: data?.walkIn ?? undefined,
-      // This is about waitlists being *available*, not required.
-      // Displayed as: "Waitlist available"
-      waitList: data?.waitList ?? undefined,
-    },
+    meta,
 
     availability: {
       source: "univaf-wa-doh",
