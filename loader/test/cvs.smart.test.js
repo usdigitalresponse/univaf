@@ -21,6 +21,10 @@ describe("CVS SMART Scheduling Links API", () => {
   }).toString();
   const CVS_MANIFEST_PATH = new URL(CVS_SMART_API_URL).pathname;
 
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it("should load CVS SMART API data", async () => {
     nock(CVS_BASE).get(CVS_MANIFEST_PATH).reply(200, fixtures.TestManifest);
     nock(CVS_BASE)

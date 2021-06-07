@@ -13,6 +13,10 @@ const {
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
 describe("Washington DoH API", () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it(
     ...withRecordedHttp("should successfully format results", async () => {
       const result = await checkAvailability(() => {}, { states: "PR" });
