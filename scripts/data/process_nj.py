@@ -11,7 +11,7 @@
 #
 # Usage:
 #
-#   python process_nj.py [-h] [-s START_DATE] [-e END_DATE] [-c]
+#   python process_nj.py
 #
 #
 # Todo:
@@ -91,7 +91,6 @@ for row in data_raw:
         id = row['id']
     # some locations don't have id's, can use name, but would be terribly ugly
     elif 'name' in row and row['name'] is not None:
-        #id = row['name']
         continue
     if 'name' in row and row['name'] is not None:
         name = row['name'].title()
@@ -113,8 +112,6 @@ for row in data_raw:
                 city = address.split('\n')[1]
                 address = address.split('\n')[0]
             else:
-                #print(address)
-                #exit()
                 address = None
         if 'County' in row['official']:
             county = row['official']['County']
@@ -134,14 +131,6 @@ for row in data_raw:
         'lng': None
     }
 
-
-
-
-
-
-
-
-
 # write updated locations file
 lib.write_locations(locations, path_out + 'locations_nj.csv')
 
@@ -149,6 +138,7 @@ lib.write_locations(locations, path_out + 'locations_nj.csv')
 fn_out = "%savailabilities.csv" % (path_out)
 f_avs = open(fn_out, 'w')
 writer = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+n_avs = 0
 
 # open input file
 f = open(path_raw + 'data_history', 'r')
@@ -166,8 +156,14 @@ while True:
             res = process_lines(lines)
             if res is not None:
                 writer.writerow(res)
+                n_avs += 1
             lines = []
             if line[:2] == 'co':
                 reader_on = False
         else:
             lines.append(line[:-1].strip())
+
+# close files
+f.close()
+f_avs.close()
+print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))

@@ -52,13 +52,13 @@ def read_locations(path):
     """
     locations = {}
     if os.path.exists(path):
-        with open(locations_path, 'r') as f:
+        with open(path, 'r') as f:
             reader = csv.DictReader(f, delimiter=',')
             for row in reader:
                 iid = int(row['id'])
                 locations[iid] = row
                 del locations[iid]['id']  # remove the 'id' field itself
-        print("[INFO] read %d locations from %s" % (len(locations), locations_path))
+        print("[INFO] read %d locations from %s" % (len(locations), path))
     return locations
 
 

@@ -11,7 +11,7 @@
 # available appointments per day. If the --slots (-a) flag is enbled,
 # if prints out slot-level availabilities (usually without counts).
 #
-# NOTE: checked_time is in UTC and slot_time is in local time.
+# NOTE: Both checked_time and slot_time are in UTC
 #
 #
 # Usage:
@@ -44,6 +44,7 @@ import glob
 import csv
 import traceback
 import sys
+import datetime
 import dateutil.parser
 import argparse
 import us
@@ -60,6 +61,7 @@ eid_to_id = {}
 max_key = 0
 
 
+@profile  # for profiling
 def do_date(ds, slots=False, dry_run=False):
     """
     Process a single date.
@@ -91,6 +93,10 @@ def do_date(ds, slots=False, dry_run=False):
             data_raw = json.load(f)
         for row in data_raw:
             try:
+                # deal with (now deprecated) pagination
+                if '__next__' in row:
+                    continue
+
                 # this very ugly logic disambiguates ids (like in this issue:
                 # https://github.com/usdigitalresponse/appointment-availability-infra/issues/120)
                 # convert main id, depending on API version
@@ -100,7 +106,7 @@ def do_date(ds, slots=False, dry_run=False):
                     sid = 'univaf_v0:%s' % row['id']
                 eids = ["%s:%s" % x for x in row['external_ids'].items()]
                 ids = [sid] + lib.scrub_external_ids(eids)
-                overlap = lib.intersect(ids, eid_to_id.keys())
+                overlap = [x for x in ids if x in eid_to_id.keys()]
                 # if there are new external_ids, add them to the dictionary
                 if len(overlap) != len(ids):
                     # if haven't seen any before, make new integer id
@@ -115,6 +121,15 @@ def do_date(ds, slots=False, dry_run=False):
                 # take the inter version of the canonical id
                 iid = int(eid_to_id[sid])
 
+                # extract local timezone
+                if 'time_zone' in row and row['time_zone'] is not None:
+                    timezone = row['time_zone']
+                elif 'postal_code' in row and row['postal_code'] is not None:
+                    zip = "%05d" % int(row['postal_code'][:5])
+                    timezone = zipmap[zip]
+                elif 'state' in row and row['state'] is not None:
+                    timezone = us.states.lookup(row['state']).time_zones[0]
+
                 #
                 # extract location data
                 #
@@ -126,7 +141,7 @@ def do_date(ds, slots=False, dry_run=False):
                 #if True:
                     # set fields to None by default
                     [uuid, name, provider, type, address, city, county,
-                     state, zip, lat, lng, timezone] = [None] * 12
+                     state, zip, lat, lng] = [None] * 11
                     # extract fields
                     if lib.is_uuid(row['id']):
                         uuid = row['id']
@@ -145,8 +160,6 @@ def do_date(ds, slots=False, dry_run=False):
                         county = row['county'].title()
                     if 'state' in row and row['state'] is not None:
                         state = row['state'].upper()
-                        timezone = us.states.lookup(row['state']).time_zones[0]
-                    # TODO: get timezone from data once it's there
                     if 'postal_code' in row and row['postal_code'] is not None:
                         # NOTE - this throws away information after first 5 digits
                         zip = "%05d" % int(row['postal_code'][:5])
@@ -159,8 +172,6 @@ def do_date(ds, slots=False, dry_run=False):
                         zip = address[-5:]
                         city = address.split(', ')[1]
                         address = address.split(', ')[0]
-                    if zip is not None and zip in zipmap:
-                        timezone = zipmap[zip]
                     # insert row
                     locations[iid] = {
                         'uuid': uuid,
@@ -183,12 +194,15 @@ def do_date(ds, slots=False, dry_run=False):
                 # skip if no availability data or if we're doing a dry run
                 if row['availability'] is None or dry_run:
                     continue
-                # compute local offset and UTC time for checked_at time
-                check_time_raw = dateutil.parser.parse(row['availability']['valid_at'])
-                local_tz = us.states.lookup(row['state']).time_zones[0]
-                check_time_local = check_time_raw.astimezone(pytz.timezone(local_tz))
+                # parse checked_time and convert to UTC if not already
+                t = row['availability']['valid_at']
+                if t[-5:] == '00:00'  or t[-1] == 'Z':
+                    check_time_utc = datetime.datetime.strptime(t[:19], "%Y-%m-%dT%H:%M:%S")
+                else:
+                    check_time_utc = dateutil.parser.parse(t).astimezone(pytz.timezone('UTC'))
+                # compute offset
+                check_time_local = check_time_utc.astimezone(pytz.timezone(timezone))
                 check_time_offset = int(check_time_local.utcoffset().total_seconds() / (60 * 60))
-                check_time_utc = check_time_raw.astimezone(pytz.timezone('UTC'))
                 # construct output row
                 row_out = [iid,
                            check_time_utc.strftime("%Y-%m-%d %H:%M:%S"),
@@ -199,7 +213,7 @@ def do_date(ds, slots=False, dry_run=False):
                         continue
                     for slot in row['availability']['slots']:
                         # compute local offset and UTC time for slot time
-                        slot_time_local = dateutil.parser.parse(slot['start'])
+                        slot_time_local = datetime.datetime.fromisoformat(slot['start'])
                         slot_time_offset = int(slot_time_local.utcoffset().total_seconds() / (60 * 60))
                         slot_time_utc = slot_time_local.astimezone(pytz.timezone('UTC'))
                         availability = 1 if slot['available'] == 'YES' else 0
