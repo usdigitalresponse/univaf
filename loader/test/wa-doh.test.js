@@ -17,6 +17,10 @@ describe("Washington DoH API", () => {
     nock.cleanAll();
   });
 
+  afterAll(() => {
+    nock.restore();
+  });
+
   it(
     ...withRecordedHttp("should successfully format results", async () => {
       const result = await checkAvailability(() => {}, { states: "PR" });
