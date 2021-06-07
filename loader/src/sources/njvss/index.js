@@ -229,7 +229,7 @@ async function findLocationIds(locations) {
   let savedLocations;
   try {
     const client = ApiClient.fromEnv();
-    savedLocations = await client.getLocations({ provider: "NJVSS" });
+    savedLocations = await client.getLocations({ provider: PROVIDER.njvss });
   } catch (error) {
     warn(
       `Could not contact API. This may output already known locations with different IDs. (${error})`
