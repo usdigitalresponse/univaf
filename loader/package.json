@@ -4,7 +4,7 @@
   "description": "Scripts that find COVID-19 vaccine appointment availability from various sources",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest --runInBand"
   },
   "repository": {
     "type": "git",
