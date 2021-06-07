@@ -1,6 +1,5 @@
 openapi: 3.0.0
-servers:
-  - url: "http://localhost:3000/"
+servers: []
 info:
   version: "0.1.0"
   title: "COVID-19 Vaccine Appointment Availability API"
