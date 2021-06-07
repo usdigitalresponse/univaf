@@ -1,5 +1,5 @@
 // Washington State DoH hosts data for multiple states for some providers where
-// they have API access.
+// they have API access. (In practice, this is pretty much only Costco.)
 
 const got = require("got");
 const { Available, LocationType, VaccineProduct } = require("../model");
@@ -8,7 +8,64 @@ const { HttpApiError } = require("../exceptions");
 // XXX: Need to find an acceptable way to handle this
 const allStates = require("../../../ui/src/states.json");
 
+// You can also navigate to this URL in a browser and get an interactive
+// GraphQL testing console.
 const API_URL = "https://apim-vaccs-prod.azure-api.net/open/graphql";
+const LOCATIONS_QUERY = `
+  query SearchLocations($searchInput: SearchLocationsInput) {
+    searchLocations(searchInput: $searchInput) {
+      paging { pageSize pageNum total }
+      locations {
+        locationId
+        locationName
+        locationType
+        providerId
+        providerName
+        departmentId
+        departmentName
+        addressLine1
+        addressLine2
+        city
+        state
+        zipcode
+        county
+        latitude
+        longitude
+        description
+        contactFirstName
+        contactLastName
+        fax
+        phone
+        email
+        schedulingLink
+        vaccineAvailability
+        vaccineTypes
+        infoLink
+        timeZoneId
+        directions
+        updatedAt
+        rawDataSourceName
+        accessibleParking
+        additionalSupports
+        commCardAvailable
+        commCardBrailleAvailable
+        driveupSite
+        interpretersAvailable
+        interpretersDesc
+        supportUrl
+        waitingArea
+        walkupSite
+        wheelchairAccessible
+        scheduleOnline
+        scheduleByPhone
+        scheduleByEmail
+        walkIn
+        waitList
+        __typename
+      }
+    }
+  }
+`;
 
 class WaDohApiError extends HttpApiError {
   parse(response) {
@@ -30,87 +87,32 @@ async function* queryState(state) {
   let pageNum = 1;
   let pageSize = 100;
 
-  try {
-    while (true) {
-      const body = await got({
-        method: "POST",
-        url: API_URL,
-        json: {
-          query: `
-            query SearchLocations($searchInput: SearchLocationsInput) {
-              searchLocations(searchInput: $searchInput) {
-                paging { pageSize pageNum total }
-                locations {
-                  locationId
-                  locationName
-                  locationType
-                  providerId
-                  providerName
-                  departmentId
-                  departmentName
-                  addressLine1
-                  addressLine2
-                  city
-                  state
-                  zipcode
-                  county
-                  latitude
-                  longitude
-                  description
-                  contactFirstName
-                  contactLastName
-                  fax
-                  phone
-                  email
-                  schedulingLink
-                  vaccineAvailability
-                  vaccineTypes
-                  infoLink
-                  timeZoneId
-                  directions
-                  updatedAt
-                  rawDataSourceName
-                  accessibleParking
-                  additionalSupports
-                  commCardAvailable
-                  commCardBrailleAvailable
-                  driveupSite
-                  interpretersAvailable
-                  interpretersDesc
-                  supportUrl
-                  waitingArea
-                  walkupSite
-                  wheelchairAccessible
-                  scheduleOnline
-                  scheduleByPhone
-                  scheduleByEmail
-                  walkIn
-                  waitList
-                  __typename
-                }
-              }
-            }
-          `,
-          variables: {
-            searchInput: {
-              state,
-              paging: { pageNum, pageSize },
-            },
+  while (true) {
+    const response = await got({
+      method: "POST",
+      url: API_URL,
+      responseType: "json",
+      throwHttpErrors: false,
+      json: {
+        query: LOCATIONS_QUERY,
+        variables: {
+          searchInput: {
+            state,
+            paging: { pageNum, pageSize },
           },
         },
-      }).json();
-      if (body.errors) throw new WaDohApiError({ body });
-
-      yield body.data.searchLocations.locations;
-      if (body.data.searchLocations.paging.total <= pageNum * pageSize) break;
-
-      pageNum++;
+      },
+    });
+    if (response.statusCode >= 400 || response.body.errors) {
+      throw new WaDohApiError(response);
     }
-  } catch (error) {
-    if (error instanceof got.HTTPError) {
-      throw new WaDohApiError(error.response);
-    }
-    throw error;
+
+    const data = response.body.data;
+    yield data.searchLocations.locations;
+
+    if (data.searchLocations.paging.total <= pageNum * pageSize) break;
+
+    pageNum++;
   }
 }
 
