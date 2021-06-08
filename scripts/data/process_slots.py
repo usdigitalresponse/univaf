@@ -23,6 +23,7 @@
 import pandas as pd
 from pytz import UTC
 import argparse
+import glob
 import lib
 
 # set paths
@@ -79,6 +80,26 @@ def do_date(ds):
     print("[INFO]   writing %s" % fn_out)
 
 
+def join_all():
+    """
+    Join all dates together to deal with individual checked_dates
+    """
+    fn = lib.path_root + 'data/clean/availabilities_slots_grouped_univaf.csv'
+    # read individual files
+    fns = glob.glob(path + "/availabilities_slots_grouped_2021*.csv")
+    li = [pd.read_csv(x, header=None) for x in fns]
+    DF = pd.concat(li, axis=0, ignore_index=True)
+    DF.set_axis(['id', 'slot_time', 'n', 'min', 'max', 'hod', 'dow'],
+                axis=1, inplace=True)
+    print("[INFO]   read %d records" % DF.shape[0])
+    # group by slot_time
+    DF = (DF.groupby(['id', 'slot_time', 'hod', 'dow'])
+            .agg(n=('n', sum), min=('min', min), max=('max', max))
+            .reset_index())
+    DF.to_csv(fn, index=False, header=False, date_format="%Y-%m-%d %H:%M")
+    print("[INFO]   wrote %d records to %s" % (DF.shape[0], fn))
+
+
 if __name__ == "__main__":
     # read arguments
     parser = argparse.ArgumentParser()
@@ -91,3 +112,5 @@ if __name__ == "__main__":
     # parse whether to keep previous locations
     for date in dates:
         do_date(date)
+    # join all
+    join_all()
