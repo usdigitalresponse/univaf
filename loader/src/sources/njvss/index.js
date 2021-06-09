@@ -407,7 +407,7 @@ function parseAddress(address) {
   };
 }
 
-const walmartPattern = /(walmart(\/Sams)?) #?(\d+)\s*$/i;
+const walmartPattern = /(walmart(?<sams>\/Sams)?) #?(?<storeId>\d+)\s*$/i;
 
 /**
  * Get availability for locations scheduled through NJVSS.
@@ -459,16 +459,21 @@ async function checkAvailability(handler, _options) {
       njiis_covid: createNjIisId(location),
     };
 
+    let name = location.name;
+
     // Customize provider & external_ids for private providers are using NJVSS.
     const walmartMatch = location.name.match(walmartPattern);
     if (walmartMatch) {
-      external_ids.walmart = walmartMatch[3];
-      provider = PROVIDER.walmart;
       location_type = LocationType.pharmacy;
 
-      if (walmartMatch[2]) {
-        external_ids.sams_club = walmartMatch[3];
+      if (walmartMatch.groups.sams) {
+        external_ids.sams_club = walmartMatch.groups.storeId;
         provider = PROVIDER.sams;
+        name = `Sam’s Club #${walmartMatch.groups.storeId}`;
+      } else {
+        external_ids.walmart = walmartMatch.groups.storeId;
+        provider = PROVIDER.walmart;
+        name = `Walmart #${walmartMatch.groups.storeId}`;
       }
     }
 
@@ -476,7 +481,7 @@ async function checkAvailability(handler, _options) {
       external_ids,
       provider,
       location_type,
-      name: location.name,
+      name,
       address_lines: address.lines,
       city: address.city,
       state: address.state,
