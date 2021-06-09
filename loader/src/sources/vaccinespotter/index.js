@@ -222,6 +222,33 @@ const formatters = {
       }
     }
 
+    if (store.properties.appointment_vaccine_types && !availability.products) {
+      const products = [];
+      for (const key in store.properties.appointment_vaccine_types) {
+        if (
+          key !== "unknown" &&
+          store.properties.appointment_vaccine_types[key]
+        ) {
+          products.push(key);
+        }
+      }
+      if (products.length) {
+        availability.products = products;
+      }
+    }
+
+    if (store.properties.appointment_types && !availability.doses) {
+      const doses = [];
+      for (const key in store.properties.appointment_types) {
+        if (key !== "unknown" && store.properties.appointment_types[key]) {
+          doses.push(key);
+        }
+      }
+      if (doses.length) {
+        availability.doses = doses;
+      }
+    }
+
     return {
       id,
       location_type: LocationType.pharmacy,
