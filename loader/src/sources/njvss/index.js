@@ -399,11 +399,18 @@ function parseAddress(address) {
     return { lines: [address], city: null, state: "NJ", zip: null };
   }
 
+  let zip = match[3];
+  if (zip.split("-")[0].length < 5) {
+    warn(`Invalid ZIP code in NJVSS address: "${address}"`);
+    // Set as undefined so we don't override manual fixes in the DB.
+    zip = undefined;
+  }
+
   return {
     lines: [match[1]],
     city: match[2],
     state: "NJ",
-    zip: match[3],
+    zip,
   };
 }
 
