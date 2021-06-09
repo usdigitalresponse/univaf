@@ -5,8 +5,7 @@ const got = require("got");
 const { Available, LocationType, VaccineProduct } = require("../model");
 const { warn } = require("../utils");
 const { HttpApiError } = require("../exceptions");
-// XXX: Need to find an acceptable way to handle this
-const allStates = require("../../../ui/src/states.json");
+const allStates = require("../states.json");
 
 // You can also navigate to this URL in a browser and get an interactive
 // GraphQL testing console.
@@ -85,7 +84,7 @@ class WaDohApiError extends HttpApiError {
  */
 async function* queryState(state) {
   let pageNum = 1;
-  let pageSize = 100;
+  let pageSize = 200;
 
   while (true) {
     const response = await got({
@@ -292,13 +291,9 @@ async function checkAvailability(handler, options) {
   } else if (options.states) {
     states = options.states.split(",").map((state) => state.trim());
   }
-  if (states[0] === "all") {
-    // WA doesn't support some US territories.
-    const unsupported = new Set(["AA", "AP", "AE"]);
-    states = allStates
-      .map((state) => state.usps)
-      .filter((code) => code && !unsupported.has(code));
-  }
+  // WA doesn't support some US territories.
+  const unsupported = new Set(["AA", "AP", "AE"]);
+  states = states.filter((state) => !unsupported.has(state));
 
   if (!states.length) console.error("No states specified for WA DoH");
 
