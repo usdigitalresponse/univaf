@@ -17,7 +17,6 @@ describe("CVS API", () => {
 
   afterEach(() => {
     Object.assign(process.env, _env);
-    nock.cleanAll();
   });
 
   it("throws an error if there are no credentials", async () => {

@@ -16,10 +16,6 @@ describe("Rite Aid Source", () => {
     nock.cleanAll();
   });
 
-  afterAll(() => {
-    nock.restore();
-  });
-
   it("throws on failing API response", async () => {
     nock(API_URL).get("?stateCode=NJ").reply(500, {
       Status: "ERROR",

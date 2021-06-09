@@ -17,10 +17,6 @@ describe("Washington DoH API", () => {
     nock.cleanAll();
   });
 
-  afterAll(() => {
-    nock.restore();
-  });
-
   it(
     "should successfully format results",
     withRecordedHttp(async () => {
