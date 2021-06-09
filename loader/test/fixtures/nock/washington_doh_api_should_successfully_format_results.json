@@ -10,7 +10,7 @@
                     "state": "PR",
                     "paging": {
                         "pageNum": 1,
-                        "pageSize": 100
+                        "pageSize": 200
                     }
                 }
             }

@@ -28,7 +28,7 @@ describe("Rite Aid Source", () => {
   });
 
   it("processes response correctly", async () => {
-    const apiResponse = require("./riteaid.api.test.json");
+    const apiResponse = require("./fixtures/riteaid.api.test.json");
     nock(API_URL).get("?stateCode=NJ").reply(200, apiResponse);
 
     const locations = await queryState("NJ");
