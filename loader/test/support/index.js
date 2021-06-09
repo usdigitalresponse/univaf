@@ -12,4 +12,16 @@ module.exports = {
       /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(.\d+)?(Z|[+-]\d\d:?\d\d)$/
     );
   },
+
+  /**
+   * Split up a URL into two strings: a URL for the host and the path.
+   * @param {string} url
+   * @returns {[string, string]}
+   */
+  splitHostAndPath(url) {
+    const parsedUrl = new URL(url);
+    const path = parsedUrl.pathname;
+    parsedUrl.pathname = "";
+    return [parsedUrl.href, path];
+  },
 };

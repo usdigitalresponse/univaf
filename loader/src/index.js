@@ -5,6 +5,7 @@ const sources = {
   njvss: require("./sources/njvss"),
   riteAidApi: require("./sources/riteaid/api"),
   vaccinespotter: require("./sources/vaccinespotter"),
+  waDoh: require("./sources/wa-doh"),
 };
 
 module.exports = { sources };

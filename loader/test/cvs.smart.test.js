@@ -5,7 +5,7 @@ const {
   CVS_SMART_API_URL,
 } = require("../src/sources/cvs/smart");
 const { expectDatetimeString } = require("./support");
-const fixtures = require("./cvs.smart.fixtures");
+const fixtures = require("./fixtures/cvs.smart.fixtures");
 const { Available } = require("../src/model");
 
 function toNdJson(items) {

@@ -9,6 +9,7 @@
  */
 
 const got = require("got");
+const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
 const { oneLine, warn } = require("../../utils");
 const {
@@ -53,28 +54,10 @@ const AVAILABILITY_ENDPOINT = "/immunization-status/v1/covax-availability";
  * }
  */
 
-/**
- * Represent an error from the CVS API.
- * @property {Object} details Additional details about the error.
- */
-class CvsApiError extends Error {
-  /**
-   * Create an error object for a bad response from CVS.
-   * @param {http.IncomingMessage} response
-   */
-  constructor(response) {
-    let message;
-    let details;
-    try {
-      details = JSON.parse(response.body);
-      message = `${details.statusCode} ${details.statusDescription}`;
-    } catch (_) {
-      details = { body: response.body };
-      message = `${response.statusCode} ${response.statusMessage}`;
-    }
-
-    super(message);
-    this.details = details;
+class CvsApiError extends HttpApiError {
+  parse(response) {
+    this.details = JSON.parse(response.body);
+    this.message = `${this.details.statusCode} ${this.details.statusDescription}`;
   }
 }
 

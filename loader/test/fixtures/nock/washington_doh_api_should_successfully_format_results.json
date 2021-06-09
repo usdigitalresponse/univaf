@@ -1,0 +1,152 @@
+[
+    {
+        "scope": "https://apim-vaccs-prod.azure-api.net:443",
+        "method": "POST",
+        "path": "/open/graphql",
+        "body": {
+            "query": "\n  query SearchLocations($searchInput: SearchLocationsInput) {\n    searchLocations(searchInput: $searchInput) {\n      paging { pageSize pageNum total }\n      locations {\n        locationId\n        locationName\n        locationType\n        providerId\n        providerName\n        departmentId\n        departmentName\n        addressLine1\n        addressLine2\n        city\n        state\n        zipcode\n        county\n        latitude\n        longitude\n        description\n        contactFirstName\n        contactLastName\n        fax\n        phone\n        email\n        schedulingLink\n        vaccineAvailability\n        vaccineTypes\n        infoLink\n        timeZoneId\n        directions\n        updatedAt\n        rawDataSourceName\n        accessibleParking\n        additionalSupports\n        commCardAvailable\n        commCardBrailleAvailable\n        driveupSite\n        interpretersAvailable\n        interpretersDesc\n        supportUrl\n        waitingArea\n        walkupSite\n        wheelchairAccessible\n        scheduleOnline\n        scheduleByPhone\n        scheduleByEmail\n        walkIn\n        waitList\n        __typename\n      }\n    }\n  }\n",
+            "variables": {
+                "searchInput": {
+                    "state": "PR",
+                    "paging": {
+                        "pageNum": 1,
+                        "pageSize": 200
+                    }
+                }
+            }
+        },
+        "status": 200,
+        "response": {
+            "data": {
+                "searchLocations": {
+                    "paging": {
+                        "pageSize": 100,
+                        "pageNum": 1,
+                        "total": 2
+                    },
+                    "locations": [
+                        {
+                            "locationId": "costco-625",
+                            "locationName": "Costco Caguas",
+                            "locationType": "Pharmacy",
+                            "providerId": null,
+                            "providerName": null,
+                            "departmentId": "costco-625",
+                            "departmentName": "Costco Caguas",
+                            "addressLine1": "PR #30 INTERSECCION AVENDIA",
+                            "addressLine2": "RAFAEL CORDERO BARIO",
+                            "city": "Caguas",
+                            "state": "PR",
+                            "zipcode": "PR00725",
+                            "county": null,
+                            "latitude": 18.251949,
+                            "longitude": -66.024857,
+                            "description": null,
+                            "contactFirstName": "Leticia",
+                            "contactLastName": "Ortiz Vazquez",
+                            "fax": "(787) 653-6948",
+                            "phone": "(787) 653-6929",
+                            "email": "w365phm@costco.com",
+                            "schedulingLink": "https://book.appointment-plus.com/d133yng2",
+                            "vaccineAvailability": "UNAVAILABLE",
+                            "vaccineTypes": [
+                                "Pfizer-BioNTech",
+                                "Moderna"
+                            ],
+                            "infoLink": null,
+                            "timeZoneId": "56",
+                            "directions": "",
+                            "updatedAt": "2021-06-05T19:10:58.407Z",
+                            "rawDataSourceName": "CostcoLocationsFn",
+                            "accessibleParking": null,
+                            "additionalSupports": null,
+                            "commCardAvailable": null,
+                            "commCardBrailleAvailable": null,
+                            "driveupSite": null,
+                            "interpretersAvailable": null,
+                            "interpretersDesc": null,
+                            "supportUrl": null,
+                            "waitingArea": null,
+                            "walkupSite": null,
+                            "wheelchairAccessible": null,
+                            "scheduleOnline": null,
+                            "scheduleByPhone": null,
+                            "scheduleByEmail": null,
+                            "walkIn": null,
+                            "waitList": null,
+                            "__typename": "Location"
+                        },
+                        {
+                            "locationId": "costco-621",
+                            "locationName": "Costco East Bayamon",
+                            "locationType": "Pharmacy",
+                            "providerId": null,
+                            "providerName": null,
+                            "departmentId": "costco-621",
+                            "departmentName": "Costco East Bayamon",
+                            "addressLine1": "PARQUE IND MINILAS 125 CALLE A",
+                            "addressLine2": null,
+                            "city": "Bayamon",
+                            "state": "PR",
+                            "zipcode": "PR00959",
+                            "county": null,
+                            "latitude": 18.384665,
+                            "longitude": -66.138741,
+                            "description": null,
+                            "contactFirstName": "Myrna",
+                            "contactLastName": "Ramirez-Ramos",
+                            "fax": "(787) 993-9307",
+                            "phone": "(787) 993-9310",
+                            "email": "w363phm@costco.com",
+                            "schedulingLink": "https://book.appointment-plus.com/d133yng2",
+                            "vaccineAvailability": "UNAVAILABLE",
+                            "vaccineTypes": [
+                                "Pfizer-BioNTech",
+                                "Moderna"
+                            ],
+                            "infoLink": null,
+                            "timeZoneId": "56",
+                            "directions": "",
+                            "updatedAt": "2021-06-05T19:10:58.407Z",
+                            "rawDataSourceName": "CostcoLocationsFn",
+                            "accessibleParking": null,
+                            "additionalSupports": null,
+                            "commCardAvailable": null,
+                            "commCardBrailleAvailable": null,
+                            "driveupSite": null,
+                            "interpretersAvailable": null,
+                            "interpretersDesc": null,
+                            "supportUrl": null,
+                            "waitingArea": null,
+                            "walkupSite": null,
+                            "wheelchairAccessible": null,
+                            "scheduleOnline": null,
+                            "scheduleByPhone": null,
+                            "scheduleByEmail": null,
+                            "walkIn": null,
+                            "waitList": null,
+                            "__typename": "Location"
+                        }
+                    ]
+                }
+            }
+        },
+        "rawHeaders": [
+            "Content-Length",
+            "2469",
+            "Content-Type",
+            "application/json; charset=utf-8",
+            "request-context",
+            "appId=cid-v1:30c52b7f-53a7-4d3c-821d-d43339af21cb",
+            "Access-Control-Allow-Origin",
+            "*",
+            "X-Powered-By",
+            "Express",
+            "Date",
+            "Sat, 05 Jun 2021 19:24:29 GMT",
+            "Connection",
+            "close"
+        ],
+        "responseIsBinary": false
+    }
+]
