@@ -340,11 +340,6 @@ const formatters = {
     // CVS API instead.
     return null;
   },
-
-  rite_aid() {
-    // We have a separate scraper for Rite Aid and an API upcoming.
-    return null;
-  },
 };
 
 function formatStore(store) {
