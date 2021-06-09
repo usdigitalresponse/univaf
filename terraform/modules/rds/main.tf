@@ -77,6 +77,11 @@ module "aws_db_instance_alarms" {
   db_instance_class = aws_db_instance.main.instance_class
   actions_alarm     = [aws_sns_topic.alarms_sns.arn]
   actions_ok        = [aws_sns_topic.alarms_sns.arn]
+
+  # Our basic behavior is bursty -- we send hundreds or thousands of updates
+  # in rapid succession every few minutes, so we expect to regularly go below
+  # 100% burst balance, but not *way* below.
+  disk_burst_balance_too_low_threshold = "80"
 }
 
 resource "aws_sns_topic" "alarms_sns" {
