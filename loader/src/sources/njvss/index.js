@@ -464,6 +464,7 @@ async function checkAvailability(handler, _options) {
       // the same IIS identifier. `njiis_covid` adds in the location name to
       // make the identifier unique.
       njiis_covid: createNjIisId(location),
+      njvss_res_id: location.res_id || undefined,
     };
 
     let name = location.name;
