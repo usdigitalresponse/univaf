@@ -34,7 +34,7 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./test/setup.js"
+      "./test/support/setup.js"
     ]
   }
 }
