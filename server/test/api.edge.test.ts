@@ -54,6 +54,26 @@ describe("GET /api/edge/locations", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(1);
   });
+
+  it("by default supports the old external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const [system, value] = TestLocation.external_ids[0];
+
+    const res = await context.client.get<any>("api/edge/locations");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data[0]).toHaveProperty(`external_ids.${system}`, value);
+  });
+
+  it("supports the new external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const res = await context.client.get<any>(
+      `api/edge/locations?external_id_format=v2`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data[0].external_ids).toEqual(
+      expect.arrayContaining(TestLocation.external_ids)
+    );
+  });
 });
 
 describe("GET /api/edge/locations/:id", () => {
@@ -149,6 +169,28 @@ describe("GET /api/edge/locations/:id", () => {
     res = await context.client.get<any>(`api/edge/locations/njiis:${njiisId2}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location2.id);
+  });
+
+  it("by default supports the old external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const [system, value] = TestLocation.external_ids[0];
+
+    const res = await context.client.get<any>(
+      `api/edge/locations/${location.id}`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveProperty(`external_ids.${system}`, value);
+  });
+
+  it("supports the new external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const res = await context.client.get<any>(
+      `api/edge/locations/${location.id}?external_id_format=v2`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data.external_ids).toEqual(
+      expect.arrayContaining(TestLocation.external_ids)
+    );
   });
 });
 

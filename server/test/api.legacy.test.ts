@@ -43,6 +43,15 @@ describe("GET /locations", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveLength(1);
   });
+
+  it("by default supports the old external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const [system, value] = TestLocation.external_ids[0];
+
+    const res = await context.client.get("locations");
+    expect(res.statusCode).toBe(200);
+    expect(res.body[0]).toHaveProperty(`external_ids.${system}`, value);
+  });
 });
 
 // TODO: remove this route and these tests in a subsequent test
