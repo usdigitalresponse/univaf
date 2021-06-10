@@ -17,8 +17,8 @@ import urllib.request
 from uuid import UUID
 
 
-#path_root = '/home/overgoor/usdr/'  # Stanford SOAL server
-path_root = '/tmp/af/'  # local
+# root path of where the data lives
+path_root = '/tmp/'
 
 
 def read_external_ids(path):
