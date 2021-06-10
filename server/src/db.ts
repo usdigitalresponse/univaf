@@ -437,31 +437,51 @@ export async function getExternalIdsByLocation(
   return out;
 }
 
+/**
+ * Merge multiple location availability records together.
+ * @param records List of availabilities to merge. Fields from records earlier
+ *        in the list are chosen over those from records later in the list.
+ */
 function mergeAvailabilities(
   records: LocationAvailability[]
 ): LocationAvailability {
-  const merged = Object.assign(
-    {},
-    ...records.map((record) => {
-      delete record.id;
-      delete record.location_id;
+  const merged: any = { sources: [] as string[] };
 
-      // Drop null values so everything merges correctly
-      for (const [key, value] of Object.entries(record)) {
-        if (value == null) delete (record as any)[key];
+  const baseTime = records[0].valid_at;
+  const unknownRecords: LocationAvailability[] = [];
+  const goodRecords = records.filter((record) => {
+    // Records waaaay older than other records shouldn't be included.
+    if (baseTime.getTime() - record.valid_at.getTime() > 12 * 60 * 60 * 1000) {
+      return false;
+    }
+
+    // Set unknown availability results aside to add to the end of the list.
+    if (record.available === Availability.UNKNOWN) {
+      unknownRecords.push(record);
+      return false;
+    }
+    return true;
+  });
+  goodRecords.push(...unknownRecords);
+
+  for (const record of goodRecords) {
+    for (const key in record) {
+      if (key === "id" || key === "location_id") continue;
+
+      const value = (record as any)[key];
+      if (key === "source") {
+        merged.sources.push(value);
+      } else if (merged[key] == null && value != null) {
+        merged[key] = value;
       }
-      return record;
-    })
-  );
+    }
+  }
 
   // Make sure `available` and `available_count` match up, since they could have
   // come from different records.
   if (merged.available_count && merged.available === Availability.NO) {
     merged.available_count = 0;
   }
-
-  merged.sources = records.map((x) => x.source);
-  delete merged.source;
 
   return merged;
 }
@@ -481,7 +501,7 @@ export async function getCurrentAvailabilityByLocation(
     .modify((builder) => {
       if (!includePrivate) builder.where("is_public", true);
     })
-    .orderBy(["location_id", "valid_at"]);
+    .orderBy(["location_id", { column: "valid_at", order: "desc" }]);
 
   const result = new Map<string, LocationAvailability>();
   const groups = new Map<string, LocationAvailability[]>();

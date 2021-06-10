@@ -459,7 +459,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-1", "test-system-2"],
+      sources: ["test-system-2", "test-system-1"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       available: Availability.YES,
@@ -486,7 +486,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-2", "test-system-1"],
+      sources: ["test-system-1", "test-system-2"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       available: Availability.YES,
@@ -543,7 +543,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-2", "test-system-1"],
+      sources: ["test-system-1"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       available: Availability.YES,
@@ -570,11 +570,12 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-2", "test-system-1"],
+      sources: ["test-system-1", "test-system-2"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       available: Availability.NO,
       available_count: 0,
+      products: ["pfizer", "moderna"],
     });
   });
 });

@@ -70,7 +70,7 @@ describe("GET /api/edge/locations", () => {
     let res = await context.client.get<any>("api/edge/locations");
     expect(res.body.data).toHaveLength(1);
     expect(res.body.data[0].availability).toEqual({
-      sources: ["test-system-1", "test-system-2"],
+      sources: ["test-system-2", "test-system-1"],
       checked_at: expect.any(String),
       valid_at: expect.any(String),
       available: Availability.YES,
