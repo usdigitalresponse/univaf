@@ -197,20 +197,8 @@ export async function listLocations({
   try {
     result = await db.raw(
       `
-      WITH latest_availability AS (
-        SELECT
-        rank() OVER ( PARTITION BY location_id ORDER BY valid_at DESC ),
-        *
-        FROM availability
-        ${!includePrivate ? `WHERE availability.is_public = true` : ""}
-      )
-      SELECT
-        ${fields.join(", ")},
-        json_strip_nulls(row_to_json(latest_availability.*)) availability
+      SELECT ${fields.join(", ")}
       FROM provider_locations pl
-        LEFT OUTER JOIN latest_availability
-          ON pl.id = latest_availability.location_id
-          AND latest_availability.rank < 2
       ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
       ORDER BY pl.created_at ASC, pl.id ASC
       ${limit ? `LIMIT ${limit}` : ""}
@@ -226,11 +214,18 @@ export async function listLocations({
 
   const locationIds = result.rows.map((r: any) => r.id);
   const externalIds = await getExternalIdsByLocation(locationIds);
+  const availabilities = await getCurrentAvailabilityByLocation(
+    locationIds,
+    includePrivate
+  );
 
   return result.rows.map((row: any) => {
     // The SELECT expression always creates an object; not sure if there's a
     // good way to get it to output `NULL` instead for this case.
     if (!row.position.longitude) row.position = null;
+
+    row.external_ids = externalIds[row.id] || {};
+    row.availability = availabilities.get(row.id);
 
     if (row.availability) {
       delete row.availability.id;
@@ -238,8 +233,6 @@ export async function listLocations({
       delete row.availability.is_public;
       delete row.availability.rank;
     }
-
-    row.external_ids = externalIds[row.id] || {};
 
     return row;
   });
@@ -442,6 +435,58 @@ export async function getExternalIdsByLocation(
   }
 
   return out;
+}
+
+function mergeAvailabilities(
+  records: LocationAvailability[]
+): LocationAvailability {
+  const merged = Object.assign(
+    {},
+    ...records.map((record) => {
+      // Drop null values so everything merges correctly
+      for (const [key, value] of Object.entries(record)) {
+        if (value == null) delete (record as any)[key];
+      }
+      return record;
+    })
+  );
+
+  merged.sources = records.map((x) => x.source);
+  delete merged.source;
+
+  return merged;
+}
+
+/**
+ * Returns a mapping of provider location id to external ids
+ * @param locationIds (string | string[])
+ * @returns ExternalIdsByLocation
+ */
+export async function getCurrentAvailabilityByLocation(
+  locationIds: string | string[],
+  includePrivate = false
+): Promise<Map<string, LocationAvailability>> {
+  const selectIds = Array.isArray(locationIds) ? locationIds : [locationIds];
+  const rows = await db("availability")
+    .whereIn("location_id", selectIds)
+    .modify((builder) => {
+      if (!includePrivate) builder.where("is_public", true);
+    })
+    .orderBy(["location_id", "valid_at"]);
+
+  const result = new Map<string, LocationAvailability>();
+  const groups = new Map<string, LocationAvailability[]>();
+  for (const row of rows) {
+    if (!groups.has(row.location_id)) {
+      groups.set(row.location_id, []);
+    }
+    groups.get(row.location_id).push(row);
+  }
+  for (const [id, rows] of groups.entries()) {
+    result.set(id, mergeAvailabilities(rows));
+  }
+
+  return result;
 }
 
 /**
