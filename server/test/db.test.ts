@@ -10,7 +10,7 @@ describe("db.updateAvailability", () => {
   it("should update a location's availability", async () => {
     const location = await createLocation(TestLocation);
     let freshLocation = await getLocationById(location.id);
-    expect(freshLocation.availability).toBe(null);
+    expect(freshLocation.availability).toBe(undefined);
 
     const result = await updateAvailability(
       location.id,
@@ -23,7 +23,7 @@ describe("db.updateAvailability", () => {
     availability.checked_at = new Date(availability.checked_at);
     expect(availability).toEqual({
       available: "YES",
-      source: "NJVSS Export",
+      sources: ["NJVSS Export"],
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
       changed_at: expectDatetimeString(),
@@ -66,7 +66,7 @@ describe("db.updateAvailability", () => {
       available: Availability.YES,
     });
     const { availability } = await getLocationById(location.id);
-    expect(availability).toHaveProperty("valid_at", time);
+    expect(availability).toHaveProperty("valid_at", new Date(time));
   });
 
   it("should change changed_at based on data fields", async () => {
@@ -136,6 +136,10 @@ describe("db.updateAvailability", () => {
     const { availability } = await getLocationById(location.id);
     expect(availability).toEqual({
       ...data,
+      source: undefined,
+      sources: [data.source],
+      valid_at: new Date(data.valid_at),
+      checked_at: new Date(data.checked_at),
       changed_at: expectDatetimeString(),
     });
   });
