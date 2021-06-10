@@ -30,7 +30,7 @@ describe("db.updateAvailability", () => {
       source: "NJVSS Export",
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
-      updated_at: expectDatetimeString(),
+      changed_at: expectDatetimeString(),
       meta: {},
     });
   });
@@ -73,7 +73,7 @@ describe("db.updateAvailability", () => {
     expect(availability).toHaveProperty("valid_at", time);
   });
 
-  it("should change updated_at based on data fields", async () => {
+  it("should change changed_at based on data fields", async () => {
     const location = await createLocation(TestLocation);
     const firstChecked = new Date("2021-05-14T06:45:51.273Z");
     await updateAvailability(location.id, {
@@ -82,9 +82,9 @@ describe("db.updateAvailability", () => {
       available: Availability.YES,
     });
 
-    // `updated_at` should be set.
+    // `changed_at` should be set.
     const { availability: result1 } = await getLocationById(location.id);
-    expect(result1).toHaveProperty("updated_at", expectDatetimeString());
+    expect(result1).toHaveProperty("changed_at", expectDatetimeString());
 
     await asyncSleep(100);
     await updateAvailability(location.id, {
@@ -93,22 +93,22 @@ describe("db.updateAvailability", () => {
       available: Availability.YES,
     });
 
-    // `updated_at` should not have been updated.
+    // `changed_at` should not have been updated.
     const { availability: result2 } = await getLocationById(location.id);
-    expect(result2).toHaveProperty("updated_at", result1.updated_at);
+    expect(result2).toHaveProperty("changed_at", result1.changed_at);
 
     await asyncSleep(100);
     await updateAvailability(location.id, {
       source: "test-source",
       checked_at: new Date(firstChecked.getTime() + 20000),
-      // Change data to cause `updated_at` to change.
+      // Change data to cause `changed_at` to change.
       available: Availability.NO,
     });
 
-    // `updated_at` should have been updated.
+    // `changed_at` should have been updated.
     const { availability: result3 } = await getLocationById(location.id);
-    expect(new Date(result3.updated_at).getTime()).toBeGreaterThan(
-      new Date(result1.updated_at).getTime()
+    expect(new Date(result3.changed_at).getTime()).toBeGreaterThan(
+      new Date(result1.changed_at).getTime()
     );
   });
 
@@ -144,7 +144,7 @@ describe("db.updateAvailability", () => {
     const { availability } = await getLocationById(location.id);
     expect(availability).toEqual({
       ...data,
-      updated_at: expectDatetimeString(),
+      changed_at: expectDatetimeString(),
     });
   });
 

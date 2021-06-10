@@ -98,4 +98,10 @@ export function expectDatetimeString() {
   );
 }
 
+/**
+ * Returns a promise that resolves after a set number of milliseconds.
+ *
+ * @example
+ * await asyncSleep(100);
+ */
 export const asyncSleep = promisify(setTimeout);

@@ -478,7 +478,7 @@ export async function updateAvailability(
     .first();
 
   let result;
-  let updated_at;
+  let changed_at;
   if (existingAvailability) {
     // If data was not new, don't log it all; it's a waste of space.
     // `valid_at` may be a string, so make sure to parse before comparing.
@@ -495,7 +495,7 @@ export async function updateAvailability(
     ) {
       loggableUpdate = { source, checked_at, valid_at };
     } else {
-      updated_at = new Date();
+      changed_at = new Date();
     }
 
     const rowCount = await db("availability")
@@ -513,7 +513,7 @@ export async function updateAvailability(
         checked_at,
         meta,
         is_public,
-        updated_at,
+        changed_at,
       });
 
     if (rowCount === 0) {
@@ -538,7 +538,7 @@ export async function updateAvailability(
         checked_at,
         meta,
         is_public,
-        updated_at: new Date(),
+        changed_at: checked_at,
       });
       result = { locationId: id, action: "create" };
     } catch (error) {
@@ -551,7 +551,7 @@ export async function updateAvailability(
 
   // Write a log of this update, but don't wait for the result.
   availabilityLog
-    .write(id, { ...loggableUpdate, updated_at })
+    .write(id, { ...loggableUpdate, changed_at })
     .catch((error) => {
       console.error(error);
       Sentry.captureException(error);

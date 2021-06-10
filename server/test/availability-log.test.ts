@@ -132,7 +132,7 @@ describe("availability_log", () => {
       source: availability.source,
       checked_at,
       valid_at: checked_at,
-      updated_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 10,
       products: ["moderna", "pfizer"],
