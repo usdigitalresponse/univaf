@@ -256,7 +256,6 @@ async function main(args) {
   }
 
   const locations = await Promise.all(ids.map((id) => loadLocation(id)));
-  // console.log(locations[0]);
   const plan = planMerge(...locations);
   await doMerge(plan, commit);
 
