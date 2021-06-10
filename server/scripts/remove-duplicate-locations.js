@@ -22,6 +22,7 @@
  */
 
 const Knex = require("knex");
+const util = require("util");
 
 const db = Knex({
   client: "postgresql",
@@ -220,6 +221,13 @@ function planChanges(locations, byExternalId) {
   }
 
   // Merge other data fields.
+  const doNotMerge = new Set([
+    "id",
+    "external_ids",
+    "id_old",
+    "created_at",
+    "updated_at",
+  ]);
   for (const [removableId, targetId] of toMerge.entries()) {
     const removable = locations.get(removableId);
     const target = toUpdate.get(targetId);
@@ -227,10 +235,18 @@ function planChanges(locations, byExternalId) {
     let newData = target.newData || {};
 
     for (const key in removable) {
-      if (
-        key !== "id_old" &&
-        key !== "id" &&
-        key !== "external_ids" &&
+      if (key === "meta") {
+        newData.meta = {
+          ...removable.meta,
+          ...newData.meta,
+          ...target.location.meta,
+        };
+        hasChanges = !util.isDeepStrictEqual(
+          newData.meta,
+          target.location.meta
+        );
+      } else if (
+        !doNotMerge.has(key) &&
         newData[key] == null &&
         target.location[key] == null &&
         removable[key] != null
@@ -293,11 +309,13 @@ async function doChanges(toUpdate, toMerge, persist = false) {
         }
 
         // Merge main fields of provider_locations
+        let dataToUpdate = { updated_at: new Date() };
         if (updates.newData) {
-          await trx("provider_locations")
-            .update(updates.newData)
-            .where("id", mergeTo);
+          dataToUpdate = { ...updates.newData, ...dataToUpdate };
         }
+        await trx("provider_locations")
+          .update(dataToUpdate)
+          .where("id", mergeTo);
 
         for (const from of mergeFroms) {
           // Copy newer availability entries
