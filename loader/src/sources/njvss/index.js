@@ -399,11 +399,18 @@ function parseAddress(address) {
     return { lines: [address], city: null, state: "NJ", zip: null };
   }
 
+  let zip = match[3];
+  if (zip.split("-")[0].length < 5) {
+    warn(`Invalid ZIP code in NJVSS address: "${address}"`);
+    // Set as undefined so we don't override manual fixes in the DB.
+    zip = undefined;
+  }
+
   return {
     lines: [match[1]],
     city: match[2],
     state: "NJ",
-    zip: match[3],
+    zip,
   };
 }
 
@@ -457,6 +464,7 @@ async function checkAvailability(handler, _options) {
       // the same IIS identifier. `njiis_covid` adds in the location name to
       // make the identifier unique.
       njiis_covid: createNjIisId(location),
+      njvss_res_id: location.res_id || undefined,
     };
 
     let name = location.name;
