@@ -298,6 +298,32 @@ describe("POST /api/edge/update", () => {
     });
   });
 
+  it("supports the new external_ids input format", async () => {
+    const location = await createLocation(TestLocation);
+
+    const response = await context.client.post(
+      "api/edge/update?update_location=1",
+      {
+        headers,
+        json: {
+          id: location.id,
+          external_ids: [
+            ["testid", "this is a test"],
+            ["testid2", "another test"],
+          ],
+        },
+      }
+    );
+    expect(response.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result.external_ids).toEqual({
+      ...TestLocation.external_ids,
+      testid: "this is a test",
+      testid2: "another test",
+    });
+  });
+
   it("merges new values into the existing meta field", async () => {
     const location = await createLocation(TestLocation);
 
