@@ -443,6 +443,9 @@ function mergeAvailabilities(
   const merged = Object.assign(
     {},
     ...records.map((record) => {
+      delete record.id;
+      delete record.location_id;
+
       // Drop null values so everything merges correctly
       for (const [key, value] of Object.entries(record)) {
         if (value == null) delete (record as any)[key];

@@ -1,5 +1,10 @@
 import { expectDatetimeString, installTestDatabaseHooks } from "./lib";
-import { createLocation, getLocationById, updateAvailability } from "../src/db";
+import {
+  createLocation,
+  getCurrentAvailabilityByLocation,
+  getLocationById,
+  updateAvailability,
+} from "../src/db";
 import { Availability } from "../src/interfaces";
 import { TestLocation } from "./fixtures";
 import { ValueError, NotFoundError, OutOfDateError } from "../src/exceptions";
@@ -432,5 +437,144 @@ describe("db.updateAvailability", () => {
     });
     result = await getLocationById(location.id);
     expect(result).toHaveProperty("availability.available", Availability.NO);
+  });
+});
+
+describe("db.getCurrentAvailabilityForLocations", () => {
+  it("merges all availability records", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-1", "test-system-2"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("merges availability records so that newer data wins", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.NO,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("merges availability records so that known availability wins over unknown", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.UNKNOWN,
+      available_count: 5,
+      products: ["jj"],
+    });
+    // Older, but definite.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("does not merge records from overly-divergent points in time", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    // Older, but definite.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+    });
+  });
+
+  it("ensures `available_count` is consistent with `available`", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.NO,
+    });
+    // Older, but definite.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      available: Availability.NO,
+      available_count: 0,
+    });
   });
 });
