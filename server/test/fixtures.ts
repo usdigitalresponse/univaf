@@ -8,10 +8,10 @@ import { Availability } from "../src/interfaces";
 
 export const TestLocation = {
   id: "DB053F3A-2DBD-416D-BB34-36579809CC87",
-  external_ids: {
-    njiis: "nj1234",
-    vtrcks: "456",
-  },
+  external_ids: [
+    ["njiis", "nj1234"],
+    ["vtrcks", "456"],
+  ],
   provider: "NJVSS",
   location_type: "mass_vax",
   name: "Gloucester County Megasite",
@@ -42,12 +42,12 @@ export const TestLocation = {
 
 export const TestLocation2 = {
   id: "0cd44819-4761-45f3-8544-cf1793310d31",
-  external_ids: {
-    njiis: "nj5678",
-    vtrcks: "789",
-    rite_aid: "576",
-    univaf_v0: "rite_aid:576",
-  },
+  external_ids: [
+    ["njiis", "nj5678"],
+    ["vtrcks", "789"],
+    ["rite_aid", "576"],
+    ["univaf_v0", "rite_aid:576"],
+  ],
   provider: "RiteAid",
   location_type: "PHARMACY",
   name: "Rite Aid #576",

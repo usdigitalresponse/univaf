@@ -2,6 +2,7 @@ import { strict as assert } from "assert";
 import {
   Availability,
   AvailabilityInput,
+  ExternalIdList,
   Position,
   ProviderLocation,
   LocationAvailability,
@@ -107,16 +108,16 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
  * Note that this will remove any existing external ids for the location.
  * @param dbConn connection to the database (db object or transaction object)
  * @param id Provider location ID
- * @param externalIds {system: value}
+ * @param externalIds [[system: value]]
  */
 export async function setExternalIds(
   id: string,
-  externalIds: { string: string },
+  externalIds: ExternalIdList,
   dbConn: typeof db = db
 ): Promise<void> {
   await dbConn("external_ids")
     .insert(
-      Object.entries(externalIds).map(([system, value]: [string, string]) => {
+      externalIds.map(([system, value]: [string, string]) => {
         return {
           provider_location_id: id,
           system,
@@ -160,10 +161,7 @@ export async function updateLocation(
     if ("external_ids" in data) {
       await setExternalIds(
         location.id,
-        {
-          ...location.external_ids,
-          ...data.external_ids,
-        },
+        (location.external_ids || []).concat(data.external_ids),
         tx
       );
     }
@@ -239,7 +237,7 @@ export async function listLocations({
       delete row.availability.rank;
     }
 
-    row.external_ids = externalIds[row.id] || {};
+    row.external_ids = externalIds[row.id] || [];
 
     return row;
   });
@@ -360,14 +358,14 @@ export async function getLocationById(
  * @returns ProviderLocation | undefined
  */
 export async function getLocationByExternalIds(
-  externalIds: { [k: string]: string },
+  externalIds: ExternalIdList,
   { includePrivate = false, includeExternalIds = false } = {}
 ): Promise<ProviderLocation | undefined> {
   // Some IDs are not unique enough to identify a single location (e.g.
   // VTrckS PINs), so remove them from the set of external IDs to query.
   // (It's a bit of a historical mistake that these are here instead of in
   // the `meta` field.)
-  const queryableIds = Object.entries(externalIds).filter(([system, _]) => {
+  const queryableIds = externalIds.filter(([system, _]) => {
     return system !== "vtrcks";
   });
 
@@ -416,7 +414,7 @@ export async function getLocationByExternalIds(
 }
 
 interface ExternalIdsByLocation {
-  [locationId: string]: { [system: string]: string };
+  [locationId: string]: ExternalIdList;
 }
 /**
  * Returns a mapping of provider location id to external ids
@@ -435,10 +433,10 @@ export async function getExternalIdsByLocation(
   const out: ExternalIdsByLocation = {};
   for (const row of rows) {
     if (!(row.provider_location_id in out)) {
-      out[row.provider_location_id] = {};
+      out[row.provider_location_id] = [];
     }
 
-    out[row.provider_location_id][row.system] = row.value;
+    out[row.provider_location_id].push([row.system, row.value]);
   }
 
   return out;

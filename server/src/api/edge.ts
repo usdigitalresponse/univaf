@@ -3,6 +3,7 @@
 import { Request, Response } from "express";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
+import { ExternalIdList } from "../interfaces";
 import { AppRequest } from "../middleware";
 import { Pagination, UUID_PATTERN } from "../utils";
 
@@ -152,7 +153,7 @@ export const getById = async (req: AppRequest, res: Response) => {
   const m = id.match(EXTERNAL_ID_PATTERN);
   if (m) {
     provider = await db.getLocationByExternalIds(
-      { [m.groups.system]: m.groups.value },
+      [[m.groups.system, m.groups.value]],
       { includePrivate, includeExternalIds: true }
     );
   }
@@ -177,6 +178,9 @@ function promoteFromMeta(data: any, field: string) {
 
 /**
  * Updates a given location's availability
+ * update supports two different formats for req.body.external_ids:
+ *  - a dictionary, e.g. {"sys1": "val1", "sys2": "val2"}
+ *  - a list of lists of strings e.g. [["sys1", "val1"], ["sys2", "val2"]]
  *
  * TODO: add some sort of auth/key
  * @param req
@@ -187,7 +191,7 @@ export const update = async (req: AppRequest, res: Response) => {
     return sendError(res, "Not authorized to update data", 403);
   }
 
-  const data = req.body;
+  let data = req.body;
 
   if (
     !data.id &&
@@ -198,6 +202,10 @@ export const update = async (req: AppRequest, res: Response) => {
       "You must set `id` or `external_ids` in the data",
       422
     );
+  }
+
+  if (data.external_ids && !Array.isArray(data.external_ids)) {
+    data = { ...data, external_ids: Object.entries(data.external_ids) };
   }
 
   const result: any = { location: { action: null } };

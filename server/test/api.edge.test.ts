@@ -3,9 +3,13 @@ import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { TestLocation, TestLocation2 } from "./fixtures";
-import { Availability } from "../src/interfaces";
+import { Availability, ExternalIdList } from "../src/interfaces";
 
 installTestDatabaseHooks();
+
+function systemValue(externalIds: ExternalIdList, system: string): string {
+  return Object.fromEntries(externalIds)[system];
+}
 
 describe("GET /api/edge/locations", () => {
   const context = useServerForTests(app);
@@ -79,7 +83,7 @@ describe("GET /api/edge/locations/:id", () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
 
-    const externalId = Object.entries(TestLocation.external_ids)[0];
+    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.get<any>(
       `api/edge/locations/${externalId[0]}:${externalId[1]}`
@@ -101,7 +105,7 @@ describe("GET /api/edge/locations/:id", () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
 
-    const externalId = Object.entries(TestLocation.external_ids)[0];
+    const externalId = TestLocation.external_ids[0];
 
     let res = await context.client.get<any>(
       `api/edge/locations/thisthing:doesntexist`
@@ -135,15 +139,14 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(2);
 
-    res = await context.client.get<any>(
-      `api/edge/locations/njiis:${TestLocation.external_ids.njiis}`
-    );
+    const njiisId = systemValue(TestLocation.external_ids, "njiis");
+
+    res = await context.client.get<any>(`api/edge/locations/njiis:${njiisId}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location1.id);
 
-    res = await context.client.get<any>(
-      `api/edge/locations/njiis:${TestLocation2.external_ids.njiis}`
-    );
+    const njiisId2 = systemValue(TestLocation2.external_ids, "njiis");
+    res = await context.client.get<any>(`api/edge/locations/njiis:${njiisId2}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location2.id);
   });
@@ -220,7 +223,7 @@ describe("POST /api/edge/update", () => {
   it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
-    const externalId = Object.entries(TestLocation.external_ids)[0];
+    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
@@ -241,7 +244,7 @@ describe("POST /api/edge/update", () => {
   it("updates location metadata based on `external_ids` if `id` is not in update data", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
-    const externalId = Object.entries(TestLocation.external_ids)[0];
+    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
@@ -266,7 +269,7 @@ describe("POST /api/edge/update", () => {
       headers,
       json: {
         external_ids: {
-          vtrcks: TestLocation.external_ids.vtrcks,
+          vtrcks: systemValue(TestLocation.external_ids, "vtrcks"),
         },
         name: newName,
       },
@@ -292,8 +295,8 @@ describe("POST /api/edge/update", () => {
     expect(response.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
-    expect(result.external_ids).toEqual({
-      ...TestLocation.external_ids,
+    expect(Object.fromEntries(result.external_ids)).toEqual({
+      ...Object.fromEntries(TestLocation.external_ids),
       testid: "this is a test",
     });
   });
@@ -317,8 +320,8 @@ describe("POST /api/edge/update", () => {
     expect(response.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
-    expect(result.external_ids).toEqual({
-      ...TestLocation.external_ids,
+    expect(Object.fromEntries(result.external_ids)).toEqual({
+      ...Object.fromEntries(TestLocation.external_ids),
       testid: "this is a test",
       testid2: "another test",
     });
