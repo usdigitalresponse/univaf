@@ -309,12 +309,11 @@ async function doChanges(toUpdate, toMerge, persist = false) {
         }
 
         // Merge main fields of provider_locations
-        let dataToUpdate = { updated_at: new Date() };
-        if (updates.newData) {
-          dataToUpdate = { ...updates.newData, ...dataToUpdate };
-        }
         await trx("provider_locations")
-          .update(dataToUpdate)
+          .update({
+            ...updates.newData,
+            updated_at: new Date(),
+          })
           .where("id", mergeTo);
 
         for (const from of mergeFroms) {
