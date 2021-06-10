@@ -22,6 +22,7 @@
  */
 
 const Knex = require("knex");
+const util = require("util");
 
 const db = Knex({
   client: "postgresql",
@@ -200,6 +201,7 @@ function planChanges(locations, byExternalId) {
     toUpdate.set(kept.id, {
       location: kept,
       newIds: dedupeNewExternalIds(allIds, kept.id),
+      newData: null,
     });
   }
 
@@ -216,6 +218,45 @@ function planChanges(locations, byExternalId) {
       }
       seenPairs.add(pair);
     }
+  }
+
+  // Merge other data fields.
+  const doNotMerge = new Set([
+    "id",
+    "external_ids",
+    "id_old",
+    "created_at",
+    "updated_at",
+  ]);
+  for (const [removableId, targetId] of toMerge.entries()) {
+    const removable = locations.get(removableId);
+    const target = toUpdate.get(targetId);
+    let hasChanges = false;
+    let newData = target.newData || {};
+
+    for (const key in removable) {
+      if (key === "meta") {
+        newData.meta = {
+          ...removable.meta,
+          ...newData.meta,
+          ...target.location.meta,
+        };
+        hasChanges = !util.isDeepStrictEqual(
+          newData.meta,
+          target.location.meta
+        );
+      } else if (
+        !doNotMerge.has(key) &&
+        newData[key] == null &&
+        target.location[key] == null &&
+        removable[key] != null
+      ) {
+        newData[key] = removable[key];
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) target.newData = newData;
   }
 
   return { toUpdate, toMerge };
@@ -247,6 +288,9 @@ async function doChanges(toUpdate, toMerge, persist = false) {
       for (const newId of updates.newIds) {
         writeLog("  Adding ID:", JSON.stringify(newId));
       }
+      if (updates.newData) {
+        writeLog("  Updating fields:", JSON.stringify(updates.newData));
+      }
     }
 
     if (persist) {
@@ -263,6 +307,14 @@ async function doChanges(toUpdate, toMerge, persist = false) {
             .onConflict(["provider_location_id", "system"])
             .merge();
         }
+
+        // Merge main fields of provider_locations
+        await trx("provider_locations")
+          .update({
+            ...updates.newData,
+            updated_at: new Date(),
+          })
+          .where("id", mergeTo);
 
         for (const from of mergeFroms) {
           // Copy newer availability entries
