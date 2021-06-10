@@ -454,6 +454,12 @@ function mergeAvailabilities(
     })
   );
 
+  // Make sure `available` and `available_count` match up, since they could have
+  // come from different records.
+  if (merged.available_count && merged.available === Availability.NO) {
+    merged.available_count = 0;
+  }
+
   merged.sources = records.map((x) => x.source);
   delete merged.source;
 
