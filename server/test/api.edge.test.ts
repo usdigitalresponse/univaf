@@ -4,6 +4,7 @@ import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { TestLocation, TestLocation2 } from "./fixtures";
 import { Availability } from "../src/interfaces";
+import { expectDatetimeString } from "../../loader/test/support";
 
 installTestDatabaseHooks();
 
@@ -49,6 +50,145 @@ describe("GET /api/edge/locations", () => {
     res = await context.client.get<any>("api/edge/locations?provider=NJVSS");
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(1);
+  });
+
+  describe("availability", () => {
+    it("shows the result of merging all availability records", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.YES,
+        available_count: 5,
+      });
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(),
+        available: Availability.YES,
+        products: ["pfizer", "moderna"],
+      });
+
+      let res = await context.client.get<any>("api/edge/locations");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].availability).toEqual({
+        sources: ["test-system-2", "test-system-1"],
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        available: Availability.YES,
+        available_count: 5,
+        products: ["pfizer", "moderna"],
+      });
+    });
+
+    it("merges availability records so that newer data wins", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.YES,
+        available_count: 5,
+      });
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(Date.now() - 10000),
+        available: Availability.NO,
+        products: ["pfizer", "moderna"],
+      });
+
+      let res = await context.client.get<any>("api/edge/locations");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].availability).toEqual({
+        sources: ["test-system-1", "test-system-2"],
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        available: Availability.YES,
+        available_count: 5,
+        products: ["pfizer", "moderna"],
+      });
+    });
+
+    it("merges availability records so that known availability wins over unknown", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.UNKNOWN,
+        available_count: 5,
+        products: ["jj"],
+      });
+      // Older, but definite.
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(Date.now() - 10000),
+        available: Availability.YES,
+        products: ["pfizer", "moderna"],
+      });
+
+      let res = await context.client.get<any>("api/edge/locations");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].availability).toEqual({
+        sources: ["test-system-1", "test-system-2"],
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        available: Availability.YES,
+        available_count: 5,
+        products: ["pfizer", "moderna"],
+      });
+    });
+
+    it("does not merge records from overly-divergent points in time", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.YES,
+        available_count: 5,
+      });
+      // Older, but definite.
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        available: Availability.YES,
+        products: ["pfizer", "moderna"],
+      });
+
+      let res = await context.client.get<any>("api/edge/locations");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].availability).toEqual({
+        sources: ["test-system-1", "test-system-2"],
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        available: Availability.YES,
+        available_count: 5,
+      });
+    });
+
+    it("ensures `available_count` is consistent with `available`", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.NO,
+      });
+      // Older, but definite.
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(Date.now() - 10000),
+        available: Availability.YES,
+        available_count: 5,
+        products: ["pfizer", "moderna"],
+      });
+
+      let res = await context.client.get<any>("api/edge/locations");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].availability).toEqual({
+        sources: ["test-system-1", "test-system-2"],
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        available: Availability.NO,
+        available_count: 0,
+      });
+    });
   });
 });
 
