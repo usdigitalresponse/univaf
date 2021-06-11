@@ -23,7 +23,7 @@ describe("GET /api/edge/locations", () => {
 
     expect(res.body.data[0]).toHaveProperty(
       "external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -95,7 +95,7 @@ describe("GET /api/edge/locations/:id", () => {
     );
     expect(res.body).toHaveProperty(
       "data.external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -117,7 +117,7 @@ describe("GET /api/edge/locations/:id", () => {
     );
     expect(res.body).toHaveProperty(
       "data.external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -144,7 +144,7 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.body).toHaveProperty("data.id", location.id);
     expect(res.body).toHaveProperty(
       "data.external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 

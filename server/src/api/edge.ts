@@ -93,7 +93,9 @@ export async function listStream(req: AppRequest, res: Response) {
       if (!started) {
         writeStart();
       }
-      await write(JSON.stringify(location) + "\n");
+      await write(
+        JSON.stringify(req.versioned.formatLocation(location)) + "\n"
+      );
     }
 
     // Stop if we've been reading for too long and write an error entry.
@@ -128,7 +130,7 @@ export const list = async (req: AppRequest, res: Response) => {
 
   return res.json({
     links: Pagination.createLinks(req, { next: batch.next }),
-    data: batch.locations,
+    data: batch.locations.map((l) => req.versioned.formatLocation(l)),
   });
 };
 
@@ -165,7 +167,7 @@ export const getById = async (req: AppRequest, res: Response) => {
   if (!provider) {
     return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
-    return res.json({ data: provider });
+    return res.json({ data: req.versioned.formatLocation(provider) });
   }
 };
 
