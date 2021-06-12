@@ -173,8 +173,9 @@ async function main() {
   }
 
   if (clearLog) {
-    writeLog(`clearing availability_log rows up to ${formatDate(runDate)}`);
-    await deleteLoggedAvailabilityRows(runDate);
+    const clearCutoff = runDate.minus({ days: 7 });
+    writeLog(`clearing availability_log rows up to ${formatDate(clearCutoff)}`);
+    await deleteLoggedAvailabilityRows(clearCutoff);
   }
 }
 
