@@ -1,8 +1,4 @@
-import {
-  asyncSleep,
-  expectDatetimeString,
-  installTestDatabaseHooks,
-} from "./lib";
+import { expectDatetimeString, installTestDatabaseHooks } from "./lib";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { Availability } from "../src/interfaces";
 import { TestLocation } from "./fixtures";
@@ -86,26 +82,22 @@ describe("db.updateAvailability", () => {
     const { availability: result1 } = await getLocationById(location.id);
     expect(result1).toHaveProperty("changed_at", expectDatetimeString());
 
-    await asyncSleep(100);
+    // An update with different `checked_at` but same data should leave
+    // `changed_at` unchanged.
     await updateAvailability(location.id, {
       source: "test-source",
       checked_at: new Date(firstChecked.getTime() + 10000),
       available: Availability.YES,
     });
-
-    // `changed_at` should not have been updated.
     const { availability: result2 } = await getLocationById(location.id);
     expect(result2).toHaveProperty("changed_at", result1.changed_at);
 
-    await asyncSleep(100);
+    // Send different `available` value, causing `changed_at` to change.
     await updateAvailability(location.id, {
       source: "test-source",
       checked_at: new Date(firstChecked.getTime() + 20000),
-      // Change data to cause `changed_at` to change.
       available: Availability.NO,
     });
-
-    // `changed_at` should have been updated.
     const { availability: result3 } = await getLocationById(location.id);
     expect(new Date(result3.changed_at).getTime()).toBeGreaterThan(
       new Date(result1.changed_at).getTime()

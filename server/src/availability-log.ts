@@ -1,9 +1,9 @@
 import Knex from "knex";
 import { loadDbConfig } from "./config";
-import { AvailabilityInput, LocationAvailability } from "./interfaces";
+import { AvailabilityInput } from "./interfaces";
 
 interface AvailabilityLog extends AvailabilityInput {
-  changed_at: Date;
+  changed_at: Date | string;
 }
 
 export const availabilityDb = Knex(loadDbConfig()); // for now, store with the rest of our data

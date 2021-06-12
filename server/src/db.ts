@@ -495,7 +495,7 @@ export async function updateAvailability(
     ) {
       loggableUpdate = { source, checked_at, valid_at };
     } else {
-      changed_at = new Date();
+      changed_at = valid_at;
     }
 
     const rowCount = await db("availability")
@@ -538,7 +538,7 @@ export async function updateAvailability(
         checked_at,
         meta,
         is_public,
-        changed_at: checked_at,
+        changed_at: valid_at,
       });
       result = { locationId: id, action: "create" };
     } catch (error) {

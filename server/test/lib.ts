@@ -97,11 +97,3 @@ export function expectDatetimeString() {
     /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(.\d+)?(Z|[+-]\d\d:?\d\d)$/
   );
 }
-
-/**
- * Returns a promise that resolves after a set number of milliseconds.
- *
- * @example
- * await asyncSleep(100);
- */
-export const asyncSleep = promisify(setTimeout);
