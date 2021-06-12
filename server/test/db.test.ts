@@ -578,4 +578,31 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       products: ["pfizer", "moderna"],
     });
   });
+
+  it("does not override non-null falsy values when mergin availabilities", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 0,
+    });
+    // Older, but definite.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.YES,
+      available_count: 5,
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-1", "test-system-2"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 0,
+    });
+  });
 });

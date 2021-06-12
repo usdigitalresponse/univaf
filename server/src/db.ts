@@ -16,7 +16,16 @@ import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 
+// When locations are queried in batches (e.g. when iterating over extremely
+// large result sets), query this many records at a time.
 const DEFAULT_BATCH_SIZE = 2000;
+
+// It's possible for some sources to have availability records that are recent,
+// while others might be weeks old or more (e.g. this might happen if a source
+// was disabled).
+// When merging records from multiple sources, we only include records from
+// within this many milliseconds of each other.
+const AVAILABILITY_MERGE_TIMEFRAME = 48 * 60 * 60 * 1000;
 
 export const db = Knex(loadDbConfig());
 
@@ -445,13 +454,19 @@ export async function getExternalIdsByLocation(
 function mergeAvailabilities(
   records: LocationAvailability[]
 ): LocationAvailability {
-  const merged: any = { sources: [] as string[] };
+  if (!records || records.length === 0) return undefined;
 
+  const merged: any = { sources: [] as string[] };
   const baseTime = records[0].valid_at;
   const unknownRecords: LocationAvailability[] = [];
   const goodRecords = records.filter((record) => {
-    // Records waaaay older than other records shouldn't be included.
-    if (baseTime.getTime() - record.valid_at.getTime() > 12 * 60 * 60 * 1000) {
+    // Records that come from vastly different points in time probably shouldn't
+    // be merged together and are more likely to be in conflict, so filter much
+    // older records.
+    if (
+      baseTime.getTime() - record.valid_at.getTime() >
+      AVAILABILITY_MERGE_TIMEFRAME
+    ) {
       return false;
     }
 
