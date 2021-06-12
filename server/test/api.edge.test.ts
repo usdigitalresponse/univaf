@@ -369,6 +369,33 @@ describe("POST /api/edge/update", () => {
     });
   });
 
+  it("allows multiple values for a single external_id system", async () => {
+    const location = await createLocation(TestLocation);
+
+    const response = await context.client.post(
+      "api/edge/update?update_location=1",
+      {
+        headers,
+        json: {
+          id: location.id,
+          external_ids: [
+            ["testid", "this is a test"],
+            ["testid", "another test"],
+          ],
+        },
+      }
+    );
+    expect(response.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result.external_ids).toEqual(
+      expect.arrayContaining([
+        ["testid", "this is a test"],
+        ["testid", "another test"],
+      ])
+    );
+  });
+
   it("merges new values into the existing meta field", async () => {
     const location = await createLocation(TestLocation);
 
