@@ -382,7 +382,7 @@ components:
         external_ids:
           oneOf:
             - type: object
-              example: {"cvs": "abc", "vtrcks": "123"}
+              example: { "cvs": "abc", "vtrcks": "123" }
             - type: array
               example: [["cvs", "abc"], ["vtrcks", "123"]]
           description: |

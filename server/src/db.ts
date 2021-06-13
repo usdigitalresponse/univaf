@@ -108,7 +108,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
  * Note that this will remove any existing external ids for the location.
  * @param dbConn connection to the database (db object or transaction object)
  * @param id Provider location ID
- * @param externalIds [[system: value]]
+ * @param externalIds [[system, value]]
  */
 export async function setExternalIds(
   id: string,
