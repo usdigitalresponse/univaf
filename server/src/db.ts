@@ -125,7 +125,7 @@ export async function setExternalIds(
         };
       })
     )
-    .onConflict(["provider_location_id", "system"])
+    .onConflict(["provider_location_id", "system", "value"])
     .merge();
 }
 
