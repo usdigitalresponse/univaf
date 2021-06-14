@@ -61,7 +61,7 @@ eid_to_id = {}
 max_key = 0
 
 
-@profile  # for profiling
+#@profile  # for profiling
 def do_date(ds, slots=False, dry_run=False):
     """
     Process a single date.
@@ -104,7 +104,13 @@ def do_date(ds, slots=False, dry_run=False):
                     sid = 'uuid:%s' % row['id']
                 else:
                     sid = 'univaf_v0:%s' % row['id']
-                eids = ["%s:%s" % x for x in row['external_ids'].items()]
+                if type(row['external_ids']) == dict:
+                    # old external_ids format
+                    eids = ["%s:%s" % x for x in row['external_ids'].items()]
+                else:
+                    # new external_ids format
+                    # https://github.com/usdigitalresponse/appointment-availability-infra/issues/188
+                    eids = ["%s:%s" % tuple(x) for x in row['external_ids']]
                 ids = [sid] + lib.scrub_external_ids(eids)
                 overlap = [x for x in ids if x in eid_to_id.keys()]
                 # if there are new external_ids, add them to the dictionary
