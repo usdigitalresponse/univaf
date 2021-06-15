@@ -1,5 +1,10 @@
-import { expectDatetimeString, installTestDatabaseHooks } from "./lib";
-import { createLocation, getLocationById, updateAvailability } from "../src/db";
+import { installTestDatabaseHooks } from "./lib";
+import {
+  createLocation,
+  getCurrentAvailabilityByLocation,
+  getLocationById,
+  updateAvailability,
+} from "../src/db";
 import { Availability } from "../src/interfaces";
 import { TestLocation } from "./fixtures";
 import { ValueError, NotFoundError, OutOfDateError } from "../src/exceptions";
@@ -10,7 +15,7 @@ describe("db.updateAvailability", () => {
   it("should update a location's availability", async () => {
     const location = await createLocation(TestLocation);
     let freshLocation = await getLocationById(location.id);
-    expect(freshLocation.availability).toBe(null);
+    expect(freshLocation.availability).toBe(undefined);
 
     const result = await updateAvailability(
       location.id,
@@ -23,10 +28,10 @@ describe("db.updateAvailability", () => {
     availability.checked_at = new Date(availability.checked_at);
     expect(availability).toEqual({
       available: "YES",
-      source: "NJVSS Export",
+      sources: ["NJVSS Export"],
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
-      changed_at: expectDatetimeString(),
+      changed_at: expect.any(Date),
       meta: {},
     });
   });
@@ -66,7 +71,7 @@ describe("db.updateAvailability", () => {
       available: Availability.YES,
     });
     const { availability } = await getLocationById(location.id);
-    expect(availability).toHaveProperty("valid_at", time);
+    expect(availability).toHaveProperty("valid_at", new Date(time));
   });
 
   it("should change changed_at based on data fields", async () => {
@@ -80,7 +85,7 @@ describe("db.updateAvailability", () => {
 
     // `changed_at` should be set.
     const { availability: result1 } = await getLocationById(location.id);
-    expect(result1).toHaveProperty("changed_at", expectDatetimeString());
+    expect(result1).toHaveProperty("changed_at", expect.any(Date));
 
     // An update with different `checked_at` but same data should leave
     // `changed_at` unchanged.
@@ -136,7 +141,11 @@ describe("db.updateAvailability", () => {
     const { availability } = await getLocationById(location.id);
     expect(availability).toEqual({
       ...data,
-      changed_at: expectDatetimeString(),
+      source: undefined,
+      sources: [data.source],
+      valid_at: new Date(data.valid_at),
+      checked_at: new Date(data.checked_at),
+      changed_at: expect.any(Date),
     });
   });
 
@@ -428,5 +437,178 @@ describe("db.updateAvailability", () => {
     });
     result = await getLocationById(location.id);
     expect(result).toHaveProperty("availability.available", Availability.NO);
+  });
+});
+
+describe("db.getCurrentAvailabilityForLocations", () => {
+  it("merges all availability records", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("merges availability records so that newer data wins", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.NO,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-1", "test-system-2"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("merges availability records so that known availability wins over unknown", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.UNKNOWN,
+      available_count: 5,
+      products: ["jj"],
+    });
+    // Older, but definite.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("does not merge records from overly-divergent points in time", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    // This record should not be merged with the above since it's so backdated.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-1"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 5,
+    });
+  });
+
+  it("ensures `available_count` is consistent with `available`", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.NO,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-1", "test-system-2"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
+      available: Availability.NO,
+      available_count: 0,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("does not override non-null falsy values when merging availabilities", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 0,
+    });
+    // This older `available_count` shouldn't replace the above one, which is
+    // falsy, and which a loose merge algorithm could overwrite.
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(Date.now() - 10000),
+      available: Availability.YES,
+      available_count: 5,
+    });
+
+    const availabilities = await getCurrentAvailabilityByLocation(location.id);
+    expect(availabilities.get(location.id)).toEqual({
+      is_public: true,
+      sources: ["test-system-1", "test-system-2"],
+      checked_at: expect.any(Date),
+      valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
+      available: Availability.YES,
+      available_count: 0,
+    });
   });
 });

@@ -22,7 +22,13 @@ paths:
     get:
       summary: List locations + availability
       description: |
-        List out known locations, including their current appointment availability. This responds in paginated batches of 2,000 locations. Use the `links.next` property to get a URL to the next page of results.
+        List out known locations, including their current appointment
+        availability. This responds in paginated batches of 2,000 locations.
+        Use the `links.next` property to get a URL to the next page of results.
+
+        The availability information included here may merge data from multiple
+        sources. To get individual availability data from each source, use the
+        `/api/edge/availability` endpoint.
       parameters:
         - in: query
           name: state
@@ -58,10 +64,17 @@ paths:
     get:
       summary: List locations + availability
       description: |
-        List out known locations, including their current appointment availability. This streams out as many results as possible as newline-delimted JSON objects for 25 seconds. If it hasn't returned all results in that timeframe, the last object will be:
+        List out known locations, including their current appointment
+        availability. This streams out as many results as possible as
+        newline-delimted JSON objects for 25 seconds. If it hasn't returned all
+        results in that timeframe, the last object will be:
         ```
         { "__next__": "<url_to_resume_from>" }
         ```
+
+        The availability information included here may merge data from multiple
+        sources. To get individual availability data from each source, use the
+        `/api/edge/availability` endpoint.
       parameters:
         - in: query
           name: state
@@ -89,7 +102,7 @@ paths:
           content:
             application/x-ndjson:
               schema:
-                $ref: "#/components/schemas/Location"
+                $ref: "#/components/schemas/LocationWithAvailability"
         "422":
           description: bad input parameter
   "/api/edge/locations/{id}":
@@ -97,6 +110,10 @@ paths:
       summary: Get a single location
       description: |
         Get a single location and its current availability.
+
+        The availability information included here may merge data from multiple
+        sources. To get individual availability data from each source, use the
+        `/api/edge/availability` endpoint.
       parameters:
         - in: path
           name: id
@@ -113,7 +130,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: "#/components/schemas/Location"
+                    $ref: "#/components/schemas/LocationWithAvailability"
 
         "422":
           description: bad input parameter
@@ -121,9 +138,13 @@ paths:
     get:
       summary: List availability records
       description: |
-        List the latest availability for each location + source combination. Note this may list multiple results per location. (The `/locations` endpoint list the single latest availability for the location, regardless of source).
+        List the latest availability for each location + source combination.
+        Note this may list multiple results per location. (The `/locations`
+        endpoint lists combined availability that merges multiple sources for
+        each location.)
 
-        This is a paginated response. Use the `links.next` property to get the URL for the next page of results, if any.
+        This is a paginated response. Use the `links.next` property to get the
+        URL for the next page of results, if any.
       parameters:
         - in: query
           name: limit
@@ -153,11 +174,17 @@ paths:
     post:
       summary: Update availability
       description: |
-        Adds/updates availability data for a given location and source. If the location doesn’t exist, it will be created. Including the `update_location=true` query parameter will cause existing locations to be updated with any new data in the POST body.
+        Adds/updates availability data for a given location and source. If the
+        location doesn’t exist, it will be created. Including the
+        `update_location=true` query parameter will cause existing locations to
+        be updated with any new data in the POST body.
 
-        The POST body should be a single Location + Availability record, similar to what’s returned from `/api/edge/locations/{id}` (but without the wrapper object that has the `data` property).
+        The POST body should be a single Location + Availability record, similar
+        to what’s returned from `/api/edge/locations/{id}` (but without the
+        wrapper object that has the `data` property).
 
-        Locations are looked up by `location.id` if present, or by any of the entries in `location.external_ids`.
+        Locations are looked up by `location.id` if present, or by any of the
+        entries in `location.external_ids`.
       responses:
         "200":
           description: item updated
@@ -169,13 +196,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Location"
+              $ref: "#/components/schemas/LocationUpdate"
         description: Location and availability to update/add.
   "/smart-schedluing/$bulk-publish":
     get:
       summary: "SMART Scheduling Links"
       description: |
-        Provides location data according to the [SMART Scheduling Links standard](https://github.com/smart-on-fhir/smart-scheduling-links/specification.md). Please see https://github.com/smart-on-fhir/smart-scheduling-links/ for details.
+        Provides location data according to the [SMART Scheduling Links standard](https://github.com/smart-on-fhir/smart-scheduling-links/specification.md).
+        Please see https://github.com/smart-on-fhir/smart-scheduling-links/ for
+        details.
       responses:
         "200":
           description: SMART Scheduling Links manifest
@@ -277,7 +306,6 @@ components:
     Availability:
       type: object
       required:
-        - source
         - checked_at
         - available
       properties:
@@ -289,9 +317,6 @@ components:
             availability is a property of a location object, e.g. in requests
             to `/api/edge/locations`.
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        source:
-          type: string
-          description: Name of the API client or scraper that generated this data.
         valid_at:
           type: string
           format: date-time
@@ -359,6 +384,28 @@ components:
         meta:
           type: object
           description: Any additional free-form data the source might provide.
+    AvailabilityRecord:
+      allOf:
+        - { "$ref": "#/components/schemas/Availability" }
+        - properties:
+            source:
+              type: string
+              description: Name of the API client or scraper that generated this data.
+          required:
+            - source
+    LocationAvailability:
+      allOf:
+        - { "$ref": "#/components/schemas/Availability" }
+        - properties:
+            sources:
+              type: array
+              items:
+                type: string
+              description: |
+                Name of the API clients or scrapers that supplied data used to
+                compile this availability object.
+          required:
+            - sources
     Location:
       type: object
       properties:
@@ -420,8 +467,18 @@ components:
         updated_at:
           type: string
           format: date-time
-        availability:
-          $ref: "#/components/schemas/Availability"
+    LocationWithAvailability:
+      allOf:
+        - { "$ref": "#/components/schemas/Location" }
+        - properties:
+            availability:
+              $ref: "#/components/schemas/LocationAvailability"
+    LocationUpdate:
+      allOf:
+        - { "$ref": "#/components/schemas/Location" }
+        - properties:
+            availability:
+              $ref: "#/components/schemas/AvailabilityRecord"
     LocationsPage:
       type: object
       properties:
@@ -435,7 +492,7 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/Location"
+            $ref: "#/components/schemas/LocationWithAvailability"
     AvailabilityPage:
       type: object
       properties:
@@ -449,4 +506,4 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/Availability"
+            $ref: "#/components/schemas/AvailabilityRecord"
