@@ -77,6 +77,7 @@ describe("GET /api/edge/locations", () => {
     expect(res.body.data[0].external_ids).toEqual(
       expect.arrayContaining(TestLocation.external_ids)
     );
+  });
 
   // There are more tests about detailed features of availability in db.test.
   it("includes current availability", async () => {
