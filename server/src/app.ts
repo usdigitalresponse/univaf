@@ -57,6 +57,13 @@ app.get("/health", (req: Request, res: Response) => {
 // Documentation -------------------------------------------------
 app.use("/docs", express.static("public/docs"));
 
+// Caching -------------------------------------------------------
+// TODO: set different cache time based on content
+app.use("/", (_req: Request, res: Response, next: NextFunction) => {
+  res.set("Cache-Control", "max-age=10");
+  next();
+});
+
 // Legacy top-level API ------------------------------------------
 // TODO: Remove these when we're confident people aren't using them.
 app.get("/locations", asyncHandler(apiLegacy.list));
