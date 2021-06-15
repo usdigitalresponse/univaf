@@ -155,6 +155,74 @@ function formatCapacity(apiSlots) {
 }
 
 /**
+ * Format an `availability` object from the location's data.
+ * @param {any} apiLocation
+ * @returns {any}
+ */
+function formatAvailability(apiLocation) {
+  let available = Available.unknown;
+  if (apiLocation.appointments_available) {
+    available = Available.yes;
+  } else if (apiLocation.appointments_available === false) {
+    available = Available.no;
+  }
+
+  const availability = {
+    source: "univaf-vaccinespotter",
+    valid_at: apiLocation.appointments_last_fetched,
+    checked_at: new Date().toISOString(),
+    available,
+  };
+
+  if (validateSlots(apiLocation)) {
+    const capacity = formatCapacity(apiLocation.appointments);
+    availability.capacity = capacity;
+
+    const slots = formatSlots(apiLocation.appointments);
+    if (slots) {
+      availability.slots = slots;
+    }
+
+    const allProducts = capacity
+      .flatMap((data) => data.products)
+      .filter((x) => !!x);
+    const allDoses = capacity.map((data) => data.dose).filter((x) => !!x);
+    if (allProducts.length) {
+      availability.products = Array.from(new Set(allProducts));
+    }
+    if (allDoses.length) {
+      availability.doses = Array.from(new Set(allDoses));
+    }
+  }
+
+  if (apiLocation.appointment_vaccine_types && !availability.products) {
+    const products = [];
+    for (const key in apiLocation.appointment_vaccine_types) {
+      if (key !== "unknown" && apiLocation.appointment_vaccine_types[key]) {
+        products.push(key);
+      }
+    }
+    if (products.length) {
+      availability.products = products;
+    }
+  }
+
+  if (apiLocation.appointment_types && !availability.doses) {
+    const doses = [];
+    for (const key in apiLocation.appointment_types) {
+      if (key !== "unknown" && apiLocation.appointment_types[key]) {
+        doses.push(key);
+      }
+    }
+    if (doses.length) {
+      availability.doses = doses;
+    }
+  }
+
+  return availability;
+}
+
+/**
  * Filter out some stores with bad data.
  * @param {any} store
  * @returns {boolean}
@@ -169,13 +237,6 @@ function hasUsefulData(store) {
 
 const formatters = {
   _base(store, additions = null) {
-    let available = Available.unknown;
-    if (store.properties.appointments_available) {
-      available = Available.yes;
-    } else if (store.properties.appointments_available === false) {
-      available = Available.no;
-    }
-
     // Determine what identifier type to use for `external_ids`.
     let provider = store.properties.provider.trim().toLowerCase();
     let providerBrand = store.properties.provider_brand;
@@ -193,33 +254,6 @@ const formatters = {
       id = `${providerBrand}:${store.properties.provider_location_id}`;
     } else {
       id = `vaccinespotter:${store.properties.id}`;
-    }
-
-    const availability = {
-      source: "univaf-vaccinespotter",
-      valid_at: store.properties.appointments_last_fetched,
-      checked_at: new Date().toISOString(),
-      available,
-    };
-    if (validateSlots(store.properties)) {
-      const capacity = formatCapacity(store.properties.appointments);
-      availability.capacity = capacity;
-
-      const slots = formatSlots(store.properties.appointments);
-      if (slots) {
-        availability.slots = slots;
-      }
-
-      const allProducts = capacity
-        .flatMap((data) => data.products)
-        .filter((x) => !!x);
-      const allDoses = capacity.map((data) => data.dose).filter((x) => !!x);
-      if (allProducts.length) {
-        availability.products = Array.from(new Set(allProducts));
-      }
-      if (allDoses.length) {
-        availability.doses = Array.from(new Set(allDoses));
-      }
     }
 
     return {
@@ -255,7 +289,7 @@ const formatters = {
         ...additions?.external_ids,
       },
       availability: {
-        ...availability,
+        ...formatAvailability(store.properties),
         ...additions?.availability,
       },
     };
@@ -338,11 +372,6 @@ const formatters = {
   cvs() {
     // VaccineSpotter data for CVS is not currently very good; we rely on the
     // CVS API instead.
-    return null;
-  },
-
-  rite_aid() {
-    // We have a separate scraper for Rite Aid and an API upcoming.
     return null;
   },
 };
