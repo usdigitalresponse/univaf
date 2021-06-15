@@ -1,4 +1,4 @@
-import { expectDatetimeString, installTestDatabaseHooks } from "./lib";
+import { installTestDatabaseHooks } from "./lib";
 import {
   createLocation,
   getCurrentAvailabilityByLocation,
@@ -31,7 +31,7 @@ describe("db.updateAvailability", () => {
       sources: ["NJVSS Export"],
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
-      changed_at: expectDatetimeString(),
+      changed_at: expect.any(Date),
       meta: {},
     });
   });
@@ -85,7 +85,7 @@ describe("db.updateAvailability", () => {
 
     // `changed_at` should be set.
     const { availability: result1 } = await getLocationById(location.id);
-    expect(result1).toHaveProperty("changed_at", expectDatetimeString());
+    expect(result1).toHaveProperty("changed_at", expect.any(Date));
 
     // An update with different `checked_at` but same data should leave
     // `changed_at` unchanged.
@@ -145,7 +145,7 @@ describe("db.updateAvailability", () => {
       sources: [data.source],
       valid_at: new Date(data.valid_at),
       checked_at: new Date(data.checked_at),
-      changed_at: expectDatetimeString(),
+      changed_at: expect.any(Date),
     });
   });
 
@@ -462,6 +462,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       sources: ["test-system-2", "test-system-1"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 5,
       products: ["pfizer", "moderna"],
@@ -489,6 +490,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       sources: ["test-system-1", "test-system-2"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 5,
       products: ["pfizer", "moderna"],
@@ -518,6 +520,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       sources: ["test-system-2", "test-system-1"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 5,
       products: ["pfizer", "moderna"],
@@ -546,6 +549,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       sources: ["test-system-1"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 5,
     });
@@ -572,6 +576,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       sources: ["test-system-1", "test-system-2"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.NO,
       available_count: 0,
       products: ["pfizer", "moderna"],
@@ -601,6 +606,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       sources: ["test-system-1", "test-system-2"],
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
+      changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 0,
     });

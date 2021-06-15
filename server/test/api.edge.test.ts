@@ -1,4 +1,8 @@
-import { useServerForTests, installTestDatabaseHooks } from "./lib";
+import {
+  expectDatetimeString,
+  installTestDatabaseHooks,
+  useServerForTests,
+} from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
@@ -71,8 +75,9 @@ describe("GET /api/edge/locations", () => {
     expect(res.body.data).toHaveLength(1);
     expect(res.body.data[0].availability).toEqual({
       sources: ["test-system-2", "test-system-1"],
-      checked_at: expect.any(String),
-      valid_at: expect.any(String),
+      checked_at: expectDatetimeString(),
+      valid_at: expectDatetimeString(),
+      changed_at: expectDatetimeString(),
       available: Availability.YES,
       available_count: 5,
       products: ["pfizer", "moderna"],
