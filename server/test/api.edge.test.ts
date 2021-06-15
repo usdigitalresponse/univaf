@@ -1,4 +1,8 @@
-import { useServerForTests, installTestDatabaseHooks } from "./lib";
+import {
+  expectDatetimeString,
+  installTestDatabaseHooks,
+  useServerForTests,
+} from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
@@ -73,6 +77,34 @@ describe("GET /api/edge/locations", () => {
     expect(res.body.data[0].external_ids).toEqual(
       expect.arrayContaining(TestLocation.external_ids)
     );
+
+  // There are more tests about detailed features of availability in db.test.
+  it("includes current availability", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+
+    let res = await context.client.get<any>("api/edge/locations");
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0].availability).toEqual({
+      sources: ["test-system-2", "test-system-1"],
+      checked_at: expectDatetimeString(),
+      valid_at: expectDatetimeString(),
+      changed_at: expectDatetimeString(),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
   });
 });
 
