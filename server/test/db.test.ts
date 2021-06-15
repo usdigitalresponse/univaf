@@ -1,4 +1,4 @@
-import { installTestDatabaseHooks } from "./lib";
+import { expectDatetimeString, installTestDatabaseHooks } from "./lib";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { Availability } from "../src/interfaces";
 import { TestLocation } from "./fixtures";
@@ -26,6 +26,7 @@ describe("db.updateAvailability", () => {
       source: "NJVSS Export",
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
+      changed_at: expectDatetimeString(),
       meta: {},
     });
   });
@@ -68,6 +69,41 @@ describe("db.updateAvailability", () => {
     expect(availability).toHaveProperty("valid_at", time);
   });
 
+  it("should change changed_at based on data fields", async () => {
+    const location = await createLocation(TestLocation);
+    const firstChecked = new Date("2021-05-14T06:45:51.273Z");
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: firstChecked,
+      available: Availability.YES,
+    });
+
+    // `changed_at` should be set.
+    const { availability: result1 } = await getLocationById(location.id);
+    expect(result1).toHaveProperty("changed_at", expectDatetimeString());
+
+    // An update with different `checked_at` but same data should leave
+    // `changed_at` unchanged.
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: new Date(firstChecked.getTime() + 10000),
+      available: Availability.YES,
+    });
+    const { availability: result2 } = await getLocationById(location.id);
+    expect(result2).toHaveProperty("changed_at", result1.changed_at);
+
+    // Send different `available` value, causing `changed_at` to change.
+    await updateAvailability(location.id, {
+      source: "test-source",
+      checked_at: new Date(firstChecked.getTime() + 20000),
+      available: Availability.NO,
+    });
+    const { availability: result3 } = await getLocationById(location.id);
+    expect(new Date(result3.changed_at).getTime()).toBeGreaterThan(
+      new Date(result1.changed_at).getTime()
+    );
+  });
+
   it("should accept detailed availability info", async () => {
     const location = await createLocation(TestLocation);
     const data = {
@@ -98,7 +134,10 @@ describe("db.updateAvailability", () => {
     };
     await updateAvailability(location.id, { ...data });
     const { availability } = await getLocationById(location.id);
-    expect(availability).toEqual(data);
+    expect(availability).toEqual({
+      ...data,
+      changed_at: expectDatetimeString(),
+    });
   });
 
   it("should validate slot types", async () => {

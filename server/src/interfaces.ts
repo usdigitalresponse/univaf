@@ -73,6 +73,7 @@ export interface LocationAvailability {
   source: string;
   valid_at: Date;
   checked_at: Date;
+  changed_at: Date;
   available: Availability;
   available_count?: number;
   products?: Array<string>;

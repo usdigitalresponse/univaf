@@ -478,7 +478,26 @@ export async function updateAvailability(
     .first();
 
   let result;
+  let changed_at;
   if (existingAvailability) {
+    // If data was not new, don't log it all; it's a waste of space.
+    // `valid_at` may be a string, so make sure to parse before comparing.
+    if (existingAvailability.valid_at >= new Date(valid_at)) {
+      loggableUpdate = { source, checked_at };
+    } else if (
+      existingAvailability.available === available &&
+      existingAvailability.available_count == available_count &&
+      isDeepStrictEqual(existingAvailability.products, products) &&
+      isDeepStrictEqual(existingAvailability.doses, doses) &&
+      isDeepStrictEqual(existingAvailability.capacity, capacity) &&
+      isDeepStrictEqual(existingAvailability.slots, slots) &&
+      isDeepStrictEqual(existingAvailability.meta, meta)
+    ) {
+      loggableUpdate = { source, checked_at, valid_at };
+    } else {
+      changed_at = valid_at;
+    }
+
     const rowCount = await db("availability")
       .where("id", existingAvailability.id)
       .andWhere("checked_at", "<", checked_at)
@@ -494,28 +513,13 @@ export async function updateAvailability(
         checked_at,
         meta,
         is_public,
+        changed_at,
       });
 
     if (rowCount === 0) {
       throw new OutOfDateError(
         "Newer availability data has already been recorded"
       );
-    }
-
-    // If data was not new, don't log it all; it's a waste of space.
-    // `valid_at` may be a string, so make sure to parse before comparing.
-    if (existingAvailability.valid_at >= new Date(valid_at)) {
-      loggableUpdate = { source, checked_at };
-    } else if (
-      existingAvailability.available === available &&
-      existingAvailability.available_count == available_count &&
-      isDeepStrictEqual(existingAvailability.products, products) &&
-      isDeepStrictEqual(existingAvailability.doses, doses) &&
-      isDeepStrictEqual(existingAvailability.capacity, capacity) &&
-      isDeepStrictEqual(existingAvailability.slots, slots) &&
-      isDeepStrictEqual(existingAvailability.meta, meta)
-    ) {
-      loggableUpdate = { source, checked_at, valid_at };
     }
 
     result = { locationId: id, action: "update" };
@@ -534,6 +538,7 @@ export async function updateAvailability(
         checked_at,
         meta,
         is_public,
+        changed_at: valid_at,
       });
       result = { locationId: id, action: "create" };
     } catch (error) {
@@ -545,10 +550,12 @@ export async function updateAvailability(
   }
 
   // Write a log of this update, but don't wait for the result.
-  availabilityLog.write(id, loggableUpdate).catch((error) => {
-    console.error(error);
-    Sentry.captureException(error);
-  });
+  availabilityLog
+    .write(id, { ...loggableUpdate, changed_at })
+    .catch((error) => {
+      console.error(error);
+      Sentry.captureException(error);
+    });
 
   return result;
 }
