@@ -42,7 +42,7 @@ export interface SlotRecord {
 
 export interface ProviderLocation {
   id: string;
-  external_ids: { [system: string]: string };
+  external_ids: ExternalIdList;
   provider: string;
   location_type: LocationType;
   name: string;
@@ -97,3 +97,5 @@ export interface AvailabilityInput {
   meta?: any;
   is_public?: boolean;
 }
+
+export type ExternalIdList = Array<[string, string]>;

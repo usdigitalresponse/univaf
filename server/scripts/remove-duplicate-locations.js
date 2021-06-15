@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /**
+ * NOTE: SCRIPT IS DEPRECATED NOW THAT MULTIPLE EXTERNAL IDS ARE ALLOWED
  * Quick script for merging duplicate locations from the database based on
  * their external IDs.
  *

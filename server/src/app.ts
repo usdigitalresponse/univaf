@@ -3,7 +3,7 @@ import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
-import { authorizeRequest } from "./middleware";
+import { authorizeRequest, versionedMiddleware } from "./middleware";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
@@ -56,6 +56,9 @@ app.get("/health", (req: Request, res: Response) => {
 
 // Documentation -------------------------------------------------
 app.use("/docs", express.static("public/docs"));
+
+// Version handling ----------------------------------------------
+app.use("/", versionedMiddleware);
 
 // Legacy top-level API ------------------------------------------
 // TODO: Remove these when we're confident people aren't using them.

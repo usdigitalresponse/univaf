@@ -50,6 +50,13 @@ paths:
           description: Indicates where to resume from in a paginated request.
           schema:
             type: string
+        - in: query
+          name: external_id_format
+          description: Indicates which format to use for location external_ids
+          required: false
+          schema:
+            type: string
+            enum: ["v2"]
       responses:
         "200":
           description: List of locations + availability
@@ -96,6 +103,13 @@ paths:
           description: Indicates where to resume from in a paginated request.
           schema:
             type: string
+        - in: query
+          name: external_id_format
+          description: Indicates which format to use for location external_ids
+          required: false
+          schema:
+            type: string
+            enum: ["v2"]
       responses:
         "200":
           description: List of locations + availability
@@ -121,6 +135,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: external_id_format
+          description: Indicates which format to use for location external_ids
+          required: false
+          schema:
+            type: string
+            enum: ["v2"]
       responses:
         "200":
           description: Location
@@ -182,6 +203,9 @@ paths:
         The POST body should be a single Location + Availability record, similar
         to what’s returned from `/api/edge/locations/{id}` (but without the
         wrapper object that has the `data` property).
+
+        The `location.external_ids` field may be formatted as an object or as a
+        list of lists (regular or 'v2' external_id format).
 
         Locations are looked up by `location.id` if present, or by any of the
         entries in `location.external_ids`.
@@ -413,12 +437,19 @@ components:
           type: string
           format: uuid
         external_ids:
-          type: object
+          oneOf:
+            - type: object
+              example: { "cvs": "abc", "vtrcks": "123" }
+            - type: array
+              example: [["cvs", "abc"], ["vtrcks", "123"]]
           description: |
-            Identifiers this location is known by in other systems. The keys in
+            Identifiers this location is known by in other systems. In the regular
+            format, this field is represented by an object where the keys in
             this object name other systems, e.g. `cvs` (for CVS store numbers),
-            `vtrcks` (for VTrckS PINs), etc. Values are the IDs in those
-            systems. Keys are always lower-case, values are always strings.
+            `vtrcks` (for VTrckS PINs), etc., and values are the IDs in those
+            systems. In the "v2" format, the keys and values are in lists of lists.
+
+            Note that v2 will soon become the default output format.
         provider:
           type: string
         location_type:
