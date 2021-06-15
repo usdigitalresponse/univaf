@@ -532,7 +532,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       available: Availability.YES,
       available_count: 5,
     });
-    // Older, but definite.
+    // This record should not be merged with the above since it's so backdated.
     await updateAvailability(location.id, {
       source: "test-system-2",
       checked_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
@@ -558,7 +558,6 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       checked_at: new Date(),
       available: Availability.NO,
     });
-    // Older, but definite.
     await updateAvailability(location.id, {
       source: "test-system-2",
       checked_at: new Date(Date.now() - 10000),
@@ -579,7 +578,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     });
   });
 
-  it("does not override non-null falsy values when mergin availabilities", async () => {
+  it("does not override non-null falsy values when merging availabilities", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, {
       source: "test-system-1",
@@ -587,7 +586,8 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       available: Availability.YES,
       available_count: 0,
     });
-    // Older, but definite.
+    // This older `available_count` shouldn't replace the above one, which is
+    // falsy, and which a loose merge algorithm could overwrite.
     await updateAvailability(location.id, {
       source: "test-system-2",
       checked_at: new Date(Date.now() - 10000),
