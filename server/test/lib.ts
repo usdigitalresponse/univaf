@@ -2,7 +2,6 @@ import type { AddressInfo } from "net";
 import type { Application } from "express";
 import type { Server } from "http";
 import got, { Got } from "got";
-import { promisify } from "util";
 
 import { db } from "../src/db";
 import { availabilityDb } from "../src/availability-log";
