@@ -169,11 +169,7 @@ export async function updateLocation(
     await tx("provider_locations").where("id", location.id).update(sqlData);
 
     if ("external_ids" in data) {
-      await addExternalIds(
-        location.id,
-        (location.external_ids || []).concat(data.external_ids),
-        tx
-      );
+      await addExternalIds(location.id, data.external_ids, tx);
     }
   });
 }
