@@ -27,6 +27,15 @@ function logRequest(request: Request, response: Response, next: NextFunction) {
   next();
 }
 
+function cacheControlMaxAge(seconds: number) {
+  return function (request: Request, response: Response, next: NextFunction) {
+    if (request.method == "GET") {
+      response.set("Cache-Control", `max-age=${seconds}`);
+    }
+    next();
+  };
+}
+
 // Create Express server
 const app = express();
 
@@ -54,15 +63,16 @@ app.get("/health", (req: Request, res: Response) => {
   res.status(200).send("OK!");
 });
 
+// Caching -------------------------------------------------------
+const shortCacheTime = 10;
+const longCacheTime = 60 * 10;
+app.use("/", cacheControlMaxAge(longCacheTime));
+app.use("/locations", cacheControlMaxAge(shortCacheTime));
+app.use("/api", cacheControlMaxAge(shortCacheTime));
+app.use("/smart-scheduling", cacheControlMaxAge(shortCacheTime));
+
 // Documentation -------------------------------------------------
 app.use("/docs", express.static("public/docs"));
-
-// Caching -------------------------------------------------------
-// TODO: set different cache time based on content
-app.use("/", (_req: Request, res: Response, next: NextFunction) => {
-  res.set("Cache-Control", "max-age=10");
-  next();
-});
 
 // Legacy top-level API ------------------------------------------
 // TODO: Remove these when we're confident people aren't using them.
