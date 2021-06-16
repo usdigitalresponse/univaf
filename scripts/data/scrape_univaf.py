@@ -24,6 +24,6 @@ import lib
 
 # current time as yyyymmdd_hhmmss
 ts = datetime.utcfromtimestamp(time()).strftime('%Y%m%d_%H%M%S')
-api_endpoint = 'http://getmyvax.org/locations'
-fn_out = '%s/data/univaf_raw/locations_%s.json?external_id_format=v2' % (lib.path_root, ts)
+api_endpoint = 'http://getmyvax.org/locations?external_id_format=v2'
+fn_out = '%s/data/univaf_raw/locations_%s.json' % (lib.path_root, ts)
 lib.download_json_remotely(api_endpoint, fn_out)
