@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { strict as assert } from "assert";
 import {
   Availability,
@@ -124,9 +125,10 @@ export async function setExternalIds(
   externalIds: ExternalIdList,
   dbConn: typeof db = db
 ): Promise<void> {
+  const toInsert = _.uniqBy(externalIds, (pair) => JSON.stringify(pair));
   await dbConn("external_ids")
     .insert(
-      externalIds.map(([system, value]: [string, string]) => {
+      toInsert.map(([system, value]: [string, string]) => {
         return {
           provider_location_id: id,
           system,
