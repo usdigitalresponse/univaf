@@ -108,7 +108,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     );
 
     const locationId = inserted.rows[0].id;
-    await setExternalIds(locationId, data.external_ids, tx);
+    await addExternalIds(locationId, data.external_ids, tx);
     return await getLocationById(locationId);
   });
 }
@@ -119,7 +119,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
  * @param id Provider location ID
  * @param externalIds [[system, value]]
  */
-export async function setExternalIds(
+export async function addExternalIds(
   id: string,
   externalIds: ExternalIdList,
   dbConn: typeof db = db
@@ -169,7 +169,7 @@ export async function updateLocation(
     await tx("provider_locations").where("id", location.id).update(sqlData);
 
     if ("external_ids" in data) {
-      await setExternalIds(
+      await addExternalIds(
         location.id,
         (location.external_ids || []).concat(data.external_ids),
         tx
