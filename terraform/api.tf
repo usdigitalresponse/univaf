@@ -71,8 +71,8 @@ resource "aws_route53_record" "api_domain_record" {
   type    = "A"
 
   alias {
-    name                   = aws_alb.main.dns_name
-    zone_id                = aws_alb.main.zone_id
+    name                   = aws_cloudfront_distribution.univaf_api.domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api.hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -200,7 +200,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
 
   origin {
     origin_id   = var.domain_name
-    domain_name = var.domain_name
+    domain_name = aws_alb.main.dns_name
 
     custom_origin_config {
       http_port              = 80
