@@ -36,13 +36,6 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
-# Add HTTPS (optional)
-data "aws_acm_certificate" "issued_cert" {
-  count    = var.ssl_enabled ? 1 : 0
-  domain   = var.domain_name
-  statuses = ["ISSUED"]
-}
-
 # Add DNS (optional)
 data "aws_route53_zone" "domain_zone" {
   count = var.domain_name != "" ? 1 : 0
@@ -179,9 +172,9 @@ resource "aws_cloudwatch_log_stream" "api_log_stream" {
 }
 
 
-# Add API server caching (enabled only for explicit domain with ssl_enabled)
+# Add API server caching (enabled only if var.domain and var.ssl_certificate_arn are provided)
 resource "aws_cloudfront_distribution" "univaf_api" {
-  count       = var.domain_name != "" && var.ssl_enabled ? 1 : 0
+  count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
   enabled     = true
   price_class = "PriceClass_100" # North America
 
@@ -215,7 +208,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = data.aws_acm_certificate.issued_cert[0].arn
+    acm_certificate_arn = var.ssl_certificate_arn
     ssl_support_method  = "sni-only"
   }
 

@@ -93,9 +93,9 @@ variable "njvss_aws_secret_key" {
   sensitive = true
 }
 
-variable "ssl_enabled" {
-  description = "Whether to enable HTTPS for this (note you must configure a cetificate for it!)"
-  default     = false
+variable "ssl_certificate_arn" {
+  description = "To enable HTTPS, the ARN of an SSL certificate created with ACM in us-east-1"
+  default     = ""
 }
 
 variable "domain_name" {
