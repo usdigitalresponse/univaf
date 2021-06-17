@@ -71,8 +71,8 @@ resource "aws_route53_record" "api_domain_record" {
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.univaf_api.domain_name
-    zone_id                = aws_cloudfront_distribution.univaf_api.hosted_zone_id
+    name                   = aws_cloudfront_distribution.univaf_api[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api[0].hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -193,8 +193,9 @@ resource "aws_cloudwatch_log_stream" "api_log_stream" {
 }
 
 
-# Add API server caching
+# Add API server caching (enabled only for explicit domain with ssl_enabled)
 resource "aws_cloudfront_distribution" "univaf_api" {
+  count       = var.domain_name != "" && var.ssl_enabled ? 1 : 0
   enabled     = true
   price_class = "PriceClass_100" # North America
 
