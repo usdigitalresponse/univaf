@@ -27,6 +27,15 @@ function logRequest(request: Request, response: Response, next: NextFunction) {
   next();
 }
 
+function cacheControlMaxAge(seconds: number) {
+  return function (request: Request, response: Response, next: NextFunction) {
+    if (request.method == "GET") {
+      response.set("Cache-Control", `max-age=${seconds}`);
+    }
+    next();
+  };
+}
+
 // Create Express server
 const app = express();
 
@@ -53,6 +62,14 @@ app.get("/health", (req: Request, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
   res.status(200).send("OK!");
 });
+
+// Caching -------------------------------------------------------
+const shortCacheTime = 10;
+const longCacheTime = 60 * 10;
+app.use("/", cacheControlMaxAge(longCacheTime));
+app.use("/locations", cacheControlMaxAge(shortCacheTime));
+app.use("/api", cacheControlMaxAge(shortCacheTime));
+app.use("/smart-scheduling", cacheControlMaxAge(shortCacheTime));
 
 // Documentation -------------------------------------------------
 app.use("/docs", express.static("public/docs"));
