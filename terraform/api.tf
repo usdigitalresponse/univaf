@@ -43,20 +43,6 @@ data "aws_acm_certificate" "issued_cert" {
   statuses = ["ISSUED"]
 }
 
-resource "aws_alb_listener" "front_end_https" {
-  count             = var.ssl_enabled ? 1 : 0
-  load_balancer_arn = aws_alb.main.id
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = data.aws_acm_certificate.issued_cert[0].arn
-
-  default_action {
-    target_group_arn = aws_alb_target_group.api.arn
-    type             = "forward"
-  }
-}
-
 # Add DNS (optional)
 data "aws_route53_zone" "domain_zone" {
   count = var.domain_name != "" ? 1 : 0
@@ -229,7 +215,8 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = data.aws_acm_certificate.issued_cert[0].arn
+    ssl_support_method  = "sni-only"
   }
 
   restrictions {
