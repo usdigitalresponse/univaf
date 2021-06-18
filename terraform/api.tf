@@ -177,6 +177,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
   enabled     = true
   price_class = "PriceClass_100" # North America
+  aliases     = [var.domain_name]
 
   origin {
     origin_id   = var.domain_name
