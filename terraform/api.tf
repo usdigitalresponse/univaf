@@ -36,27 +36,6 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
-# Add HTTPS (optional)
-data "aws_acm_certificate" "issued_cert" {
-  count    = var.ssl_enabled ? 1 : 0
-  domain   = var.domain_name
-  statuses = ["ISSUED"]
-}
-
-resource "aws_alb_listener" "front_end_https" {
-  count             = var.ssl_enabled ? 1 : 0
-  load_balancer_arn = aws_alb.main.id
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = data.aws_acm_certificate.issued_cert[0].arn
-
-  default_action {
-    target_group_arn = aws_alb_target_group.api.arn
-    type             = "forward"
-  }
-}
-
 # Add DNS (optional)
 data "aws_route53_zone" "domain_zone" {
   count = var.domain_name != "" ? 1 : 0
@@ -71,8 +50,8 @@ resource "aws_route53_record" "api_domain_record" {
   type    = "A"
 
   alias {
-    name                   = aws_alb.main.dns_name
-    zone_id                = aws_alb.main.zone_id
+    name                   = aws_cloudfront_distribution.univaf_api[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api[0].hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -193,14 +172,15 @@ resource "aws_cloudwatch_log_stream" "api_log_stream" {
 }
 
 
-# Add API server caching
+# Add API server caching (enabled only if var.domain and var.ssl_certificate_arn are provided)
 resource "aws_cloudfront_distribution" "univaf_api" {
+  count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
   enabled     = true
   price_class = "PriceClass_100" # North America
 
   origin {
     origin_id   = var.domain_name
-    domain_name = var.domain_name
+    domain_name = aws_alb.main.dns_name
 
     custom_origin_config {
       http_port              = 80
@@ -228,7 +208,8 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = var.ssl_certificate_arn
+    ssl_support_method  = "sni-only"
   }
 
   restrictions {
