@@ -4,14 +4,24 @@ info:
   version: "0.1.0"
   title: "COVID-19 Vaccine Appointment Availability API"
   description: |
-    This API provides combined information about COVID-19 vaccination appointment availability at locations across the United States in a single, standard format. Data is sourced from a variety of official data sources (e.g. from CVS Pharmacy) and unofficial data sources (e.g. web scraping and volunteer phone banking). This API is built and maintained by [U.S. Digital Response](https://usdigitalresponse.org) in partnership with the State of New Jersey Office of Innovation, VaccineSpotter.org, and Vaccinate the States.
+    This API provides combined information about COVID-19 vaccination
+    appointment availability at locations across the United States in a single,
+    standard format. Data is sourced from a variety of official data sources
+    (e.g. from CVS Pharmacy) and unofficial data sources (e.g. web scraping and
+    volunteer phone banking). This API is built and maintained by
+    [U.S. Digital Response](https://usdigitalresponse.org) in partnership with
+    the State of New Jersey Office of Innovation, VaccineSpotter.org, and
+    Vaccinate the States.
+
+
+    ## Data Sources
 
     Data is currently sourced from:
-    - CVS Pharmacy
-    - Walgreens Pharmacy
-    - Rite Aid Pharmacy
-    - State of New Jersey Vaccine Scheduling System
-    - VaccineSpotter.org
+    - CVS Pharmacy (source names: `univaf-cvs-api`, `univaf-cvs-smart`)
+    - Walgreens Pharmacy (source name: `univaf-walgreens-smart`)
+    - Rite Aid Pharmacy (source name: `univaf-rite-aid-api`)
+    - State of New Jersey Vaccine Scheduling System (source name: `univaf-njvss`)
+    - VaccineSpotter.org (source names: `univaf-vaccinespotter`, `vaccinespotter`)
   contact:
     email: rbrackett@usdigitalresponse.org
   license:
@@ -57,6 +67,24 @@ paths:
           schema:
             type: string
             enum: ["v2"]
+        - in: query
+          name: sources
+          description: |
+            Comma-separated list indicating which data sources should be
+            included when building the `availability` object for each location.
+
+            This API sources data in a variety of ways. If you'd like to limit
+            availability data only to APIs from CVS and Rite Aid, for example,
+            you might set:
+
+            ```
+            ?sources=univaf-cvs-smart,univaf-rite-aid-api
+            ```
+
+            See ["Data Sources"](#section/Data-Sources) to list of source names.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: List of locations + availability
@@ -110,6 +138,24 @@ paths:
           schema:
             type: string
             enum: ["v2"]
+        - in: query
+          name: sources
+          description: |
+            Comma-separated list indicating which data sources should be
+            included when building the `availability` object for each location.
+
+            This API sources data in a variety of ways. If you'd like to limit
+            availability data only to APIs from CVS and Rite Aid, for example,
+            you might set:
+
+            ```
+            ?sources=univaf-cvs-smart,univaf-rite-aid-api
+            ```
+
+            See ["Data Sources"](#section/Data-Sources) to list of source names.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: List of locations + availability
@@ -142,6 +188,24 @@ paths:
           schema:
             type: string
             enum: ["v2"]
+        - in: query
+          name: sources
+          description: |
+            Comma-separated list indicating which data sources should be
+            included when building the `availability` object for each location.
+
+            This API sources data in a variety of ways. If you'd like to limit
+            availability data only to APIs from CVS and Rite Aid, for example,
+            you might set:
+
+            ```
+            ?sources=univaf-cvs-smart,univaf-rite-aid-api
+            ```
+
+            See ["Data Sources"](#section/Data-Sources) to list of source names.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Location
