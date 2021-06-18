@@ -70,8 +70,9 @@ paths:
         - in: query
           name: sources
           description: |
-            Comma-separated list indicating which data sources should be
-            included when building the `availability` object for each location.
+            List of data sources that should be included when building the
+            `availability` object for each location. The list can be comma
+            separated or you can specify `sources` multiple times.
 
             This API sources data in a variety of ways. If you'd like to limit
             availability data only to APIs from CVS and Rite Aid, for example,
@@ -84,7 +85,9 @@ paths:
             See ["Data Sources"](#section/Data-Sources) to list of source names.
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: List of locations + availability
@@ -141,8 +144,9 @@ paths:
         - in: query
           name: sources
           description: |
-            Comma-separated list indicating which data sources should be
-            included when building the `availability` object for each location.
+            List of data sources that should be included when building the
+            `availability` object for each location. The list can be comma
+            separated or you can specify `sources` multiple times.
 
             This API sources data in a variety of ways. If you'd like to limit
             availability data only to APIs from CVS and Rite Aid, for example,
@@ -155,7 +159,9 @@ paths:
             See ["Data Sources"](#section/Data-Sources) to list of source names.
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: List of locations + availability
@@ -191,8 +197,9 @@ paths:
         - in: query
           name: sources
           description: |
-            Comma-separated list indicating which data sources should be
-            included when building the `availability` object for each location.
+            List of data sources that should be included when building the
+            `availability` object for each location. The list can be comma
+            separated or you can specify `sources` multiple times.
 
             This API sources data in a variety of ways. If you'd like to limit
             availability data only to APIs from CVS and Rite Aid, for example,
@@ -205,7 +212,9 @@ paths:
             See ["Data Sources"](#section/Data-Sources) to list of source names.
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: Location
