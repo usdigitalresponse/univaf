@@ -5,12 +5,12 @@
 #
 # Usage:
 #
-#   python scrape_univaf_new.py
+#   python scrape_univaf_logs.py
 #
 #
 # cron job for daily pull:
 #
-#   0 12 * * * python3 /home/overgoor/usdr/scrape_univaf_new.py
+#   0 12 * * * python3 /home/overgoor/usdr/scrape_univaf_logs.py
 #
 #
 # Authors:

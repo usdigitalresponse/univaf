@@ -1,6 +1,7 @@
 #
 # Script to download and process vaccinespotter.org's appointment
 # availability data.
+# https://www.vaccinespotter.org/api/#historical
 #
 #
 # Usage:
