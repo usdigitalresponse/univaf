@@ -1,10 +1,16 @@
 [
   {
     "id": "0cd44819-4761-45f3-8544-cf1793310d31",
-    "external_ids": {
-      "rite_aid": "576",
-      "univaf_v0": "rite_aid:576"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "576"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:576"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #576",
@@ -297,10 +303,16 @@
   },
   {
     "id": "87004c2d-4a0f-4462-837f-edbb3d5b1c53",
-    "external_ids": {
-      "rite_aid": "1033",
-      "univaf_v0": "rite_aid:1033"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1033"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1033"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1033",
@@ -593,10 +605,16 @@
   },
   {
     "id": "df55c790-ffb3-4631-85a7-44465a3c932d",
-    "external_ids": {
-      "rite_aid": "1087",
-      "univaf_v0": "rite_aid:1087"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1087"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1087"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1087",
@@ -889,10 +907,16 @@
   },
   {
     "id": "7b065994-baf1-4793-b9e2-e728ca38fff4",
-    "external_ids": {
-      "rite_aid": "1375",
-      "univaf_v0": "rite_aid:1375"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1375"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1375"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1375",
@@ -1185,10 +1209,16 @@
   },
   {
     "id": "3e188036-e2be-43fa-960f-362927c180c7",
-    "external_ids": {
-      "rite_aid": "1404",
-      "univaf_v0": "rite_aid:1404"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1404"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1404"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1404",
@@ -1481,10 +1511,16 @@
   },
   {
     "id": "99ef95dd-d8ea-4694-a2b7-c9b22280c294",
-    "external_ids": {
-      "rite_aid": "2089",
-      "univaf_v0": "rite_aid:2089"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2089"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2089"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2089",
@@ -1777,10 +1813,16 @@
   },
   {
     "id": "c694b1d9-84ec-437e-b395-80732bbd6beb",
-    "external_ids": {
-      "rite_aid": "1790",
-      "univaf_v0": "rite_aid:1790"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1790"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1790"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1790",
@@ -2073,10 +2115,16 @@
   },
   {
     "id": "48c7d8e6-e5cb-4ee4-b056-36df55f43369",
-    "external_ids": {
-      "rite_aid": "3619",
-      "univaf_v0": "rite_aid:3619"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3619"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3619"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3619",
@@ -2369,10 +2417,16 @@
   },
   {
     "id": "357ae4d7-7177-4d03-ba53-38d6d164c33e",
-    "external_ids": {
-      "rite_aid": "1882",
-      "univaf_v0": "rite_aid:1882"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1882"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1882"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1882",
@@ -2665,10 +2719,16 @@
   },
   {
     "id": "c0bf953c-8a38-43c7-a4be-0da7ccd5ea0a",
-    "external_ids": {
-      "rite_aid": "3440",
-      "univaf_v0": "rite_aid:3440"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3440"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3440"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3440",
@@ -2961,10 +3021,16 @@
   },
   {
     "id": "58269ced-d1ac-4fd9-b59e-48dcfbb2ef67",
-    "external_ids": {
-      "rite_aid": "2666",
-      "univaf_v0": "rite_aid:2666"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2666"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2666"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2666",
@@ -3257,10 +3323,16 @@
   },
   {
     "id": "aa876845-a977-418c-82ea-c40ec3d42391",
-    "external_ids": {
-      "rite_aid": "4092",
-      "univaf_v0": "rite_aid:4092"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4092"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4092"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4092",
@@ -3553,10 +3625,16 @@
   },
   {
     "id": "0a1a596c-0f57-4e1f-b674-c3abd9b14d32",
-    "external_ids": {
-      "rite_aid": "4620",
-      "univaf_v0": "rite_aid:4620"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4620"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4620"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4620",
@@ -3849,10 +3927,16 @@
   },
   {
     "id": "294f445a-dbeb-41c1-8886-1f376195324f",
-    "external_ids": {
-      "rite_aid": "4778",
-      "univaf_v0": "rite_aid:4778"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4778"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4778"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4778",
@@ -4145,10 +4229,16 @@
   },
   {
     "id": "94b86e74-70f8-4169-8dec-d491279b635d",
-    "external_ids": {
-      "rite_aid": "10361",
-      "univaf_v0": "rite_aid:10361"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10361"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10361"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10361",
@@ -4441,10 +4531,16 @@
   },
   {
     "id": "c14efa39-c1ed-4b64-8a2a-107111f46eb5",
-    "external_ids": {
-      "rite_aid": "6708",
-      "univaf_v0": "rite_aid:6708"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6708"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6708"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6708",
@@ -4737,10 +4833,16 @@
   },
   {
     "id": "1cece408-6943-44bf-9ad5-6b68f43f0a4f",
-    "external_ids": {
-      "rite_aid": "10369",
-      "univaf_v0": "rite_aid:10369"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10369"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10369"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10369",
@@ -5033,10 +5135,16 @@
   },
   {
     "id": "7597817a-b5ec-4dca-b808-26c94db07a4a",
-    "external_ids": {
-      "rite_aid": "10371",
-      "univaf_v0": "rite_aid:10371"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10371"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10371"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10371",
@@ -5329,10 +5437,16 @@
   },
   {
     "id": "98c4451a-f1f3-4083-8045-8043383e3906",
-    "external_ids": {
-      "rite_aid": "10372",
-      "univaf_v0": "rite_aid:10372"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10372"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10372"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10372",
@@ -5625,10 +5739,16 @@
   },
   {
     "id": "3ea90759-bbdf-4efa-8041-3c7d80621ad0",
-    "external_ids": {
-      "rite_aid": "10375",
-      "univaf_v0": "rite_aid:10375"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10375"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10375"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10375",
@@ -5921,10 +6041,16 @@
   },
   {
     "id": "e3e9cd44-278d-424f-875d-e9c9db0e9e56",
-    "external_ids": {
-      "rite_aid": "10383",
-      "univaf_v0": "rite_aid:10383"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10383"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10383"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10383",
@@ -6217,10 +6343,16 @@
   },
   {
     "id": "a47ac37c-568c-4781-865a-e01dd779199f",
-    "external_ids": {
-      "rite_aid": "10382",
-      "univaf_v0": "rite_aid:10382"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10382"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10382"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10382",
@@ -6513,10 +6645,16 @@
   },
   {
     "id": "8c47eee3-8c73-459c-9dda-a3bb1bcf2ddf",
-    "external_ids": {
-      "rite_aid": "10386",
-      "univaf_v0": "rite_aid:10386"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10386"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10386"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10386",
@@ -6809,10 +6947,16 @@
   },
   {
     "id": "ddb4ba2f-1d34-4ea2-a31b-9e2f1ee0f4df",
-    "external_ids": {
-      "rite_aid": "10384",
-      "univaf_v0": "rite_aid:10384"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10384"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10384"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10384",
@@ -7105,10 +7249,16 @@
   },
   {
     "id": "9799005c-7699-4536-8b6a-bdeac73a83a5",
-    "external_ids": {
-      "rite_aid": "10370",
-      "univaf_v0": "rite_aid:10370"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10370"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10370"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10370",
@@ -7401,10 +7551,16 @@
   },
   {
     "id": "965a2d97-6204-4f49-aece-fdcc5e1ba117",
-    "external_ids": {
-      "rite_aid": "731",
-      "univaf_v0": "rite_aid:731"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "731"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:731"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #731",
@@ -7697,10 +7853,16 @@
   },
   {
     "id": "42343c71-0638-45c6-a83c-a01b06c2e6ac",
-    "external_ids": {
-      "rite_aid": "1294",
-      "univaf_v0": "rite_aid:1294"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1294"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1294"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1294",
@@ -7993,10 +8155,16 @@
   },
   {
     "id": "9d373d5b-e199-4770-925f-ef1b080c0a8f",
-    "external_ids": {
-      "rite_aid": "1751",
-      "univaf_v0": "rite_aid:1751"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1751"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1751"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1751",
@@ -8289,10 +8457,16 @@
   },
   {
     "id": "e2e4cb2f-8a11-4856-b62e-25c3083cc52f",
-    "external_ids": {
-      "rite_aid": "1411",
-      "univaf_v0": "rite_aid:1411"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1411"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1411"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1411",
@@ -8585,10 +8759,16 @@
   },
   {
     "id": "53e8f1a8-35ce-41b8-b7ea-7d9042101b45",
-    "external_ids": {
-      "rite_aid": "129",
-      "univaf_v0": "rite_aid:129"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "129"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:129"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #129",
@@ -8881,10 +9061,16 @@
   },
   {
     "id": "a109512c-49f0-440e-a2e8-a60ebd9974ab",
-    "external_ids": {
-      "rite_aid": "3756",
-      "univaf_v0": "rite_aid:3756"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3756"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3756"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3756",
@@ -9177,10 +9363,16 @@
   },
   {
     "id": "c5599860-aadd-4e5f-b260-7bc2f94ba4f2",
-    "external_ids": {
-      "rite_aid": "4910",
-      "univaf_v0": "rite_aid:4910"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4910"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4910"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4910",
@@ -9473,10 +9665,16 @@
   },
   {
     "id": "5b963997-7ef2-4a56-99fb-fab53d197cd5",
-    "external_ids": {
-      "rite_aid": "3749",
-      "univaf_v0": "rite_aid:3749"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3749"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3749"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3749",
@@ -9769,10 +9967,16 @@
   },
   {
     "id": "aacd6ed8-4a24-4c92-b1b8-a03cc03d2dfa",
-    "external_ids": {
-      "rite_aid": "1600",
-      "univaf_v0": "rite_aid:1600"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1600"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1600"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1600",
@@ -10065,10 +10269,16 @@
   },
   {
     "id": "a746f44a-de0e-47a5-a3be-6883d0f3108e",
-    "external_ids": {
-      "rite_aid": "3748",
-      "univaf_v0": "rite_aid:3748"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3748"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3748"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3748",
@@ -10361,10 +10571,16 @@
   },
   {
     "id": "e239d4b4-c954-4214-9621-3714ecc64098",
-    "external_ids": {
-      "rite_aid": "4913",
-      "univaf_v0": "rite_aid:4913"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4913"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4913"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4913",
@@ -10657,10 +10873,16 @@
   },
   {
     "id": "29a62777-0967-4112-a28f-ef2f18f37cd7",
-    "external_ids": {
-      "rite_aid": "4916",
-      "univaf_v0": "rite_aid:4916"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4916"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4916"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4916",
@@ -10953,10 +11175,16 @@
   },
   {
     "id": "48a66749-1bfb-4c31-8c71-72aeced8e8bc",
-    "external_ids": {
-      "rite_aid": "4914",
-      "univaf_v0": "rite_aid:4914"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4914"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4914"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4914",
@@ -11249,10 +11477,16 @@
   },
   {
     "id": "ab64d2da-3634-4644-8446-f3207aa9f688",
-    "external_ids": {
-      "rite_aid": "4918",
-      "univaf_v0": "rite_aid:4918"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4918"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4918"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4918",
@@ -11545,10 +11779,16 @@
   },
   {
     "id": "5d0067e3-262b-4e23-9a89-d16aacd50feb",
-    "external_ids": {
-      "rite_aid": "4926",
-      "univaf_v0": "rite_aid:4926"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4926"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4926"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4926",
@@ -11841,10 +12081,16 @@
   },
   {
     "id": "cd484623-f4c4-4722-8d48-7cfaf004b675",
-    "external_ids": {
-      "rite_aid": "4924",
-      "univaf_v0": "rite_aid:4924"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4924"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4924"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4924",
@@ -12137,10 +12383,16 @@
   },
   {
     "id": "d8fe6f5e-5810-4b66-b46d-7709590f0e04",
-    "external_ids": {
-      "rite_aid": "11179",
-      "univaf_v0": "rite_aid:11179"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11179"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11179"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11179",
@@ -12433,10 +12685,16 @@
   },
   {
     "id": "8d62ce10-6f87-46ef-a6fe-40ee62fb5992",
-    "external_ids": {
-      "rite_aid": "4919",
-      "univaf_v0": "rite_aid:4919"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4919"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4919"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4919",
@@ -12729,10 +12987,16 @@
   },
   {
     "id": "8890e14c-d047-43c1-af6b-46251245b1ba",
-    "external_ids": {
-      "rite_aid": "11176",
-      "univaf_v0": "rite_aid:11176"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11176"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11176"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11176",
@@ -13025,10 +13289,16 @@
   },
   {
     "id": "cdd36a8c-3930-4402-b2ba-47e970c472bf",
-    "external_ids": {
-      "rite_aid": "11177",
-      "univaf_v0": "rite_aid:11177"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11177"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11177"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11177",
@@ -13321,10 +13591,16 @@
   },
   {
     "id": "fc2d4e6c-affa-454c-be27-ca1a520c3b62",
-    "external_ids": {
-      "rite_aid": "11180",
-      "univaf_v0": "rite_aid:11180"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11180"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11180"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11180",
@@ -13617,10 +13893,16 @@
   },
   {
     "id": "94b92760-967a-4f9a-8d9b-4affba3299f5",
-    "external_ids": {
-      "rite_aid": "11183",
-      "univaf_v0": "rite_aid:11183"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11183"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11183"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11183",
@@ -13913,10 +14195,16 @@
   },
   {
     "id": "d3c01fd4-60b4-42aa-be32-453fa6d731e4",
-    "external_ids": {
-      "rite_aid": "11181",
-      "univaf_v0": "rite_aid:11181"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11181"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11181"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11181",
@@ -14209,10 +14497,16 @@
   },
   {
     "id": "45f82415-322b-4e4e-9ed6-1faec42a6326",
-    "external_ids": {
-      "rite_aid": "11190",
-      "univaf_v0": "rite_aid:11190"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11190"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11190"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11190",
@@ -14505,10 +14799,16 @@
   },
   {
     "id": "b21592ec-54a3-4d18-b4cd-376a85b10175",
-    "external_ids": {
-      "rite_aid": "11186",
-      "univaf_v0": "rite_aid:11186"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11186"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11186"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11186",
@@ -14801,10 +15101,16 @@
   },
   {
     "id": "5b7f2996-584a-4735-a1c4-3f29f873d5c7",
-    "external_ids": {
-      "rite_aid": "11187",
-      "univaf_v0": "rite_aid:11187"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11187"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11187"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11187",
@@ -15097,10 +15403,16 @@
   },
   {
     "id": "61247df5-b40f-401e-aed5-138360b343dd",
-    "external_ids": {
-      "rite_aid": "11194",
-      "univaf_v0": "rite_aid:11194"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11194"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11194"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11194",
@@ -15393,10 +15705,16 @@
   },
   {
     "id": "0d1917ba-aa25-4f2d-8a34-0bbbc34ecfa5",
-    "external_ids": {
-      "rite_aid": "11192",
-      "univaf_v0": "rite_aid:11192"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11192"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11192"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11192",
@@ -15689,10 +16007,16 @@
   },
   {
     "id": "12cc38c5-ab5d-40f3-9880-3b42bce5a351",
-    "external_ids": {
-      "rite_aid": "11195",
-      "univaf_v0": "rite_aid:11195"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11195"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11195"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11195",
@@ -15985,10 +16309,16 @@
   },
   {
     "id": "7fabe8c1-0925-47c8-b8ee-073c60ef8ddd",
-    "external_ids": {
-      "rite_aid": "5408",
-      "univaf_v0": "rite_aid:5408"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5408"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5408"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5408",
@@ -16281,10 +16611,16 @@
   },
   {
     "id": "76282971-55f0-44f8-baf0-d52fb6e40024",
-    "external_ids": {
-      "rite_aid": "5410",
-      "univaf_v0": "rite_aid:5410"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5410"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5410"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5410",
@@ -16577,10 +16913,16 @@
   },
   {
     "id": "8a68b853-720b-4aea-85bb-1dc396caeb32",
-    "external_ids": {
-      "rite_aid": "5409",
-      "univaf_v0": "rite_aid:5409"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5409"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5409"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5409",
@@ -16873,10 +17215,16 @@
   },
   {
     "id": "ade99954-0abc-4fd5-9a06-ec2d10a38be6",
-    "external_ids": {
-      "rite_aid": "5421",
-      "univaf_v0": "rite_aid:5421"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5421"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5421"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5421",
@@ -17169,10 +17517,16 @@
   },
   {
     "id": "ff600fdf-c096-4f98-aa67-b2fc3fb9315a",
-    "external_ids": {
-      "rite_aid": "5415",
-      "univaf_v0": "rite_aid:5415"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5415"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5415"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5415",
@@ -17465,10 +17819,16 @@
   },
   {
     "id": "67a8e5fe-c063-4e83-b0bd-ecb541fdc6ef",
-    "external_ids": {
-      "rite_aid": "10084",
-      "univaf_v0": "rite_aid:10084"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10084"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10084"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10084",
@@ -17761,10 +18121,16 @@
   },
   {
     "id": "26f8b65f-f7fd-43c3-9da2-e878b8fce723",
-    "external_ids": {
-      "rite_aid": "10199",
-      "univaf_v0": "rite_aid:10199"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10199"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10199"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10199",
@@ -18057,10 +18423,16 @@
   },
   {
     "id": "adc334ba-9663-4083-a6f8-e7220525cc6d",
-    "external_ids": {
-      "rite_aid": "10166",
-      "univaf_v0": "rite_aid:10166"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10166"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10166"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10166",
@@ -18353,10 +18725,16 @@
   },
   {
     "id": "0b3bfc9c-1330-4188-a5bb-5af486ed9373",
-    "external_ids": {
-      "rite_aid": "10209",
-      "univaf_v0": "rite_aid:10209"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10209"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10209"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10209",
@@ -18649,10 +19027,16 @@
   },
   {
     "id": "4a81d4d3-e218-4f1c-bab1-4f30a8d4fade",
-    "external_ids": {
-      "rite_aid": "10074",
-      "univaf_v0": "rite_aid:10074"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10074"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10074"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10074",
@@ -18945,10 +19329,16 @@
   },
   {
     "id": "7f3f78a3-d9e8-406d-998f-e7556bd9e0bd",
-    "external_ids": {
-      "rite_aid": "383",
-      "univaf_v0": "rite_aid:383"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "383"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:383"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #383",
@@ -19241,10 +19631,16 @@
   },
   {
     "id": "44de22d5-34b0-46aa-9374-ecacc62fe4d3",
-    "external_ids": {
-      "rite_aid": "362",
-      "univaf_v0": "rite_aid:362"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "362"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:362"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #362",
@@ -19537,10 +19933,16 @@
   },
   {
     "id": "f8ca695a-d8c0-4c1b-9957-a1b0e846f5d5",
-    "external_ids": {
-      "rite_aid": "347",
-      "univaf_v0": "rite_aid:347"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "347"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:347"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #347",
@@ -19833,10 +20235,16 @@
   },
   {
     "id": "38ce8a2c-fed2-43ee-87fb-11d5bb675c91",
-    "external_ids": {
-      "rite_aid": "349",
-      "univaf_v0": "rite_aid:349"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "349"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:349"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #349",
@@ -20129,10 +20537,16 @@
   },
   {
     "id": "3b81d0b1-c8e1-46e5-b13f-d05b41d78f61",
-    "external_ids": {
-      "rite_aid": "384",
-      "univaf_v0": "rite_aid:384"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "384"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:384"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #384",
@@ -20425,10 +20839,16 @@
   },
   {
     "id": "87485908-fb45-4039-9682-da7b02b3e7ec",
-    "external_ids": {
-      "rite_aid": "385",
-      "univaf_v0": "rite_aid:385"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "385"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:385"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #385",
@@ -20721,10 +21141,16 @@
   },
   {
     "id": "cee2846b-f909-4734-80a3-db498a5ff267",
-    "external_ids": {
-      "rite_aid": "365",
-      "univaf_v0": "rite_aid:365"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "365"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:365"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #365",
@@ -21017,10 +21443,16 @@
   },
   {
     "id": "2f506481-0e37-4d27-bcc4-b8b40b116a08",
-    "external_ids": {
-      "rite_aid": "386",
-      "univaf_v0": "rite_aid:386"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "386"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:386"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #386",
@@ -21313,10 +21745,16 @@
   },
   {
     "id": "63089806-02dc-4701-9d46-73b51cf4e6dc",
-    "external_ids": {
-      "rite_aid": "374",
-      "univaf_v0": "rite_aid:374"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "374"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:374"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #374",
@@ -21609,10 +22047,16 @@
   },
   {
     "id": "abe9e7c6-c1e1-4d95-b8e0-423d81cf5dbb",
-    "external_ids": {
-      "rite_aid": "319",
-      "univaf_v0": "rite_aid:319"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "319"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:319"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #319",
@@ -21905,10 +22349,16 @@
   },
   {
     "id": "adf72eae-fad7-4b3b-8783-ec726f71432d",
-    "external_ids": {
-      "rite_aid": "390",
-      "univaf_v0": "rite_aid:390"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "390"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:390"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #390",
@@ -22201,10 +22651,16 @@
   },
   {
     "id": "80955b82-09a4-46a3-9266-ffffa948742a",
-    "external_ids": {
-      "rite_aid": "2204",
-      "univaf_v0": "rite_aid:2204"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2204"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2204"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2204",
@@ -22497,10 +22953,16 @@
   },
   {
     "id": "a8cbebe0-1e5f-4469-ac56-a51eca8e7ee5",
-    "external_ids": {
-      "rite_aid": "2205",
-      "univaf_v0": "rite_aid:2205"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2205"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2205"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2205",
@@ -22793,10 +23255,16 @@
   },
   {
     "id": "00ae9aaa-2bc6-47c5-a1e8-9a4255aec0c9",
-    "external_ids": {
-      "rite_aid": "3751",
-      "univaf_v0": "rite_aid:3751"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3751"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3751"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3751",
@@ -23089,10 +23557,16 @@
   },
   {
     "id": "67443776-ae60-4cbf-99d4-e1f67ceac199",
-    "external_ids": {
-      "rite_aid": "2210",
-      "univaf_v0": "rite_aid:2210"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2210"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2210"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2210",
@@ -23385,10 +23859,16 @@
   },
   {
     "id": "6edad14d-2b77-4a26-8c5e-204718f13684",
-    "external_ids": {
-      "rite_aid": "2212",
-      "univaf_v0": "rite_aid:2212"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2212"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2212"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2212",
@@ -23681,10 +24161,16 @@
   },
   {
     "id": "196c196c-e289-4fc8-a951-913c31f76239",
-    "external_ids": {
-      "rite_aid": "3758",
-      "univaf_v0": "rite_aid:3758"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3758"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3758"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3758",
@@ -23977,10 +24463,16 @@
   },
   {
     "id": "d08c18c4-8235-430d-b0af-30bfa7428734",
-    "external_ids": {
-      "rite_aid": "3781",
-      "univaf_v0": "rite_aid:3781"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3781"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3781"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3781",
@@ -24273,10 +24765,16 @@
   },
   {
     "id": "b4f73bac-5eb9-4a54-90de-6c0f22f20898",
-    "external_ids": {
-      "rite_aid": "2214",
-      "univaf_v0": "rite_aid:2214"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2214"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2214"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2214",
@@ -24569,10 +25067,16 @@
   },
   {
     "id": "b9bcc1fc-5fa0-4514-848e-8cf8bd99e5cb",
-    "external_ids": {
-      "rite_aid": "3835",
-      "univaf_v0": "rite_aid:3835"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3835"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3835"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3835",
@@ -24865,10 +25369,16 @@
   },
   {
     "id": "cc7a9fb9-14ba-404d-b29e-95a7bfdb9e85",
-    "external_ids": {
-      "rite_aid": "3837",
-      "univaf_v0": "rite_aid:3837"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3837"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3837"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3837",
@@ -25161,10 +25671,16 @@
   },
   {
     "id": "0b392b62-d438-45d1-a4dd-212da91366fd",
-    "external_ids": {
-      "rite_aid": "3871",
-      "univaf_v0": "rite_aid:3871"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3871"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3871"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3871",
@@ -25457,10 +25973,16 @@
   },
   {
     "id": "77014262-056b-4784-aa80-565d64986771",
-    "external_ids": {
-      "rite_aid": "4005",
-      "univaf_v0": "rite_aid:4005"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4005"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4005"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4005",
@@ -25753,10 +26275,16 @@
   },
   {
     "id": "991086fd-d12d-4a7c-828f-81dad95d41b5",
-    "external_ids": {
-      "rite_aid": "4295",
-      "univaf_v0": "rite_aid:4295"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4295"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4295"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4295",
@@ -26049,10 +26577,16 @@
   },
   {
     "id": "8e280328-9575-4914-a107-f84f5e1bc272",
-    "external_ids": {
-      "rite_aid": "4686",
-      "univaf_v0": "rite_aid:4686"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4686"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4686"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4686",
@@ -26345,10 +26879,16 @@
   },
   {
     "id": "fd8735cb-5b10-4711-b2f0-8d888e24a26f",
-    "external_ids": {
-      "rite_aid": "4909",
-      "univaf_v0": "rite_aid:4909"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4909"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4909"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4909",
@@ -26641,10 +27181,16 @@
   },
   {
     "id": "15279ff9-f253-4a38-9574-be8a2deb08f0",
-    "external_ids": {
-      "rite_aid": "4917",
-      "univaf_v0": "rite_aid:4917"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4917"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4917"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4917",
@@ -26937,10 +27483,16 @@
   },
   {
     "id": "2e46e84e-b9fa-4458-a7ab-966b9125043c",
-    "external_ids": {
-      "rite_aid": "4915",
-      "univaf_v0": "rite_aid:4915"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4915"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4915"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4915",
@@ -27233,10 +27785,16 @@
   },
   {
     "id": "a8c4c831-7fdd-4a48-8826-6cc2f519635d",
-    "external_ids": {
-      "rite_aid": "4920",
-      "univaf_v0": "rite_aid:4920"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4920"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4920"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4920",
@@ -27529,10 +28087,16 @@
   },
   {
     "id": "c673431d-2ed6-4042-bd59-a6cb5c77ff2e",
-    "external_ids": {
-      "rite_aid": "4810",
-      "univaf_v0": "rite_aid:4810"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4810"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4810"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4810",
@@ -27825,10 +28389,16 @@
   },
   {
     "id": "e2c6d104-0e3b-487a-8dfe-df934c90383a",
-    "external_ids": {
-      "rite_aid": "11208",
-      "univaf_v0": "rite_aid:11208"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11208"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11208"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11208",
@@ -28121,10 +28691,16 @@
   },
   {
     "id": "82c4fe1b-ec92-447d-97cd-b17c9922d9ef",
-    "external_ids": {
-      "rite_aid": "11211",
-      "univaf_v0": "rite_aid:11211"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11211"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11211"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11211",
@@ -28417,10 +28993,16 @@
   },
   {
     "id": "6aed6b8b-7bb7-4e1a-8c3b-d6f8ee3cc54b",
-    "external_ids": {
-      "rite_aid": "11213",
-      "univaf_v0": "rite_aid:11213"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11213"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11213"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11213",
@@ -28713,10 +29295,16 @@
   },
   {
     "id": "92c924d9-d4a0-4eb7-8a11-09007876baf3",
-    "external_ids": {
-      "rite_aid": "11219",
-      "univaf_v0": "rite_aid:11219"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11219"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11219"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11219",
@@ -29009,10 +29597,16 @@
   },
   {
     "id": "ab8c1460-619a-43fb-bd93-343783ed34f4",
-    "external_ids": {
-      "rite_aid": "11218",
-      "univaf_v0": "rite_aid:11218"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11218"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11218"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11218",
@@ -29305,10 +29899,16 @@
   },
   {
     "id": "b37f73fd-418c-4b6b-97bf-35b101959781",
-    "external_ids": {
-      "rite_aid": "1072",
-      "univaf_v0": "rite_aid:1072"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1072"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1072"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1072",
@@ -29601,10 +30201,16 @@
   },
   {
     "id": "7ecb4896-1496-4ffc-98d8-016e645e3c85",
-    "external_ids": {
-      "rite_aid": "1328",
-      "univaf_v0": "rite_aid:1328"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1328"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1328"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1328",
@@ -29897,10 +30503,16 @@
   },
   {
     "id": "ecb7d01d-e38a-4c62-9deb-854b32bcc95e",
-    "external_ids": {
-      "rite_aid": "1889",
-      "univaf_v0": "rite_aid:1889"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1889"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1889"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1889",
@@ -30193,10 +30805,16 @@
   },
   {
     "id": "21757fad-ebe2-431c-a462-ed4ac9dd477a",
-    "external_ids": {
-      "rite_aid": "1987",
-      "univaf_v0": "rite_aid:1987"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1987"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1987"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1987",
@@ -30489,10 +31107,16 @@
   },
   {
     "id": "2ac78afa-a401-4e54-a1d0-080e90037a45",
-    "external_ids": {
-      "rite_aid": "3635",
-      "univaf_v0": "rite_aid:3635"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3635"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3635"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3635",
@@ -30785,10 +31409,16 @@
   },
   {
     "id": "d788b3d6-41df-440b-9740-c25628948e51",
-    "external_ids": {
-      "rite_aid": "3698",
-      "univaf_v0": "rite_aid:3698"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3698"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3698"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3698",
@@ -31081,10 +31711,16 @@
   },
   {
     "id": "eb8841f6-78d3-4c0d-b8a7-34a16c5a1072",
-    "external_ids": {
-      "rite_aid": "3715",
-      "univaf_v0": "rite_aid:3715"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3715"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3715"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3715",
@@ -31377,10 +32013,16 @@
   },
   {
     "id": "f27edc56-962f-4d65-9edd-fc4feb945998",
-    "external_ids": {
-      "rite_aid": "3726",
-      "univaf_v0": "rite_aid:3726"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3726"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3726"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3726",
@@ -31673,10 +32315,16 @@
   },
   {
     "id": "b73b0596-6ca6-487d-938d-9832c1ab05e2",
-    "external_ids": {
-      "rite_aid": "3741",
-      "univaf_v0": "rite_aid:3741"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3741"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3741"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3741",
@@ -31969,10 +32617,16 @@
   },
   {
     "id": "66c4b0e0-57d5-44c3-aa82-d906b9cda844",
-    "external_ids": {
-      "rite_aid": "3948",
-      "univaf_v0": "rite_aid:3948"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3948"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3948"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3948",
@@ -32265,10 +32919,16 @@
   },
   {
     "id": "9425411a-1c81-4fd6-8547-bebedab4d8fc",
-    "external_ids": {
-      "rite_aid": "4263",
-      "univaf_v0": "rite_aid:4263"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4263"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4263"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4263",
@@ -32561,10 +33221,16 @@
   },
   {
     "id": "716a2296-49a1-4d1e-8f11-789e552cb0d1",
-    "external_ids": {
-      "rite_aid": "4381",
-      "univaf_v0": "rite_aid:4381"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4381"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4381"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4381",
@@ -32857,10 +33523,16 @@
   },
   {
     "id": "c48f6cde-03ee-4a06-ab34-90afa6f15138",
-    "external_ids": {
-      "rite_aid": "4795",
-      "univaf_v0": "rite_aid:4795"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4795"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4795"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4795",
@@ -33153,10 +33825,16 @@
   },
   {
     "id": "0edc3ffe-7cc7-4ba0-afce-167858b3b0d2",
-    "external_ids": {
-      "rite_aid": "4706",
-      "univaf_v0": "rite_aid:4706"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4706"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4706"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4706",
@@ -33449,10 +34127,16 @@
   },
   {
     "id": "5777b316-78a8-468a-b3a8-5377b2421d20",
-    "external_ids": {
-      "rite_aid": "6762",
-      "univaf_v0": "rite_aid:6762"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6762"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6762"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6762",
@@ -33745,10 +34429,16 @@
   },
   {
     "id": "57aa63c0-c0a0-4f2e-88eb-6ffa1d636f4f",
-    "external_ids": {
-      "rite_aid": "4872",
-      "univaf_v0": "rite_aid:4872"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4872"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4872"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4872",
@@ -34041,10 +34731,16 @@
   },
   {
     "id": "885ddf0a-d6be-4bdf-b3ca-8330623912cb",
-    "external_ids": {
-      "rite_aid": "4692",
-      "univaf_v0": "rite_aid:4692"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4692"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4692"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4692",
@@ -34337,10 +35033,16 @@
   },
   {
     "id": "6ec78c80-0559-4b09-8b61-051125b00b19",
-    "external_ids": {
-      "rite_aid": "6744",
-      "univaf_v0": "rite_aid:6744"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6744"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6744"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6744",
@@ -34633,10 +35335,16 @@
   },
   {
     "id": "7b4a1e82-ab89-47f8-bd36-54a4f943c0b3",
-    "external_ids": {
-      "rite_aid": "11250",
-      "univaf_v0": "rite_aid:11250"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11250"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11250"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11250",
@@ -34929,10 +35637,16 @@
   },
   {
     "id": "85349718-a834-4484-84d0-c68beaacd8fa",
-    "external_ids": {
-      "rite_aid": "11249",
-      "univaf_v0": "rite_aid:11249"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11249"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11249"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11249",
@@ -35225,10 +35939,16 @@
   },
   {
     "id": "cc4d43c2-c23c-4a51-a985-d5d90bba2187",
-    "external_ids": {
-      "rite_aid": "4820",
-      "univaf_v0": "rite_aid:4820"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4820"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4820"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4820",
@@ -35521,10 +36241,16 @@
   },
   {
     "id": "966ac9a2-3a91-4b26-8124-ef2a8c0c6367",
-    "external_ids": {
-      "rite_aid": "11253",
-      "univaf_v0": "rite_aid:11253"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11253"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11253"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11253",
@@ -35817,10 +36543,16 @@
   },
   {
     "id": "93b5a5a0-741c-40bb-8a28-0b6216b126ba",
-    "external_ids": {
-      "rite_aid": "11258",
-      "univaf_v0": "rite_aid:11258"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11258"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11258"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11258",
@@ -36113,10 +36845,16 @@
   },
   {
     "id": "8bab766e-1c70-4a33-9431-d6d5b25938aa",
-    "external_ids": {
-      "rite_aid": "11268",
-      "univaf_v0": "rite_aid:11268"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11268"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11268"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11268",
@@ -36409,10 +37147,16 @@
   },
   {
     "id": "2581d199-4775-487a-88b5-3c1eb3c76992",
-    "external_ids": {
-      "rite_aid": "11273",
-      "univaf_v0": "rite_aid:11273"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11273"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11273"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11273",
@@ -36705,10 +37449,16 @@
   },
   {
     "id": "73353967-1aa2-49ee-8924-eac416cdbdb5",
-    "external_ids": {
-      "rite_aid": "11278",
-      "univaf_v0": "rite_aid:11278"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11278"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11278"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11278",
@@ -37001,10 +37751,16 @@
   },
   {
     "id": "1b7ae3ce-7295-478f-a9c2-9b36f042facf",
-    "external_ids": {
-      "rite_aid": "11267",
-      "univaf_v0": "rite_aid:11267"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11267"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11267"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11267",
@@ -37297,10 +38053,16 @@
   },
   {
     "id": "91e6a779-f38c-424f-b363-479a71a8d95c",
-    "external_ids": {
-      "rite_aid": "11263",
-      "univaf_v0": "rite_aid:11263"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11263"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11263"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11263",
@@ -37593,10 +38355,16 @@
   },
   {
     "id": "6d619d6a-554e-434d-b320-b049cf5a3c7e",
-    "external_ids": {
-      "rite_aid": "11277",
-      "univaf_v0": "rite_aid:11277"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11277"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11277"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11277",
@@ -37889,10 +38657,16 @@
   },
   {
     "id": "935efd16-0cf9-4c99-93ef-476804aaccbf",
-    "external_ids": {
-      "rite_aid": "11266",
-      "univaf_v0": "rite_aid:11266"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11266"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11266"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11266",
@@ -38185,10 +38959,16 @@
   },
   {
     "id": "94f1c0a3-6efc-4a2a-88c9-bef8f3c0b033",
-    "external_ids": {
-      "rite_aid": "11282",
-      "univaf_v0": "rite_aid:11282"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11282"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11282"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11282",
@@ -38481,10 +39261,16 @@
   },
   {
     "id": "c5ce98a8-b833-436f-8ab9-2fd3610d9048",
-    "external_ids": {
-      "rite_aid": "11262",
-      "univaf_v0": "rite_aid:11262"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11262"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11262"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11262",
@@ -38777,10 +39563,16 @@
   },
   {
     "id": "df6c84b1-6479-46d1-a3e6-19a96610c9d4",
-    "external_ids": {
-      "rite_aid": "11270",
-      "univaf_v0": "rite_aid:11270"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11270"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11270"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11270",
@@ -39073,10 +39865,16 @@
   },
   {
     "id": "eff1db00-938d-4278-9d11-833edf3513a4",
-    "external_ids": {
-      "rite_aid": "11291",
-      "univaf_v0": "rite_aid:11291"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11291"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11291"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11291",
@@ -39369,10 +40167,16 @@
   },
   {
     "id": "408a2a95-b3d4-43a0-a8c4-0ca1f61712ec",
-    "external_ids": {
-      "rite_aid": "11287",
-      "univaf_v0": "rite_aid:11287"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11287"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11287"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11287",
@@ -39665,10 +40469,16 @@
   },
   {
     "id": "bb98da03-459f-41e0-96e1-ff9d6f68ee3c",
-    "external_ids": {
-      "rite_aid": "11304",
-      "univaf_v0": "rite_aid:11304"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11304"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11304"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11304",
@@ -39961,10 +40771,16 @@
   },
   {
     "id": "9496b815-5d86-4018-885a-a86e166fda29",
-    "external_ids": {
-      "rite_aid": "11299",
-      "univaf_v0": "rite_aid:11299"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11299"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11299"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11299",
@@ -40257,10 +41073,16 @@
   },
   {
     "id": "962a2446-6e72-45c2-98a3-e80fcc6ff44f",
-    "external_ids": {
-      "rite_aid": "11297",
-      "univaf_v0": "rite_aid:11297"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11297"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11297"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11297",
@@ -40553,10 +41375,16 @@
   },
   {
     "id": "fe90d778-1831-4af3-85aa-8cef447256eb",
-    "external_ids": {
-      "rite_aid": "4067",
-      "univaf_v0": "rite_aid:4067"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4067"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4067"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4067",
@@ -40849,10 +41677,16 @@
   },
   {
     "id": "5d1667a7-d3c1-4aed-a1fe-588415262bd7",
-    "external_ids": {
-      "rite_aid": "5175",
-      "univaf_v0": "rite_aid:5175"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5175"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5175"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5175",
@@ -41145,10 +41979,16 @@
   },
   {
     "id": "155c8675-a359-4087-9ff0-cd88c43025b3",
-    "external_ids": {
-      "rite_aid": "5178",
-      "univaf_v0": "rite_aid:5178"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5178"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5178"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5178",
@@ -41441,10 +42281,16 @@
   },
   {
     "id": "0fad013a-acd3-4ff4-a0da-70d1882f6efb",
-    "external_ids": {
-      "rite_aid": "5172",
-      "univaf_v0": "rite_aid:5172"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5172"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5172"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5172",
@@ -41737,10 +42583,16 @@
   },
   {
     "id": "f4be18d2-2baa-4d95-b88c-29baa3b02d16",
-    "external_ids": {
-      "rite_aid": "5184",
-      "univaf_v0": "rite_aid:5184"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5184"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5184"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5184",
@@ -42033,10 +42885,16 @@
   },
   {
     "id": "9fc6920e-aeb3-4736-b21b-a9a02be112c3",
-    "external_ids": {
-      "rite_aid": "5185",
-      "univaf_v0": "rite_aid:5185"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5185"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5185"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5185",
@@ -42329,10 +43187,16 @@
   },
   {
     "id": "10d4ac25-b3a8-40f1-aa52-ffee49b767b0",
-    "external_ids": {
-      "rite_aid": "5179",
-      "univaf_v0": "rite_aid:5179"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5179"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5179"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5179",
@@ -42625,10 +43489,16 @@
   },
   {
     "id": "c66ac6e8-c5e6-42b8-b56e-a74ee9e16742",
-    "external_ids": {
-      "rite_aid": "5171",
-      "univaf_v0": "rite_aid:5171"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5171"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5171"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5171",
@@ -42921,10 +43791,16 @@
   },
   {
     "id": "f10dac41-caa1-49de-a29e-089caa57c9fe",
-    "external_ids": {
-      "rite_aid": "5176",
-      "univaf_v0": "rite_aid:5176"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5176"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5176"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5176",
@@ -43217,10 +44093,16 @@
   },
   {
     "id": "c57f828f-2b50-401d-b7ac-d7380d5246cc",
-    "external_ids": {
-      "rite_aid": "5186",
-      "univaf_v0": "rite_aid:5186"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5186"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5186"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5186",
@@ -43513,10 +44395,16 @@
   },
   {
     "id": "adef6365-885f-4191-9b26-cf60aae4682b",
-    "external_ids": {
-      "rite_aid": "5187",
-      "univaf_v0": "rite_aid:5187"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5187"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5187"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5187",
@@ -43809,10 +44697,16 @@
   },
   {
     "id": "f6a0cec0-daef-4fd0-855a-1b6f91662f72",
-    "external_ids": {
-      "rite_aid": "5188",
-      "univaf_v0": "rite_aid:5188"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5188"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5188"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5188",
@@ -44105,10 +44999,16 @@
   },
   {
     "id": "30dd14d9-db03-4798-8cae-fa17660ba73d",
-    "external_ids": {
-      "rite_aid": "5190",
-      "univaf_v0": "rite_aid:5190"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5190"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5190"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5190",
@@ -44401,10 +45301,16 @@
   },
   {
     "id": "8b4d8b18-7e52-4718-9ef3-1ccbdfa1d79e",
-    "external_ids": {
-      "rite_aid": "5181",
-      "univaf_v0": "rite_aid:5181"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5181"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5181"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5181",
@@ -44697,10 +45603,16 @@
   },
   {
     "id": "a1237962-5163-4541-a409-fff49fe71cc8",
-    "external_ids": {
-      "rite_aid": "5191",
-      "univaf_v0": "rite_aid:5191"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5191"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5191"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5191",
@@ -44993,10 +45905,16 @@
   },
   {
     "id": "aa9060de-9552-4a29-bb72-a4f606ac8547",
-    "external_ids": {
-      "rite_aid": "5199",
-      "univaf_v0": "rite_aid:5199"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5199"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5199"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5199",
@@ -45289,10 +46207,16 @@
   },
   {
     "id": "1b49c7d4-d8a4-4776-b4de-828b84983dfd",
-    "external_ids": {
-      "rite_aid": "5198",
-      "univaf_v0": "rite_aid:5198"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5198"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5198"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5198",
@@ -45585,10 +46509,16 @@
   },
   {
     "id": "e1a5b48c-c31e-4cd6-80bf-97b5bbdd3818",
-    "external_ids": {
-      "rite_aid": "5197",
-      "univaf_v0": "rite_aid:5197"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5197"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5197"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5197",
@@ -45881,10 +46811,16 @@
   },
   {
     "id": "50874f9d-3dc8-410f-a130-855962f2d717",
-    "external_ids": {
-      "rite_aid": "5189",
-      "univaf_v0": "rite_aid:5189"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5189"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5189"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5189",
@@ -46177,10 +47113,16 @@
   },
   {
     "id": "5dbf44f4-a418-4bbe-b007-743a10eeb3f3",
-    "external_ids": {
-      "rite_aid": "5201",
-      "univaf_v0": "rite_aid:5201"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5201"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5201"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5201",
@@ -46473,10 +47415,16 @@
   },
   {
     "id": "ab139a9a-7e33-4037-a08d-f785a49f5f01",
-    "external_ids": {
-      "rite_aid": "5203",
-      "univaf_v0": "rite_aid:5203"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5203"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5203"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5203",
@@ -46769,10 +47717,16 @@
   },
   {
     "id": "9781bce7-90bc-4947-8a26-333196ffd0ee",
-    "external_ids": {
-      "rite_aid": "5217",
-      "univaf_v0": "rite_aid:5217"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5217"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5217"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5217",
@@ -47065,10 +48019,16 @@
   },
   {
     "id": "9bb1013c-b149-46ee-b0e8-6cef1df0d6fb",
-    "external_ids": {
-      "rite_aid": "5220",
-      "univaf_v0": "rite_aid:5220"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5220"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5220"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5220",
@@ -47361,10 +48321,16 @@
   },
   {
     "id": "ef835a11-97bf-4f3a-b0df-b764355f30c7",
-    "external_ids": {
-      "rite_aid": "5223",
-      "univaf_v0": "rite_aid:5223"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5223"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5223"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5223",
@@ -47657,10 +48623,16 @@
   },
   {
     "id": "777c4919-86a6-48f6-99b7-824be637b76a",
-    "external_ids": {
-      "rite_aid": "5227",
-      "univaf_v0": "rite_aid:5227"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5227"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5227"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5227",
@@ -47953,10 +48925,16 @@
   },
   {
     "id": "a7ef3716-f49c-4214-94c3-0451868bdad8",
-    "external_ids": {
-      "rite_aid": "5228",
-      "univaf_v0": "rite_aid:5228"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5228"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5228"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5228",
@@ -48249,10 +49227,16 @@
   },
   {
     "id": "521dd00d-9259-48ab-8dae-8e107446e7e4",
-    "external_ids": {
-      "rite_aid": "5232",
-      "univaf_v0": "rite_aid:5232"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5232"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5232"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5232",
@@ -48545,10 +49529,16 @@
   },
   {
     "id": "6bfe75b6-fd80-4569-af1a-ae03220139ca",
-    "external_ids": {
-      "rite_aid": "5237",
-      "univaf_v0": "rite_aid:5237"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5237"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5237"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5237",
@@ -48841,10 +49831,16 @@
   },
   {
     "id": "15b61b28-392b-4241-b9ee-e76e8344bc52",
-    "external_ids": {
-      "rite_aid": "5234",
-      "univaf_v0": "rite_aid:5234"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5234"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5234"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5234",
@@ -49137,10 +50133,16 @@
   },
   {
     "id": "ea34c9cf-d14e-4617-ad6d-91810408abe3",
-    "external_ids": {
-      "rite_aid": "5239",
-      "univaf_v0": "rite_aid:5239"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5239"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5239"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5239",
@@ -49433,10 +50435,16 @@
   },
   {
     "id": "ea5aeb44-066b-4f6c-b019-5d8b31f4c7eb",
-    "external_ids": {
-      "rite_aid": "5236",
-      "univaf_v0": "rite_aid:5236"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5236"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5236"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5236",
@@ -49729,10 +50737,16 @@
   },
   {
     "id": "26f5bab0-09d7-4465-aeff-8393a29d33c9",
-    "external_ids": {
-      "rite_aid": "5238",
-      "univaf_v0": "rite_aid:5238"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5238"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5238"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5238",
@@ -50025,10 +51039,16 @@
   },
   {
     "id": "e23ef4fb-299f-4084-9704-a2612743118e",
-    "external_ids": {
-      "rite_aid": "5235",
-      "univaf_v0": "rite_aid:5235"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5235"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5235"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5235",
@@ -50321,10 +51341,16 @@
   },
   {
     "id": "a9e385f0-2cfd-42d9-82cd-c3817b51dc15",
-    "external_ids": {
-      "rite_aid": "5240",
-      "univaf_v0": "rite_aid:5240"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5240"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5240"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5240",
@@ -50617,10 +51643,16 @@
   },
   {
     "id": "d5ca6d1a-ad4d-4a2a-9299-1dc209e2c5cf",
-    "external_ids": {
-      "rite_aid": "5243",
-      "univaf_v0": "rite_aid:5243"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5243"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5243"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5243",
@@ -50913,10 +51945,16 @@
   },
   {
     "id": "800da281-99dd-4cf7-9558-238563843c1a",
-    "external_ids": {
-      "rite_aid": "5242",
-      "univaf_v0": "rite_aid:5242"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5242"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5242"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5242",
@@ -51209,10 +52247,16 @@
   },
   {
     "id": "1aeec2ea-36be-4e76-a582-44d9ffe83d2b",
-    "external_ids": {
-      "rite_aid": "5241",
-      "univaf_v0": "rite_aid:5241"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5241"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5241"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5241",
@@ -51505,10 +52549,16 @@
   },
   {
     "id": "04d8e898-1fd4-4014-84a7-9cd8df2df3dc",
-    "external_ids": {
-      "rite_aid": "5245",
-      "univaf_v0": "rite_aid:5245"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5245"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5245"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5245",
@@ -51801,10 +52851,16 @@
   },
   {
     "id": "6087f6d5-b03d-46ca-b8fd-1efbdcecf355",
-    "external_ids": {
-      "rite_aid": "5248",
-      "univaf_v0": "rite_aid:5248"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5248"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5248"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5248",
@@ -52097,10 +53153,16 @@
   },
   {
     "id": "138729c8-26e4-4614-848a-afbcae3d742a",
-    "external_ids": {
-      "rite_aid": "5250",
-      "univaf_v0": "rite_aid:5250"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5250"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5250"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5250",
@@ -52393,10 +53455,16 @@
   },
   {
     "id": "30ea7cdc-350a-4e1b-b70c-831b0709cb1b",
-    "external_ids": {
-      "rite_aid": "5257",
-      "univaf_v0": "rite_aid:5257"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5257"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5257"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5257",
@@ -52689,10 +53757,16 @@
   },
   {
     "id": "5536639d-02d6-4564-9667-286efabda27d",
-    "external_ids": {
-      "rite_aid": "5256",
-      "univaf_v0": "rite_aid:5256"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5256"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5256"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5256",
@@ -52985,10 +54059,16 @@
   },
   {
     "id": "dd1c6d8e-ed99-4cc6-8d55-0e91fc618a85",
-    "external_ids": {
-      "rite_aid": "5255",
-      "univaf_v0": "rite_aid:5255"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5255"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5255"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5255",
@@ -53281,10 +54361,16 @@
   },
   {
     "id": "e64ea7c9-11b5-47e5-a7b3-bcbe77485fa2",
-    "external_ids": {
-      "rite_aid": "5260",
-      "univaf_v0": "rite_aid:5260"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5260"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5260"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5260",
@@ -53577,10 +54663,16 @@
   },
   {
     "id": "379f8a0d-33a3-4ca5-9809-b03fdce20425",
-    "external_ids": {
-      "rite_aid": "5258",
-      "univaf_v0": "rite_aid:5258"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5258"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5258"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5258",
@@ -53873,10 +54965,16 @@
   },
   {
     "id": "aee896f5-a372-422e-b4f9-bf0e54fe6953",
-    "external_ids": {
-      "rite_aid": "5262",
-      "univaf_v0": "rite_aid:5262"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5262"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5262"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5262",
@@ -54169,10 +55267,16 @@
   },
   {
     "id": "257e863a-9c4d-4f33-abb8-58fa0ecf0d1a",
-    "external_ids": {
-      "rite_aid": "5266",
-      "univaf_v0": "rite_aid:5266"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5266"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5266"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5266",
@@ -54465,10 +55569,16 @@
   },
   {
     "id": "97c4de1c-84c6-4099-baa3-25d61f5da984",
-    "external_ids": {
-      "rite_aid": "5264",
-      "univaf_v0": "rite_aid:5264"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5264"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5264"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5264",
@@ -54761,10 +55871,16 @@
   },
   {
     "id": "4f0c7549-7912-4834-9d06-616afab67c33",
-    "external_ids": {
-      "rite_aid": "5265",
-      "univaf_v0": "rite_aid:5265"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5265"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5265"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5265",
@@ -55057,10 +56173,16 @@
   },
   {
     "id": "834276d4-879b-4d6a-94ea-30495eecff0b",
-    "external_ids": {
-      "rite_aid": "5267",
-      "univaf_v0": "rite_aid:5267"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5267"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5267"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5267",
@@ -55353,10 +56475,16 @@
   },
   {
     "id": "f95743a7-f535-404e-94d3-57267e0b0d89",
-    "external_ids": {
-      "rite_aid": "5271",
-      "univaf_v0": "rite_aid:5271"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5271"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5271"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5271",
@@ -55649,10 +56777,16 @@
   },
   {
     "id": "f3bcc48e-8041-4c38-bd84-7c0d69547296",
-    "external_ids": {
-      "rite_aid": "5269",
-      "univaf_v0": "rite_aid:5269"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5269"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5269"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5269",
@@ -55945,10 +57079,16 @@
   },
   {
     "id": "dff0ed16-f78d-420a-85a6-14a9c98b3b2f",
-    "external_ids": {
-      "rite_aid": "5274",
-      "univaf_v0": "rite_aid:5274"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5274"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5274"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5274",
@@ -56241,10 +57381,16 @@
   },
   {
     "id": "430eb9ab-63b8-46fa-8600-b76fb9382def",
-    "external_ids": {
-      "rite_aid": "5280",
-      "univaf_v0": "rite_aid:5280"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5280"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5280"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5280",
@@ -56537,10 +57683,16 @@
   },
   {
     "id": "a2d6caff-5311-4ea6-b12e-7a7f9b76d122",
-    "external_ids": {
-      "rite_aid": "5276",
-      "univaf_v0": "rite_aid:5276"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5276"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5276"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5276",
@@ -56833,10 +57985,16 @@
   },
   {
     "id": "390c17a0-cd6f-44fa-a9b8-fb4f5352bcf8",
-    "external_ids": {
-      "rite_aid": "5281",
-      "univaf_v0": "rite_aid:5281"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5281"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5281"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5281",
@@ -57129,10 +58287,16 @@
   },
   {
     "id": "5092c4c6-61b1-4661-87d6-1e83608ae84e",
-    "external_ids": {
-      "rite_aid": "5278",
-      "univaf_v0": "rite_aid:5278"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5278"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5278"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5278",
@@ -57425,10 +58589,16 @@
   },
   {
     "id": "d700492e-8e11-420f-8e36-7837d9241e6a",
-    "external_ids": {
-      "rite_aid": "5279",
-      "univaf_v0": "rite_aid:5279"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5279"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5279"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5279",
@@ -57721,10 +58891,16 @@
   },
   {
     "id": "e2312c5f-69ff-4f70-9852-bae5495b93c6",
-    "external_ids": {
-      "rite_aid": "5277",
-      "univaf_v0": "rite_aid:5277"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5277"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5277"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5277",
@@ -58017,10 +59193,16 @@
   },
   {
     "id": "7f9a55a8-011d-4d30-b66d-fa2f01288279",
-    "external_ids": {
-      "rite_aid": "5275",
-      "univaf_v0": "rite_aid:5275"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5275"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5275"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5275",
@@ -58313,10 +59495,16 @@
   },
   {
     "id": "0ea802ed-1300-458c-b9a4-85aea44875ae",
-    "external_ids": {
-      "rite_aid": "5282",
-      "univaf_v0": "rite_aid:5282"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5282"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5282"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5282",
@@ -58609,10 +59797,16 @@
   },
   {
     "id": "41cf53c3-51f1-456b-8a87-f28ca00f574f",
-    "external_ids": {
-      "rite_aid": "5284",
-      "univaf_v0": "rite_aid:5284"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5284"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5284"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5284",
@@ -58905,10 +60099,16 @@
   },
   {
     "id": "35678004-eac9-49e8-b7e4-74138ad4d77c",
-    "external_ids": {
-      "rite_aid": "5283",
-      "univaf_v0": "rite_aid:5283"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5283"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5283"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5283",
@@ -59201,10 +60401,16 @@
   },
   {
     "id": "f6db123e-2a02-4819-9fa6-83107d67e9b2",
-    "external_ids": {
-      "rite_aid": "5285",
-      "univaf_v0": "rite_aid:5285"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5285"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5285"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5285",
@@ -59497,10 +60703,16 @@
   },
   {
     "id": "32553d19-b796-4521-b048-fe03281a6cdc",
-    "external_ids": {
-      "rite_aid": "5288",
-      "univaf_v0": "rite_aid:5288"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5288"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5288"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5288",
@@ -59793,10 +61005,16 @@
   },
   {
     "id": "b44d8fc7-8f8e-4f59-b1f0-cabdfffe9259",
-    "external_ids": {
-      "rite_aid": "5291",
-      "univaf_v0": "rite_aid:5291"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5291"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5291"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5291",
@@ -60089,10 +61307,16 @@
   },
   {
     "id": "49ae0dd5-c4ee-4e45-9ca8-3ce2edbe6027",
-    "external_ids": {
-      "rite_aid": "5287",
-      "univaf_v0": "rite_aid:5287"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5287"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5287"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5287",
@@ -60385,10 +61609,16 @@
   },
   {
     "id": "4ac860d2-71fa-4840-a5f5-750e8baf9889",
-    "external_ids": {
-      "rite_aid": "5286",
-      "univaf_v0": "rite_aid:5286"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5286"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5286"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5286",
@@ -60681,10 +61911,16 @@
   },
   {
     "id": "ea0dbca2-416a-4019-ae08-e2ad7b739bd9",
-    "external_ids": {
-      "rite_aid": "5293",
-      "univaf_v0": "rite_aid:5293"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5293"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5293"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5293",
@@ -60977,10 +62213,16 @@
   },
   {
     "id": "3aecc623-4c15-42ea-97f0-296eefa7f19d",
-    "external_ids": {
-      "rite_aid": "5296",
-      "univaf_v0": "rite_aid:5296"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5296"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5296"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5296",
@@ -61273,10 +62515,16 @@
   },
   {
     "id": "f239a9be-9de4-4199-8a79-4e7fe4b55f63",
-    "external_ids": {
-      "rite_aid": "5295",
-      "univaf_v0": "rite_aid:5295"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5295"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5295"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5295",
@@ -61569,10 +62817,16 @@
   },
   {
     "id": "def7d2da-ac71-41cc-a102-32bf068d6fe0",
-    "external_ids": {
-      "rite_aid": "5297",
-      "univaf_v0": "rite_aid:5297"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5297"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5297"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5297",
@@ -61865,10 +63119,16 @@
   },
   {
     "id": "f3a03704-5568-4837-87e1-83ef147f143f",
-    "external_ids": {
-      "rite_aid": "5299",
-      "univaf_v0": "rite_aid:5299"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5299"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5299"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5299",
@@ -62161,10 +63421,16 @@
   },
   {
     "id": "b6ee0080-1b83-47fb-9971-a20b37f02032",
-    "external_ids": {
-      "rite_aid": "5301",
-      "univaf_v0": "rite_aid:5301"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5301"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5301"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5301",
@@ -62457,10 +63723,16 @@
   },
   {
     "id": "be513eb7-3623-42e1-8f88-45db5d021e7e",
-    "external_ids": {
-      "rite_aid": "5300",
-      "univaf_v0": "rite_aid:5300"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5300"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5300"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5300",
@@ -62753,10 +64025,16 @@
   },
   {
     "id": "4753e7c2-d6ad-4f68-8aea-b605e1fc9b0f",
-    "external_ids": {
-      "rite_aid": "5302",
-      "univaf_v0": "rite_aid:5302"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5302"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5302"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5302",
@@ -63049,10 +64327,16 @@
   },
   {
     "id": "97bd3f78-b6bc-4fee-9e87-a31435498e7c",
-    "external_ids": {
-      "rite_aid": "5305",
-      "univaf_v0": "rite_aid:5305"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5305"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5305"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5305",
@@ -63345,10 +64629,16 @@
   },
   {
     "id": "2d8d27d2-e005-49df-b9fb-a1dff2f61719",
-    "external_ids": {
-      "rite_aid": "5303",
-      "univaf_v0": "rite_aid:5303"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5303"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5303"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5303",
@@ -63641,10 +64931,16 @@
   },
   {
     "id": "ebb33c26-2774-4543-a18c-117125660527",
-    "external_ids": {
-      "rite_aid": "5311",
-      "univaf_v0": "rite_aid:5311"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5311"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5311"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5311",
@@ -63937,10 +65233,16 @@
   },
   {
     "id": "042fee2b-97fe-4c89-b07c-78f9b9c11507",
-    "external_ids": {
-      "rite_aid": "5304",
-      "univaf_v0": "rite_aid:5304"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5304"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5304"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5304",
@@ -64233,10 +65535,16 @@
   },
   {
     "id": "51120a2b-fd1d-4583-9316-9558d65d28af",
-    "external_ids": {
-      "rite_aid": "5309",
-      "univaf_v0": "rite_aid:5309"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5309"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5309"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5309",
@@ -64529,10 +65837,16 @@
   },
   {
     "id": "ca16b9c3-8048-4c8a-bde8-19381eb198ad",
-    "external_ids": {
-      "rite_aid": "5307",
-      "univaf_v0": "rite_aid:5307"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5307"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5307"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5307",
@@ -64825,10 +66139,16 @@
   },
   {
     "id": "d9a7dd41-69e0-416a-aadb-7f6b789310a8",
-    "external_ids": {
-      "rite_aid": "5308",
-      "univaf_v0": "rite_aid:5308"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5308"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5308"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5308",
@@ -65121,10 +66441,16 @@
   },
   {
     "id": "33ef99d9-ee5d-4aa8-9de1-04759cb11a2b",
-    "external_ids": {
-      "rite_aid": "5312",
-      "univaf_v0": "rite_aid:5312"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5312"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5312"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5312",
@@ -65417,10 +66743,16 @@
   },
   {
     "id": "90cc6edd-db60-4d03-b247-e9684f451d61",
-    "external_ids": {
-      "rite_aid": "5313",
-      "univaf_v0": "rite_aid:5313"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5313"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5313"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5313",
@@ -65713,10 +67045,16 @@
   },
   {
     "id": "3eb3d027-f68a-4865-8c1f-bff9548d4202",
-    "external_ids": {
-      "rite_aid": "5314",
-      "univaf_v0": "rite_aid:5314"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5314"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5314"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5314",
@@ -66009,10 +67347,16 @@
   },
   {
     "id": "4e5419b7-7a55-46f6-b005-96239fc2ea69",
-    "external_ids": {
-      "rite_aid": "5315",
-      "univaf_v0": "rite_aid:5315"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5315"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5315"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5315",
@@ -66305,10 +67649,16 @@
   },
   {
     "id": "70541b70-efb4-42ee-83cc-969accb5d7f4",
-    "external_ids": {
-      "rite_aid": "5317",
-      "univaf_v0": "rite_aid:5317"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5317"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5317"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5317",
@@ -66601,10 +67951,16 @@
   },
   {
     "id": "d256471b-f08e-4cab-924f-ff4022fc2dc4",
-    "external_ids": {
-      "rite_aid": "5318",
-      "univaf_v0": "rite_aid:5318"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5318"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5318"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5318",
@@ -66897,10 +68253,16 @@
   },
   {
     "id": "cae851cc-ba3e-4c49-a41e-b38b499c2ce4",
-    "external_ids": {
-      "rite_aid": "5320",
-      "univaf_v0": "rite_aid:5320"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5320"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5320"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5320",
@@ -67193,10 +68555,16 @@
   },
   {
     "id": "db963672-de13-4298-845c-76ece8efc019",
-    "external_ids": {
-      "rite_aid": "5316",
-      "univaf_v0": "rite_aid:5316"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5316"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5316"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5316",
@@ -67489,10 +68857,16 @@
   },
   {
     "id": "3cbb7a77-f7a1-499e-9beb-1671ea1d5f04",
-    "external_ids": {
-      "rite_aid": "5319",
-      "univaf_v0": "rite_aid:5319"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5319"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5319"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5319",
@@ -67785,10 +69159,16 @@
   },
   {
     "id": "29884f3f-067c-4b79-bce0-46644bc04106",
-    "external_ids": {
-      "rite_aid": "6347",
-      "univaf_v0": "rite_aid:6347"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6347"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6347"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6347",
@@ -68081,10 +69461,16 @@
   },
   {
     "id": "8c98aa89-50cd-4beb-a24c-c21d3ab76349",
-    "external_ids": {
-      "rite_aid": "6232",
-      "univaf_v0": "rite_aid:6232"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6232"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6232"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6232",
@@ -68377,10 +69763,16 @@
   },
   {
     "id": "b8a60aef-16c8-45a5-8ba1-83514d87f83c",
-    "external_ids": {
-      "rite_aid": "6194",
-      "univaf_v0": "rite_aid:6194"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6194"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6194"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6194",
@@ -68673,10 +70065,16 @@
   },
   {
     "id": "aa0e7f22-0e7a-4c32-bf2a-639e613ef686",
-    "external_ids": {
-      "rite_aid": "6452",
-      "univaf_v0": "rite_aid:6452"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6452"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6452"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6452",
@@ -68969,10 +70367,16 @@
   },
   {
     "id": "5ae3a5a3-4f23-4d83-94c4-3ced1fd047b9",
-    "external_ids": {
-      "rite_aid": "6455",
-      "univaf_v0": "rite_aid:6455"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6455"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6455"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6455",
@@ -69265,10 +70669,16 @@
   },
   {
     "id": "a90f0377-782f-4ee1-a1e5-15f8274bbeda",
-    "external_ids": {
-      "rite_aid": "6493",
-      "univaf_v0": "rite_aid:6493"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6493"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6493"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6493",
@@ -69561,10 +70971,16 @@
   },
   {
     "id": "ae2fe922-a56a-47a4-a3d4-23a6083bfac6",
-    "external_ids": {
-      "rite_aid": "6488",
-      "univaf_v0": "rite_aid:6488"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6488"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6488"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6488",
@@ -69857,10 +71273,16 @@
   },
   {
     "id": "13e25e3f-6b8e-4f91-a81d-82006a402793",
-    "external_ids": {
-      "rite_aid": "6498",
-      "univaf_v0": "rite_aid:6498"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6498"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6498"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6498",
@@ -70153,10 +71575,16 @@
   },
   {
     "id": "47ccdd26-a53f-4c25-b58f-822fecac349e",
-    "external_ids": {
-      "rite_aid": "6503",
-      "univaf_v0": "rite_aid:6503"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6503"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6503"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6503",
@@ -70449,10 +71877,16 @@
   },
   {
     "id": "1184cc41-1baf-4e2a-840d-d4ef6d534b42",
-    "external_ids": {
-      "rite_aid": "6539",
-      "univaf_v0": "rite_aid:6539"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6539"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6539"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6539",
@@ -70745,10 +72179,16 @@
   },
   {
     "id": "92e2af0d-e144-46ae-9435-df3c5366efa1",
-    "external_ids": {
-      "rite_aid": "6521",
-      "univaf_v0": "rite_aid:6521"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6521"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6521"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6521",
@@ -71041,10 +72481,16 @@
   },
   {
     "id": "3e472be8-9c36-49b5-987d-5bc6efb9dc87",
-    "external_ids": {
-      "rite_aid": "6544",
-      "univaf_v0": "rite_aid:6544"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6544"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6544"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6544",
@@ -71337,10 +72783,16 @@
   },
   {
     "id": "40f117a5-739d-41de-b672-e2aee801209b",
-    "external_ids": {
-      "rite_aid": "6553",
-      "univaf_v0": "rite_aid:6553"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6553"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6553"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6553",
@@ -71633,10 +73085,16 @@
   },
   {
     "id": "e33d2883-d73d-414d-bd38-219be48cdfb3",
-    "external_ids": {
-      "rite_aid": "6722",
-      "univaf_v0": "rite_aid:6722"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6722"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6722"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6722",
@@ -71929,10 +73387,16 @@
   },
   {
     "id": "5a1b10b0-7495-42c5-ae97-720c6e1b0f0f",
-    "external_ids": {
-      "rite_aid": "5418",
-      "univaf_v0": "rite_aid:5418"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5418"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5418"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5418",
@@ -72225,10 +73689,16 @@
   },
   {
     "id": "80b3e1c7-da38-4a9c-852e-933f480137d7",
-    "external_ids": {
-      "rite_aid": "5413",
-      "univaf_v0": "rite_aid:5413"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5413"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5413"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5413",
@@ -72521,10 +73991,16 @@
   },
   {
     "id": "896485d2-b663-455f-bdcd-7b07c1fc3f3c",
-    "external_ids": {
-      "rite_aid": "5414",
-      "univaf_v0": "rite_aid:5414"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5414"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5414"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5414",
@@ -72817,10 +74293,16 @@
   },
   {
     "id": "69b29260-ccbc-4e12-b6e0-82dff776256f",
-    "external_ids": {
-      "rite_aid": "5417",
-      "univaf_v0": "rite_aid:5417"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5417"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5417"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5417",
@@ -73113,10 +74595,16 @@
   },
   {
     "id": "0f18b559-8c58-4ecb-86ef-c7d8f174d1c3",
-    "external_ids": {
-      "rite_aid": "5419",
-      "univaf_v0": "rite_aid:5419"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5419"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5419"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5419",
@@ -73409,10 +74897,16 @@
   },
   {
     "id": "2f95005c-bca0-4b4b-8bec-414a79c4f4af",
-    "external_ids": {
-      "rite_aid": "5412",
-      "univaf_v0": "rite_aid:5412"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5412"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5412"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5412",
@@ -73705,10 +75199,16 @@
   },
   {
     "id": "c58ee5e2-d535-46b4-bbb0-dea484436702",
-    "external_ids": {
-      "rite_aid": "5420",
-      "univaf_v0": "rite_aid:5420"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5420"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5420"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5420",
@@ -74001,10 +75501,16 @@
   },
   {
     "id": "e835e1be-32d1-4c45-bbe2-e71db051e568",
-    "external_ids": {
-      "rite_aid": "6200",
-      "univaf_v0": "rite_aid:6200"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6200"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6200"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6200",
@@ -74297,10 +75803,16 @@
   },
   {
     "id": "a5983b06-67c8-4710-b355-4cbb7d40ffdd",
-    "external_ids": {
-      "rite_aid": "6779",
-      "univaf_v0": "rite_aid:6779"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6779"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6779"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6779",
@@ -74593,10 +76105,16 @@
   },
   {
     "id": "d21404d6-3bc9-4037-b93e-1badd36dcc1b",
-    "external_ids": {
-      "rite_aid": "764",
-      "univaf_v0": "rite_aid:764"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "764"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:764"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #764",
@@ -74889,10 +76407,16 @@
   },
   {
     "id": "f7b2c51f-77f1-4602-ab30-8a280dd7cb7d",
-    "external_ids": {
-      "rite_aid": "2421",
-      "univaf_v0": "rite_aid:2421"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2421"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2421"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2421",
@@ -75185,10 +76709,16 @@
   },
   {
     "id": "95fd2a90-5409-4b4b-ae11-c24ccfbfc1e9",
-    "external_ids": {
-      "rite_aid": "1811",
-      "univaf_v0": "rite_aid:1811"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1811"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1811"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1811",
@@ -75481,10 +77011,16 @@
   },
   {
     "id": "d681fb89-1e80-4fe0-90c3-eca6e30a7194",
-    "external_ids": {
-      "rite_aid": "3705",
-      "univaf_v0": "rite_aid:3705"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3705"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3705"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3705",
@@ -75777,10 +77313,16 @@
   },
   {
     "id": "50c9f0b3-19cf-40ae-a575-d48a2adef432",
-    "external_ids": {
-      "rite_aid": "3904",
-      "univaf_v0": "rite_aid:3904"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3904"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3904"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3904",
@@ -76073,10 +77615,16 @@
   },
   {
     "id": "e6f9df99-ea60-4cc3-9b34-af02c79bba67",
-    "external_ids": {
-      "rite_aid": "3706",
-      "univaf_v0": "rite_aid:3706"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3706"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3706"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3706",
@@ -76369,10 +77917,16 @@
   },
   {
     "id": "775f7db2-7003-4ef1-b6c4-e1840c9cf66f",
-    "external_ids": {
-      "rite_aid": "3850",
-      "univaf_v0": "rite_aid:3850"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3850"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3850"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3850",
@@ -76665,10 +78219,16 @@
   },
   {
     "id": "fda2a37d-aa8b-44f0-b571-8006ab21b586",
-    "external_ids": {
-      "rite_aid": "3902",
-      "univaf_v0": "rite_aid:3902"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3902"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3902"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3902",
@@ -76961,10 +78521,16 @@
   },
   {
     "id": "40ed4da1-eb70-4bac-bc16-0da4a5e05247",
-    "external_ids": {
-      "rite_aid": "3906",
-      "univaf_v0": "rite_aid:3906"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3906"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3906"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3906",
@@ -77257,10 +78823,16 @@
   },
   {
     "id": "65ec13d3-39b5-4b98-b3c2-fdd96db2852f",
-    "external_ids": {
-      "rite_aid": "3851",
-      "univaf_v0": "rite_aid:3851"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3851"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3851"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3851",
@@ -77553,10 +79125,16 @@
   },
   {
     "id": "a47250c8-9b1b-4e29-981d-72bcbccfb422",
-    "external_ids": {
-      "rite_aid": "3971",
-      "univaf_v0": "rite_aid:3971"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3971"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3971"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3971",
@@ -77849,10 +79427,16 @@
   },
   {
     "id": "89915b32-333d-41e7-835e-cb2c0ea3a0c1",
-    "external_ids": {
-      "rite_aid": "4789",
-      "univaf_v0": "rite_aid:4789"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4789"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4789"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4789",
@@ -78145,10 +79729,16 @@
   },
   {
     "id": "7be40802-5aee-45f1-a9df-21e77efca126",
-    "external_ids": {
-      "rite_aid": "4987",
-      "univaf_v0": "rite_aid:4987"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4987"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4987"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4987",
@@ -78441,10 +80031,16 @@
   },
   {
     "id": "d68b8e84-b010-4912-89d0-da7ac11bf48d",
-    "external_ids": {
-      "rite_aid": "11241",
-      "univaf_v0": "rite_aid:11241"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11241"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11241"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11241",
@@ -78737,10 +80333,16 @@
   },
   {
     "id": "1111549f-1b6f-4040-880e-ebc61f96aac2",
-    "external_ids": {
-      "rite_aid": "11235",
-      "univaf_v0": "rite_aid:11235"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11235"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11235"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11235",
@@ -79033,10 +80635,16 @@
   },
   {
     "id": "69314a73-f164-4378-931c-f9752498156e",
-    "external_ids": {
-      "rite_aid": "11242",
-      "univaf_v0": "rite_aid:11242"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11242"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11242"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11242",
@@ -79329,10 +80937,16 @@
   },
   {
     "id": "606a22de-152b-4599-8403-2cb8bc279390",
-    "external_ids": {
-      "rite_aid": "11254",
-      "univaf_v0": "rite_aid:11254"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11254"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11254"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11254",
@@ -79625,10 +81239,16 @@
   },
   {
     "id": "a56040cd-2ea8-4e74-967f-f2ab5eed9e7a",
-    "external_ids": {
-      "rite_aid": "11256",
-      "univaf_v0": "rite_aid:11256"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11256"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11256"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11256",
@@ -79921,10 +81541,16 @@
   },
   {
     "id": "bae5f281-f1cb-4a09-a7c3-ef4a68398a7a",
-    "external_ids": {
-      "rite_aid": "11251",
-      "univaf_v0": "rite_aid:11251"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11251"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11251"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11251",
@@ -80217,10 +81843,16 @@
   },
   {
     "id": "8bcf1693-0c98-48a3-ac0a-8618a3e2f4a5",
-    "external_ids": {
-      "rite_aid": "11259",
-      "univaf_v0": "rite_aid:11259"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11259"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11259"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11259",
@@ -80513,10 +82145,16 @@
   },
   {
     "id": "da701483-c832-4f3d-ba33-042ad4f081e5",
-    "external_ids": {
-      "rite_aid": "11264",
-      "univaf_v0": "rite_aid:11264"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11264"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11264"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11264",
@@ -80809,10 +82447,16 @@
   },
   {
     "id": "2c8112c6-6cc9-4b59-9071-ce4c7febf9ba",
-    "external_ids": {
-      "rite_aid": "11271",
-      "univaf_v0": "rite_aid:11271"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11271"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11271"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11271",
@@ -81105,10 +82749,16 @@
   },
   {
     "id": "fb17e323-7c0b-4793-987d-9891d99cb181",
-    "external_ids": {
-      "rite_aid": "11281",
-      "univaf_v0": "rite_aid:11281"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11281"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11281"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11281",
@@ -81401,10 +83051,16 @@
   },
   {
     "id": "255491d1-be9d-4e5a-bae9-e92c3a3c42ab",
-    "external_ids": {
-      "rite_aid": "11275",
-      "univaf_v0": "rite_aid:11275"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11275"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11275"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11275",
@@ -81697,10 +83353,16 @@
   },
   {
     "id": "bc812595-1486-42ce-9d2f-d76e6ae5f390",
-    "external_ids": {
-      "rite_aid": "11285",
-      "univaf_v0": "rite_aid:11285"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11285"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11285"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11285",
@@ -81993,10 +83655,16 @@
   },
   {
     "id": "03077371-1ebb-4d4c-b162-fae28fc51c03",
-    "external_ids": {
-      "rite_aid": "11290",
-      "univaf_v0": "rite_aid:11290"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11290"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11290"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11290",
@@ -82289,10 +83957,16 @@
   },
   {
     "id": "b5c7785c-a5dc-4ddf-98a4-62a058c244b6",
-    "external_ids": {
-      "rite_aid": "11293",
-      "univaf_v0": "rite_aid:11293"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11293"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11293"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11293",
@@ -82585,10 +84259,16 @@
   },
   {
     "id": "6ac94ccc-98e5-4ed5-b271-cbd052a579df",
-    "external_ids": {
-      "rite_aid": "11294",
-      "univaf_v0": "rite_aid:11294"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11294"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11294"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11294",
@@ -82881,10 +84561,16 @@
   },
   {
     "id": "f6f7e388-71a1-4f2c-9670-93d6374c5bf9",
-    "external_ids": {
-      "rite_aid": "11300",
-      "univaf_v0": "rite_aid:11300"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11300"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11300"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11300",
@@ -83177,10 +84863,16 @@
   },
   {
     "id": "60fec884-69c0-4645-84d6-47fc6629b17c",
-    "external_ids": {
-      "rite_aid": "11305",
-      "univaf_v0": "rite_aid:11305"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11305"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11305"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11305",
@@ -83473,10 +85165,16 @@
   },
   {
     "id": "44290d14-dc6d-4bf2-aaf6-be77fff3e335",
-    "external_ids": {
-      "rite_aid": "11918",
-      "univaf_v0": "rite_aid:11918"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11918"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11918"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11918",
@@ -83769,10 +85467,16 @@
   },
   {
     "id": "ca7ae0ce-e53d-475b-815b-b1e2119ed016",
-    "external_ids": {
-      "rite_aid": "667",
-      "univaf_v0": "rite_aid:667"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "667"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:667"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #667",
@@ -84065,10 +85769,16 @@
   },
   {
     "id": "660730e0-99be-41c7-8518-21efc949b9e0",
-    "external_ids": {
-      "rite_aid": "441",
-      "univaf_v0": "rite_aid:441"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "441"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:441"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #441",
@@ -84361,10 +86071,16 @@
   },
   {
     "id": "b573c24d-bdb1-447e-9168-278a58e0910d",
-    "external_ids": {
-      "rite_aid": "1839",
-      "univaf_v0": "rite_aid:1839"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1839"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1839"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1839",
@@ -84657,10 +86373,16 @@
   },
   {
     "id": "91f9cc0b-9bf0-4caa-86bb-678e8d2b8b6a",
-    "external_ids": {
-      "rite_aid": "2574",
-      "univaf_v0": "rite_aid:2574"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2574"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2574"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2574",
@@ -84953,10 +86675,16 @@
   },
   {
     "id": "7911cb63-e724-45da-983c-b0f8c9d910c8",
-    "external_ids": {
-      "rite_aid": "3264",
-      "univaf_v0": "rite_aid:3264"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "3264"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:3264"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #3264",
@@ -85249,10 +86977,16 @@
   },
   {
     "id": "2c92c448-75e0-4f5b-86fb-0180af3027af",
-    "external_ids": {
-      "rite_aid": "10367",
-      "univaf_v0": "rite_aid:10367"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10367"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10367"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10367",
@@ -85545,10 +87279,16 @@
   },
   {
     "id": "8f7e3c1c-ad23-4bb2-8581-eff71f92cb06",
-    "external_ids": {
-      "rite_aid": "10376",
-      "univaf_v0": "rite_aid:10376"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10376"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10376"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10376",
@@ -85841,10 +87581,16 @@
   },
   {
     "id": "20800e93-5f09-46bc-ac87-596c39921c89",
-    "external_ids": {
-      "rite_aid": "10390",
-      "univaf_v0": "rite_aid:10390"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10390"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10390"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10390",
@@ -86137,10 +87883,16 @@
   },
   {
     "id": "e92a65f2-4798-44fe-a345-9304889817fe",
-    "external_ids": {
-      "rite_aid": "10389",
-      "univaf_v0": "rite_aid:10389"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10389"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10389"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10389",
@@ -86433,10 +88185,16 @@
   },
   {
     "id": "b282a5cb-137d-457c-ac36-068d24dd9fbc",
-    "external_ids": {
-      "rite_aid": "10203",
-      "univaf_v0": "rite_aid:10203"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10203"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10203"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10203",
@@ -86729,10 +88487,16 @@
   },
   {
     "id": "56089c7b-666a-43ff-a41d-fa0a93735b45",
-    "external_ids": {
-      "rite_aid": "10205",
-      "univaf_v0": "rite_aid:10205"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10205"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10205"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10205",
@@ -87025,10 +88789,16 @@
   },
   {
     "id": "6577ea14-0a26-4d92-926f-9436d5852002",
-    "external_ids": {
-      "rite_aid": "10198",
-      "univaf_v0": "rite_aid:10198"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10198"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10198"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10198",
@@ -87321,10 +89091,16 @@
   },
   {
     "id": "34c42cff-d276-47fc-b0bc-ff7f64acb3b6",
-    "external_ids": {
-      "rite_aid": "10092",
-      "univaf_v0": "rite_aid:10092"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10092"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10092"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10092",
@@ -87617,10 +89393,16 @@
   },
   {
     "id": "a3f56aa0-fd6d-4cfb-ae0f-64fb2ad437c9",
-    "external_ids": {
-      "rite_aid": "10206",
-      "univaf_v0": "rite_aid:10206"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "10206"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:10206"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #10206",
@@ -87913,10 +89695,16 @@
   },
   {
     "id": "3ce19906-181e-4bb7-bf33-66ad09f20358",
-    "external_ids": {
-      "rite_aid": "356",
-      "univaf_v0": "rite_aid:356"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "356"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:356"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #356",
@@ -88209,10 +89997,16 @@
   },
   {
     "id": "75d7b7fc-4f11-455b-871f-e21ec63266d9",
-    "external_ids": {
-      "rite_aid": "1859",
-      "univaf_v0": "rite_aid:1859"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1859"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1859"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1859",
@@ -88505,10 +90299,16 @@
   },
   {
     "id": "9adade81-8676-4555-ad29-c73dfe241a1f",
-    "external_ids": {
-      "rite_aid": "1324",
-      "univaf_v0": "rite_aid:1324"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1324"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1324"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1324",
@@ -88801,10 +90601,16 @@
   },
   {
     "id": "94e892b2-eb84-4fa6-aeeb-ea96ad727518",
-    "external_ids": {
-      "rite_aid": "2223",
-      "univaf_v0": "rite_aid:2223"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "2223"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:2223"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #2223",
@@ -89097,10 +90903,16 @@
   },
   {
     "id": "a86262f8-7b4f-46fd-8972-79f9e179def1",
-    "external_ids": {
-      "rite_aid": "1490",
-      "univaf_v0": "rite_aid:1490"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1490"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1490"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1490",
@@ -89393,10 +91205,16 @@
   },
   {
     "id": "50031216-f52d-46ca-8c9c-c4fa8ef2240c",
-    "external_ids": {
-      "rite_aid": "172",
-      "univaf_v0": "rite_aid:172"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "172"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:172"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #172",
@@ -89689,10 +91507,16 @@
   },
   {
     "id": "2772a916-87c1-4a2e-93b6-cbfa12c22c91",
-    "external_ids": {
-      "rite_aid": "1658",
-      "univaf_v0": "rite_aid:1658"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1658"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1658"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1658",
@@ -89985,10 +91809,16 @@
   },
   {
     "id": "714b8a18-3f39-4fc6-9a32-223f0013454b",
-    "external_ids": {
-      "rite_aid": "839",
-      "univaf_v0": "rite_aid:839"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "839"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:839"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #839",
@@ -90281,10 +92111,16 @@
   },
   {
     "id": "f42f32eb-d4af-4e0b-99ec-d00da56bfb2c",
-    "external_ids": {
-      "rite_aid": "1782",
-      "univaf_v0": "rite_aid:1782"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "1782"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:1782"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #1782",
@@ -90577,10 +92413,16 @@
   },
   {
     "id": "44954144-98b0-468a-97ce-bc2e6e6d0a58",
-    "external_ids": {
-      "rite_aid": "7891",
-      "univaf_v0": "rite_aid:7891"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "7891"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:7891"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #7891",
@@ -90873,10 +92715,16 @@
   },
   {
     "id": "bd91e6dc-58fa-452c-86d4-31a589c160e0",
-    "external_ids": {
-      "rite_aid": "11175",
-      "univaf_v0": "rite_aid:11175"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11175"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11175"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11175",
@@ -91169,10 +93017,16 @@
   },
   {
     "id": "3f66b599-38fc-4b7b-ac8e-8ce3b2fce441",
-    "external_ids": {
-      "rite_aid": "11188",
-      "univaf_v0": "rite_aid:11188"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11188"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11188"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11188",
@@ -91465,10 +93319,16 @@
   },
   {
     "id": "b49cacfd-65af-4a59-9bf8-bcb08357ad56",
-    "external_ids": {
-      "rite_aid": "11193",
-      "univaf_v0": "rite_aid:11193"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11193"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11193"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11193",
@@ -91761,10 +93621,16 @@
   },
   {
     "id": "ff195213-3a20-43a6-8695-8e46a0aec3c8",
-    "external_ids": {
-      "rite_aid": "5180",
-      "univaf_v0": "rite_aid:5180"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5180"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5180"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5180",
@@ -92057,10 +93923,16 @@
   },
   {
     "id": "417e93a5-2baa-46d5-ab99-bcde6e3ea2d3",
-    "external_ids": {
-      "rite_aid": "4065",
-      "univaf_v0": "rite_aid:4065"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4065"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4065"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4065",
@@ -92353,10 +94225,16 @@
   },
   {
     "id": "a33755df-63ac-4ef6-9195-4aa70ee49d89",
-    "external_ids": {
-      "rite_aid": "5183",
-      "univaf_v0": "rite_aid:5183"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5183"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5183"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5183",
@@ -92649,10 +94527,16 @@
   },
   {
     "id": "61df1448-c3fe-47f8-b630-46e8cfd3cbae",
-    "external_ids": {
-      "rite_aid": "5192",
-      "univaf_v0": "rite_aid:5192"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5192"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5192"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5192",
@@ -92945,10 +94829,16 @@
   },
   {
     "id": "dcbcdd50-311e-490f-a2c4-950e8615de56",
-    "external_ids": {
-      "rite_aid": "5196",
-      "univaf_v0": "rite_aid:5196"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5196"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5196"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5196",
@@ -93241,10 +95131,16 @@
   },
   {
     "id": "da266371-9915-41f7-8c1d-9aab988c5b7d",
-    "external_ids": {
-      "rite_aid": "5194",
-      "univaf_v0": "rite_aid:5194"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5194"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5194"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5194",
@@ -93537,10 +95433,16 @@
   },
   {
     "id": "52d73ef1-c303-4c2d-83d7-d913d05d40ba",
-    "external_ids": {
-      "rite_aid": "5215",
-      "univaf_v0": "rite_aid:5215"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5215"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5215"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5215",
@@ -93833,10 +95735,16 @@
   },
   {
     "id": "9ebfe63c-697f-4e22-9f9d-de24e524bcf5",
-    "external_ids": {
-      "rite_aid": "5200",
-      "univaf_v0": "rite_aid:5200"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5200"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5200"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5200",
@@ -94129,10 +96037,16 @@
   },
   {
     "id": "5e972d1c-f01a-4f02-8263-6e4d71bb663d",
-    "external_ids": {
-      "rite_aid": "5218",
-      "univaf_v0": "rite_aid:5218"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5218"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5218"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5218",
@@ -94425,10 +96339,16 @@
   },
   {
     "id": "906028d1-3a09-468a-bcf0-cbec414d7f2c",
-    "external_ids": {
-      "rite_aid": "5204",
-      "univaf_v0": "rite_aid:5204"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5204"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5204"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5204",
@@ -94721,10 +96641,16 @@
   },
   {
     "id": "4136bd21-44dc-4038-ae2b-66e66c06e6ca",
-    "external_ids": {
-      "rite_aid": "5216",
-      "univaf_v0": "rite_aid:5216"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5216"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5216"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5216",
@@ -95017,10 +96943,16 @@
   },
   {
     "id": "d6ad2955-1d7a-4a29-92a7-e89e09d2a0fe",
-    "external_ids": {
-      "rite_aid": "5207",
-      "univaf_v0": "rite_aid:5207"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5207"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5207"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5207",
@@ -95313,10 +97245,16 @@
   },
   {
     "id": "ea32873c-702b-4883-87c8-b9ef4a66c897",
-    "external_ids": {
-      "rite_aid": "5205",
-      "univaf_v0": "rite_aid:5205"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5205"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5205"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5205",
@@ -95609,10 +97547,16 @@
   },
   {
     "id": "08a860cf-e766-4c63-b853-c354836a9471",
-    "external_ids": {
-      "rite_aid": "5224",
-      "univaf_v0": "rite_aid:5224"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5224"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5224"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5224",
@@ -95905,10 +97849,16 @@
   },
   {
     "id": "29bff531-5615-481d-8c9b-0f5c07819b25",
-    "external_ids": {
-      "rite_aid": "5225",
-      "univaf_v0": "rite_aid:5225"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5225"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5225"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5225",
@@ -96201,10 +98151,16 @@
   },
   {
     "id": "97a131b7-8686-43c7-a30f-59412a6ae030",
-    "external_ids": {
-      "rite_aid": "5230",
-      "univaf_v0": "rite_aid:5230"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5230"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5230"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5230",
@@ -96497,10 +98453,16 @@
   },
   {
     "id": "184ad37d-4dd1-4c9d-a8a0-9f821088c423",
-    "external_ids": {
-      "rite_aid": "5231",
-      "univaf_v0": "rite_aid:5231"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5231"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5231"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5231",
@@ -96793,10 +98755,16 @@
   },
   {
     "id": "3a4c3f68-ebe9-4d68-ac9f-e8152ab53bb5",
-    "external_ids": {
-      "rite_aid": "5246",
-      "univaf_v0": "rite_aid:5246"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5246"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5246"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5246",
@@ -97089,10 +99057,16 @@
   },
   {
     "id": "9662189b-d4a3-402f-8780-c86fb2e7422a",
-    "external_ids": {
-      "rite_aid": "5244",
-      "univaf_v0": "rite_aid:5244"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5244"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5244"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5244",
@@ -97385,10 +99359,16 @@
   },
   {
     "id": "65be666f-b3b9-48c6-93b1-c5076c219df3",
-    "external_ids": {
-      "rite_aid": "5249",
-      "univaf_v0": "rite_aid:5249"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5249"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5249"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5249",
@@ -97681,10 +99661,16 @@
   },
   {
     "id": "5419ef94-6e42-435f-a716-8aa7741ce0a2",
-    "external_ids": {
-      "rite_aid": "5247",
-      "univaf_v0": "rite_aid:5247"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5247"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5247"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5247",
@@ -97977,10 +99963,16 @@
   },
   {
     "id": "66712489-bcb3-48f3-9d30-811864acabb5",
-    "external_ids": {
-      "rite_aid": "5254",
-      "univaf_v0": "rite_aid:5254"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5254"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5254"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5254",
@@ -98273,10 +100265,16 @@
   },
   {
     "id": "930b367a-9d90-4fca-9703-fc4f80e2293a",
-    "external_ids": {
-      "rite_aid": "5261",
-      "univaf_v0": "rite_aid:5261"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "5261"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:5261"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #5261",
@@ -98569,10 +100567,16 @@
   },
   {
     "id": "c5560fe2-0f12-4592-bd93-5c425643a1b3",
-    "external_ids": {
-      "rite_aid": "6234",
-      "univaf_v0": "rite_aid:6234"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6234"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6234"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6234",
@@ -98865,10 +100869,16 @@
   },
   {
     "id": "bca33097-c1a8-4b7a-b863-1a8229ec6645",
-    "external_ids": {
-      "rite_aid": "6325",
-      "univaf_v0": "rite_aid:6325"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6325"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6325"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6325",
@@ -99161,10 +101171,16 @@
   },
   {
     "id": "249cb570-bdd1-46c9-95e1-b558afb0f50c",
-    "external_ids": {
-      "rite_aid": "6462",
-      "univaf_v0": "rite_aid:6462"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "6462"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:6462"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #6462",
@@ -99457,10 +101473,16 @@
   },
   {
     "id": "783fb140-07df-45e4-a9be-3db6620cd731",
-    "external_ids": {
-      "rite_aid": "11255",
-      "univaf_v0": "rite_aid:11255"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11255"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11255"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11255",
@@ -99753,10 +101775,16 @@
   },
   {
     "id": "e7f36ef0-d358-4e03-ba18-233c2dfb4f17",
-    "external_ids": {
-      "rite_aid": "11182",
-      "univaf_v0": "rite_aid:11182"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "11182"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:11182"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #11182",
@@ -100049,10 +102077,16 @@
   },
   {
     "id": "35de3ba4-e168-4e12-ba14-ebbe91538fe0",
-    "external_ids": {
-      "rite_aid": "4063",
-      "univaf_v0": "rite_aid:4063"
-    },
+    "external_ids": [
+      [
+        "rite_aid",
+        "4063"
+      ],
+      [
+        "univaf_v0",
+        "rite_aid:4063"
+      ]
+    ],
     "provider": "RiteAid",
     "location_type": "PHARMACY",
     "name": "Rite Aid #4063",
