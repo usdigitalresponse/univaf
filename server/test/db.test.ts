@@ -1,4 +1,5 @@
 import { installTestDatabaseHooks } from "./lib";
+import "./matchers";
 import {
   createLocation,
   getCurrentAvailabilityByLocation,
@@ -28,7 +29,7 @@ describe("db.updateAvailability", () => {
     availability.checked_at = new Date(availability.checked_at);
     expect(availability).toEqual({
       available: "YES",
-      sources: ["NJVSS Export"],
+      sources: expect.toHaveMembers(["NJVSS Export"]),
       valid_at: new Date(TestLocation.availability.valid_at),
       checked_at: new Date(TestLocation.availability.checked_at),
       changed_at: expect.any(Date),
@@ -142,7 +143,7 @@ describe("db.updateAvailability", () => {
     expect(availability).toEqual({
       ...data,
       source: undefined,
-      sources: [data.source],
+      sources: expect.toHaveMembers([data.source]),
       valid_at: new Date(data.valid_at),
       checked_at: new Date(data.checked_at),
       changed_at: expect.any(Date),
@@ -459,7 +460,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-2", "test-system-1"],
+      sources: expect.toHaveMembers(["test-system-2", "test-system-1"]),
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       changed_at: expect.any(Date),
@@ -487,7 +488,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-1", "test-system-2"],
+      sources: expect.toHaveMembers(["test-system-1", "test-system-2"]),
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       changed_at: expect.any(Date),
@@ -517,7 +518,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-2", "test-system-1"],
+      sources: expect.toHaveMembers(["test-system-2", "test-system-1"]),
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       changed_at: expect.any(Date),
@@ -546,7 +547,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-1"],
+      sources: expect.toHaveMembers(["test-system-1"]),
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       changed_at: expect.any(Date),
@@ -573,7 +574,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-1", "test-system-2"],
+      sources: expect.toHaveMembers(["test-system-1", "test-system-2"]),
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       changed_at: expect.any(Date),
@@ -603,7 +604,7 @@ describe("db.getCurrentAvailabilityForLocations", () => {
     const availabilities = await getCurrentAvailabilityByLocation(location.id);
     expect(availabilities.get(location.id)).toEqual({
       is_public: true,
-      sources: ["test-system-1", "test-system-2"],
+      sources: expect.toHaveMembers(["test-system-1", "test-system-2"]),
       checked_at: expect.any(Date),
       valid_at: expect.any(Date),
       changed_at: expect.any(Date),

@@ -3,6 +3,7 @@ import {
   installTestDatabaseHooks,
   useServerForTests,
 } from "./lib";
+import "./matchers";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
@@ -98,7 +99,7 @@ describe("GET /api/edge/locations", () => {
     let res = await context.client.get<any>("api/edge/locations");
     expect(res.body.data).toHaveLength(1);
     expect(res.body.data[0].availability).toEqual({
-      sources: ["test-system-2", "test-system-1"],
+      sources: expect.toHaveMembers(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),
       changed_at: expectDatetimeString(),
@@ -140,7 +141,7 @@ describe("GET /api/edge/locations", () => {
     });
     expect(res.body.data).toHaveLength(1);
     expect(res.body.data[0].availability).toEqual({
-      sources: ["test-system-2", "test-system-1"],
+      sources: expect.toHaveMembers(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),
       changed_at: expectDatetimeString(),
@@ -299,7 +300,7 @@ describe("GET /api/edge/locations/:id", () => {
       searchParams: { sources: "test-system-1,test-system-2" },
     });
     expect(res.body.data.availability).toEqual({
-      sources: ["test-system-2", "test-system-1"],
+      sources: expect.toHaveMembers(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),
       changed_at: expectDatetimeString(),
