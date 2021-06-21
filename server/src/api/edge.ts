@@ -41,13 +41,15 @@ function shouldIncludePrivate(req: AppRequest) {
 
 function getSourcesInput(req: Request) {
   if (req.query.sources) {
+    let rawSources: string[];
     if (Array.isArray(req.query.sources)) {
-      return req.query.sources as string[];
+      rawSources = req.query.sources as string[];
     } else {
-      return (req.query.sources as string)
-        .split(",")
-        .map((source) => source.trim());
+      rawSources = [req.query.sources as string];
     }
+
+    return rawSources
+      .flatMap(sources => sources.split(",").map(source => source.trim()));
   }
 
   return;
