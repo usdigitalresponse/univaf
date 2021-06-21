@@ -43,7 +43,10 @@ async function queryState(state) {
 
   const body = await got({
     url: RITE_AID_URL,
-    headers: { "Proxy-Authorization": "ldap " + RITE_AID_KEY },
+    headers: {
+      "Proxy-Authorization": "ldap " + RITE_AID_KEY,
+      "User-Agent": process.env.USER_AGENT || ''
+    },
     searchParams: { stateCode: state },
   }).json();
 
