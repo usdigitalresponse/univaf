@@ -47,9 +47,9 @@ index.append(locations)
 
 for (type, file, size) in index:
     if type == 'external_ids':
-        path_out = '%sdata/univaf_raw_new/external_ids.csv' % lib.path_root
+        path_out = '%sdata/univaf_raw_new/external_ids.ndjson' % lib.path_root
     elif type == 'provider_locations':
-        path_out = '%sdata/univaf_raw_new/locations.csv' % lib.path_root
+        path_out = '%sdata/univaf_raw_new/locations.ndjson' % lib.path_root
     else:
         path_out = '%sdata/univaf_raw_new/%s' % (lib.path_root, file)
     if not os.path.exists(path_out) or type != 'availability_log':

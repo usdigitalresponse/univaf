@@ -15,6 +15,7 @@ import dateutil
 from urllib.parse import urljoin
 import urllib.request
 from uuid import UUID
+import hashlib
 
 
 # root path of where the data lives
@@ -27,9 +28,9 @@ def read_external_ids(path):
     """
     with open(path, 'r') as f:
         eid_to_id = dict(list(csv.reader(f)))
-    # fix _index rewriting
-    for iid, eids in eid_to_id.items():
-        scrub_external_ids(eids)
+    # convert id's to int
+    for (eid, id) in eid_to_id.items():
+        eid_to_id[eid] = int(id)
     return eid_to_id
 
 
@@ -73,9 +74,21 @@ def write_locations(locations, path):
         writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         sink = writer.writerow(header)
         for id in sorted(locations.keys()):
-            row = [id] + [locations[id][key] if key in locations[id] else '' for key in header[1:]]
+            row = ['%06d' % id] + [locations[id][key] if key in locations[id] else '' for key in header[1:]]
             sink = writer.writerow(row)
     print("[INFO] wrote %d locations to %s" % (len(locations), path))
+
+
+def write_external_ids(eid_to_id, path):
+    """
+    Write the new external_ids file.
+    """
+    header = ['eid', 'iid']
+    with open(path, 'w') as f:
+        writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        sink = writer.writerow(header)
+        for x in sorted(eid_to_id.items()):
+            sink = writer.writerow(x)
 
 
 def read_zipmap():
@@ -86,7 +99,7 @@ def read_zipmap():
     with open('vaccinespotter-zipdump.csv', 'r') as f:
         reader = csv.DictReader(f, delimiter=',')
         for row in reader:
-            zipmap[row['postal_code']] = row['time_zone']
+            zipmap[row['postal_code']] = (row['time_zone'], row['city'], row['county_name'])
     return zipmap
 
 
@@ -164,3 +177,11 @@ def pp(s):
     Pretty print JSON string.
     """
     return json.dumps(s, indent=4)
+
+
+def hash(s, digits=6):
+    """
+    Creates a non-unique int for a string.
+    https://stackoverflow.com/a/16008760
+    """
+    return int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16) % (10 ** digits)

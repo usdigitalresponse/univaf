@@ -58,7 +58,6 @@ path_out = lib.path_root + 'data/univaf_clean/'
 
 locations = {}
 eid_to_id = {}
-max_key = 0
 
 
 #@profile  # for profiling
@@ -68,7 +67,6 @@ def do_date(ds, slots=False, dry_run=False):
     If dry_run=True, it runs over the last available file to read loctaion
     information, without processing availability data
     """
-    global max_key
 
     if dry_run:
         files = sorted(glob.glob(path_raw + 'locations*'))[-1:]
@@ -117,8 +115,7 @@ def do_date(ds, slots=False, dry_run=False):
                 if len(overlap) != len(ids):
                     # if haven't seen any before, make new integer id
                     if not len(overlap):
-                        siid = max_key
-                        max_key = max_key + 1
+                        siid = lib.hash(row['id'])
                     else:
                         # take any of them, hopefully the same...
                         siid = eid_to_id[overlap[0]]
@@ -127,14 +124,6 @@ def do_date(ds, slots=False, dry_run=False):
                 # take the inter version of the canonical id
                 iid = int(eid_to_id[sid])
 
-                # extract local timezone
-                if 'time_zone' in row and row['time_zone'] is not None:
-                    timezone = row['time_zone']
-                elif 'postal_code' in row and row['postal_code'] is not None:
-                    zip = "%05d" % int(row['postal_code'][:5])
-                    timezone = zipmap[zip]
-                elif 'state' in row and row['state'] is not None:
-                    timezone = us.states.lookup(row['state']).time_zones[0]
 
                 #
                 # extract location data
@@ -146,7 +135,7 @@ def do_date(ds, slots=False, dry_run=False):
                 if iid not in locations:
                 #if True:
                     # set fields to None by default
-                    [uuid, name, provider, type, address, city, county,
+                    [uuid, name, provider, loctype, address, city, county,
                      state, zip, lat, lng] = [None] * 11
                     # extract fields
                     if lib.is_uuid(row['id']):
@@ -156,10 +145,10 @@ def do_date(ds, slots=False, dry_run=False):
                         name = row['name'].title()
                     if 'provider' in row and row['provider'] is not None:
                         provider = row['provider'].lower()
+                        if provider == 'rite_aid':
+                            provider = 'riteaid'
                     if 'location_type' in row and row['location_type'] is not None:
-                        type = row['location_type'].lower()
-                    if 'address_lines' in row and row['address_lines'] is not None:
-                        address = ','.join(row['address_lines'])
+                        loctype = row['location_type'].lower()
                     if 'city' in row and row['city'] is not None:
                         city = row['city'].title()
                     if 'county' in row and row['county'] is not None:
@@ -169,21 +158,41 @@ def do_date(ds, slots=False, dry_run=False):
                     if 'postal_code' in row and row['postal_code'] is not None:
                         # NOTE - this throws away information after first 5 digits
                         zip = "%05d" % int(row['postal_code'][:5])
+                    # take county from VS zipmap
+                    if zip is not None and county is None and zip in zipmap:
+                        county = zipmap[zip][2]
+                    # process addres
+                    if 'address_lines' in row and row['address_lines'] is not None:
+                        # NOTE - length is never larger than 1
+                        address = ','.join(row['address_lines'])
+                        # fix end on ,
+                        if address[-1] == ',':
+                            address = address[:-1]
+                    # fix address issue for some NJ listings
+                    if ', NJ' in address:
+                        address = address.split(', ')[0]
+                        if zip is not None:
+                            city = zipmap[zip][1]
+                        # still has city in the address..
+                    # extract local timezone
+                    if 'time_zone' in row and row['time_zone'] is not None:
+                        timezone = row['time_zone']
+                    elif zip is not None:
+                        zip = "%05d" % int(row['postal_code'][:5])
+                        timezone = zipmap[zip][0]
+                    elif state is not None:
+                        timezone = us.states.lookup(row['state']).time_zones[0]
+                    # get lat,lng
                     if ('position' in row and row['position'] is not None and 'latitude' in row['position']):
                         lat = row['position']['latitude']
                     if ('position' in row and row['position'] is not None and 'longitude' in row['position']):
                         lng = row['position']['longitude']
-                    # fix address issue for some NJ listings
-                    if ', NJ' in address and zip is None:
-                        zip = address[-5:]
-                        city = address.split(', ')[1]
-                        address = address.split(', ')[0]
                     # insert row
                     locations[iid] = {
                         'uuid': uuid,
                         'name': name,
                         'provider': provider,
-                        'type': type,
+                        'type': loctype,
                         'address': address,
                         'city': city,
                         'county': county,
@@ -198,7 +207,7 @@ def do_date(ds, slots=False, dry_run=False):
                 # extract availability data
                 #
                 # skip if no availability data or if we're doing a dry run
-                if row['availability'] is None or dry_run:
+                if dry_run or 'availability' not in row or row['availability'] is None:
                     continue
                 # parse checked_time and convert to UTC if not already
                 t = row['availability']['valid_at']
@@ -268,12 +277,9 @@ def do_date(ds, slots=False, dry_run=False):
         # close availabilities file
         f_avs.close()
         print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))
-    # write updated locations file
+    # write updated location files
     lib.write_locations(locations, path_out + 'locations_univaf.csv')
-    # write updated external id file
-    with open(path_out + 'ids_external.csv', 'w') as f:
-        writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-        sink = [writer.writerow(x) for x in eid_to_id.items()]
+    lib.write_external_ids(eid_to_id, path_out + 'ids_external.csv')
 
 
 if __name__ == "__main__":
@@ -297,7 +303,6 @@ if __name__ == "__main__":
         print("[INFO] clean_run=False, so keep previously collected location data")
         # read prior locations
         locations = lib.read_locations(path_out + 'locations_univaf.csv')
-        max_key = max(locations.keys())
         # read prior external-id to numeric id mapping 
         eid_to_id = lib.read_external_ids(path_out + 'ids_external.csv')
     # iterate over days
