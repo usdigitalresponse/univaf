@@ -74,7 +74,7 @@ def write_locations(locations, path):
         writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         sink = writer.writerow(header)
         for id in sorted(locations.keys()):
-            row = ['%06d' % id] + [locations[id][key] if key in locations[id] else '' for key in header[1:]]
+            row = [id] + [locations[id][key] if key in locations[id] else '' for key in header[1:]]
             sink = writer.writerow(row)
     print("[INFO] wrote %d locations to %s" % (len(locations), path))
 
