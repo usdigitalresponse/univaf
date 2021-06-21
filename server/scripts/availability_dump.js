@@ -35,6 +35,15 @@ function writeLog(...args) {
   console.warn(...args);
 }
 
+function selectSqlPoint(column) {
+  return `
+    json_build_object(
+      'longitude', st_x(${column}::geometry),
+      'latitude', st_y(${column}::geometry)
+    ) as ${column}
+  `.trim();
+}
+
 function removeNullPropertiesStream() {
   return new stream.Transform({
     objectMode: true,
@@ -48,7 +57,12 @@ function removeNullPropertiesStream() {
 }
 
 function getTableStream(table) {
-  return db(table).select("*").stream().pipe(JSONStream.stringify(false));
+  const query = db(table).select("*");
+  if (table == "provider_locations") {
+    // aliases json version of position to override binary-encoded column
+    query.select(db.raw(selectSqlPoint("position")));
+  }
+  return query.stream().pipe(JSONStream.stringify(false));
 }
 
 function getAvailabilityLogStream(date) {
