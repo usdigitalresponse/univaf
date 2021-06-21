@@ -44,9 +44,16 @@ expect.extend({
    *   a: expect.toEqualUnordered(["x", "y"])
    * });
    */
-   toEqualUnordered(received: any, expected: Array<any> | Set<any>): jest.CustomMatcherResult {
-    if (!received?.[Symbol.iterator]) throw new Error(`Received value (${received}) was not iterable`);
-    if (!expected?.[Symbol.iterator]) throw new Error(`Expected value (${expected}) was not iterable`);
+  toEqualUnordered(
+    received: any,
+    expected: Array<any> | Set<any>
+  ): jest.CustomMatcherResult {
+    if (!received?.[Symbol.iterator]) {
+      throw new Error(`Received value (${received}) was not iterable`);
+    }
+    if (!expected?.[Symbol.iterator]) {
+      throw new Error(`Expected value (${expected}) was not iterable`);
+    }
 
     // `this.equals` is only available when a matcher is used in a
     // non-asymmetric context (that is, `expect(x).toEqualUnordered(y)`, but not
@@ -63,10 +70,10 @@ expect.extend({
     return {
       pass,
       message() {
-        const not = pass ? '' : "not ";
+        const not = pass ? "" : "not ";
         return `expected ${received} ${not}to have items ${expected}`;
-      }
-    }
+      },
+    };
   },
 });
 
