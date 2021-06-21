@@ -15,6 +15,13 @@
 #
 # NOTE: Both checked_time and slot_time are in UTC
 #
+# TODO: implement "no change" records as well. This is a bit hairy, as it
+# requires maintaining state. I'm imagining keeping a dictionary of all
+# locations, and only writing records when an update comes in, and at the
+# end of the script. The main problem there is dealing with the state that
+# came from the day before. Maybe it should write the last state of the day
+# so that the next day can pick it up.
+#
 #
 # Usage:
 #
