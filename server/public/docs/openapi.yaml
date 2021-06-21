@@ -22,6 +22,16 @@ info:
     - Rite Aid Pharmacy (source name: `univaf-rite-aid-api`)
     - State of New Jersey Vaccine Scheduling System (source name: `univaf-njvss`)
     - VaccineSpotter.org (source names: `univaf-vaccinespotter`, `vaccinespotter`)
+
+    Generally speaking, `univaf-*` sources are implemented directly in this
+    codebase, while others are implemented by partners. For example,
+    `univaf-vaccinespotter` is used when we loaded data from VaccineSpotter's
+    API, but `vaccinespotter` is used when VaccineSpotter *sent* data directly.
+
+    `*-smart` indicates the source reads data from an API that implement the
+    [SMART Scheduling Links](https://github.com/smart-on-fhir/smart-scheduling-links/)
+    standard, a national standard for vaccine appointment availability data.
+    Other names indicate custom or proprietary APIs.
   contact:
     email: rbrackett@usdigitalresponse.org
   license:
