@@ -48,8 +48,9 @@ function getSourcesInput(req: Request) {
       rawSources = [req.query.sources as string];
     }
 
-    return rawSources
-      .flatMap(sources => sources.split(",").map(source => source.trim()));
+    return rawSources.flatMap((sources) =>
+      sources.split(",").map((source) => source.trim())
+    );
   }
 
   return;
