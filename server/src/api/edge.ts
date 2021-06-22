@@ -39,6 +39,23 @@ function shouldIncludePrivate(req: AppRequest) {
   return includePrivate;
 }
 
+function getSourcesInput(req: Request) {
+  if (req.query.sources) {
+    let rawSources: string[];
+    if (Array.isArray(req.query.sources)) {
+      rawSources = req.query.sources as string[];
+    } else {
+      rawSources = [req.query.sources as string];
+    }
+
+    return rawSources.flatMap((sources) =>
+      sources.split(",").map((source) => source.trim())
+    );
+  }
+
+  return;
+}
+
 function getListLocationInput(req: Request) {
   let where: Array<string> = [];
   let values: Array<any> = [];
@@ -56,6 +73,7 @@ function getListLocationInput(req: Request) {
 
 export async function listStream(req: AppRequest, res: Response) {
   const includePrivate = shouldIncludePrivate(req);
+  const sources = getSourcesInput(req);
   const { where, values } = getListLocationInput(req);
   const { limit, pageNext } = Pagination.getParameters(req);
 
@@ -69,6 +87,7 @@ export async function listStream(req: AppRequest, res: Response) {
     values,
     limit,
     start: pageNext,
+    sources,
   });
 
   const write = (data: any) => {
@@ -114,6 +133,7 @@ export async function listStream(req: AppRequest, res: Response) {
  */
 export const list = async (req: AppRequest, res: Response) => {
   const includePrivate = shouldIncludePrivate(req);
+  const sources = getSourcesInput(req);
   const { where, values } = getListLocationInput(req);
   const { limit, pageNext } = Pagination.getParameters(req);
 
@@ -124,6 +144,7 @@ export const list = async (req: AppRequest, res: Response) => {
       values,
       limit,
       start: pageNext,
+      sources,
     })
     .next();
   const batch = result.value || { locations: [], next: null };
@@ -146,10 +167,8 @@ export const getById = async (req: AppRequest, res: Response) => {
     return sendError(res, "Missing param 'id'", 422);
   }
 
-  const includePrivate = req.query.include_private === "true";
-  if (includePrivate && !req.authorization) {
-    return sendError(res, "Not authorized for private data", 403);
-  }
+  const includePrivate = shouldIncludePrivate(req);
+  const sources = getSourcesInput(req);
 
   let provider: any = null;
   const m = id.match(EXTERNAL_ID_PATTERN);
@@ -161,7 +180,7 @@ export const getById = async (req: AppRequest, res: Response) => {
   }
 
   if (!provider && UUID_PATTERN.test(id)) {
-    provider = await db.getLocationById(id, { includePrivate });
+    provider = await db.getLocationById(id, { includePrivate, sources });
   }
 
   if (!provider) {

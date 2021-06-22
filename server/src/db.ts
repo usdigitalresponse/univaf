@@ -184,6 +184,7 @@ export async function listLocations({
   limit = 0,
   where = [] as string[],
   values = [] as any[],
+  sources = [] as string[],
 } = {}): Promise<ProviderLocation[]> {
   let fields = providerLocationFields;
 
@@ -221,7 +222,8 @@ export async function listLocations({
   const externalIds = await getExternalIdsByLocation(locationIds);
   const availabilities = await getCurrentAvailabilityByLocation(
     locationIds,
-    includePrivate
+    includePrivate,
+    sources
   );
 
   return result.rows.map((row: any) => {
@@ -273,6 +275,7 @@ export async function* iterateLocationBatches({
   start = "",
   where = [] as string[],
   values = [] as any[],
+  sources = [] as string[],
 } = {}) {
   assert(Number.isInteger(batchSize) && batchSize > 0, "batchSize must be > 0");
   assert(Number.isInteger(limit) && limit >= 0, "limit must be >= 0");
@@ -309,6 +312,7 @@ export async function* iterateLocationBatches({
       where: batchWhere,
       values: batchValues,
       limit: batchSize,
+      sources,
     });
 
     total += batch.length;
@@ -338,7 +342,7 @@ export async function* iterateLocationBatches({
  */
 export async function getLocationById(
   id: string,
-  { includePrivate = false } = {}
+  { includePrivate = false, sources = [] as string[] } = {}
 ): Promise<ProviderLocation | undefined> {
   if (!UUID_PATTERN.test(id)) return;
 
@@ -347,6 +351,7 @@ export async function getLocationById(
     limit: 1,
     where: ["pl.id = ?"],
     values: [id],
+    sources,
   });
   return rows[0];
 }
@@ -504,13 +509,15 @@ function mergeAvailabilities(
  */
 export async function getCurrentAvailabilityByLocation(
   locationIds: string | string[],
-  includePrivate = false
+  includePrivate = false,
+  sources?: string[]
 ): Promise<Map<string, LocationAvailability>> {
   const selectIds = Array.isArray(locationIds) ? locationIds : [locationIds];
   const rows = await db("availability")
     .whereIn("location_id", selectIds)
     .modify((builder) => {
       if (!includePrivate) builder.where("is_public", true);
+      if (sources && sources.length > 0) builder.whereIn("source", sources);
     })
     .orderBy(["location_id", { column: "valid_at", order: "desc" }]);
 

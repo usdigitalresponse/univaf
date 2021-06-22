@@ -3,6 +3,7 @@ import {
   installTestDatabaseHooks,
   useServerForTests,
 } from "./lib";
+import "./matchers";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
@@ -98,7 +99,49 @@ describe("GET /api/edge/locations", () => {
     let res = await context.client.get<any>("api/edge/locations");
     expect(res.body.data).toHaveLength(1);
     expect(res.body.data[0].availability).toEqual({
-      sources: ["test-system-2", "test-system-1"],
+      sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
+      checked_at: expectDatetimeString(),
+      valid_at: expectDatetimeString(),
+      changed_at: expectDatetimeString(),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
+  });
+
+  it("limits sources used when `?sources=x` is set", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-3",
+      checked_at: new Date(),
+      available: Availability.YES,
+      capacity: [
+        {
+          date: "2021-05-13",
+          available: Availability.YES,
+        },
+      ],
+    });
+
+    let res = await context.client.get<any>({
+      url: "api/edge/locations",
+      searchParams: { sources: "test-system-1,test-system-2" },
+    });
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0].availability).toEqual({
+      sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),
       changed_at: expectDatetimeString(),
@@ -224,6 +267,47 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.body.data.external_ids).toEqual(
       expect.arrayContaining(TestLocation.external_ids)
     );
+  });
+
+  it("limits sources used when `?sources=x` is set", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      source: "test-system-1",
+      checked_at: new Date(),
+      available: Availability.YES,
+      available_count: 5,
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-2",
+      checked_at: new Date(),
+      available: Availability.YES,
+      products: ["pfizer", "moderna"],
+    });
+    await updateAvailability(location.id, {
+      source: "test-system-3",
+      checked_at: new Date(),
+      available: Availability.YES,
+      capacity: [
+        {
+          date: "2021-05-13",
+          available: Availability.YES,
+        },
+      ],
+    });
+
+    let res = await context.client.get<any>({
+      url: `api/edge/locations/${location.id}`,
+      searchParams: { sources: "test-system-1,test-system-2" },
+    });
+    expect(res.body.data.availability).toEqual({
+      sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
+      checked_at: expectDatetimeString(),
+      valid_at: expectDatetimeString(),
+      changed_at: expectDatetimeString(),
+      available: Availability.YES,
+      available_count: 5,
+      products: ["pfizer", "moderna"],
+    });
   });
 });
 
