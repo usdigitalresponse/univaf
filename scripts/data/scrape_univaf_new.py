@@ -1,17 +1,14 @@
 #
 # Script to download the logs of USDR's "univaf" API.
-# It downloads all the availability logs 
-#
+# It downloads all the availability logs.
 #
 # Usage:
 #
-#   python scrape_univaf_logs.py
-#
+#   python scrape_univaf_new.py
 #
 # cron job for daily pull:
 #
-#   0 12 * * * python3 /home/overgoor/usdr/scrape_univaf_logs.py
-#
+#   0 12 * * * python3 /home/overgoor/usdr/scrape_univaf_new.py
 #
 # Authors:
 #
@@ -23,6 +20,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 import lib
 
+path = lib.path_root + 'data/univaf_new_raw'
 # download the index
 host = "http://univaf-data-snapshots.s3.amazonaws.com/"
 index = []
@@ -47,11 +45,11 @@ index.append(locations)
 
 for (type, file, size) in index:
     if type == 'external_ids':
-        path_out = '%sdata/univaf_raw_new/external_ids.ndjson' % lib.path_root
+        path_out = '%s/external_ids.ndjson' % path
     elif type == 'provider_locations':
-        path_out = '%sdata/univaf_raw_new/locations.ndjson' % lib.path_root
+        path_out = '%s/locations.ndjson' % path
     else:
-        path_out = '%sdata/univaf_raw_new/%s' % (lib.path_root, file)
+        path_out = '%s/%s' % (path, file)
     if not os.path.exists(path_out) or type != 'availability_log':
         url = '%s%s/%s' % (host, type, file)
         size = int(size) * 1.0 / 1048000

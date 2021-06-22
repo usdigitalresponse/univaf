@@ -4,22 +4,20 @@
 #
 # NOTE: checked_time is in UTC and slot_time is in local time.
 #
-#
 # Usage:
 #
 #   python process_slots.py [-h] [-s START_DATE] [-e END_DATE] [-c] [-a]
 #
-#
 # Produces:
 #
-#   availabilities_slots_agg_{DATE}.csv - (id, slot_time, n_observations, first_seen_time,
-#                                          last_seen_time, hour_of_day, day_of_week)
-#
+#   slots_grouped_all.csv - (id, slot_time, n_observations, first_seen_time,
+#                            last_seen_time, hour_of_day, day_of_week)
 #
 # Authors:
 #
 #   Jan Overgoor - jsovergoor@usdigitalresponse.org
 #
+
 import pandas as pd
 from pytz import UTC
 import argparse
@@ -27,8 +25,7 @@ import glob
 import lib
 
 # set paths
-path = lib.path_root + 'data/univaf_clean/'
-
+path = lib.path_root + 'data/univaf_new_clean/'
 
 
 def lookup(date_pd_series, format=None):
@@ -41,7 +38,7 @@ def do_date(ds):
     """
     Process a single date.
     """
-    fn = "%savailabilities_slots_%s.csv" % (path, ds)
+    fn = "%sslots_%s.csv" % (path, ds)
     print("[INFO]   reading " + fn)
     # read data
     DF = pd.read_csv(fn,
@@ -75,7 +72,7 @@ def do_date(ds):
                     hour_of_day=DF.slot_time.dt.hour,
                     day_of_week=DF.slot_time.dt.dayofweek))
     # write to csv
-    fn_out = "%savailabilities_slots_grouped_%s.csv" % (path, ds)
+    fn_out = "%sslots_grouped_%s.csv" % (path, ds)
     DF.to_csv(fn_out, index=False, header=False, date_format="%Y-%m-%d %H:%M")
     print("[INFO]   writing %s" % fn_out)
 
@@ -84,9 +81,9 @@ def join_all():
     """
     Join all dates together to deal with individual checked_dates
     """
-    fn = lib.path_root + 'data/clean/availabilities_slots_grouped_univaf.csv'
+    fn_out = lib.path + 'slots_grouped_all.csv'
     # read individual files
-    fns = glob.glob(path + "/availabilities_slots_grouped_2021*.csv")
+    fns = glob.glob(path + "slots_grouped_2021*.csv")
     li = [pd.read_csv(x, header=None) for x in fns]
     DF = pd.concat(li, axis=0, ignore_index=True)
     DF.set_axis(['id', 'slot_time', 'n', 'min', 'max', 'hod', 'dow'],
@@ -96,8 +93,8 @@ def join_all():
     DF = (DF.groupby(['id', 'slot_time', 'hod', 'dow'])
             .agg(n=('n', sum), min=('min', min), max=('max', max))
             .reset_index())
-    DF.to_csv(fn, index=False, header=False, date_format="%Y-%m-%d %H:%M")
-    print("[INFO]   wrote %d records to %s" % (DF.shape[0], fn))
+    DF.to_csv(fn_out, index=False, header=False, date_format="%Y-%m-%d %H:%M")
+    print("[INFO]   wrote %d records to %s" % (DF.shape[0], fn_out))
 
 
 if __name__ == "__main__":
