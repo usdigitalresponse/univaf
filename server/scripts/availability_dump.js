@@ -37,10 +37,13 @@ function writeLog(...args) {
 
 function selectSqlPoint(column) {
   return `
+  CASE WHEN ${column} is null THEN null
+  ELSE
     json_build_object(
       'longitude', st_x(${column}::geometry),
       'latitude', st_y(${column}::geometry)
-    ) as ${column}
+    )
+  END as ${column}
   `.trim();
 }
 
