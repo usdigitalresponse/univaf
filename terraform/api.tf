@@ -66,6 +66,10 @@ module "api_task" {
   memory = var.memory
   port   = var.api_port
 
+  # Enable Datadog
+  datadog_enabled = true
+  datadog_api_key = var.datadog_api_key
+
   env_vars = {
     RELEASE     = var.api_release_version
     DB_HOST     = module.db.host
