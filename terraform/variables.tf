@@ -132,3 +132,7 @@ variable "data_snapshot_aws_key_id" {
 variable "data_snapshot_aws_secret_key" {
   sensitive = true
 }
+
+variable "datadog_api_key" {
+  sensitive = true
+}

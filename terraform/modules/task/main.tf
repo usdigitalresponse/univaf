@@ -12,26 +12,25 @@
  *
  */
 
-
 /**
- * Resources.
+ * Define the two container definitions and the ultimate list we want to use 
  */
-
-# The ECS task definition.
-resource "aws_ecs_task_definition" "main" {
-  family             = var.name
-  execution_role_arn = var.role
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.cpu
-  memory                   = var.memory
-  container_definitions = jsonencode([
-    {
+locals {
+  datadog_container_def = {
+        name = "datadog-agent"
+        image = "datadog/agent:latest"
+        environment = [
+        {
+            name  = "DD_API_KEY"
+            value = var.datadog_api_key
+        },
+        {
+            name = "ECS_FARGATE",
+            value = "true"
+        }
+        ]
+    }
+  container_definition = {
       cpu    = var.cpu
       memory = var.memory
 
@@ -60,5 +59,25 @@ resource "aws_ecs_task_definition" "main" {
         }
       }
     }
-  ])
+    containers = var.datadog_enabled ? tolist([local.container_definition, local.datadog_container_def]) : tolist([local.container_definition])
+}
+
+/**
+ * Resources.
+ */
+
+# The ECS task definition.
+resource "aws_ecs_task_definition" "main" {
+  family             = var.name
+  execution_role_arn = var.role
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.cpu
+  memory                   = var.memory
+  container_definitions = jsonencode(local.containers)
 }
