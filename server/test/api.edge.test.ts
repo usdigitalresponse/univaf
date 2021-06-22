@@ -538,4 +538,33 @@ describe("POST /api/edge/update", () => {
     expect(res.body).toHaveProperty("data.id", location.id);
     expect(res.body).toHaveProperty("data.position", newPosition);
   });
+
+  it("position should be null when set to null", async () => {
+    const location = await createLocation(TestLocation);
+    const newPosition = { longitude: 30, latitude: 26 };
+
+    let res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        position: newPosition,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    res = await context.client.get(`api/edge/locations/${location.id}`);
+    expect(res.body).toHaveProperty("data.position", newPosition);
+
+    res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        position: null,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    res = await context.client.get(`api/edge/locations/${location.id}`);
+    expect(res.body).toHaveProperty("data.position", null);
+  });
 });
