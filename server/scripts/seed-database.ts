@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import { createLocation, updateAvailability, db } from "../src/db";
+import { availabilityDb } from "../src/availability-log";
 
 async function readSeedData() {
   const raw = await fs.readFile("./fixtures/seeds.json", "utf8");
@@ -24,4 +25,7 @@ run()
     console.error(error);
     process.exitCode = 1;
   })
-  .finally(() => db.destroy());
+  .finally(() => {
+    db.destroy();
+    availabilityDb.destroy();
+  });

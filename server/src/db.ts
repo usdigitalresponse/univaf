@@ -97,7 +97,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     return providerLocationAllFields.includes(key);
   });
 
-  return await db.transaction(async (tx) => {
+  const locationId = await db.transaction(async (tx) => {
     const inserted = await tx.raw(
       `INSERT INTO provider_locations (
       ${sqlFields.map((x) => x[0]).join(", ")}
@@ -109,8 +109,9 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
 
     const locationId = inserted.rows[0].id;
     await addExternalIds(locationId, data.external_ids, tx);
-    return await getLocationById(locationId);
+    return locationId;
   });
+  return await getLocationById(locationId);
 }
 
 /**
