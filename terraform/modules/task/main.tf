@@ -79,5 +79,5 @@ resource "aws_ecs_task_definition" "main" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu
   memory                   = var.memory
-  container_definitions = jsonencode(var.containers)
+  container_definitions = jsonencode(local.containers)
 }
