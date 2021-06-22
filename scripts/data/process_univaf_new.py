@@ -4,10 +4,8 @@
 # downloaded locally with scrape_univaf_logs.py
 #
 # We maintain an internal locations database to map the long UUID's
-# to small numeric ids. If --clean_run (-c) is enabled, it starts from
-# scratch, otherwise it maintains the current internal locations data.
-# It always reads in the latest locations file first and then runs
-# through the dates from start to finish.
+# to small numeric ids. Every time this script runs, it reprocesses
+# the locations database.
 #
 # By default, it does not process slot-level data, only the number of
 # available appointments per day. If the --slots (-a) flag is enbled,
@@ -25,16 +23,16 @@
 #
 # Usage:
 #
-#   python process_univaf_logs.py [-h] [-s START_DATE] [-e END_DATE] [-c] [-a]
+#   python process_univaf_new.py [-h] [-s START_DATE] [-e END_DATE] [-c] [-a]
 #
 #
 # Produces:
 #
-#   locations_univaf.csv - (id, uuid, name, provider, type, address, city,
+#   univaf_locations.csv - (id, uuid, name, provider, type, address, city,
 #                           county, state, zip, lat, lng, timezone)
-#   ids_external - (external_id, id)
-#   availabilities_{DATE}.csv - (id, checked_time, availability)
-#   availabilities_slots_{DATE}.csv - (id, checked_time, slot_time, availability)
+#   univaf_ids.csv - (external_id, id)
+#   univaf_new_avs_{DATE}.csv - (id, checked_time, availability)
+#   univaf_new_slots_{DATE}.csv - (id, checked_time, slot_time, availability)
 #
 #
 # Authors:
@@ -52,13 +50,13 @@ import dateutil.parser
 import argparse
 import us
 import pytz
-import lib  # internal
 from shapely import wkb
-
+# internal
+import lib
 
 # set paths
-path_raw = lib.path_root + 'data/univaf_raw_new/'
-path_out = lib.path_root + 'data/univaf_clean_new/'
+path_raw = lib.path_root + 'data/univaf_new_raw/'
+path_out = lib.path_root + 'data/univaf_new_clean/'
 
 locations = {}
 eid_to_id = {}
@@ -69,10 +67,9 @@ def do_date(ds, slots=False):
     """
     Process a single date.
     """
-    # TODO
     print("[INFO] doing %s WITH%s slots" % (ds, '' if slots else 'OUT'))
     # open output file
-    fn_out = "%savailabilities_%s%s.csv" % (path_out, 'slots_' if slots else '', ds)
+    fn_out = "%sunivaf_new_avs_%s%s.csv" % (path_out, 'slots_' if slots else '', ds)
     f_avs = open(fn_out, 'w')
     writer = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     n_avs = 0
@@ -90,12 +87,14 @@ def do_date(ds, slots=False):
                 # TODO: maintain state and update last valid_at
                 if "available" not in row or row['available'] is None:
                     continue
+
+                # look up the location
                 iid = int(eid_to_id['uuid:%s' % row['location_id']])
-                # find location
                 if iid not in locations:
                     print('[WARNING] id %d not in the dictionary...' % iid)
                     continue
                 loc = locations[iid]
+
                 # parse checked_time and convert to UTC if not already
                 t = row['valid_at']
                 if t[-5:] == '00:00' or t[-1] == 'Z':
@@ -161,7 +160,7 @@ def do_date(ds, slots=False):
     print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))
 
 
-def do_locations():
+def process_locations():
     """
     Process the latest prodiver_locations and external_ids log files.
     """
@@ -266,8 +265,8 @@ def do_locations():
             continue
         eid_to_id[eid] = eid_to_id[uuid]
     # write updated location files
-    lib.write_locations(locations, path_out + 'locations.csv')
-    lib.write_external_ids(eid_to_id, path_out + 'external_ids.csv')
+    lib.write_locations(locations, path_out + 'univaf_locations.csv')
+    lib.write_external_ids(eid_to_id, path_out + 'univaf_ids.csv')
 
 
 if __name__ == "__main__":
@@ -275,23 +274,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--start_date', help="first date to process")
     parser.add_argument('-e', '--end_date', help="last date to process")
-    parser.add_argument('-c', '--clean_run', action='store_true',
-                        help="replace previous locations file")
     parser.add_argument('-a', '--slots', action='store_true', help="do slot-level data")
     args = parser.parse_args()
     # parse dates
     dates = lib.parse_date(parser)
     print("[INFO] doing these dates WITH%s slots: [%s]" %
           ('' if args.slots else 'OUT', ', '.join(dates)))
-    # parse whether to keep previous locations
-    if not args.clean_run:
-        print("[INFO] clean_run=False, so keep previously collected location data")
-        locations = lib.read_locations(path_out + 'locations_univaf.csv')
-        eid_to_id = lib.read_external_ids(path_out + 'ids_external.csv')
-    else:
-        print("[INFO] clean_run=True, so starting from an empty location database")
     # process latest locations file
-    do_locations()
+    process_locations()
     # iterate over days
     for date in dates:
         do_date(date, args.slots)

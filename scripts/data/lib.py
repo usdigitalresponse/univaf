@@ -179,9 +179,9 @@ def pp(s):
     return json.dumps(s, indent=4)
 
 
-def hash(s, digits=6):
+def hash(s, digits=8):
     """
-    Creates a non-unique int for a string.
+    Creates a (non-unique) int for a string.
     https://stackoverflow.com/a/16008760
     """
     return int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16) % (10 ** digits)
