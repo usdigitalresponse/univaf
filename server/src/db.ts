@@ -66,10 +66,13 @@ function formatSqlPoint(point?: Position) {
 
 function selectSqlPoint(column: string): string {
   return `
+  CASE WHEN ${column} is null THEN null
+  ELSE
     json_build_object(
       'longitude', st_x(${column}::geometry),
       'latitude', st_y(${column}::geometry)
-    ) as position
+    )
+  END as position
   `.trim();
 }
 
@@ -227,10 +230,6 @@ export async function listLocations({
   );
 
   return result.rows.map((row: any) => {
-    // The SELECT expression always creates an object; not sure if there's a
-    // good way to get it to output `NULL` instead for this case.
-    if (!row.position.longitude) row.position = null;
-
     row.external_ids = externalIds[row.id] || [];
     row.availability = availabilities.get(row.id);
 
