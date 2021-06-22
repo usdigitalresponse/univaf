@@ -59,7 +59,7 @@ locals {
         }
       }
     }
-    containers = var.datadog_enabled ? [local.container_definition, local.datadog_container_def] : [local.container_definition]
+    encoded_containers = var.datadog_enabled ? jsonencode([local.container_definition, local.datadog_container_def]) : jsonencode([local.container_definition])
 }
 
 /**
@@ -79,5 +79,5 @@ resource "aws_ecs_task_definition" "main" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.cpu
   memory                   = var.memory
-  container_definitions = jsonencode(local.containers)
+  container_definitions = local.encoded_containers
 }
