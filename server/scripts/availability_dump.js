@@ -59,13 +59,20 @@ function removeNullPropertiesStream() {
   });
 }
 
+function getQueryStream(queryBuilder) {
+  return queryBuilder.stream().pipe(JSONStream.stringify(false));
+}
+
 function getTableStream(table) {
-  const query = db(table).select("*");
-  if (table == "provider_locations") {
-    // aliases json version of position to override binary-encoded column
-    query.select(db.raw(selectSqlPoint("position")));
-  }
-  return query.stream().pipe(JSONStream.stringify(false));
+  return getQueryStream(db(table).select("*"));
+}
+
+function getProviderLocationsStream() {
+  return getQueryStream(
+    db("provider_locations")
+      .select("*")
+      .select(db.raw(selectSqlPoint("position"))) // override binary-encoded column with json version
+  );
 }
 
 function getAvailabilityLogStream(date) {
@@ -175,10 +182,16 @@ async function main() {
   const now = luxon.DateTime.utc();
   const runDate = now.minus({ days: 1 }); // run for previous day
 
-  for (const table of ["provider_locations", "external_ids", "availability"]) {
+  for (const table of ["external_ids", "availability"]) {
     writeLog(`writing ${pathFor(table, runDate)}`);
     await writeStream(getTableStream(table), pathFor(table, runDate));
   }
+
+  writeLog(`writing ${pathFor("provider_locations", runDate)}`);
+  await writeStream(
+    getProviderLocationsStream(),
+    pathFor("provider_locations", runDate)
+  );
 
   const logRunDates = await getAvailabilityLogRunDates(runDate);
   for (const logRunDate of logRunDates) {
