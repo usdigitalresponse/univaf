@@ -59,7 +59,7 @@ locals {
         }
       }
     }
-    containers = var.datadog_enabled ? tolist([local.container_definition, local.datadog_container_def]) : tolist([local.container_definition])
+    containers = var.datadog_enabled ? [local.container_definition, local.datadog_container_def] : [local.container_definition]
 }
 
 /**
