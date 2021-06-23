@@ -1,7 +1,10 @@
 #
-# Script to process USDR's univaf appointment availability data,
-# as stored in the logs stored in the S3 folder.
-# These files can be downloaded locally with scrape_univaf_new.py
+# Script to process USDR's univaf appointment availability data.
+# There are two possible data sources:
+# 1. --mode old processes locally stored copies of the \locations
+#    API, downloaded with scrape_univaf_old.py
+# 2. --mode new processes change logs from the S3 folder, which can
+#    be locally downloaded with scrape_univaf_new.py
 # It processes scraped data by date, iterating over a date-range,
 # and writes out both general and slot-level availability data.
 #
@@ -14,7 +17,7 @@
 #
 # Usage:
 #
-#   python process_univaf_new.py [-h] [-s START_DATE] [-e END_DATE]
+#   python process_univaf.py [-h] [-m new|old] [-s START_DATE] [-e END_DATE]
 #
 # Produces:
 #
@@ -42,14 +45,15 @@ import dateutil.parser
 import argparse
 import us
 import pytz
+from glob import glob
 from shapely import wkb
 # internal
 import lib
 
-# set paths
-path_raw = lib.path_root + 'data/univaf_new_raw/'
-path_out = lib.path_root + 'data/univaf_new_clean/'
-
+# set global variables
+mode = ''
+path_raw = ''
+path_out = ''
 locations = {}
 eid_to_id = {}
 avs = {}    # { id : [ts_first, ts_last, offset, available] }
@@ -84,28 +88,51 @@ def do_date(ds):
         with open(fn_state_slots, 'r') as f:
             slots = json.load(f)
 
-    # construct file to read
-    fn = path_raw + 'availability_log-%s.ndjson' % ds
-    if not os.path.exists(fn):
-        print("[ERROR] path %s doesn't exist" % fn)
-        return None
-    print("[INFO]   reading " + fn)
-    with open(fn, 'r') as f:
-        reader = ndjson.reader(f)
-        for row in reader:
+    # construct list of files to read
+    if mode == 'new':
+        files = sorted(glob('%savailability_log-%s.ndjson' % (path_raw, ds)))
+    elif mode == 'old':
+        files = sorted(glob('%slocations_%s_*' % (path_raw, ''.join(ds.split('-')))))
+
+    for fn in files:
+
+        print("[INFO]   reading " + fn)
+        f = open(fn, 'r')
+        if mode == 'new':
+            records = ndjson.reader(f)
+        elif mode == 'old':
+            records = json.load(f)
+
+        for row in records:
             try:
 
-                # only process rows that have a (new) valid_at field
-                if "valid_at" not in row:
-                    continue
+                # align old and new schemas
+                if mode == 'new':
+                    # only process rows that have a (new) valid_at field
+                    if "valid_at" not in row:
+                        continue
+                elif mode == 'old':
+                    # deal with (now deprecated) pagination
+                    if '__next__' in row:
+                        continue
+                    # skip if no availability data
+                    if 'availability' not in row or row['availability'] is None:
+                        continue
+                    # rename and move fields up level
+                    row['location_id'] = row['id']
+                    for k, v in row['availability'].items():
+                        row[k] = v
 
                 # look up the location
-                sid = 'uuid:%s' % row['location_id']
-                if sid not in eid_to_id:
+                if 'uuid:%s' % row['location_id'] in eid_to_id:
+                    sid = 'uuid:%s' % row['location_id']
+                elif 'univaf_v1:%s' % row['location_id'] in eid_to_id:
                     sid = 'univaf_v1:%s' % row['location_id']
-                    if sid not in eid_to_id:
-                        print('[WARN]     id %s not in the dictionary...' % row['location_id'])
-                        continue
+                elif 'univaf_v0:%s' % row['location_id'] in eid_to_id:
+                    sid = 'univaf_v0:%s' % row['location_id']
+                else:
+                    print('[WARN]     id %s not in the dictionary...' % row['location_id'])
+                    continue
                 iid = int(eid_to_id[sid])
                 loc = locations[iid]
 
@@ -199,13 +226,14 @@ def do_date(ds):
                 print("Problem data: ")
                 print(lib.pp(row))
                 exit()
+        f.close()
 
     # write unclosed records
     for iid, row in avs.items():
         writer_avs.writerow([iid] + row)
         n_avs += 1
     for iid, tmp_row in slots.items():
-        for slow_time, row in tmp_row.items():
+        for slot_time, row in tmp_row.items():
             writer_slots.writerow([iid, slot_time] + row)
             n_slots += 1
 
@@ -231,7 +259,7 @@ def process_locations(path_out):
     # read zip map
     zipmap = lib.read_zipmap()
     # read 'new' locations
-    with open(path_raw + 'locations.ndjson', 'r') as f:
+    with open('%sdata/univaf_new_raw/locations.ndjson' % lib.path_root, 'r') as f:
         new_locations = ndjson.load(f)
     for row in new_locations:
         # grab internal numeric id, or make one
@@ -315,8 +343,8 @@ def process_locations(path_out):
             'timezone': timezone
         }
 
-    # read 'new'  external_id to uuid mapping
-    with open(path_raw + 'external_ids.ndjson', 'r') as f:
+    # read 'new' external_id to uuid mapping
+    with open('%sdata/univaf_new_raw/external_ids.ndjson' % lib.path_root, 'r') as f:
         eid_to_uuid = {}
         for x in ndjson.load(f):
             eid_to_uuid['%s:%s' % (x['system'], x['value'])] = x['provider_location_id']
@@ -339,7 +367,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--start_date', help="first date to process")
     parser.add_argument('-e', '--end_date', help="last date to process")
+    parser.add_argument('-m', '--mode', help="do new or old data")
     args = parser.parse_args()
+    # parse whether old or new data
+    if args.mode not in ['old', 'new']:
+        print("[ERROR] mode should be 'old' or 'new'")
+        exit()
+    mode = args.mode
+    path_raw = lib.path_root + 'data/univaf_%s_raw/' % mode
+    path_out = lib.path_root + 'data/univaf_%s_clean/' % mode
+    # parse dates
     dates = lib.parse_date(parser)
     print("[INFO] doing these dates: [%s]" % ', '.join(dates))
     # process latest locations file
