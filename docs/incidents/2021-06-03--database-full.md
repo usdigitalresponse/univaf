@@ -52,14 +52,22 @@ Original database is finished being upsized and the API service is switched back
 - Logging and tooling made the cause extremely clear.
 - Team was able to divide up work effectively.
 
+
 ### What Went Wrong
 
 - @Mr0grog was the only one to see the alerts and it wasn't clear that the entire API was down until looking into it.
 - The entire incident was a result of a problem we knew was coming, but did not keep a close eye on.
 
+
 ## Action Items
 
-- Set up CloudWatch alarms for database resources. **(Done)**
+- Set up CloudWatch alarms for database resources. **(Done during this incident)**
 - Set up Sentry alarms for high error rates.
 - Set up Slack integrations so alerts are highly visible to the team.
 - Set up automatic deletion of old logs before we hit database problems again.
+
+
+## Responders
+
+- @Mr0grog
+- @astonm
