@@ -5,7 +5,7 @@
 
 ## Summary
 
-Summary of event.
+Summary of event. Describe what went wrong and the overall response, as well as the root cause. (Working through a [5 Whys](https://kanbanize.com/lean-management/improvement/5-whys-analysis-tool) exercise can help you identify root causes.)
 
 
 ## Timeline
@@ -38,8 +38,9 @@ What happened. (Repeat as needed.)
 
 ## Action Items
 
-- Bulleted
-- List
+- Each list item here
+- Should link to an issue that
+- Tracks the work process.
 
 
 ## Responders
