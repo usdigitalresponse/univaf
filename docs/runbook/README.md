@@ -27,6 +27,7 @@ Major components:
 As much of the infrastructure as possible is managed in Terraform, but a few bits are set up manually:
 
 - Domain name in Route53.
+- SSL certificate in ACM.
 - Bastion server and its associated security group in EC2.
 
 
