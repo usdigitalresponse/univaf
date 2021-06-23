@@ -21,7 +21,7 @@ We eventually resolved the emergency by expanding the database, but keeping the 
 
 ### 2021-06-03 9:58
 
-**Service is restored** by switching to the the backup. See #169.
+**Service is restored** by switching to the the backup. See [#169][issue-169].
 
 ### 2021-06-03 10:03
 
@@ -29,19 +29,19 @@ We eventually resolved the emergency by expanding the database, but keeping the 
 
 ### 2021-06-03 12:26
 
-@astonm completes and merges work on #163, which starts dumping the contents of the `availability_log` table to daily log files. Once that’s running, we can save space in the database by deleting old rows from `availability_log` since that data will be safely stored in S3.
+@astonm completes and merges work on [#163][issue-163], which starts dumping the contents of the `availability_log` table to daily log files. Once that’s running, we can save space in the database by deleting old rows from `availability_log` since that data will be safely stored in S3.
 
 ### 2021-06-03 13:00
 
-Original database is finished being upsized and the API service is switched back to it (#172).
+Original database is finished being upsized and the API service is switched back to it ([#172][issue-172]).
 
 ### 2021-06-03 13:18
 
-@astonm adds CloudWatch alarms to database resources so we know when we are running low on resources before we run out entirely (#171).
+@astonm adds CloudWatch alarms to database resources so we know when we are running low on resources before we run out entirely ([#171][issue-171]).
 
 ### 2021-06-03 15:29
 
-@astonm deploys changes to run the S3 dumping script on a daily schedule (#164). Automatic deletion of old logs from the `availability_log` table is turned off for now, though — we want to run this for a few days without error before we are confident deleting data from the database.
+@astonm deploys changes to run the S3 dumping script on a daily schedule ([#164][issue-164]). Automatic deletion of old logs from the `availability_log` table is turned off for now, though — we want to run this for a few days without error before we are confident deleting data from the database.
 
 
 ## Lessons
@@ -71,3 +71,10 @@ Original database is finished being upsized and the API service is switched back
 
 - @Mr0grog
 - @astonm
+
+
+[issue-163]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/163
+[issue-164]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/164
+[issue-169]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/169
+[issue-171]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/171
+[issue-172]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/172

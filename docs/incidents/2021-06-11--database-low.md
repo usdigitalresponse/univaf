@@ -30,7 +30,7 @@ We decide to delete several days of early `availability_logs` data in the mornin
 
 ### 2021-06-12 12:59
 
-Deploy changes to automatically start deleting old logs from the database (#184). This will run for the first time late tonight.
+Deploy changes to automatically start deleting old logs from the database ([#184][issue-184]). This will run for the first time late tonight.
 
 ### 2021-06-12 17:56
 
@@ -58,7 +58,7 @@ Night-time is less critical for us since all our data and usage is in the United
 
 ### 2021-06-14 12:32
 
-Create final plan for fixing the database during the weekly meeting. Plan: #208. @Mr0grog will execute it Tuesday night (2021-06-15).
+Create final plan for fixing the database during the weekly meeting. Plan: [#208][issue-208]. @Mr0grog will execute it Tuesday night (2021-06-15).
 
 ### 2021-06-16 0:50
 
@@ -89,3 +89,7 @@ N/A
 
 - @astonm
 - @Mr0grog
+
+
+[issue-184]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/184
+[issue-208]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/208
