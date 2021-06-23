@@ -6,7 +6,7 @@
 #
 # Usage:
 #
-#   python process_slots.py [-h] [-s START_DATE] [-e END_DATE] [-c] [-a]
+#   python process_slots.py [-h] [-s START_DATE] [-e END_DATE] [-m old|new]
 #
 # Produces:
 #
@@ -24,8 +24,8 @@ import argparse
 import glob
 import lib
 
-# set paths
-path = lib.path_root + 'data/univaf_new_clean/'
+# set path
+main_path = ''
 
 
 def lookup(date_pd_series, format=None):
@@ -38,7 +38,7 @@ def do_date(ds):
     """
     Process a single date.
     """
-    fn = "%sslots_%s.csv" % (path, ds)
+    fn = "%sslots_%s.csv" % (main_path, ds)
     print("[INFO]   reading " + fn)
     # read data
     DF = pd.read_csv(fn,
@@ -72,7 +72,7 @@ def do_date(ds):
                     hour_of_day=DF.slot_time.dt.hour,
                     day_of_week=DF.slot_time.dt.dayofweek))
     # write to csv
-    fn_out = "%sslots_grouped_%s.csv" % (path, ds)
+    fn_out = "%sslots_grouped_%s.csv" % (main_path, ds)
     DF.to_csv(fn_out, index=False, header=False, date_format="%Y-%m-%d %H:%M")
     print("[INFO]   writing %s" % fn_out)
 
@@ -81,9 +81,9 @@ def join_all():
     """
     Join all dates together to deal with individual checked_dates
     """
-    fn_out = lib.path + 'slots_grouped_all.csv'
+    fn_out = main_path + 'slots_grouped_all.csv'
     # read individual files
-    fns = glob.glob(path + "slots_grouped_2021*.csv")
+    fns = glob.glob(main_path + "slots_grouped_2021*.csv")
     li = [pd.read_csv(x, header=None) for x in fns]
     DF = pd.concat(li, axis=0, ignore_index=True)
     DF.set_axis(['id', 'slot_time', 'n', 'min', 'max', 'hod', 'dow'],
@@ -102,9 +102,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--start_date', help="first date to process")
     parser.add_argument('-e', '--end_date', help="last date to process")
+    parser.add_argument('-m', '--mode', help="do new or old data")
     args = parser.parse_args()
     # parse dates
     dates = lib.parse_date(parser)
+    if args.m not in ['old', 'new']:
+        print("[ERROR] mode should be 'old' or 'new'")
+        exit()
+    main_path = '%sdata/univaf_%s_clean/' % (lib.path_root, args.m)
+
     print("[INFO] doing these dates: [%s]" % ','.join(dates))
     # parse whether to keep previous locations
     for date in dates:

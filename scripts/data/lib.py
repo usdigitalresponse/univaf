@@ -185,3 +185,12 @@ def hash(s, digits=8):
     https://stackoverflow.com/a/16008760
     """
     return int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16) % (10 ** digits)
+
+
+def add_days(ds, days=1):
+    """
+    Add a number of days to a date string.
+    """
+    next_day = datetime.datetime.strptime(ds, "%Y-%m-%d")
+    next_day = next_day + datetime.timedelta(days=days)
+    return next_day.strftime("%Y-%m-%d")

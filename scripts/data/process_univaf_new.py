@@ -10,13 +10,7 @@
 # the locations database.
 #
 # NOTE: Both checked_time and slot_time are in UTC
-#
-# TODO: implement "no change" records as well. This is a bit hairy, as it
-# requires maintaining state. I'm imagining keeping a dictionary of all
-# locations, and only writing records when an update comes in, and at the
-# end of the script. The main problem there is dealing with the state that
-# came from the day before. Maybe it should write the last state of the day
-# so that the next day can pick it up.
+# TODO: should not write open records at end of day, now that we load state?
 #
 # Usage:
 #
@@ -27,8 +21,9 @@
 #   locations.csv    - (id, uuid, name, provider, type, address, city,
 #                       county, state, zip, lat, lng, timezone)
 #   ids.csv          - (external_id, id)
-#   avs_{DATE}.csv   - (id, checked_time, offset, availability)
-#   slots_{DATE}.csv - (id, checked_time, offset, slot_time,
+#   avs_{DATE}.csv   - (id, first_checked_time, last_checked_time,
+#                       offset, availability)
+#   slots_{DATE}.csv - (id, slot_time, first_checked_time, last_checked_time,
 #                       offset, availability)
 #
 # Authors:
@@ -41,6 +36,7 @@ import os
 import csv
 import traceback
 import sys
+import json
 import datetime
 import dateutil.parser
 import argparse
@@ -56,6 +52,8 @@ path_out = lib.path_root + 'data/univaf_new_clean/'
 
 locations = {}
 eid_to_id = {}
+avs = {}    # { id : [ts_first, ts_last, offset, available] }
+slots = {}  # { id : { ts_slot : [ts_first, ts_last, offset, available] }}
 
 
 #@profile  # for profiling
@@ -63,7 +61,9 @@ def do_date(ds):
     """
     Process a single date.
     """
+    global avs, slots
     print("[INFO] doing %s" % ds)
+
     # open output files
     fn_avs = "%savs_%s.csv" % (path_out, ds)
     f_avs = open(fn_avs, 'w')
@@ -73,6 +73,17 @@ def do_date(ds):
     f_slots = open(fn_slots, 'w')
     writer_slots = csv.writer(f_slots, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     n_slots = 0
+
+    # read previous state, if exists
+    fn_state_avs = path_raw + 'state_%s_avs.json' % ds
+    if os.path.exists(fn_state_avs):
+        with open(fn_state_avs, 'r') as f:
+            avs = json.load(f)
+    fn_state_slots = path_raw + 'state_%s_slots.json' % ds
+    if os.path.exists(fn_state_slots):
+        with open(fn_state_slots, 'r') as f:
+            slots = json.load(f)
+
     # construct file to read
     fn = path_raw + 'availability_log-%s.ndjson' % ds
     if not os.path.exists(fn):
@@ -83,18 +94,24 @@ def do_date(ds):
         reader = ndjson.reader(f)
         for row in reader:
             try:
-                # for now, only process records with change
-                # TODO: maintain state and update last valid_at
-                if "available" not in row or row['available'] is None:
+
+                # only process rows that have a (new) valid_at field
+                if "valid_at" not in row:
                     continue
 
                 # look up the location
                 sid = 'uuid:%s' % row['location_id']
                 if sid not in eid_to_id:
-                    print('[WARN]     id %s not in the dictionary...' % sid)
-                    continue
+                    sid = 'univaf_v1:%s' % row['location_id']
+                    if sid not in eid_to_id:
+                        print('[WARN]     id %s not in the dictionary...' % row['location_id'])
+                        continue
                 iid = int(eid_to_id[sid])
                 loc = locations[iid]
+
+                # skip new locations without change as we don't know their prior state
+                if iid not in avs and ("available" not in row or row['available'] is None):
+                    continue
 
                 # parse checked_time and convert to UTC if not already
                 t = row['valid_at']
@@ -102,29 +119,20 @@ def do_date(ds):
                     check_time_utc = datetime.datetime.strptime(t[:19], "%Y-%m-%dT%H:%M:%S")
                 else:
                     check_time_utc = dateutil.parser.parse(t).astimezone(pytz.timezone('UTC'))
-                # compute offset
                 check_time_local = check_time_utc.astimezone(pytz.timezone(loc['timezone']))
-                check_time_offset = int(check_time_local.utcoffset().total_seconds() / (60 * 60))
-                # construct output row
-                row_out = [iid,
-                           check_time_utc.strftime("%Y-%m-%d %H:%M:%S"),
-                           check_time_offset]
+                offset = int(check_time_local.utcoffset().total_seconds() / (60 * 60))
+                check_time = check_time_utc.strftime("%Y-%m-%d %H:%M:%S")  # in UTC
 
-                # do slots, if the data is there
-                if 'slots' in row:
-                    for slot in row['slots']:
-                        # compute local offset and UTC time for slot time
-                        slot_time_local = datetime.datetime.fromisoformat(slot['start'])
-                        slot_time_offset = int(slot_time_local.utcoffset().total_seconds() / (60 * 60))
-                        slot_time_utc = slot_time_local.astimezone(pytz.timezone('UTC'))
-                        availability = 1 if slot['available'] == 'YES' else 0
-                        writer_slots.writerow(row_out + [
-                                                slot_time_utc.strftime("%Y-%m-%d %H:%M"),
-                                                slot_time_offset,
-                                                availability])
-                        n_slots += 1
+                # if nothing new, just update the last time
+                if "available" not in row or row['available'] is None:
+                    avs[iid][1] = check_time
+                    # update each slot time
+                    if iid in slots:
+                        for ts in slots[iid].keys():
+                            slots[iid][ts][1] = check_time
+                    continue
 
-                # do regulare availability data
+                # compute regular availability count
                 availability = None
                 if row['available'] in ['YES', 'yes']:
                     if 'available_count' in row:
@@ -148,8 +156,42 @@ def do_date(ds):
                 else:
                     availability = None
                     raise Exception('No availability found...')
-                writer_avs.writerow(row_out + [availability])
-                n_avs += 1
+
+                # create a new row if the location is new
+                if iid not in avs:
+                    avs[iid] = [check_time, check_time, offset, availability]
+                # if new row but availability didn't change, just update time
+                if availability == avs[iid][3]:
+                    avs[iid][1] = check_time
+                # else, write old row and update new row
+                else:
+                    writer_avs.writerow([iid] + avs[iid])
+                    n_avs += 1
+                    avs[iid] = [check_time, check_time, offset, availability]
+
+                # do slots, if the data is there
+                if 'slots' in row:
+                    # create a new row if the location is new
+                    if iid not in slots:
+                        slots[iid] = {}
+                    for slot in row['slots']:
+                        # compute local offset and UTC time for slot time
+                        slot_time_local = datetime.datetime.fromisoformat(slot['start'])
+                        slot_time_offset = int(slot_time_local.utcoffset().total_seconds() / (60 * 60))
+                        slot_time_utc = slot_time_local.astimezone(pytz.timezone('UTC'))
+                        slot_time = slot_time_utc.strftime("%Y-%m-%d %H:%M")  # in UTC
+                        availability = 1 if slot['available'] == 'YES' else 0
+                        # if slot time didn't exist, create
+                        if slot_time not in slots[iid]:
+                            slots[iid][slot_time] = [check_time, check_time, offset, availability]
+                        # if new row but availability didn't change, just update time
+                        if availability == slots[iid][slot_time][3]:
+                            slots[iid][slot_time][1] = check_time
+                        # else, write old row and update new row
+                        else:
+                            writer_avs.writerow([iid] + slots[iid][slot_time])
+                            n_slots += 1
+                            slots[iid][slot_time] = [check_time, check_time, offset, availability]
 
             except Exception as e:
                 print("[ERROR] ", sys.exc_info())
@@ -158,10 +200,28 @@ def do_date(ds):
                 print(lib.pp(row))
                 exit()
 
-    # close availabilities file
+    # write unclosed records
+    for iid, row in avs.items():
+        writer_avs.writerow([iid] + row)
+        n_avs += 1
+    for iid, tmp_row in slots.items():
+        for slow_time, row in tmp_row.items():
+            writer_slots.writerow([iid, slot_time] + row)
+            n_slots += 1
+
+    # close files
     f_avs.close()
+    f_slots.close()
     print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_avs))
     print("[INFO]   wrote %d slot records to %s" % (n_slots, fn_slots))
+
+    # write current state for the next day
+    next_day = lib.add_days(ds, 1)
+    with open(path_raw + 'state_%s_avs.json' % next_day, 'w') as f:
+        json.dump(avs, f)
+    with open(path_raw + 'state_%s_slots.json' % next_day, 'w') as f:
+        json.dump(slots, f)
+
 
 
 def process_locations(path_out):
