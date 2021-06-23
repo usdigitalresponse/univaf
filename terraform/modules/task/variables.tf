@@ -62,3 +62,13 @@ variable "role" {
 variable "aws_region" {
   default = "us-west-2"
 }
+
+variable "datadog_enabled" {
+  description = "Should datadog be enabled for this task"
+  default     = false
+}
+
+variable "datadog_api_key" {
+  description = "The datadog api key to be used for this container"
+  default = ""
+}
