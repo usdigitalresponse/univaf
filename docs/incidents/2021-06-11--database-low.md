@@ -82,7 +82,7 @@ Database resized, table repacked, all good!
 
 ## Action Items
 
-N/A
+- Decide whether to shrink the database disk back down, since we have incredibly huge amounts of free space now and aren’t growing very much anymore.
 
 
 ## Responders
