@@ -9,7 +9,7 @@
 
 ## Overview
 
-The application is currently backed my a single PostgreSQL database server managed through AWS RDS. View the web console at: https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2
+The application is currently backed by a single PostgreSQL database server managed through AWS RDS. View the web console at: https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2
 
 We have "performance insights" turned on, and you can navigate to it from the web console to see overall database load statistics and information about common or slow-performing queries.
 

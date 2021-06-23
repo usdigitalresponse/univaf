@@ -1,6 +1,6 @@
 # Runbook: Deployment & Operations Guide
 
-Documents in this folder are a general guide to manipulating and maintaining the [getmyvax.org](https://getmyvax.org) deployment of this software. Since this project is open-source, some things are described in general terms, and you may need to look elsewhere or ask other project members on Slack for more detailed guidance.
+Documents in this folder are a general guide to manipulating and maintaining the [getmyvax.org](https://getmyvax.org) deployment of this software. Since this project is open-source, some things are described in general terms, and you may need to look elsewhere or ask other project members on Slack for details like server addresses, resource names, credentials, etc.
 
 - [General Overview](#general-overview)
     - [AWS](#aws)
@@ -24,7 +24,7 @@ Major components:
 - The database is managed in RDS.
 - Historical log data is saved and made publicly accessible in S3.
 
-As much as possible of the infrastructure is managed in Terraform, but a few bits are set up manually:
+As much of the infrastructure as possible is managed in Terraform, but a few bits are set up manually:
 
 - Domain name in Route53.
 - Bastion server and its associated security group in EC2.
@@ -70,7 +70,7 @@ Most of our services in AWS are in VPCs without public access, so if you need to
 
 In general, you should try to find a way to do most tasks that doesn't require manual intervention through the bastion, but it’s there when you absolutely need it or when there’s an emergency.
 
-Please see another maintainer or the AWS console for the bastion’s IP address SSH keys, etc.
+Please see another maintainer or the AWS console for the bastion’s IP address, SSH keys, etc.
 
 Usually, you’ll log in via SSH:
 
