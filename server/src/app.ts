@@ -8,6 +8,7 @@ import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
+import connect_datadog from 'connect-datadog';
 
 Sentry.init();
 
@@ -38,6 +39,10 @@ function cacheControlMaxAge(seconds: number) {
 
 // Create Express server
 const app = express();
+const dd_options = {
+  'response_code':true,
+  'tags': ['app:api']
+}
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
@@ -48,6 +53,7 @@ app.use(compression());
 app.use(bodyParser.json({ limit: "500kb" }));
 app.use(cors());
 app.use(authorizeRequest);
+app.use(connect_datadog(dd_options))
 app.use(urlDecodeSpecialPathChars);
 
 /**
