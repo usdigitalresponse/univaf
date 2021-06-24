@@ -85,10 +85,23 @@ def do_date(ds):
     if os.path.exists(fn_state_avs):
         with open(fn_state_avs, 'r') as f:
             avs = json.load(f)
+            # convert keys back to int
+            avs = { int(k): v for k, v in avs.items() }
     fn_state_slots = path_raw + 'state_%s_slots.json' % ds
     if os.path.exists(fn_state_slots):
         with open(fn_state_slots, 'r') as f:
             slots = json.load(f)
+            # convert keys back to int
+            slots = { int(k): v for k, v in slots.items() }
+            # remove slots more than 1 day before today from the record
+            ds2 = lib.add_days(ds, -1)
+            for iid, v in slots.items():
+                for slot_time in list(v.keys()):
+                    if slot_time[:10] < ds2:
+                        del slots[iid][slot_time]
+                    else:
+                        # cut-off deprecated field from before 
+                        slots[iid][slot_time] = slots[iid][slot_time][:3]
 
     # construct list of files to read
     if mode == 'new':
@@ -209,18 +222,26 @@ def do_date(ds):
                         slot_time_offset = int(slot_time_local.utcoffset().total_seconds() / (60 * 60))
                         slot_time_utc = slot_time_local.astimezone(pytz.timezone('UTC'))
                         slot_time = slot_time_utc.strftime("%Y-%m-%d %H:%M")  # in UTC
-                        availability = 1 if slot['available'] == 'YES' else 0
                         # if slot time didn't exist, create
                         if slot_time not in slots[iid]:
-                            slots[iid][slot_time] = [check_time, check_time, offset, availability]
-                        # if new row but availability didn't change, just update time
-                        if availability == slots[iid][slot_time][3]:
+                            if slot['available'] == 'YES' and slot_time > check_time:
+                                slots[iid][slot_time] = [check_time, check_time, offset]
+                            else:
+                                continue
+                        # if availability didn't change, just update time
+                        if slot['available'] == 'YES' and slot_time > check_time:
                             slots[iid][slot_time][1] = check_time
                         # else, write old row and update new row
                         else:
-                            writer_avs.writerow([iid] + slots[iid][slot_time])
+                            writer_slots.writerow([iid, slot_time] + slots[iid][slot_time])
                             n_slots += 1
-                            slots[iid][slot_time] = [check_time, check_time, offset, availability]
+                            del slots[iid][slot_time]
+                    # assume that slots for which we saw no availaiblity in last update are not available anymore
+                    for slot_time in list(slots[iid].keys()):
+                        if slots[iid][slot_time][1] != check_time:
+                            writer_slots.writerow([iid, slot_time] + slots[iid][slot_time])
+                            n_slots += 1
+                            del slots[iid][slot_time]
 
             except Exception as e:
                 print("[ERROR] ", sys.exc_info())
