@@ -67,7 +67,7 @@
   margin: 1em 0;
 }
 
-#appointment-finder-root .location-info--booking-link {
+#univaf-ui-root .location-info--booking-link {
   background: var(--primary-blue);
   padding: 0.5em;
   border-radius: 5px;

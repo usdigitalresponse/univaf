@@ -2,7 +2,7 @@ import React from "react";
 // import "./main-content.css";
 import LocationList from "./location-list";
 
-// URL for appointment availability API
+// URL for UNIVAF API
 const DATA_URL = process.env.DATA_URL || "http://localhost:3000";
 // Maximum age at which to consider availability data accurate
 const MAX_AVAILABILITY_AGE = 4 * 60 * 60 * 1000;

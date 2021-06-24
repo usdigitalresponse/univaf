@@ -5,7 +5,7 @@ import FilterBar from "./components/filter-bar";
 import MainContent from "./components/main-content";
 
 // Prefix for data in local/session storage
-const STORAGE_PREFIX = "appointment-availability";
+const STORAGE_PREFIX = "univaf-ui";
 
 class AppointmentFinder extends React.Component {
   constructor(props) {
@@ -58,5 +58,5 @@ class AppointmentFinder extends React.Component {
 
 ReactDOM.render(
   <AppointmentFinder />,
-  document.getElementById("appointment-finder-root")
+  document.getElementById("univaf-ui-root")
 );
