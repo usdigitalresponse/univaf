@@ -24,10 +24,11 @@ function sendError(response: Response, error: any, httpStatus?: number): void {
       .status(httpStatus || error.httpStatus)
       .json({ error: error.toJson() });
   } else {
+    httpStatus = httpStatus || 500;
+
     const message = error.message || error;
-    response
-      .status(httpStatus || 500)
-      .json({ error: { message, code: error.code } });
+    const code = error.code || `error_${httpStatus}`;
+    response.status(httpStatus).json({ error: { message, code } });
   }
 }
 

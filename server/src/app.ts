@@ -163,7 +163,7 @@ if (app.get("env") === "development") {
       });
     } else {
       res.status(500).json({
-        error: { message: "Unknown error" },
+        error: { message: "Unknown error", code: "unknown_error" },
       });
     }
   });
