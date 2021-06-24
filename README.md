@@ -1,4 +1,4 @@
-# Appointment Availability MVP
+# UNIVAF: Vaccine Appointment Availability API
 
 ## Goal
 
@@ -63,23 +63,39 @@ $ cd ./loader
 $ npm install
 ```
 
-Then load data from any supported sources by running `bin/appointment-availability-loader` with a list of the sources you want to load data from:
+Then load data from any supported sources by running `bin/univaf-loader` with a list of the sources you want to load data from:
 
 ```bash
 # Load data from NJVSS and the CVS API
-$ bin/appointment-availability-loader njvss cvsApi
+$ bin/univaf-loader njvss cvsApi
 ```
 
 Use `--help` to see a list of sources and other options:
 
 ```bash
-$ bin/appointment-availability-loader --help
-appointment-availability-loader [sources..]
+$ bin/univaf-loader --help
+univaf-loader [sources..]
 
 Load data about COVID-19 vaccine appointment availability from a
 variety of different sources.
 
-Supported sources: cvsApi, cvsScraper, njvss, vaccinespotter
+Supported sources: cvsApi, cvsScraper, cvsSmart, njvss, riteAidApi,
+vaccinespotter, waDoh
+
+Commands:
+  univaf-loader [sources..]     Load data about COVID-19 vaccine appointment
+                                availability from a
+                                variety of different sources.
+
+                                Supported sources: cvsApi, cvsScraper, cvsSmart,
+                                njvss, riteAidApi, vaccinespotter, waDoh
+                                                                       [default]
+  univaf-loader server          Start a web server that loads vaccine
+                                appointment availability when an
+                                HTTP POST request is made to "/".
+
+                                Use the "PORT" environment variable to specify
+                                what port to listen on.
 
 Options:
   --version                Show version number                         [boolean]
@@ -90,6 +106,8 @@ Options:
   --states                 Comma-separated list of states to query for
                            multi-state sources (e.g. vaccinespotter)    [string]
   --vaccinespotter-states  Overrides the `--states` option for vaccinespotter
+                                                                        [string]
+  --rite-aid-states        Overrides the `--states` option for riteAidApi
                                                                         [string]
 ```
 
