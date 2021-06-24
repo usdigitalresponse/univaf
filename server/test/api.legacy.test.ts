@@ -43,15 +43,6 @@ describe("GET /locations", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveLength(1);
   });
-
-  it("by default supports the old external_ids output format", async () => {
-    const location = await createLocation(TestLocation);
-    const [system, value] = TestLocation.external_ids[0];
-
-    const res = await context.client.get("locations");
-    expect(res.statusCode).toBe(200);
-    expect(res.body[0]).toHaveProperty(`external_ids.${system}`, value);
-  });
 });
 
 // TODO: remove this route and these tests in a subsequent test
@@ -126,15 +117,12 @@ describe("POST /update", () => {
   it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
-    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.post("update?update_location=1", {
       headers,
       json: {
         id: "32C0495C-A1F4-45D4-9962-F8DCBF0E1E6F",
-        external_ids: {
-          [externalId[0]]: externalId[1],
-        },
+        external_ids: [TestLocation.external_ids[0]],
         name: newName,
       },
     });
@@ -147,14 +135,11 @@ describe("POST /update", () => {
   it("updates location metadata based on `external_ids` if `id` is not in update data", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
-    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.post("update?update_location=1", {
       headers,
       json: {
-        external_ids: {
-          [externalId[0]]: externalId[1],
-        },
+        external_ids: [TestLocation.external_ids[0]],
         name: newName,
       },
     });
@@ -172,9 +157,7 @@ describe("POST /update", () => {
     const res = await context.client.post("update?update_location=1", {
       headers,
       json: {
-        external_ids: {
-          vtrcks: vtrcksId,
-        },
+        external_ids: [["vtrcks", vtrcksId]],
         name: newName,
       },
     });
@@ -188,9 +171,7 @@ describe("POST /update", () => {
       headers,
       json: {
         id: location.id,
-        external_ids: {
-          testid: "this is a test",
-        },
+        external_ids: [["testid", "this is a test"]],
       },
     });
     expect(response.statusCode).toBe(200);
@@ -230,7 +211,7 @@ describe("POST /update", () => {
       headers,
       json: {
         id: "abc123",
-        external_ids: { njiis: "nj1234" },
+        external_ids: [["njiis", "nj1234"]],
         meta: {
           test: "this is a test",
         },
