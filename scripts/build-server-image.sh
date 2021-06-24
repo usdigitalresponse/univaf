@@ -4,7 +4,7 @@ AWS_REGION=us-west-2
 AWS_ACCOUNT_ID=681497372638
 REPOSITORY=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-IMAGE_NAME="appointment-server"
+IMAGE_NAME="univaf-server"
 IMAGE_TAG=$(git rev-parse --short HEAD)
 
 aws ecr get-login-password --region $AWS_REGION \
