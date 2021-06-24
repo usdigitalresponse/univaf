@@ -22,7 +22,9 @@ describe("GET /api/edge/locations", () => {
   it("responds with a list of locations containing external_ids", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
-    const res = await context.client.get<any>("api/edge/locations");
+    const res = await context.client.get<any>(
+      "api/edge/locations?external_id_format=v1"
+    );
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(1);
 
@@ -64,16 +66,16 @@ describe("GET /api/edge/locations", () => {
     const location = await createLocation(TestLocation);
     const [system, value] = TestLocation.external_ids[0];
 
-    const res = await context.client.get<any>("api/edge/locations");
+    const res = await context.client.get<any>(
+      "api/edge/locations?external_id_format=v1"
+    );
     expect(res.statusCode).toBe(200);
     expect(res.body.data[0]).toHaveProperty(`external_ids.${system}`, value);
   });
 
   it("supports the new external_ids output format", async () => {
     const location = await createLocation(TestLocation);
-    const res = await context.client.get<any>(
-      `api/edge/locations?external_id_format=v2`
-    );
+    const res = await context.client.get<any>(`api/edge/locations`);
     expect(res.statusCode).toBe(200);
     expect(res.body.data[0].external_ids).toEqual(
       expect.arrayContaining(TestLocation.external_ids)
@@ -160,7 +162,7 @@ describe("GET /api/edge/locations/:id", () => {
     await updateAvailability(location.id, TestLocation.availability);
 
     const res = await context.client.get<any>(
-      `api/edge/locations/${location.id}`
+      `api/edge/locations/${location.id}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location.id);
@@ -182,7 +184,7 @@ describe("GET /api/edge/locations/:id", () => {
     const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.get<any>(
-      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+      `api/edge/locations/${externalId[0]}:${externalId[1]}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location.id);
@@ -214,7 +216,7 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.statusCode).toBe(404);
 
     res = await context.client.get<any>(
-      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+      `api/edge/locations/${externalId[0]}:${externalId[1]}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location.id);
@@ -247,21 +249,21 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.body).toHaveProperty("data.id", location2.id);
   });
 
-  it("by default supports the old external_ids output format", async () => {
+  it("supports the old external_ids output format", async () => {
     const location = await createLocation(TestLocation);
     const [system, value] = TestLocation.external_ids[0];
 
     const res = await context.client.get<any>(
-      `api/edge/locations/${location.id}`
+      `api/edge/locations/${location.id}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveProperty(`external_ids.${system}`, value);
   });
 
-  it("supports the new external_ids output format", async () => {
+  it("by default uses the new external_ids output format", async () => {
     const location = await createLocation(TestLocation);
     const res = await context.client.get<any>(
-      `api/edge/locations/${location.id}?external_id_format=v2`
+      `api/edge/locations/${location.id}`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body.data.external_ids).toEqual(
@@ -460,7 +462,7 @@ describe("POST /api/edge/update", () => {
     });
   });
 
-  it("supports the new external_ids input format", async () => {
+  it("by default uses the new external_ids input format", async () => {
     const location = await createLocation(TestLocation);
 
     const response = await context.client.post(

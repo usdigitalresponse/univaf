@@ -44,11 +44,11 @@ describe("GET /locations", () => {
     expect(res.body).toHaveLength(1);
   });
 
-  it("by default supports the old external_ids output format", async () => {
+  it("supports the old external_ids output format", async () => {
     const location = await createLocation(TestLocation);
     const [system, value] = TestLocation.external_ids[0];
 
-    const res = await context.client.get("locations");
+    const res = await context.client.get("locations?external_id_format=v1");
     expect(res.statusCode).toBe(200);
     expect(res.body[0]).toHaveProperty(`external_ids.${system}`, value);
   });
