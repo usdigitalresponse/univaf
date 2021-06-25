@@ -163,8 +163,18 @@ if (app.get("env") === "development") {
       });
     } else {
       res.status(500).json({
-        error: { message: "Unknown error" },
+        error: { message: "Unknown error", code: "unknown_error" },
       });
+    }
+  });
+
+  app.use(function (req, res, next) {
+    if (req.accepts("json")) {
+      res.status(404).json({
+        error: { message: "Not Found", code: "not_found" },
+      });
+    } else {
+      next();
     }
   });
 }
