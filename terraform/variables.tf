@@ -20,7 +20,7 @@ variable "az_count" {
 
 variable "api_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/appointment-server"
+  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/univaf-server"
 }
 
 variable "api_port" {
