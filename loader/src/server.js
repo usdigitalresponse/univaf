@@ -8,32 +8,35 @@ const port = process.env.PORT || 3010;
 const shutdownSignals = ["SIGTERM", "SIGINT"];
 let server = null;
 
-function shutdown(signal) {
-  return (error) => {
-    // Unhook signals to guarantee we can shut down with them.
-    // (Bash expects a program sent a signal to kill itself with that same
-    // signal, and handles it poorly if done differently.)
-    for (const signal in shutdownSignals) process.removeAllListeners(signal);
+function handleError(error, origin) {
+  console.error(error.stack || error);
+  shutdownServer(origin, () => process.exit(1));
+}
 
-    console.log(`${signal}: shutting down server...`);
-    const isSignal = typeof error === "string" && error.startsWith("SIG");
-    if (!isSignal) console.error(error.stack || error);
+function handleSignal(signal) {
+  // Unhook handlers to allow the signal to kill the process after we're done.
+  // (Bash expects a program sent a signal to kill itself with that same
+  // signal, and handles it poorly if done differently.)
+  process.removeAllListeners(signal);
+  shutdownServer(signal, () => process.kill(process.pid, signal));
+}
 
-    setTimeout(() => {
-      console.log("...waited 5s, exiting.");
-      process.exit(isSignal ? 0 : 1);
-    }, 5000).unref();
+/**
+ * Shut down the currently running server and run a callback. If the server
+ * does not shut down within 5 seconds, call the callback anyway.
+ * @param {string} reason Reason for shutting down
+ * @param {() => void} callback Function to call after the server has shut down
+ *        or after it’s failed to shut down after some period of time.
+ */
+function shutdownServer(reason, callback) {
+  console.log(`Received ${reason}: shutting down server...`);
 
-    if (server) {
-      server.close(() => {
-        if (isSignal) {
-          process.kill(process.pid, error);
-        } else {
-          process.exit(1);
-        }
-      });
-    }
-  };
+  setTimeout(() => {
+    console.log("...waited 5s, exiting.");
+    callback();
+  }, 5000).unref();
+
+  if (server) server.close(callback);
 }
 
 /**
@@ -51,9 +54,6 @@ function shutdown(signal) {
  * @param {any} options CLI options to start the server or run the sources with.
  */
 function runServer(runFunc, options) {
-  for (const signal in shutdownSignals) process.on(signal, shutdown(signal));
-  process.on("uncaughtException", shutdown("uncaughtException"));
-
   server = http.createServer(async (request, res) => {
     res.setHeader("Content-Type", "text/plain");
 
@@ -86,6 +86,14 @@ function runServer(runFunc, options) {
 
   server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
+  });
+
+  // Handle errors and signals gracefully for lifetime of server.
+  for (const signal in shutdownSignals) process.on(signal, handleSignal);
+  process.on("uncaughtException", handleError);
+  server.on("close", () => {
+    for (const signal in shutdownSignals) process.off(signal, handleSignal);
+    process.off("uncaughtException", handleError);
   });
 
   return server;
