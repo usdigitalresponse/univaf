@@ -1,14 +1,14 @@
-# How to contribute to US Digital Response projects?
+# How to contribute to U.S. Digital Response projects
 
 Everyone is welcome to contribute, and we value everybody's contribution. Code
 is not the only way to help the community. Answering questions, helping
-others, reaching out and improving the documentations are immensely valuable to
-the community.
+others, reaching out, and improving the documentation are all immensely valuable
+to the community.
 
 
 ## You can contribute in so many ways!
 
-There are 4 ways you can contribute to this project:
+There are 3 ways you can contribute to this project:
 
 - Fixing outstanding issues with the existing code;
 - Contributing to the examples or to the documentation;
@@ -16,7 +16,7 @@ There are 4 ways you can contribute to this project:
 
 _All are equally valuable to the community._
 
-We also are onboarding new volunteers at [https://www.usdigitalresponse.org/raisingyourhand](https://www.usdigitalresponse.org/raisingyourhand)
+We also onboard new volunteers to USDR projects in general at [https://www.usdigitalresponse.org/raisingyourhand](https://www.usdigitalresponse.org/raisingyourhand). Please sign up if you’d like to help on other projects.
 
 
 ## Submitting a new issue or feature request
@@ -29,15 +29,17 @@ feedback.
 ### Did you find a bug?
 
 Open source code is robust and reliable thanks to the users who notify us of
-the problems they encounter. So thank you for reporting an issue.
+the problems they encounter, so thank you for reporting an issue.
 
 First, we would really appreciate it if you could **make sure the bug was not
-already reported** (use the search bar on Github under Issues).
+already reported** (use the search bar on GitHub under the “Issues” tab).
 
 Did not find it? :( So we can act quickly on it, please include the following:
 
-- Your **operating system and browser (Firefox, Chrome, Edge, Internet Explorer)**
-- Any code errors that you have access to
+- Your **operating system**.
+- If the problem is with the API, your **client (e.g. cURL, Python Requests)**.
+- If the problem was with the demo UI or docs pages, your **browser (e.g. Firefox, Chrome, Edge, Internet Explorer)**.
+- Any code errors that you have access to.
 
 
 ### Do you want a new feature?
@@ -53,7 +55,7 @@ A world-class feature request addresses the following points:
 2. Write a _full paragraph_ describing the feature;
 3. Provide a **code snippet** or **design mockup or sketch** if possible, to demonstrate its future use.
 
-If your issue is well written we're already 80% of the way there by the time you
+If your issue is well written, we’re already 80% of the way there by the time you
 post it.
 
 
@@ -93,8 +95,7 @@ Follow these steps to start contributing:
    $ git commit
    ```
 
-   Please write [good commit
-   messages](https://chris.beams.io/posts/git-commit/).
+   Please write [good commit messages](https://chris.beams.io/posts/git-commit/).
 
    It is a good idea to sync your copy of the code with the original
    repository regularly. This way you can quickly account for changes:
@@ -110,7 +111,7 @@ Follow these steps to start contributing:
    $ git push -u origin a-descriptive-name-for-my-changes
    ```
 
-5. Once you are satisfied (**and the checklist below is happy too**), go to the
+5. Once you are satisfied (**and the checklist below is happy, too**), go to the
    webpage of your fork on GitHub. Click on 'Pull request' to send your changes
    to the project maintainers for review.
 
@@ -124,9 +125,8 @@ Follow these steps to start contributing:
 
 1. The title of your pull request should be a summary of its contribution;
 
-2. If your pull request adresses an issue, please mention the issue number in
-   the pull request description to make sure they are linked (and people
-   consulting the issue know you are working on it);
+2. If your pull request adresses an issue, please [mention the issue number in
+   the pull request description to make sure they are linked](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) (and so people consulting the issue know you are working on it);
 
 3. To indicate a work in progress, please submit your pull request as a draft.
    This is useful to avoid duplicated work, and to differentiate it from PRs
