@@ -22,7 +22,9 @@ describe("GET /api/edge/locations", () => {
   it("responds with a list of locations containing external_ids", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
-    const res = await context.client.get<any>("api/edge/locations");
+    const res = await context.client.get<any>(
+      "api/edge/locations?external_id_format=v1"
+    );
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(1);
 
@@ -149,7 +151,7 @@ describe("GET /api/edge/locations/:id", () => {
     await updateAvailability(location.id, TestLocation.availability);
 
     const res = await context.client.get<any>(
-      `api/edge/locations/${location.id}`
+      `api/edge/locations/${location.id}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location.id);
@@ -171,7 +173,7 @@ describe("GET /api/edge/locations/:id", () => {
     const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.get<any>(
-      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+      `api/edge/locations/${externalId[0]}:${externalId[1]}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location.id);
@@ -203,7 +205,7 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.statusCode).toBe(404);
 
     res = await context.client.get<any>(
-      `api/edge/locations/${externalId[0]}:${externalId[1]}`
+      `api/edge/locations/${externalId[0]}:${externalId[1]}?external_id_format=v1`
     );
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data.id", location.id);

@@ -26,7 +26,7 @@ export default function LocationInfo(props) {
 
   let updateText = "-";
   if (data.availability) {
-    updateText = timeAgo(new Date(data.availability.updated_at));
+    updateText = timeAgo(new Date(data.availability.valid_at));
   }
 
   let displayUrl = data.booking_url && data.booking_url;
