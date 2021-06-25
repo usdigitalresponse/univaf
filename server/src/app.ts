@@ -167,6 +167,17 @@ if (app.get("env") === "development") {
       });
     }
   });
+
+  app.use(function (req, res, next) {
+    console.log(req.headers);
+    if (req.accepts("json")) {
+      res.status(404).json({
+        error: { message: "Not Found", code: "not_found" },
+      });
+    } else {
+      next();
+    }
+  });
 }
 
 export default app;
