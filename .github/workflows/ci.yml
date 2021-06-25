@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: "postgis/postgis:13-3.1"
         env:
-          POSTGRES_DB: appointment-availability-test
+          POSTGRES_DB: univaf-test
           POSTGRES_USER: test
           POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
         ports:
@@ -62,7 +62,7 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USERNAME: test
-          DB_NAME: appointment-availability
+          DB_NAME: univaf
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
 
       - name: Run loader tests

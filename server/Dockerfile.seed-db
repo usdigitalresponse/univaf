@@ -23,7 +23,7 @@ ENV DB_HOST=postgres
 ENV DB_USERNAME=postgres
 ENV DB_PASSWORD=password
 ENV DB_PORT=5432
-ENV DB_NAME="appointment-availability"
+ENV DB_NAME="univaf"
 
 # trigger our environment
 ENV ENV="production"
