@@ -89,7 +89,7 @@ test("500 is well-formatted", async () => {
     headers: authHeaders,
     json: {
       id: TestLocation.id,
-      external_ids: 12345,
+      external_ids: 12345, // should be a list of lists
     },
   });
 
