@@ -178,6 +178,12 @@ This repo falls under [U.S. Digital Response’s Code of Conduct](./CODE_OF_COND
 
 This project wouldn’t exist without the hard work of many people. Thanks to the following for all their contributions! Please see [`CONTRIBUTING.md`](./CONTRIBUTING.md) to find out how you can help.
 
+<!--
+Contributors are sorted alphabetically by last name. The contributions follow
+All-Contributors categories and emoji. We add title attributes so people can
+hover over the emoji and see what they represent.
+The list is manually managed.
+-->
 <!-- ALL-CONTRIBUTORS-LIST:START -->
 | Contributions | Name |
 | ----: | :---- |
