@@ -19,5 +19,5 @@ ENV API_URL=""
 ENV API_KEY=""
 
 # run our built server
-ENTRYPOINT ["node", "./bin/appointment-availability-loader", "--send", "--compact"]
+ENTRYPOINT ["node", "./bin/univaf-loader", "--send", "--compact"]
 

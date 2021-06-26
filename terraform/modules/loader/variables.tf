@@ -3,7 +3,7 @@ variable "loader_source" {
 }
 
 variable "command" {
-  description = "The arguments to the appointment-availability-loader command"
+  description = "The arguments to the univaf-loader command"
   default = []
 }
 

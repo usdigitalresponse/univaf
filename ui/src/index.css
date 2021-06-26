@@ -1,4 +1,4 @@
-#appointment-finder-root {
+#univaf-ui-root {
   --primary-blue: #0b5ed7;
   --color-availability-no: #e8a4c8;
   --color-availability-yes: #a1d76a;
@@ -6,11 +6,11 @@
   --link-color: var(--primary-blue);
 }
 
-#appointment-finder-root * {
+#univaf-ui-root * {
   box-sizing: border-box;
 }
 
-#appointment-finder-root a {
+#univaf-ui-root a {
   color: var(--primary-blue);
 }
 

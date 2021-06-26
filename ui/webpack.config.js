@@ -6,7 +6,7 @@ module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: "./src/index.jsx",
   output: {
-    filename: "appointment-finder.js",
+    filename: "univaf-ui.js",
     path: path.resolve(__dirname, "dist"),
   },
   resolve: {
