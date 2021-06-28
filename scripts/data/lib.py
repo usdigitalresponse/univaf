@@ -7,16 +7,16 @@
 #   Jan Overgoor - jsovergoor@usdigitalresponse.org
 #
 
-import os
 import csv
-import json
 import datetime
 import dateutil
-from urllib.parse import urljoin
-import urllib.request
-from uuid import UUID
 import hashlib
-
+import json
+import os
+import pandas as pd
+import urllib.request
+from urllib.parse import urljoin
+from uuid import UUID
 
 # root path of where the data lives
 path_root = '/tmp/'
@@ -117,6 +117,37 @@ def read_previous_state(path_raw, ds, source):
         return state
     else:
         return {}
+
+
+def aggregate_slots(path_in, fn_out):
+    """
+    Aggregate slot records over multiple days.
+    """
+    print("[INFO] aggregating slots")
+    # read individual files
+    fns = glob(path_in + "slots*.csv")
+    li = [pd.read_csv(x, dtype={'checked_time': str, 'slot_time': str},
+                         names=['id', 'slot_time', 'first_check', 'last_check',
+                                'offset', 'available']) for x in fns]
+    DF = pd.concat(li, axis=0, ignore_index=True)
+    print("[INFO]   read %d records from %s" % (DF.shape[0], path_in))
+    # group by slot_time
+    DF = (DF.groupby(['id', 'slot_time', 'offset'])
+            .agg(first_check=('first_check', min),
+                 last_check=('last_check', max),
+                 available=('available', max))
+            .reset_index())
+    # parse time stamps and integrate offset
+    DF['slot_time'] = read_timestamp(DF.slot_time, offset=DF.offset)
+    DF['first_check'] = read_timestamp(DF.first_check, offset=DF.offset)
+    DF['last_check'] = read_timestamp(DF.last_check, offset=DF.offset)
+    # compute hod and dow
+    DF = (DF.assign(hod=DF.slot_time.dt.hour,
+                    dow=DF.slot_time.dt.dayofweek)
+            [['id', 'slot_time', 'hod', 'dow', 'first_check', 'last_check']])
+    # write out
+    DF.to_csv(fn_out, index=False, header=False, date_format="%Y-%m-%d %H:%M")
+    print("[INFO]   wrote %d records to %s" % (DF.shape[0], fn_out))
 
 
 def read_zipmap():

@@ -35,8 +35,6 @@
 #   Jan Overgoor - jsovergoor@usdigitalresponse.org
 #
 
-from glob import glob
-from shapely import wkb
 import argparse
 import csv
 import datetime
@@ -49,6 +47,8 @@ import pytz
 import sys
 import traceback
 import us
+from glob import glob
+from shapely import wkb
 # internal
 import lib
 
@@ -364,39 +364,6 @@ def process_locations(path_out):
     return (locations, eid_to_id)
 
 
-def aggregate_slots():
-    """
-    Aggregate slot records over multiple days.
-    """
-    print("[INFO]   aggregating slots")
-    path_in = '%sdata/univaf_%s_clean/' % (lib.path_root, mode)
-    fn_out = '%sdata/clean/univaf_slots_%s.csv' % (lib.path_root, mode)
-    # read individual files
-    fns = glob(path_in + "slots*.csv")
-    li = [pd.read_csv(x, dtype={'checked_time': str, 'slot_time': str},
-                         names=['id', 'slot_time', 'first_check', 'last_check',
-                                'offset', 'available']) for x in fns]
-    DF = pd.concat(li, axis=0, ignore_index=True)
-    print("[INFO]   read %d records from %s" % (DF.shape[0], path_in))
-    # group by slot_time
-    DF = (DF.groupby(['id', 'slot_time', 'offset'])
-            .agg(first_check=('first_check', min),
-                 last_check=('last_check', max),
-                 available=('available', max))
-            .reset_index())
-    # parse time stamps and integrate offset
-    DF['slot_time'] = read_timestamp(DF.slot_time, offset=DF.offset)
-    DF['first_check'] = read_timestamp(DF.first_check, offset=DF.offset)
-    DF['last_check'] = read_timestamp(DF.last_check, offset=DF.offset)
-    # compute hod and dow
-    DF = (DF.assign(hod=DF.slot_time.dt.hour,
-                    dow=DF.slot_time.dt.dayofweek)
-            [['id', 'slot_time', 'hod', 'dow', 'first_check', 'last_check']])
-    # write out
-    DF.to_csv(fn_out, index=False, header=False, date_format="%Y-%m-%d %H:%M")
-    print("[INFO]   wrote %d records to %s" % (DF.shape[0], fn_out))
-
-
 def read_timestamp(string, offset=None):
     """
     Efficiently read a large column of time stamps and incorporate offset.
@@ -437,4 +404,5 @@ if __name__ == "__main__":
     for date in dates:
         do_date(date)
     # aggregate slot data over multiple days
-    aggregate_slots()
+    fn_slots = '%sdata/clean/univaf_slots_%s.csv' % (lib.path_root, mode)
+    lib.aggregate_slots(path_out, fn_slots)

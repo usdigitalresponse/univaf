@@ -312,3 +312,6 @@ if __name__ == "__main__":
     # iterate over days
     for date in dates:
         do_date(date)
+    # aggregate slot data over multiple days
+    fn_slots = lib.path_root + 'data/clean/vs_slots.csv'
+    lib.aggregate_slots(path_out, fn_slots)
