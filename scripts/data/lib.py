@@ -91,6 +91,33 @@ def write_external_ids(eid_to_id, path):
             sink = writer.writerow(x)
 
 
+def read_previous_state(path_raw, ds, source):
+    """
+    Read a previous state, if it exists
+    """
+    if source not in ['avs', 'slots']:
+        print("[ERROR] source should be one of ['avs', 'slots']")
+        return Exception
+    fn = '%sstate_%s_%s.json' % (path_raw, ds, source)
+    if os.path.exists(fn):
+        with open(fn, 'r') as f:
+            state = json.load(f)
+        # convert keys back to int
+        state = {int(k): v for k, v in state.items()}
+        if source == 'slots':
+            # remove slots more than 1 day before today from the record
+            ds2 = add_days(ds, -1)
+            for iid, v in state.items():
+                for slot_time in list(v.keys()):
+                    if slot_time[:10] < ds2:
+                        del state[iid][slot_time]
+                    else:
+                        # cut-off deprecated field from before 
+                        slots[iid][slot_time] = slots[iid][slot_time][:3]
+    else:
+        return {}
+
+
 def read_zipmap():
     """
     Read map of zipcodes to timezones.

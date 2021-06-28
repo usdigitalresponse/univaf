@@ -81,27 +81,8 @@ def do_date(ds):
     n_slots = 0
 
     # read previous state, if exists
-    fn_state_avs = path_raw + 'state_%s_avs.json' % ds
-    if os.path.exists(fn_state_avs):
-        with open(fn_state_avs, 'r') as f:
-            avs = json.load(f)
-            # convert keys back to int
-            avs = { int(k): v for k, v in avs.items() }
-    fn_state_slots = path_raw + 'state_%s_slots.json' % ds
-    if os.path.exists(fn_state_slots):
-        with open(fn_state_slots, 'r') as f:
-            slots = json.load(f)
-            # convert keys back to int
-            slots = { int(k): v for k, v in slots.items() }
-            # remove slots more than 1 day before today from the record
-            ds2 = lib.add_days(ds, -1)
-            for iid, v in slots.items():
-                for slot_time in list(v.keys()):
-                    if slot_time[:10] < ds2:
-                        del slots[iid][slot_time]
-                    else:
-                        # cut-off deprecated field from before 
-                        slots[iid][slot_time] = slots[iid][slot_time][:3]
+    avs = lib.read_previous_state(path_raw, ds, 'avs')
+    slots = lib.read_previous_state(path_raw, ds, 'slots')
 
     # construct list of files to read
     if mode == 'new':
@@ -260,12 +241,11 @@ def do_date(ds):
             writer_slots.writerow([iid, slot_time] + row)
             n_slots += 1
 
-    # close files
+    # wrap up
     f_avs.close()
     f_slots.close()
     print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_avs))
     print("[INFO]   wrote %d slot records to %s" % (n_slots, fn_slots))
-
     # write current state for the next day
     next_day = lib.add_days(ds, 1)
     with open(path_raw + 'state_%s_avs.json' % next_day, 'w') as f:
