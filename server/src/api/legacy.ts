@@ -78,7 +78,7 @@ export const list = async (req: AppRequest, res: Response) => {
         // respond with our normal error handling.
         writeStart();
       }
-      res.write("\n" + JSON.stringify(location));
+      res.write("\n" + JSON.stringify(req.versioned.formatLocation(location)));
     }
 
     // Stop if we've been reading for too long and write an object with a URL

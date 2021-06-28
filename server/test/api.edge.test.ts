@@ -30,7 +30,7 @@ describe("GET /api/edge/locations", () => {
 
     expect(res.body.data[0]).toHaveProperty(
       "external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -62,7 +62,18 @@ describe("GET /api/edge/locations", () => {
     expect(res.body.data).toHaveLength(1);
   });
 
-  it("by default supports the standard external_ids output format", async () => {
+  it("by default supports the old external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const [system, value] = TestLocation.external_ids[0];
+
+    const res = await context.client.get<any>(
+      "api/edge/locations?external_id_format=v1"
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data[0]).toHaveProperty(`external_ids.${system}`, value);
+  });
+
+  it("supports the new external_ids output format", async () => {
     const location = await createLocation(TestLocation);
     const res = await context.client.get<any>(`api/edge/locations`);
     expect(res.statusCode).toBe(200);
@@ -162,7 +173,7 @@ describe("GET /api/edge/locations/:id", () => {
     );
     expect(res.body).toHaveProperty(
       "data.external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -184,7 +195,7 @@ describe("GET /api/edge/locations/:id", () => {
     );
     expect(res.body).toHaveProperty(
       "data.external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -211,7 +222,7 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.body).toHaveProperty("data.id", location.id);
     expect(res.body).toHaveProperty(
       "data.external_ids",
-      TestLocation.external_ids
+      Object.fromEntries(TestLocation.external_ids)
     );
   });
 
@@ -238,7 +249,18 @@ describe("GET /api/edge/locations/:id", () => {
     expect(res.body).toHaveProperty("data.id", location2.id);
   });
 
-  it("by default supports the standard external_ids output format", async () => {
+  it("supports the old external_ids output format", async () => {
+    const location = await createLocation(TestLocation);
+    const [system, value] = TestLocation.external_ids[0];
+
+    const res = await context.client.get<any>(
+      `api/edge/locations/${location.id}?external_id_format=v1`
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveProperty(`external_ids.${system}`, value);
+  });
+
+  it("by default uses the new external_ids output format", async () => {
     const location = await createLocation(TestLocation);
     const res = await context.client.get<any>(
       `api/edge/locations/${location.id}`
@@ -362,12 +384,15 @@ describe("POST /api/edge/update", () => {
   it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
+    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
       json: {
         id: "32C0495C-A1F4-45D4-9962-F8DCBF0E1E6F",
-        external_ids: [TestLocation.external_ids[0]],
+        external_ids: {
+          [externalId[0]]: externalId[1],
+        },
         name: newName,
       },
     });
@@ -380,11 +405,14 @@ describe("POST /api/edge/update", () => {
   it("updates location metadata based on `external_ids` if `id` is not in update data", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
+    const externalId = TestLocation.external_ids[0];
 
     const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
       json: {
-        external_ids: [TestLocation.external_ids[0]],
+        external_ids: {
+          [externalId[0]]: externalId[1],
+        },
         name: newName,
       },
     });
@@ -401,9 +429,9 @@ describe("POST /api/edge/update", () => {
     const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
       json: {
-        external_ids: [
-          ["vtrcks", systemValue(TestLocation.external_ids, "vtrcks")],
-        ],
+        external_ids: {
+          vtrcks: systemValue(TestLocation.external_ids, "vtrcks"),
+        },
         name: newName,
       },
     });
@@ -419,20 +447,22 @@ describe("POST /api/edge/update", () => {
         headers,
         json: {
           id: location.id,
-          external_ids: [["testid", "this is a test"]],
+          external_ids: {
+            testid: "this is a test",
+          },
         },
       }
     );
     expect(response.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
-    expect(result.external_ids).toEqual([
-      ...TestLocation.external_ids,
-      ["testid", "this is a test"],
-    ]);
+    expect(Object.fromEntries(result.external_ids)).toEqual({
+      ...Object.fromEntries(TestLocation.external_ids),
+      testid: "this is a test",
+    });
   });
 
-  it("supports the external_ids input format", async () => {
+  it("by default uses the new external_ids input format", async () => {
     const location = await createLocation(TestLocation);
 
     const response = await context.client.post(
@@ -451,11 +481,11 @@ describe("POST /api/edge/update", () => {
     expect(response.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
-    expect(result.external_ids).toEqual([
-      ...TestLocation.external_ids,
-      ["testid", "this is a test"],
-      ["testid2", "another test"],
-    ]);
+    expect(Object.fromEntries(result.external_ids)).toEqual({
+      ...Object.fromEntries(TestLocation.external_ids),
+      testid: "this is a test",
+      testid2: "another test",
+    });
   });
 
   it("allows multiple values for a single external_id system", async () => {
@@ -542,7 +572,7 @@ describe("POST /api/edge/update", () => {
         headers,
         json: {
           id: "abc123",
-          external_ids: [["njiis", "nj1234"]],
+          external_ids: { njiis: "nj1234" },
           meta: {
             test: "this is a test",
           },
