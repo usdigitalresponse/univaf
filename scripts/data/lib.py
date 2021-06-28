@@ -113,7 +113,8 @@ def read_previous_state(path_raw, ds, source):
                         del state[iid][slot_time]
                     else:
                         # cut-off deprecated field from before 
-                        slots[iid][slot_time] = slots[iid][slot_time][:3]
+                        state[iid][slot_time] = state[iid][slot_time][:3]
+        return state
     else:
         return {}
 

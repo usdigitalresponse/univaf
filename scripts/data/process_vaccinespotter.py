@@ -6,7 +6,7 @@
 #
 # Usage:
 #
-#   python process_univaf.py [-h] [-s START_DATE] [-e END_DATE] [-c]
+#   python process_vaccinespotter.py [-h] [-s START_DATE] [-e END_DATE] [-c]
 #
 #
 # Todo:
@@ -32,17 +32,20 @@ import sys
 import traceback
 import urllib.request
 import us
-import lib  # internal
+# internal
+import lib
 
 
 # set paths
 main_url = "https://www.vaccinespotter.org/database/history/"
-path_raw = lib.path_root + 'data/vaccine_spotter_raw/'
-path_out = lib.path_root + 'data/vaccine_spotter_clean/'
-locations_path = path_out + 'locations_vs.csv'
+path_raw = lib.path_root + 'data/vs_raw/'
+path_out = lib.path_root + 'data/vs_clean/'
+locations_path = path_out + 'locations.csv'
 
-# global locations object
+# set global variables
 locations = {}
+avs = {}    # { id : [ts_first, ts_last, offset, available] }
+slots = {}  # { id : { ts_slot : [ts_first, ts_last, offset, available] }}
 
 
 def do_date(ds):
@@ -69,13 +72,22 @@ def do_date(ds):
                 f.write(chunk)
     size = os.stat(path_raw + fn).st_size * 1.0 / 1e+6
     print(" (size: %d MB)" % size)
-    n_lines = 0
-    n_avs = 0
 
-    # open output file
-    fn_out = "%savailabilities_%s.csv" % (path_out, ds)
-    f_avs = open(fn_out, 'w')
-    writer = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+    # open output files
+    fn_avs = "%savs_%s.csv" % (path_out, ds)
+    f_avs = open(fn_avs, 'w')
+    writer_avs = csv.writer(f_avs, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+    n_avs = 0
+    fn_slots = "%sslots_%s.csv" % (path_out, ds)
+    f_slots = open(fn_slots, 'w')
+    writer_slots = csv.writer(f_slots, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+    n_slots = 0
+
+    # read previous state, if exists
+    avs = lib.read_previous_state(path_raw, ds, 'avs')
+    slots = lib.read_previous_state(path_raw, ds, 'slots')
+    # read zip map
+    zipmap = lib.read_zipmap()
 
     # open input file
     with gzip.open(path_raw + fn, 'rb') as f:
@@ -90,10 +102,6 @@ def do_date(ds):
                 print(line)
                 exit()
 
-            #print(data)
-            #print(data['audit_id'])
-
-            n_lines += 1
             try:
                 if data['action'] == 'UPDATE':
                     loc = data['data']
@@ -106,7 +114,7 @@ def do_date(ds):
                     print(lib.pp(data))
 
                 # TODO : is this the correct id??
-                id = loc['id']
+                iid = loc['id']
 
                 #
                 # extract location data
@@ -118,7 +126,7 @@ def do_date(ds):
                 if True:
                     # set fields to None by default
                     [uuid, name, provider, type, address, city, county,
-                     state, zip, lat, lng] = [None] * 11
+                     state, zip, lat, lng, timezone] = [None] * 12
                     # extract fields
                     if loc['name'] is not None:
                         name = loc['name']
@@ -135,8 +143,15 @@ def do_date(ds):
                     if loc['location'] is not None:
                         lat = loc['location']['latitude']
                         lng = loc['location']['longitude']
+                    # extract local timezone
+                    if 'time_zone' in loc and loc['time_zone'] is not None and loc['time_zone'] != '':
+                        timezone = loc['time_zone']
+                    elif zip is not None:
+                        timezone = zipmap[zip][0]
+                    elif state is not None:
+                        timezone = us.states.lookup(loc['state']).time_zones[0]
                     # insert row
-                    locations[id] = {
+                    locations[iid] = {
                         'uuid': uuid,
                         'name': name,
                         'provider': provider,
@@ -147,7 +162,8 @@ def do_date(ds):
                         'state': state,
                         'zip': zip,
                         'lat': lat,
-                        'lng': lng
+                        'lng': lng,
+                        'timezone': timezone
                     }
 
                 if data['action'] in ['INSERT', 'DELETE']:
@@ -156,53 +172,87 @@ def do_date(ds):
                 if data['changed_data'] is None or (
                     'appointments' not in data['changed_data'] and
                     'appointments_available' not in data['changed_data']):
-                    #if 'time_zone' not in data['changed_data']:
-                    #    print('[WARN]   %d - different values in changed_data: %s' %
-                    #          (data['audit_id'], ', '.join(data['changed_data'].keys())))
-                    #sink = None
                     continue
                 #
                 # extract "any" availability data
                 #
-                for block in [data['previous_data'], data['data']]:
+                for row in [data['previous_data'], data['data']]:
                     # they only started recording last_fetched later...
-                    if 'appointments_last_fetched' in block and block['appointments_last_fetched'] is not None:
-                        ts = block['appointments_last_fetched']
-                    elif 'updated_at' in block and block['updated_at'] is not None:
-                        ts = block['updated_at']
+                    if 'appointments_last_fetched' in row and row['appointments_last_fetched'] is not None:
+                        ts = row['appointments_last_fetched']
+                    elif 'updated_at' in row and row['updated_at'] is not None:
+                        ts = row['updated_at']
                     else:
                         ts = data['transaction_timestamp']
                     time_raw = dateutil.parser.parse(ts)
+                    # convert to UTC, so it's all the same
+                    check_time_utc = time_raw.astimezone(pytz.timezone('UTC'))
                     # (optional) compute local offset
-                    if (block['time_zone'] is not None and block['time_zone'] != '') or block['state'] is not None:
-                        if block['time_zone'] is not None and block['time_zone'] != '':
-                            local_tz = block['time_zone']
-                        else:
-                            local_tz = us.states.lookup(block['state']).time_zones[0]
-                        time_local = time_raw.astimezone(pytz.timezone(local_tz))
-                        offset = int(time_local.utcoffset().total_seconds() / (60 * 60))
+                    if locations[iid]['timezone'] is not None:
+                        check_time_local = check_time_utc.astimezone(pytz.timezone(locations[iid]['timezone']))
+                        offset = int(check_time_local.utcoffset().total_seconds() / (60 * 60))
                     else:
                         offset = None
-                    # convert to UTC, so it's all the same
-                    time_utc = time_raw.astimezone(pytz.timezone('UTC'))
+                    check_time = check_time_utc.strftime("%Y-%m-%d %H:%M:%S")  # in UTC
 
                     # extract availabilities
                     availability = None
-                    if block['appointments_available']:
-                        if block['appointments'] is not None:
-                            availability = len(block['appointments'])
+                    if row['appointments_available']:
+                        if row['appointments'] is not None:
+                            availability = len(row['appointments'])
                         else:
                             availability = '+'
-                    elif not block['appointments_available']:
+                    elif not row['appointments_available']:
                         availability = 0
                     else:
                         availability = None
                         print('[WARN]   %d - no availability found' % data['audit_id'])
-                    writer.writerow((id,
-                                     time_utc.strftime("%Y-%m-%d %H:%M:%S"),
-                                     offset,
-                                     availability))
-                    n_avs += 1
+
+                    # create a new row if the location is new
+                    if iid not in avs:
+                        avs[iid] = [check_time, check_time, offset, availability]
+                    # if new row but availability didn't change, just update time
+                    if availability == avs[iid][3]:
+                        avs[iid][1] = check_time
+                    # else, write old row and update new row
+                    else:
+                        writer_avs.writerow([iid] + avs[iid])
+                        n_avs += 1
+                        avs[iid] = [check_time, check_time, offset, availability]
+
+                    # do slots, if the data is there
+                    if 'appointments' in row and row['appointments'] is not None:
+                        # create a new row if the location is new
+                        if iid not in slots:
+                            slots[iid] = {}
+                        for slot in row['appointments']:
+                            if 'time' not in slot or slot['time'] is None:
+                                continue
+                            # compute local offset and UTC time for slot time
+                            slot_time_local = datetime.datetime.fromisoformat(slot['time'])
+                            slot_time_offset = int(slot_time_local.utcoffset().total_seconds() / (60 * 60))
+                            slot_time_utc = slot_time_local.astimezone(pytz.timezone('UTC'))
+                            slot_time = slot_time_utc.strftime("%Y-%m-%d %H:%M")  # in UTC
+                            # if slot time didn't exist, create
+                            if slot_time not in slots[iid]:
+                                if slot_time > check_time:
+                                    slots[iid][slot_time] = [check_time, check_time, offset]
+                                else:
+                                    continue
+                            # if availability didn't change, just update time
+                            if slot_time > check_time:
+                                slots[iid][slot_time][1] = check_time
+                            # else, write old row and update new row
+                            else:
+                                writer_slots.writerow([iid, slot_time] + slots[iid][slot_time])
+                                n_slots += 1
+                                del slots[iid][slot_time]
+                        # assume that slots for which we saw no availaiblity in last update are not available anymore
+                        for slot_time in list(slots[iid].keys()):
+                            if slots[iid][slot_time][1] != check_time:
+                                writer_slots.writerow([iid, slot_time] + slots[iid][slot_time])
+                                n_slots += 1
+                                del slots[iid][slot_time]
 
             except Exception:
                 print("Unexpected error:", sys.exc_info())
@@ -211,10 +261,17 @@ def do_date(ds):
                 print(lib.pp(data))
                 exit()
 
-    # close file
+    # wrap up
     f_avs.close()
-    print("[INFO]   processed %d records from %s" % (n_lines, path_raw + fn))
-    print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_out))
+    f_slots.close()
+    print("[INFO]   wrote %d availability records to %s" % (n_avs, fn_avs))
+    print("[INFO]   wrote %d slot records to %s" % (n_slots, fn_slots))
+    # write current state for the next day
+    next_day = lib.add_days(ds, 1)
+    with open(path_raw + 'state_%s_avs.json' % next_day, 'w') as f:
+        json.dump(avs, f)
+    with open(path_raw + 'state_%s_slots.json' % next_day, 'w') as f:
+        json.dump(slots, f)
     # write updated locations file
     lib.write_locations(locations, locations_path)
 

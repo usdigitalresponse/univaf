@@ -35,20 +35,20 @@
 #   Jan Overgoor - jsovergoor@usdigitalresponse.org
 #
 
-import ndjson
-import os
-import csv
-import traceback
-import sys
-import json
-import datetime
-import dateutil.parser
-import argparse
-import us
-import pytz
-import pandas as pd
 from glob import glob
 from shapely import wkb
+import argparse
+import csv
+import datetime
+import dateutil.parser
+import json
+import ndjson
+import os
+import pandas as pd
+import pytz
+import sys
+import traceback
+import us
 # internal
 import lib
 
