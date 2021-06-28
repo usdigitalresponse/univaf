@@ -123,7 +123,7 @@ async function run(options) {
 
 function main() {
   yargs
-    .scriptName("appointment-availability-loader")
+    .scriptName("univaf-loader")
     .command({
       command: "$0 [sources..]",
       describe: `

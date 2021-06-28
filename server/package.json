@@ -1,7 +1,7 @@
 {
-  "name": "appointment-availability-server",
+  "name": "univaf-server",
   "version": "0.1.0",
-  "description": "A server which logs various appointment availability",
+  "description": "An API server that stores and provides COVID-19 vaccine appointment availability data.",
   "repository": {
     "type": "git",
     "url": "https://github.com/usdigitalresponse/appointment-availability-infra"

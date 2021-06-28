@@ -21,7 +21,7 @@ class ApiClient {
     if (url.endsWith("/")) url = url.slice(0, -1);
     this.url = url;
     this.key = key;
-    this.userAgent = `appointment-availability-loader/${packageInfo.version}`;
+    this.userAgent = `univaf-loader/${packageInfo.version}`;
   }
 
   async getLocations(query) {

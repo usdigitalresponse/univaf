@@ -28,7 +28,7 @@ ENV DB_PORT=5432
 
 # required exposed env vars, with defaults provided
 ENV API_KEYS=""
-ENV DB_NAME="appointment-availability"
+ENV DB_NAME="univaf"
 
 # run our built server
 CMD npm run migrate && node ./dist/src/server.js
