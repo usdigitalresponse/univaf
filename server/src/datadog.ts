@@ -3,7 +3,7 @@ import StatsD from "hot-shots";
 
 export const dogstatsd = new StatsD();
 const stat = "node.express.router";
-const DELIM = "-";
+const DELIMITER = "-";
 const REGEX_PIPE = /\|/g;
 
 export interface MonitoredRequest extends Request {
@@ -23,7 +23,7 @@ function replacePipeChar(str: String): String {
     str = str.toString();
   }
 
-  return str && str.replace(REGEX_PIPE, DELIM);
+	return str && str.replace(REGEX_PIPE, DELIMITER);
 }
 
 function getRoute(req: MonitoredRequest): String {
