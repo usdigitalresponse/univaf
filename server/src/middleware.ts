@@ -28,13 +28,7 @@ class VersionedMethods {
     this.req = req;
   }
 
-  formatLocation(location: any): any {
-    // mutates and returns a location object, formatted according to URL params
-    if (this.req.query.external_id_format === "v1") {
-      location.external_ids = Object.fromEntries(location.external_ids);
-    }
-    return location;
-  }
+  // add methods here that use this.req to decide how behave
 }
 
 export function versionedMiddleware(

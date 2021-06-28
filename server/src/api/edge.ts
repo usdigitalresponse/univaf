@@ -113,9 +113,7 @@ export async function listStream(req: AppRequest, res: Response) {
       if (!started) {
         writeStart();
       }
-      await write(
-        JSON.stringify(req.versioned.formatLocation(location)) + "\n"
-      );
+      await write(JSON.stringify(location + "\n"));
     }
 
     // Stop if we've been reading for too long and write an error entry.
@@ -152,7 +150,7 @@ export const list = async (req: AppRequest, res: Response) => {
 
   return res.json({
     links: Pagination.createLinks(req, { next: batch.next }),
-    data: batch.locations.map((l) => req.versioned.formatLocation(l)),
+    data: batch.locations,
   });
 };
 
@@ -187,7 +185,7 @@ export const getById = async (req: AppRequest, res: Response) => {
   if (!provider) {
     return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
-    return res.json({ data: req.versioned.formatLocation(provider) });
+    return res.json({ data: provider });
   }
 };
 
@@ -200,9 +198,6 @@ function promoteFromMeta(data: any, field: string) {
 
 /**
  * Updates a given location's availability
- * update supports two different formats for req.body.external_ids:
- *  - a dictionary, e.g. {"sys1": "val1", "sys2": "val2"}
- *  - a list of lists of strings e.g. [["sys1", "val1"], ["sys2", "val2"]]
  *
  * TODO: add some sort of auth/key
  * @param req
@@ -217,17 +212,13 @@ export const update = async (req: AppRequest, res: Response) => {
 
   if (
     !data.id &&
-    !(data.external_ids && Object.keys(data.external_ids).length)
+    !(Array.isArray(data.external_ids) && data.external_ids.length)
   ) {
     return sendError(
       res,
       "You must set `id` or `external_ids` in the data",
       422
     );
-  }
-
-  if (data.external_ids && !Array.isArray(data.external_ids)) {
-    data = { ...data, external_ids: Object.entries(data.external_ids) };
   }
 
   const result: any = { location: { action: null } };
