@@ -458,24 +458,6 @@ describe("POST /api/edge/update", () => {
     ]);
   });
 
-  it("errors with invalid id", async () => {
-    const location = await createLocation(TestLocation);
-
-    const response = await context.client.post(
-      "api/edge/update?update_location=1",
-      {
-        headers,
-        json: {
-          id: location.id + "bad",
-          external_ids: {
-            testid: "this is a test",
-          },
-        },
-      }
-    );
-    expect(response.statusCode).toBe(422);
-  });
-
   it("supports the new external_ids input format", async () => {
     const location = await createLocation(TestLocation);
 
