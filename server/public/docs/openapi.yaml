@@ -266,6 +266,9 @@ paths:
         to what’s returned from `/api/edge/locations/{id}` (but without the
         wrapper object that has the `data` property).
 
+        The `location.external_ids` field may be formatted as an object or as a
+        list of lists (regular or 'v2' external_id format).
+
         Locations are looked up by `location.id` if present, or by any of the
         entries in `location.external_ids`.
       responses:
