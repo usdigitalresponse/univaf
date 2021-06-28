@@ -23,7 +23,7 @@ function replacePipeChar(str: String): String {
     str = str.toString();
   }
 
-	return str && str.replace(REGEX_PIPE, DELIMITER);
+  return str && str.replace(REGEX_PIPE, DELIMITER);
 }
 
 function getRoute(req: MonitoredRequest): String {
