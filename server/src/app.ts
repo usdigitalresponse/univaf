@@ -4,6 +4,7 @@ import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
 import { authorizeRequest, versionedMiddleware } from "./middleware";
+import { datadogMiddleware } from "./datadog";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
@@ -48,6 +49,7 @@ app.use(compression());
 app.use(bodyParser.json({ limit: "500kb" }));
 app.use(cors());
 app.use(authorizeRequest);
+app.use(datadogMiddleware);
 app.use(urlDecodeSpecialPathChars);
 
 /**
