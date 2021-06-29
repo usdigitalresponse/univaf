@@ -7,12 +7,7 @@
  * in a simpler package. We'll see!
  */
 
-import express, {
-  NextFunction,
-  RequestHandler,
-  Request,
-  Response,
-} from "express";
+import { Request, Response } from "express";
 import { getHostUrl } from "./config";
 import * as db from "./db";
 import { Availability } from "./interfaces";
@@ -45,7 +40,7 @@ export function sendFhirError(
   response: Response,
   status: number,
   error: FhirIssue
-) {
+): void {
   // See docs for FHIR errors ("OperationOutcome Resources"):
   // http://hl7.org/fhir/operationoutcome.html
   response
@@ -60,7 +55,7 @@ export function sendFhirError(
 /**
  * Handler for unimplemented FHIR endpoints.
  */
-export function fhirNotImplemented(_req: Request, res: Response) {
+export function fhirNotImplemented(_req: Request, res: Response): void {
   sendFhirError(res, 501, {
     severity: "fatal",
     code: "not-supported",
@@ -70,7 +65,7 @@ export function fhirNotImplemented(_req: Request, res: Response) {
 
 const statesList = states.filter((state: any) => state.type === "State");
 
-export function manifest(req: Request, res: Response) {
+export function manifest(req: Request, res: Response): void {
   const baseUrl = `${getHostUrl(req)}${req.baseUrl}`;
   res.json({
     // TODO: consider making this the latest updated availability timestamp.
@@ -97,9 +92,12 @@ export function manifest(req: Request, res: Response) {
   });
 }
 
-export async function listLocations(req: Request, res: Response) {
-  let where: Array<string> = [];
-  let values = [];
+export async function listLocations(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const where: Array<string> = [];
+  const values = [];
   if (req.params.state) {
     where.push(`state = ?`);
     values.push(req.params.state);
@@ -163,9 +161,12 @@ export async function listLocations(req: Request, res: Response) {
   );
 }
 
-export async function listSchedules(req: Request, res: Response) {
-  let where: Array<string> = [];
-  let values = [];
+export async function listSchedules(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const where: Array<string> = [];
+  const values = [];
   if (req.params.state) {
     where.push(`state = ?`);
     values.push(req.params.state);
@@ -206,9 +207,9 @@ export async function listSchedules(req: Request, res: Response) {
   );
 }
 
-export async function listSlots(req: Request, res: Response) {
-  let where: Array<string> = [];
-  let values = [];
+export async function listSlots(req: Request, res: Response): Promise<void> {
+  const where: Array<string> = [];
+  const values = [];
   if (req.params.state) {
     where.push(`state = ?`);
     values.push(req.params.state);

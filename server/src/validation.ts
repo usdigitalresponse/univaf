@@ -12,7 +12,7 @@ import {
 
 const AVAILABLE_OPTIONS = new Set(Object.values(Availability));
 
-var ajv = new Ajv({ useDefaults: "empty" });
+const ajv = new Ajv({ useDefaults: "empty" });
 addFormats(ajv);
 addTransform(ajv);
 addInstanceof(ajv);
@@ -50,7 +50,7 @@ ajv.addKeyword({
   },
 });
 
-const datetimePattern = /^\d{4}-\d\d-\d\d(T|\s)\d\d:\d\d:\d\d(\.\d+)?(Z|[+\-]\d\d:?\d\d)?$/;
+const datetimePattern = /^\d{4}-\d\d-\d\d(T|\s)\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:?\d\d)?$/;
 
 // Ensures a string is formatted as a W3C-Style ISO 8601 datetime with timezone.
 // If there's no timezone, it will set the default to the value of the keyword.
@@ -224,7 +224,7 @@ function capacityFromSlots(slots: Array<SlotRecord>): Array<CapacityRecord> {
 }
 
 function productsFromCapacity(capacity: Array<CapacityRecord>): Array<string> {
-  let all = new Set();
+  const all = new Set();
   for (const item of capacity) {
     if (item.products) {
       for (const product of item.products) all.add(product);
@@ -239,7 +239,7 @@ function productsFromCapacity(capacity: Array<CapacityRecord>): Array<string> {
 }
 
 function dosesFromCapacity(capacity: Array<CapacityRecord>): Array<string> {
-  let all = new Set();
+  const all = new Set();
   for (const item of capacity) if (item.dose) all.add(item.dose);
   if (all.size) {
     // This isn't totally valid, but in practical terms we go to SQL next, and

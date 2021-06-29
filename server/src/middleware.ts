@@ -35,7 +35,7 @@ export function versionedMiddleware(
   req: AppRequest,
   res: Response,
   next: NextFunction
-) {
+): void {
   req.versioned = new VersionedMethods(req);
   next();
 }
