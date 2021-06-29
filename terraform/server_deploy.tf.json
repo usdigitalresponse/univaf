@@ -4,7 +4,7 @@
   "variable": {
     "api_release_version": {
       "description": "API Release Version",
-      "default": "e4c692399797fff9611a052eda5c3b203ec62b5a"
+      "default": "3416233d8fe0ab2d04ad65c1f91524807df45008"
     }
   }
 }
