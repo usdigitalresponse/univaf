@@ -3,7 +3,6 @@
 import { Request, Response } from "express";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
-import { ExternalIdList } from "../interfaces";
 import { AppRequest } from "../middleware";
 import { Pagination, UUID_PATTERN } from "../utils";
 
@@ -58,8 +57,8 @@ function getSourcesInput(req: Request) {
 }
 
 function getListLocationInput(req: Request) {
-  let where: Array<string> = [];
-  let values: Array<any> = [];
+  const where: Array<string> = [];
+  const values: Array<any> = [];
   if (req.query.state) {
     where.push(`state = ?`);
     values.push(req.query.state);
@@ -72,7 +71,10 @@ function getListLocationInput(req: Request) {
   return { where, values };
 }
 
-export async function listStream(req: AppRequest, res: Response) {
+export async function listStream(
+  req: AppRequest,
+  res: Response
+): Promise<void> {
   const includePrivate = shouldIncludePrivate(req);
   const sources = getSourcesInput(req);
   const { where, values } = getListLocationInput(req);
@@ -130,7 +132,7 @@ export async function listStream(req: AppRequest, res: Response) {
 /**
  * Index returns the full list of everything in our database
  */
-export const list = async (req: AppRequest, res: Response) => {
+export const list = async (req: AppRequest, res: Response): Promise<void> => {
   const includePrivate = shouldIncludePrivate(req);
   const sources = getSourcesInput(req);
   const { where, values } = getListLocationInput(req);
@@ -148,7 +150,7 @@ export const list = async (req: AppRequest, res: Response) => {
     .next();
   const batch = result.value || { locations: [], next: null };
 
-  return res.json({
+  res.json({
     links: Pagination.createLinks(req, { next: batch.next }),
     data: batch.locations,
   });
@@ -159,8 +161,7 @@ export const list = async (req: AppRequest, res: Response) => {
  * @param req
  * @param res
  */
-
-export const getById = async (req: AppRequest, res: Response) => {
+export const getById = async (req: AppRequest, res: Response): Promise<any> => {
   const id = req.params["id"];
   if (!id) {
     return sendError(res, "Missing param 'id'", 422);
@@ -206,7 +207,7 @@ function promoteFromMeta(data: any, field: string) {
  * @param req
  * @param res
  */
-export const update = async (req: AppRequest, res: Response) => {
+export const update = async (req: AppRequest, res: Response): Promise<any> => {
   if (!req.authorization) {
     return sendError(res, "Not authorized to update data", 403);
   }
@@ -306,7 +307,7 @@ export const update = async (req: AppRequest, res: Response) => {
 export const listAvailability = async (
   request: AppRequest,
   response: Response
-) => {
+): Promise<void> => {
   const includePrivate = shouldIncludePrivate(request);
   let { limit, pageNext } = Pagination.getParameters(request);
   limit = limit || 2000;
@@ -318,7 +319,7 @@ export const listAvailability = async (
   const data = await dbQuery;
   const lastItem = data[data.length - 1];
 
-  return response.json({
+  response.json({
     links: Pagination.createLinks(request, { next: lastItem?.id }),
     data,
   });

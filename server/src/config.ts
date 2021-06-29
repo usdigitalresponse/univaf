@@ -1,4 +1,5 @@
 import { Request } from "express";
+import type { Knex } from "knex";
 
 export function getApiKeys(): Array<string> {
   let keyList = process.env.API_KEYS;
@@ -30,7 +31,7 @@ export function getHostUrl(request?: Request): string {
   return hostUrl;
 }
 
-export function loadDbConfig() {
+export function loadDbConfig(): Knex.Config {
   const knexfile = require("../knexfile");
   const nodeEnv = process.env.NODE_ENV || "development";
   return knexfile[nodeEnv];

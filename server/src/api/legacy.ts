@@ -31,14 +31,14 @@ function sendError(response: Response, error: any, httpStatus?: number): void {
 /**
  * Index returns the full list of everything in our database
  */
-export const list = async (req: AppRequest, res: Response) => {
+export const list = async (req: AppRequest, res: Response): Promise<void> => {
   const includePrivate = req.query.include_private === "true";
   if (includePrivate && !req.authorization) {
     return sendError(res, "Not authorized for private data", 403);
   }
 
-  let where: Array<string> = [];
-  let values: Array<any> = [];
+  const where: Array<string> = [];
+  const values: Array<any> = [];
   if (req.query.state) {
     where.push(`state = ?`);
     values.push(req.query.state);
