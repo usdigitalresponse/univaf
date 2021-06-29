@@ -8,7 +8,7 @@ module.exports = async () => {
   await testDb.destroy();
 };
 
-export function assertIsTestDatabase() {
+export function assertIsTestDatabase(): Promise<void> {
   return testDb.raw("SELECT current_database() as name;").then((result) => {
     const databaseName: string = result.rows[0].name;
     if (!databaseName.endsWith("-test")) {
@@ -19,7 +19,7 @@ export function assertIsTestDatabase() {
   });
 }
 
-export async function clearTestDatabase() {
+export async function clearTestDatabase(): Promise<void> {
   await assertIsTestDatabase();
 
   const res = await testDb.raw(

@@ -15,7 +15,7 @@ installTestDatabaseHooks();
 describe("db.updateAvailability", () => {
   it("should update a location's availability", async () => {
     const location = await createLocation(TestLocation);
-    let freshLocation = await getLocationById(location.id);
+    const freshLocation = await getLocationById(location.id);
     expect(freshLocation.availability).toBe(undefined);
 
     const result = await updateAvailability(

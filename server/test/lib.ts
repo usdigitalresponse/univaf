@@ -5,7 +5,7 @@ import got, { Got } from "got";
 
 import { db } from "../src/db";
 import { availabilityDb } from "../src/availability-log";
-import { Knex, knex } from "knex";
+import type { Knex } from "knex";
 
 interface Context {
   server?: Server;
@@ -43,7 +43,7 @@ export function useServerForTests(app: Application): Context {
   return context;
 }
 
-export function installTestDatabaseHooks() {
+export function installTestDatabaseHooks(): void {
   // Wait for all promises to settle, but reject afterward if at
   // least one of them rejected.
   function allResolved(promises: Promise<void>[]) {
@@ -75,9 +75,10 @@ export function installTestDatabaseHooks() {
 function mockDbTransactions() {
   // mock out db.transaction since we only use one connection when testing
   // we use defineProperty here because it's defined as read-only
-  // TODO: Find a way to carry per-request db connection state so that we don't need this
+  // TODO: Find a way to carry per-request db connection state so that we don't
+  // need this
   Object.defineProperty(db, "transaction", {
-    value: async (f: Function) => {
+    value: async (f: (db: any) => Promise<any>) => {
       return await f(db);
     },
   });
@@ -91,7 +92,7 @@ function mockDbTransactions() {
  * const value = { time: "2021-03-13T05:53:20.123Z" };
  * expect(value).toEqual({ time: expectDatetimeString() })
  */
-export function expectDatetimeString() {
+export function expectDatetimeString(): any {
   return expect.stringMatching(
     /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(.\d+)?(Z|[+-]\d\d:?\d\d)$/
   );
