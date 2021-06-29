@@ -20,15 +20,15 @@ export interface MonitoredRequest extends Request {
  * Taken from the original connect-datadog module
  * {@link https://github.com/DataDog/node-connect-datadog/blob/master/lib/index.js#L15-L28}
  */
-function replacePipeChar(str: String): String {
-  if (str instanceof RegExp) {
-    str = str.toString();
+function replacePipeChar(text: string | RegExp): string {
+  if (text instanceof RegExp) {
+    text = text.toString();
   }
 
-  return str && str.replace(REGEX_PIPE, DELIMITER);
+  return text && text.replace(REGEX_PIPE, DELIMITER);
 }
 
-function getRoute(req: MonitoredRequest): String {
+function getRoute(req: MonitoredRequest): string {
   const routePath = req.route && req.route.path ? req.route.path : "";
   return replacePipeChar(routePath);
 }
@@ -37,13 +37,13 @@ export function datadogMiddleware(
   req: MonitoredRequest,
   res: Response,
   next: NextFunction
-) {
+): void {
   if (!req.startTime) {
     req.startTime = new Date();
   }
   res.on("finish", function () {
     const route = getRoute(req);
-    let statTags = [];
+    const statTags = [];
 
     if (route.length > 0) {
       statTags.push(`route:${route}`);
