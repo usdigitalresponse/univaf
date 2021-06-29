@@ -71,13 +71,6 @@ paths:
           schema:
             type: string
         - in: query
-          name: external_id_format
-          description: Indicates which format to use for location external_ids
-          required: false
-          schema:
-            type: string
-            enum: ["v2"]
-        - in: query
           name: sources
           description: |
             List of data sources that should be included when building the
@@ -145,13 +138,6 @@ paths:
           schema:
             type: string
         - in: query
-          name: external_id_format
-          description: Indicates which format to use for location external_ids
-          required: false
-          schema:
-            type: string
-            enum: ["v2"]
-        - in: query
           name: sources
           description: |
             List of data sources that should be included when building the
@@ -197,13 +183,6 @@ paths:
           required: true
           schema:
             type: string
-        - in: query
-          name: external_id_format
-          description: Indicates which format to use for location external_ids
-          required: false
-          schema:
-            type: string
-            enum: ["v2"]
         - in: query
           name: sources
           description: |
@@ -520,19 +499,14 @@ components:
           type: string
           format: uuid
         external_ids:
-          oneOf:
-            - type: object
-              example: { "cvs": "abc", "vtrcks": "123" }
-            - type: array
-              example: [["cvs", "abc"], ["vtrcks", "123"]]
+          type: array
+          example: [["cvs", "abc"], ["vtrcks", "123"]]
           description: |
-            Identifiers this location is known by in other systems. In the regular
-            format, this field is represented by an object where the keys in
-            this object name other systems, e.g. `cvs` (for CVS store numbers),
-            `vtrcks` (for VTrckS PINs), etc., and values are the IDs in those
-            systems. In the "v2" format, the keys and values are in lists of lists.
-
-            Note that v2 will soon become the default output format.
+            Identifiers this location is known by in other systems. This field is
+            represented by a list of lists where the first values of each sublist
+            name other systems, e.g. `cvs` (for CVS store numbers), `vtrcks`
+            (for VTrckS PINs), etc.; and the second values are the IDs in those
+            systems.
         provider:
           type: string
         location_type:
