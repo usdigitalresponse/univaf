@@ -28,7 +28,7 @@ const ALL_COUNTIES = (() => {
 })();
 
 function guessCounty(address) {
-  let geocoded = GEOCODE_DB[address];
+  const geocoded = GEOCODE_DB[address];
   if (geocoded && geocoded.county) {
     return geocoded.county.replace(" County", "");
   }
@@ -36,7 +36,7 @@ function guessCounty(address) {
   if (!match) {
     return null;
   }
-  let zip = ZIP_DB[match[0]];
+  const zip = ZIP_DB[match[0]];
   if (zip && zip.counties.length == 1) {
     return zip.counties[0].replace(" County", "");
   }

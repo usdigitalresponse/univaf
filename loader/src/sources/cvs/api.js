@@ -67,7 +67,7 @@ class CvsApiError extends HttpApiError {
  * @returns {availability}
  */
 function toAvailable(apiValue) {
-  let text = apiValue.toLowerCase();
+  const text = apiValue.toLowerCase();
   if (text === "available") return Available.yes;
   else if (text === "fully booked") return Available.no;
   else return Available.unknown;
@@ -126,7 +126,7 @@ function parseApiLocation(location, lastUpdated) {
  * @param {string} [apiUrl] Base URL for the CVS API.
  */
 async function checkAvailability(handler, _options) {
-  let apiKey = process.env.CVS_API_KEY;
+  const apiKey = process.env.CVS_API_KEY;
   let apiUrl = process.env.CVS_API_URL || API_URL;
 
   if (!apiKey) {

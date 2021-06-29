@@ -196,7 +196,7 @@ function formatLocation(validTime, locationInfo) {
     if (entry.system === "phone") booking_phone = entry.value;
   }
 
-  let position = smartLocation.position || undefined;
+  const position = smartLocation.position || undefined;
   if (position) {
     // FHIR geo-coordinates have an optional altitude, which we don't accept.
     delete position.altitude;
