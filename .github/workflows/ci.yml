@@ -117,6 +117,7 @@ jobs:
           eslint: true
           eslint_dir: server/
           eslint_args: . ../loader/ ../ui/
+          eslint_extensions: js,ts
           prettier: true
           prettier_dir: server/
           prettier_args: . ../loader/ ../ui/
