@@ -284,7 +284,7 @@ paths:
             schema:
               $ref: "#/components/schemas/LocationUpdate"
         description: Location and availability to update/add.
-  "/smart-schedluing/$bulk-publish":
+  "/smart-scheduling/$bulk-publish":
     get:
       summary: "SMART Scheduling Links"
       description: |
