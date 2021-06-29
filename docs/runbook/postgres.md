@@ -70,5 +70,5 @@ If a table gets too big and you need to save disk space on the database server, 
 - `pg_repack` is an extension that can remove dead rows and extra space while the table is live and available for writes, but it requires the table to have some column that can serve as a unique key (i.e. something that is effectively a primary key, although it does not have to be set as an actual primary key in the table definition). It requires the same extra space that `CLUSTER` and `VACUUM FULL` do, and runs a little bit slower. This article offers a good overview of how to get started with `pg_repack`: https://medium.com/dunzo/reclaiming-storage-space-in-postgres-d32fa4168e67
 
 
-[issue-208]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/208
+[issue-208]: https://github.com/usdigitalresponse/univaf/issues/208
 [bastion-server]: ./README.md#bastion-server

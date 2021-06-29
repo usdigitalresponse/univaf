@@ -73,8 +73,8 @@ Original database is finished being upsized and the API service is switched back
 - @astonm
 
 
-[issue-163]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/163
-[issue-164]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/164
-[issue-169]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/169
-[issue-171]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/171
-[issue-172]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/172
+[issue-163]: https://github.com/usdigitalresponse/univaf/issues/163
+[issue-164]: https://github.com/usdigitalresponse/univaf/issues/164
+[issue-169]: https://github.com/usdigitalresponse/univaf/issues/169
+[issue-171]: https://github.com/usdigitalresponse/univaf/issues/171
+[issue-172]: https://github.com/usdigitalresponse/univaf/issues/172

@@ -1,4 +1,4 @@
-[![Code of Conduct](https://img.shields.io/badge/%E2%9D%A4-code%20of%20conduct-blue.svg?style=flat)](https://github.com/usdigitalresponse/appointment-availability-infra/blob/main/CODE_OF_CONDUCT.md) [![CI Tests](https://github.com/usdigitalresponse/appointment-availability-infra/actions/workflows/ci.yml/badge.svg)](https://github.com/usdigitalresponse/appointment-availability-infra/actions/workflows/ci.yml)
+[![Code of Conduct](https://img.shields.io/badge/%E2%9D%A4-code%20of%20conduct-blue.svg?style=flat)](https://github.com/usdigitalresponse/univaf/blob/main/CODE_OF_CONDUCT.md) [![CI Tests](https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml/badge.svg)](https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml)
 
 
 # UNIVAF: Vaccine Appointment Availability API
