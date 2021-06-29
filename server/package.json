@@ -27,7 +27,8 @@
     "migrate": "knex migrate:latest",
     "migrate:up": "knex migrate:up",
     "migrate:down": "knex migrate:down",
-    "migrate:list": "knex migrate:list"
+    "migrate:list": "knex migrate:list",
+    "lint": "eslint --ext .js,.ts ."
   },
   "dependencies": {
     "@sentry/node": "^6.2.5",
