@@ -244,7 +244,7 @@ async function findLocationIds(locations) {
     saved.simpleAddress = matchableAddress(saved.address_lines);
     saved.simpleName = matchable(saved.name);
   }
-  let unmatched = savedLocations.slice();
+  const unmatched = savedLocations.slice();
 
   const matched = locations.map((location) => {
     // Just match on the first address line. Entries in the DoH list use a
@@ -334,7 +334,7 @@ function getDescriptionDetails(text) {
   // The description starts with a paragraph containing the address. However,
   // the markup is not exactly clean, and there may be `</p>` to close the
   // paragraph or there may just be a `<p>` to open the next paragraph.
-  let remaining = text.slice(3);
+  const remaining = text.slice(3);
   const secondParagraph = remaining.match(/<(\/?)p/);
   if (secondParagraph) {
     // If we match a closing tag, take everything *after* it.
@@ -367,7 +367,7 @@ function createNjIisId(location) {
  * @returns an array of strings representing which vaccines are available
  */
 function parseVaccineProducts(text) {
-  let result = [];
+  const result = [];
 
   if (text.includes("<li>Moderna COVID-19 Vaccine</li>")) {
     result.push(VaccineProduct.moderna);

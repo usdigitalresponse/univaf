@@ -3,6 +3,8 @@ import { isDeepStrictEqual } from "util";
 // These declarations aren't directly attached to our code, so ESLint sees
 // everything here as unused.
 /* eslint-disable no-unused-vars */
+// We have to follow the types Jest outputs, so namespace is not our choice.
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
   namespace jest {
     interface Matchers<R> {
@@ -17,6 +19,7 @@ declare global {
     }
   }
 }
+/* eslint-enable */
 /* eslint-enable */
 
 expect.extend({

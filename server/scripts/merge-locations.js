@@ -70,7 +70,7 @@ async function loadLocation(id) {
 function planMerge(target, ...toMerge) {
   // Determine what fields to update
   let hasChanges = false;
-  let newData = {};
+  const newData = {};
 
   for (const source of toMerge) {
     for (const key in source) {

@@ -70,7 +70,7 @@ async function run(options) {
       }
       const results = await updateQueue.whenDone();
       console.warn(`Sent ${results.length} updates`);
-      for (let saveResult of results) {
+      for (const saveResult of results) {
         if (saveResult.error || saveResult.success === false) {
           // Out-of-date data is not a problem worth alerting.
           if (saveResult.error?.code === "out_of_date") continue;
@@ -96,7 +96,7 @@ async function run(options) {
     }
 
     let successCount = 0;
-    for (let report of reports) {
+    for (const report of reports) {
       if (report.error) {
         // TODO: should any errors result in an error being returned?
         console.error(`Error in "${report.name}":`, report.error, "\n");

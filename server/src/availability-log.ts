@@ -8,7 +8,10 @@ interface AvailabilityLog extends AvailabilityInput {
 
 export const availabilityDb = Knex(loadDbConfig()); // for now, store with the rest of our data
 
-export async function write(locationId: string, data: AvailabilityLog) {
+export async function write(
+  locationId: string,
+  data: AvailabilityLog
+): Promise<void> {
   await availabilityDb("availability_log").insert({
     ...data,
     location_id: locationId,

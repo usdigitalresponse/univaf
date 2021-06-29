@@ -84,7 +84,7 @@ class WaDohApiError extends HttpApiError {
  */
 async function* queryState(state) {
   let pageNum = 1;
-  let pageSize = 200;
+  const pageSize = 200;
 
   while (true) {
     const response = await got({
@@ -121,7 +121,7 @@ async function* queryState(state) {
  * @returns {Available}
  */
 function toAvailable(apiValue) {
-  let text = apiValue.toLowerCase();
+  const text = apiValue.toLowerCase();
   if (text === "available") return Available.yes;
   else if (text === "unavailable") return Available.no;
   else return Available.unknown;
@@ -133,7 +133,7 @@ function toAvailable(apiValue) {
  * @returns {LocationType}
  */
 function toLocationType(apiValue) {
-  let text = (apiValue || "").toLowerCase();
+  const text = (apiValue || "").toLowerCase();
   if (text === "clinic") return LocationType.clinic;
   else if (text === "pharmacy") return LocationType.pharmacy;
   else if (text === "store") return LocationType.pharmacy;
@@ -148,7 +148,7 @@ function toLocationType(apiValue) {
  * @returns {VaccineProduct}
  */
 function toProduct(apiValue) {
-  let text = apiValue.toLowerCase();
+  const text = apiValue.toLowerCase();
   if (text === "pfizer-biontech") return VaccineProduct.pfizer;
   else if (text === "moderna") return VaccineProduct.moderna;
   else if (text.includes("johnson & johnson")) return VaccineProduct.janssen;
@@ -297,10 +297,10 @@ async function checkAvailability(handler, options) {
 
   if (!states.length) console.error("No states specified for WA DoH");
 
-  let results = [];
+  const results = [];
   for (const state of states) {
-    for await (let page of queryState(state)) {
-      for (let item of page) {
+    for await (const page of queryState(state)) {
+      for (const item of page) {
         // Skip non-Costco data from WA for now. (We will probably want to
         // turn this back on eventually.)
         // WA publishes fairly comprehensive data within the state, but at the

@@ -59,7 +59,7 @@ export interface ProviderLocation {
   eligibility: string;
   description: string;
   requires_waitlist: boolean;
-  meta: object;
+  meta: any;
   is_public: boolean;
   internal_notes: string;
   created_at: Date;
@@ -80,7 +80,7 @@ export interface LocationAvailability {
   doses?: Array<string>;
   capacity?: Array<CapacityRecord>;
   slots?: Array<SlotRecord>;
-  meta: object;
+  meta: any;
   is_public: boolean;
 }
 

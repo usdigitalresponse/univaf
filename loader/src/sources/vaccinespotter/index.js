@@ -238,7 +238,7 @@ function hasUsefulData(store) {
 const formatters = {
   _base(store, additions = null) {
     // Determine what identifier type to use for `external_ids`.
-    let provider = store.properties.provider.trim().toLowerCase();
+    const provider = store.properties.provider.trim().toLowerCase();
     let providerBrand = store.properties.provider_brand;
     if (!providerBrand) {
       providerBrand = provider;
@@ -410,8 +410,8 @@ async function checkAvailability(handler, options) {
 
   let results = [];
   for (const state of states) {
-    let stores = await queryState(state);
-    let formatted = stores.features
+    const stores = await queryState(state);
+    const formatted = stores.features
       .filter(hasUsefulData)
       .map(formatStore)
       .filter((item) => !!item)

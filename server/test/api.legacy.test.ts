@@ -3,7 +3,6 @@ import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { TestLocation } from "./fixtures";
-import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
 

@@ -86,8 +86,8 @@ function planChanges(byId, byExternalId) {
   for (const idGroup of byExternalId.values()) {
     if (idGroup.length === 1) continue;
 
-    let parentSets = idGroup.map((x) => groupMap.get(x)).filter(Boolean);
-    let homeSet = parentSets.shift() || new Set();
+    const parentSets = idGroup.map((x) => groupMap.get(x)).filter(Boolean);
+    const homeSet = parentSets.shift() || new Set();
     for (const parent of parentSets) {
       if (parent === homeSet) continue;
 

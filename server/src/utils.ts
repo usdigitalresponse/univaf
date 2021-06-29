@@ -52,7 +52,7 @@ export const Pagination = {
    * @param request The HTTP request to get parameters for.
    */
   getParameters(request: Request): PaginationParameters {
-    let limit: number = 0;
+    let limit = 0;
     if (request.query.limit) {
       limit = parseInt(request.query.limit as string, 10) || 0;
       if (limit <= 0) {
@@ -71,7 +71,7 @@ export const Pagination = {
    * @param keys The pagination keys to generate URLs for.
    */
   createLinks(request: Request, keys: { next?: string }): PaginationLinks {
-    let links: PaginationLinks = {};
+    const links: PaginationLinks = {};
     if (keys.next) {
       links.next = addQueryToCurrentUrl(request, { page_next: keys.next });
     }
@@ -83,7 +83,7 @@ export function urlDecodeSpecialPathChars(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): void {
   const REPLACE_MAP: { [key: string]: string } = { "%24": "$" };
   const url = urlParse(req.url);
 

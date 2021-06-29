@@ -244,6 +244,11 @@ export async function listLocations({
   });
 }
 
+interface LocationBatch {
+  locations: ProviderLocation[];
+  next: string;
+}
+
 /**
  * Yield batches of locations, ultimately iterating through the entire table
  * (unless `limit` is set, in which case it will yield only that many records).
@@ -275,7 +280,7 @@ export async function* iterateLocationBatches({
   where = [] as string[],
   values = [] as any[],
   sources = [] as string[],
-} = {}) {
+} = {}): AsyncGenerator<LocationBatch> {
   assert(Number.isInteger(batchSize) && batchSize > 0, "batchSize must be > 0");
   assert(Number.isInteger(limit) && limit >= 0, "limit must be >= 0");
 
@@ -546,7 +551,7 @@ export async function updateAvailability(
   data: AvailabilityInput
 ): Promise<{ action: string; locationId: string }> {
   data = validateAvailabilityInput(data);
-  let {
+  const {
     source,
     available = Availability.UNKNOWN,
     checked_at,
@@ -654,7 +659,7 @@ export async function updateAvailability(
 export async function listAvailability({
   includePrivate = false,
 } = {}): Promise<LocationAvailability[]> {
-  let fields = [
+  const fields = [
     "location_id",
     "source",
     "available",
@@ -683,7 +688,7 @@ export async function getAvailabilityForLocation(
   locationId: string,
   { includePrivate = false } = {}
 ): Promise<LocationAvailability[]> {
-  let fields = [
+  const fields = [
     "location_id",
     "source",
     "available",
@@ -691,7 +696,7 @@ export async function getAvailabilityForLocation(
     "checked_at",
     "meta",
   ];
-  let where = ["location_id = ?"];
+  const where = ["location_id = ?"];
 
   if (includePrivate) {
     fields.push("is_public");

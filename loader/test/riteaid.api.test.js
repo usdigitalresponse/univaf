@@ -176,7 +176,7 @@ describe("Rite Aid Source", () => {
       },
     });
 
-    for (let location of locations) {
+    for (const location of locations) {
       expect(location.availability.checked_at).not.toBeUndefined();
     }
   });

@@ -16,7 +16,7 @@ export class ApiError extends Error {
    * Format the error as a JSON-stringifiable object.
    * @returns {any}
    */
-  toJson() {
+  toJson(): any {
     return {
       message: this.message,
       code: this.code,

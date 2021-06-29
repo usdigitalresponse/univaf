@@ -9,8 +9,12 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "no-unused-vars": ["error", {
-      "argsIgnorePattern": "^_"
-    }]
+    "no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+      },
+    ],
+    "prefer-const": ["error", { destructuring: "all" }],
   },
 };

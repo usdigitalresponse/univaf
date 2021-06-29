@@ -1,8 +1,7 @@
 import type { AddressInfo } from "net";
 import { useServerForTests, installTestDatabaseHooks } from "./lib";
-import { getApiKeys } from "../src/config";
 import app from "../src/app";
-import { createLocation, getLocationById, updateAvailability } from "../src/db";
+import { createLocation } from "../src/db";
 import { TestLocation } from "./fixtures";
 
 installTestDatabaseHooks();

@@ -353,7 +353,7 @@ function sleep(ms) {
 async function checkAvailability(handler, _options) {
   const clinicsZip = njClinicZip;
 
-  let standardResults = {};
+  const standardResults = {};
   for (let i = 0; i < clinicsZip.length; i += 1) {
     const rawResults = await queryClinic(clinicsZip[i].toString());
     if (rawResults) {
