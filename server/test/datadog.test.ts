@@ -1,7 +1,4 @@
-import {
-  installTestDatabaseHooks,
-  useServerForTests,
-} from "./lib";
+import { installTestDatabaseHooks, useServerForTests } from "./lib";
 import app from "../src/app";
 import { createLocation, getLocationById, updateAvailability } from "../src/db";
 import { TestLocation, TestLocation2 } from "./fixtures";
