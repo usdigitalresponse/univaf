@@ -18,5 +18,5 @@
     },
     "allowJs": true
   },
-  "include": ["src/**/*", "scripts/**/*", "knexfile.js"]
+  "include": ["src/**/*", "scripts/**/*", "test/**/*", "knexfile.js"]
 }
