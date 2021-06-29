@@ -50,12 +50,6 @@ describe("datadog middleware", () => {
       await updateAvailability(location.id, TestLocation.availability);
       const res = await context.client.get<any>("api/edge/locations");
       expect(res.statusCode).toBe(200);
-      expect(res.body.data).toHaveLength(1);
-
-      expect(res.body.data[0]).toHaveProperty(
-        "external_ids",
-        Object.fromEntries(TestLocation.external_ids)
-      );
 
       expect(dogstatsd.mockBuffer).toHaveLength(2);
 
