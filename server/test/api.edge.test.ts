@@ -63,7 +63,7 @@ describe("GET /api/edge/locations", () => {
   });
 
   it("by default supports the standard external_ids output format", async () => {
-    const location = await createLocation(TestLocation);
+    await createLocation(TestLocation);
     const res = await context.client.get<any>(`api/edge/locations`);
     expect(res.statusCode).toBe(200);
     expect(res.body.data[0].external_ids).toEqual(
@@ -87,9 +87,9 @@ describe("GET /api/edge/locations", () => {
       products: ["pfizer", "moderna"],
     });
 
-    let res = await context.client.get<any>("api/edge/locations");
-    expect(res.body.data).toHaveLength(1);
-    expect(res.body.data[0].availability).toEqual({
+    const response = await context.client.get<any>("api/edge/locations");
+    expect(response.body.data).toHaveLength(1);
+    expect(response.body.data[0].availability).toEqual({
       sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),
@@ -126,12 +126,12 @@ describe("GET /api/edge/locations", () => {
       ],
     });
 
-    let res = await context.client.get<any>({
+    const response = await context.client.get<any>({
       url: "api/edge/locations",
       searchParams: { sources: "test-system-1,test-system-2" },
     });
-    expect(res.body.data).toHaveLength(1);
-    expect(res.body.data[0].availability).toEqual({
+    expect(response.body.data).toHaveLength(1);
+    expect(response.body.data[0].availability).toEqual({
       sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),
@@ -275,11 +275,11 @@ describe("GET /api/edge/locations/:id", () => {
       ],
     });
 
-    let res = await context.client.get<any>({
+    const response = await context.client.get<any>({
       url: `api/edge/locations/${location.id}`,
       searchParams: { sources: "test-system-1,test-system-2" },
     });
-    expect(res.body.data.availability).toEqual({
+    expect(response.body.data.availability).toEqual({
       sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
       checked_at: expectDatetimeString(),
       valid_at: expectDatetimeString(),

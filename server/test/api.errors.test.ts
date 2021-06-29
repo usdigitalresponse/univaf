@@ -1,8 +1,8 @@
 import { installTestDatabaseHooks, useServerForTests } from "./lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
-import { createLocation, getLocationById, updateAvailability } from "../src/db";
-import { TestLocation, TestLocation2 } from "./fixtures";
+import { createLocation, updateAvailability } from "../src/db";
+import { TestLocation } from "./fixtures";
 
 installTestDatabaseHooks();
 
@@ -66,7 +66,7 @@ test("sendErrors(ApiError) is well-formatted", async () => {
 });
 
 test("sendErrors(ValueError) is well-formatted", async () => {
-  const location = await createLocation(TestLocation);
+  await createLocation(TestLocation);
 
   const res = await context.client.post("api/edge/update?update_location=1", {
     headers: authHeaders,
@@ -84,7 +84,7 @@ test("sendErrors(ValueError) is well-formatted", async () => {
 });
 
 test("500 is well-formatted", async () => {
-  const location = await createLocation(TestLocation);
+  await createLocation(TestLocation);
   const res = await context.client.post("api/edge/update?update_location=1", {
     headers: authHeaders,
     json: {
