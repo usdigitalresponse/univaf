@@ -20,6 +20,10 @@ const mockResponse = () => {
 };
 
 describe("datadog middleware", () => {
+  afterEach(() => {
+    dogstatsd.mockBuffer = [];
+  });
+
   describe("request handler creation", () => {
     it("should return a function()", () => {
       expect(typeof datadogMiddleware).toBe("function");
@@ -41,7 +45,7 @@ describe("datadog middleware", () => {
       datadogMiddleware(mockRequest, res, nextSpy);
       expect(nextSpy.calledOnce).toEqual(true);
     });
-    it("should have correct metrics on endpoint call", async () => {
+    it("should have correct metrics on single endpoint call", async () => {
       const location = await createLocation(TestLocation);
       await updateAvailability(location.id, TestLocation.availability);
       const res = await context.client.get<any>("api/edge/locations");
@@ -61,6 +65,24 @@ describe("datadog middleware", () => {
       expect(dogstatsd.mockBuffer[1]).toMatch(
         /node.express.router.response_time.*/
       );
+    });
+    it("should have correct metrics on two endpoint calls", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, TestLocation.availability);
+      var res = await context.client.get<any>(
+        `api/edge/locations/${location.id}`
+      );
+      expect(res.statusCode).toBe(200);
+      res = await context.client.get<any>(`api/edge/locations/${location.id}`);
+      expect(res.statusCode).toBe(200);
+
+      expect(
+        dogstatsd.mockBuffer.filter(
+          (s) =>
+            s ===
+            "node.express.router.response_total:1|c|#route:/api/edge/locations/:id,method:get,response_code:200"
+        )
+      ).toHaveLength(2);
     });
   });
 });
