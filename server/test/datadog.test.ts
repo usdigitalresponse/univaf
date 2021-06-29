@@ -1,7 +1,5 @@
 import { installTestDatabaseHooks, useServerForTests } from "./lib";
 import app from "../src/app";
-import { createLocation, getLocationById, updateAvailability } from "../src/db";
-import { TestLocation, TestLocation2 } from "./fixtures";
 import { datadogMiddleware, MonitoredRequest, dogstatsd } from "../src/datadog";
 import { Response } from "express";
 
