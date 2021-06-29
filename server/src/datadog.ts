@@ -1,7 +1,9 @@
 import { Response, Request, NextFunction } from "express";
 import StatsD from "hot-shots";
 
-export const dogstatsd = new StatsD();
+export const dogstatsd = new StatsD({
+  mock: process.env.NODE_ENV == "test",
+});
 const stat = "node.express.router";
 const DELIMITER = "-";
 const REGEX_PIPE = /\|/g;
