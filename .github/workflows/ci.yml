@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "docs/**"
+      - "terraform/**"
+      - "docker/postgis/**"
 
 name: Continuous Integration
 
@@ -131,6 +135,9 @@ jobs:
           workflows: '[".github/workflows/*.yaml", ".github/workflows/*.yml"]'
 
   build_docker:
+    needs:
+      - lint
+      - test
     runs-on: ubuntu-latest
     strategy:
       matrix:
