@@ -14,7 +14,7 @@ module "db" {
   instance_class    = var.db_instance
   ingress_allow_security_groups = compact([
     aws_security_group.ecs_tasks.id,
-    var.bastion_security_group_id
+    aws_security_group.bastion_security_group.id
   ])
   performance_insights_enabled = true
 }

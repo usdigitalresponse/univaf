@@ -110,9 +110,14 @@ variable "loader_sentry_dsn" {
   sensitive   = true
 }
 
-variable "bastion_security_group_id" {
-  description = "ID for a security group in AWS that allows access to a bastion server inside our VPC. SSHing into this server will allow access to any services that allow this security group."
-  default     = "sg-06fc404762de692db"
+variable "bastion_key_name" {
+  description = "The key pair name to use for running the bastion server"
+  default     = "univaf-bastion-key"
+}
+
+variable "bastion_ami_group_id" {
+  description = "AMI to be used for the bastion server"
+  default = "ami-03d5c68bab01f3496"
 }
 
 variable "data_snapshot_s3_bucket" {
@@ -130,4 +135,12 @@ variable "data_snapshot_aws_secret_key" {
 
 variable "datadog_api_key" {
   sensitive = true
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  default = ""
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  default = ""
 }

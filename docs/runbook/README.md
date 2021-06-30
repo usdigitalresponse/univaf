@@ -64,6 +64,10 @@ After merging a PR into the `main` branch, you can deploy via the following step
 
 **The Demo UI** just runs as a GitHub pages site, and is automatically updated via the [`ui-deploy` workflow][workflow-ui-deploy] every time a commit lands on the `main` branch. You can view it at https://usdigitalresponse.github.io/univaf/.
 
+### Terraforming Locally
+
+In order to run terraform locally, you have to auth terraform to terraform cloud. Obviously this requires a cloud invite as a prerequisite, reach out to the project owners to get an invite. Once you clone down the repository locally, navigate to the `terraform/` directory in your preferred shell. Run `terraform login`, which will create an API access token for you. You'll be prompted to paste it in to your shell in order to access it. Init to the backend using `terraform init`. At this point, you will be able to run terraform commands as expected: `terraform plan`, `terraform apply`, `terraform state list`...
+
 
 ## Bastion Server
 
