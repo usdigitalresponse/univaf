@@ -54,6 +54,7 @@ app.use(urlDecodeSpecialPathChars);
 
 /**
  * Primary app routes.
+ *
  */
 
 app.get("/", (_req: Request, res: Response) => res.redirect("/docs/"));
