@@ -55,13 +55,14 @@ deploy of the latest phase of the `external_id` format changeover.
 ## Action Items
 
 -   In the future when dealing with sensitive code that may have breaking effects on the API:
+    -   Add integration tests that exercise common loader/server interactions.
     -   More carefully test and review code before deploy.
-    -   More closely monitory for errors after deploy.
+    -   More closely monitor for errors after deploy.
 
 ## Responders
 
 -   @astonm
--   @Mr0grog
+-   @jaronoff97
 
 [issue-188]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/188
 [pr-206]: https://github.com/usdigitalresponse/appointment-availability-infra/pull/206
