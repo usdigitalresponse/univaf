@@ -59,7 +59,7 @@ resource "aws_route53_record" "api_domain_record" {
 module "api_task" {
   source = "./modules/task"
 
-  name   = "api"
+  names   = "api"
   image  = "${var.api_image}:${var.api_release_version}"
   role   = aws_iam_role.ecs_task_execution_role.arn
   cpu    = var.cpu
