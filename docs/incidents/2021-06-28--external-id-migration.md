@@ -58,6 +58,7 @@ deploy of the latest phase of the `external_id` format changeover.
     -   Add integration tests that exercise common loader/server interactions.
     -   More carefully test and review code before deploy.
     -   More closely monitor for errors after deploy.
+    -   Lower cutoffs in Sentry for API errors to alert us more quickly and reliably about errors.
 
 ## Responders
 
