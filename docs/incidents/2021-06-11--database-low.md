@@ -91,5 +91,5 @@ Database resized, table repacked, all good!
 - @Mr0grog
 
 
-[issue-184]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/184
-[issue-208]: https://github.com/usdigitalresponse/appointment-availability-infra/issues/208
+[issue-184]: https://github.com/usdigitalresponse/univaf/issues/184
+[issue-208]: https://github.com/usdigitalresponse/univaf/issues/208

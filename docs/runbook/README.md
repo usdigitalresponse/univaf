@@ -62,7 +62,7 @@ After merging a PR into the `main` branch, you can deploy via the following step
 4. In Terraform Cloud, click "see details" on the latest run, and review the plan it shows to ensure it makes sense.
 5. In Terraform Cloud, click the confirm button to apply the plan.
 
-**The Demo UI** just runs as a GitHub pages site, and is automatically updated via the [`ui-deploy` workflow][workflow-ui-deploy] every time a commit lands on the `main` branch. You can view it at https://usdigitalresponse.github.io/appointment-availability-infra/.
+**The Demo UI** just runs as a GitHub pages site, and is automatically updated via the [`ui-deploy` workflow][workflow-ui-deploy] every time a commit lands on the `main` branch. You can view it at https://usdigitalresponse.github.io/univaf/.
 
 
 ## Bastion Server
@@ -86,5 +86,5 @@ And then run any commands you'd like from inside the SSH session.
 [sentry]: https://sentry.io/
 [bastion-server]: https://en.wikipedia.org/wiki/Bastion_host
 [workflow-ci]: ../../.github/workflows/ci.yml
-[workflow-ci-runs]: https://github.com/usdigitalresponse/appointment-availability-infra/actions/workflows/ci.yml
+[workflow-ci-runs]: https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml
 [workflow-ui-deploy]: ../../.github/workflows/ui-deploy.yml

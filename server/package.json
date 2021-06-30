@@ -4,7 +4,7 @@
   "description": "An API server that stores and provides COVID-19 vaccine appointment availability data.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/usdigitalresponse/appointment-availability-infra"
+    "url": "https://github.com/usdigitalresponse/univaf"
   },
   "author": "USDR",
   "license": "MIT",

@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/usdigitalresponse/appointment-availability-infra.git"
+    "url": "git+https://github.com/usdigitalresponse/univaf.git"
   },
   "author": "USDR",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/usdigitalresponse/appointment-availability-infra/issues"
+    "url": "https://github.com/usdigitalresponse/univaf/issues"
   },
-  "homepage": "https://github.com/usdigitalresponse/appointment-availability-infra#readme",
+  "homepage": "https://getmyvax.org/",
   "devDependencies": {
     "eslint": "^7.23.0",
     "jest": "^26.6.3",
