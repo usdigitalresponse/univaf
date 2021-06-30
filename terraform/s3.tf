@@ -15,7 +15,7 @@ resource "aws_s3_bucket_policy" "data_snapshots" {
       Effect    = "Allow"
       Principal = "*"
       Action    = "s3:GetObject"
-      Resource  = "arn:aws:s3:::univaf-data-snapshots/*"
+      Resource  = "${aws_s3_bucket.data_snapshots.arn}/*"
     }]
   })
 }
