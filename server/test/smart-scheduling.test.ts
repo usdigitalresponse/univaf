@@ -1,5 +1,9 @@
 import type { AddressInfo } from "net";
-import { useServerForTests, installTestDatabaseHooks } from "./lib";
+import {
+  useServerForTests,
+  installTestDatabaseHooks,
+  ndjsonParse,
+} from "./lib";
 import app from "../src/app";
 import { createLocation } from "../src/db";
 import { TestLocation } from "./fixtures";
@@ -29,13 +33,6 @@ describe("GET /smart-scheduling/$bulk-publish", () => {
     expect(data.output).toHaveLength(50 * 3); // 50 states, Location/Schedule/Slot
   });
 });
-
-function ndjsonParse(s: string): any {
-  return s
-    .split("\n")
-    .filter(Boolean)
-    .map((l) => JSON.parse(l));
-}
 
 describe("GET /smart-scheduling/locations/states/:state.ndjson", () => {
   const context = useServerForTests(app);

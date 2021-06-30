@@ -97,3 +97,14 @@ export function expectDatetimeString(): any {
     /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(.\d+)?(Z|[+-]\d\d:?\d\d)$/
   );
 }
+
+/**
+ * Parse an ND-JSON (newline-delimited JSON) string in to an array of objects.
+ * @param rawData the ND-JSON string to parse.
+ */
+export function ndjsonParse(rawData: string): any[] {
+  return rawData
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+}
