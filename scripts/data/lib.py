@@ -15,6 +15,7 @@ import json
 import os
 import pandas as pd
 import urllib.request
+from glob import glob
 from urllib.parse import urljoin
 from uuid import UUID
 
@@ -117,6 +118,23 @@ def read_previous_state(path_raw, ds, source):
         return state
     else:
         return {}
+
+
+def read_timestamp(string, offset=None):
+    """
+    Efficiently read a large column of time stamps and incorporate offset.
+    """
+    DF = pd.DataFrame(data={'string': string})
+    DF[['ds', 'ts']] = DF.string.str[:16].str.split(' ', expand=True)
+    DF[['h', 'm']] = DF.ts.str.split(':', expand=True)
+    # dictionary lookup trick for efficient date parsing
+    dates = {date: pd.to_datetime(date, format='%Y-%m-%d') for date in DF.ds.unique()}
+    DF['out'] = (DF.ds.map(dates) +
+                 pd.to_timedelta(DF.h.astype(int), unit='h') +
+                 pd.to_timedelta(DF.m.astype(int), unit='m'))
+    if offset is not None:
+        DF['out'] += pd.to_timedelta(offset, unit='h')
+    return DF.out
 
 
 def aggregate_slots(path_in, fn_out):
