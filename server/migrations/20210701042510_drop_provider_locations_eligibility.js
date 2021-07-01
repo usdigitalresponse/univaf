@@ -6,13 +6,13 @@
   and where we have this kind of info, it’s part of the description.
 */
 
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.schema.alterTable("provider_locations", (table) => {
     table.dropColumn("eligibility");
   });
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
   return knex.schema.alterTable("provider_locations", (table) => {
     table.text("eligibility");
   });
