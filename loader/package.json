@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.10.0",
-    "@sentry/node": "^6.2.5",
+    "@sentry/node": "^6.6.0",
     "csv-parse": "^4.15.3",
     "get-stream": "^5.2.0",
     "got": "^11.8.2",
