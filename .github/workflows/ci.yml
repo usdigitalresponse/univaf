@@ -144,10 +144,6 @@ jobs:
         # Instead of building all combinations of a set of options, just build
         # these particular combinations.
         include:
-          - repository: univaf-db-seed
-            dockerfile: "./server/Dockerfile.seed-db"
-            build_path: "./server"
-
           - repository: univaf-server
             dockerfile: "./server/Dockerfile"
             build_path: "./server"
