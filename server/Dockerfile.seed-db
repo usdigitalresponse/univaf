@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:20.10
 
 # Install pre-requisites
 RUN apt-get update
