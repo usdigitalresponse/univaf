@@ -88,7 +88,7 @@ Post-resolution:
 
 ### 2021-06-30 06:17
 
-Alex suggests posting about billing issues in #questions-tools instead of #team-ops-and-tools.
+@alexallain suggests posting about billing issues in #questions-tools instead of #team-ops-and-tools.
 
 
 ### 2021-06-30 10:33
