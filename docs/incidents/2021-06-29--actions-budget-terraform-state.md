@@ -31,7 +31,7 @@ Both of these issues stem from poor coordination and lack of a clear process aro
 
 ### 2021-06-29 19:04
 
-Realized this is a billing issue. Error messages about payment failures are shown on below the fold on the workflow summary screen (not on individual job logs). @Mr0grog updates thread in #team-ops-and-tools with info and a more specific ask about payment.
+@Mr0grog realizes this is a billing issue. Error messages about payment failures are shown on below the fold on the workflow summary screen (not on individual job logs). @Mr0grog updates thread in #team-ops-and-tools with info and a more specific ask about payment.
 
 
 ### 2021-06-29 20:41
