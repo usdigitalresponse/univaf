@@ -26,7 +26,7 @@ Both of these issues stem from poor coordination and lack of a clear process aro
 
 ### 2021-06-29 18:36
 
-Posted a request for help in #team-ops-and-tools in case someone is with better access to the GitHub org account can figure out the issue more clearly. (@Mr0grog does not anticipate this will be very fruitful since it’s after hours, and there’s no clear ops on-call/escalation plan as far as he knows.)
+@Mr0grog posts a request for help in #team-ops-and-tools in case someone is with better access to the GitHub org account can figure out the issue more clearly. (@Mr0grog does not anticipate this will be very fruitful since it’s after hours, and there’s no clear ops on-call/escalation plan as far as he knows.)
 
 
 ### 2021-06-29 19:04
