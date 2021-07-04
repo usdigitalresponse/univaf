@@ -12,7 +12,7 @@ However, the second issue with Terraform was a much bigger problem. It turns out
 
 Terraform Cloud keeps track of past versions of the state, but does not make it possible to roll back or revert to a particular state version. However, @Mr0grog was able to use Terraform Cloud’s API to download the last in-sync state and re-set it as the latest state, resolving the issue. (Note this means @jaronoff97 has some extra work to do when finalizing [#274][issue-274].)
 
-Both of these issues from poor coordination and lack of a clear process around infrastructure management, and definitely need more work to come up with long-term solutions. (See [action items](#action-items) at the end of this report.)
+Both of these issues stem from poor coordination and lack of a clear process around infrastructure management, and we definitely need more work to come up with long-term solutions. (See [action items](#action-items) at the end of this report.)
 
 
 ## Timeline
