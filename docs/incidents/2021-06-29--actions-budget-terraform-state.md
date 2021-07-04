@@ -93,7 +93,7 @@ Post-resolution:
 
 ### 2021-06-30 10:33
 
-Paul adds some credit to USDR GitHub account to get actions running again. Automated tests, builds, and Terraform deploys are all now functional again.
+@paulschreiber adds some credit to USDR GitHub account to get actions running again. Automated tests, builds, and Terraform deploys are all now functional again.
 
 
 ## Lessons
