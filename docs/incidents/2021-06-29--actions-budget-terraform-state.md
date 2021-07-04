@@ -51,7 +51,7 @@ Both of these issues stem from poor coordination and lack of a clear process aro
 
 ### 2021-06-29 21:36
 
-Tried to deploy new images via Terraform, but the Terraform plan shows that the bastion security group is going to be destroyed. @Mr0grog is no longer sure this deploy is safe, asks on Slack if @jaronoff97 knows what’s up, and starts digging into it.
+@Mr0grog tries to deploy new images via Terraform, but the Terraform plan shows that the bastion security group is going to be destroyed. @Mr0grog is no longer sure this deploy is safe, asks on Slack if @jaronoff97 knows what’s up, and starts digging into it.
 
 
 ### 2021-06-29 21:53
