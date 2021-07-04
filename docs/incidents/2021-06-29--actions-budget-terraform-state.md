@@ -36,7 +36,7 @@ Both of these issues stem from poor coordination and lack of a clear process aro
 
 ### 2021-06-29 20:41
 
-@Mr0grog gave up on resolving the billing issue and pinged @jaronoff97 for help reviewing the hotfix since automated checks aren’t running.
+@Mr0grog gives up on resolving the billing issue and pings @jaronoff97 for help reviewing the hotfix since automated checks aren’t running.
 
 
 ### 2021-06-29 20:43
