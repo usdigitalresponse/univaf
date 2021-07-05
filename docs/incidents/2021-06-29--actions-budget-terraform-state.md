@@ -47,7 +47,7 @@ Both of these issues stem from poor coordination and lack of a clear process aro
 ### 2021-06-29 21:14
 
 @Mr0grog gives up on uploading locally build images (his home internet connection is too slow to upload with any reasonable speed). He rebuilds and uploads from remote infrastructure instead:
-- He first begins building on an EC2 machine in his person AWS account.
+- He first begins building on an EC2 machine in his personal AWS account.
 - Partway through, he comes up with an easier-to-repeat idea in case USDR is not able to fix the billing issue: he makes a private fork of the repo in his own GitHub account, turns on GitHub Actions for it and and pushes the same commits to it. The same workflows run on it and handle the building and uploading of images more-or-less the same as the USDR repo would.
 
 
