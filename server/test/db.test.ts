@@ -5,9 +5,10 @@ import {
   getCurrentAvailabilityByLocation,
   getLocationById,
   updateAvailability,
+  updateLocation,
 } from "../src/db";
 import { Availability } from "../src/interfaces";
-import { TestLocation } from "./fixtures";
+import { TestLocation, TestLocation2 } from "./fixtures";
 import { ValueError, NotFoundError, OutOfDateError } from "../src/exceptions";
 
 installTestDatabaseHooks();
@@ -610,6 +611,44 @@ describe("db.getCurrentAvailabilityForLocations", () => {
       changed_at: expect.any(Date),
       available: Availability.YES,
       available_count: 0,
+    });
+  });
+});
+
+describe("db.addExternalIds", () => {
+  const updatedData = {
+    external_ids: [
+      ["good", "1234"],
+      ["bad:", "987"]
+    ]
+  }
+
+  describe("creating locations", () => {
+    it("does not allow a colon in the externalId", async () => {
+      const TestLocationInvalidExternalId = {
+        ...TestLocation,
+        ...updatedData,
+      }
+      await expect(async () => {
+        await createLocation(TestLocationInvalidExternalId);
+      }).rejects.toThrow(ValueError);
+
+      const { external_ids } = await getLocationById(TestLocationInvalidExternalId.id);
+      expect(external_ids).toEqual([])
+    });
+  });
+
+  describe("updating locations", () => {
+    it("does not allow a colon in the externalId", async () => {
+      await createLocation(TestLocation2);
+
+      const originalExternalIds = TestLocation2.external_ids
+      await expect(async () => {
+        await updateLocation(TestLocation2, updatedData);
+      }).rejects.toThrow(ValueError);
+
+      const { external_ids } = await getLocationById(TestLocation2.id);
+      expect(external_ids).toEqual(originalExternalIds)
     });
   });
 });
