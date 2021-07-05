@@ -133,7 +133,7 @@ export async function addExternalIds(
       toInsert.map(([system, value]: [string, string]) => {
         if (system.includes(":")) {
           throw new ValueError(
-            `Provider location ${id} externalIDs include ${system} \
+            `Provider location ${id} externalIds include ${system} \
             but ':' is not allowed`
           );
         }
