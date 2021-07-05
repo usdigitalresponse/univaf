@@ -153,7 +153,6 @@ export default class MainContent extends React.Component {
         record.postal_code,
         record.county,
         record.provider,
-        record.eligibility,
         record.description,
       ]
         .filter((chunk) => !!chunk)

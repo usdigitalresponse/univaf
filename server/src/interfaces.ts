@@ -56,7 +56,6 @@ export interface ProviderLocation {
   info_url: string;
   booking_phone: string;
   booking_url: string;
-  eligibility: string;
   description: string;
   requires_waitlist: boolean;
   meta: any;
