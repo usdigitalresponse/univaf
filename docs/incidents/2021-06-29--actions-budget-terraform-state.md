@@ -41,12 +41,14 @@ Both of these issues stem from poor coordination and lack of a clear process aro
 
 ### 2021-06-29 20:43
 
-@jaronoff97 reviews the PR and @Mr0grog merges and starts building & uploading Docker images manually.
+@jaronoff97 reviews the PR and @Mr0grog merges and starts building & uploading Docker images manually on his local machine.
 
 
 ### 2021-06-29 21:14
 
-@Mr0grog rebuilds and uploads on remote infrastructure. His home internet connection is too slow to upload the build Docker images with any reasonable speed.
+@Mr0grog gives up on uploading locally build images (his home internet connection is too slow to upload with any reasonable speed). He rebuilds and uploads from remote infrastructure instead:
+- He first begins building on an EC2 machine in his person AWS account.
+- Partway through, he comes up with an easier-to-repeat idea in case USDR is not able to fix the billing issue: he makes a private fork of the repo in his own GitHub account, turns on GitHub Actions for it and and pushes the same commits to it. The same workflows run on it and handle the building and uploading of images more-or-less the same as the USDR repo would.
 
 
 ### 2021-06-29 21:36
@@ -115,6 +117,8 @@ Post-resolution:
 
 - @jaronoff97 did not alert others that his work on [#274][issue-274] involved changes to the Terraform state, which would affect any other PRs or deploys happening in parallel. The description and comments on [#274][issue-274] did not call this out, either, leaving @Mr0grog uncertain as to whether his diagnosis of the core problem was correct and complete.
 
+- @Mr0grog spent hours working through a complete understanding of both issues (GitHub Actions and Terraform state) when he probably should have switched to manual approaches as soon as it was clear the issues would take a long time to resolve.
+
 
 ## Action Items
 
@@ -122,11 +126,11 @@ Post-resolution:
     - Turn actions back on for this project. **(Done as of 2021-06-30)**
     - Raise need for USDR to develop real budgeting, plans, and response process around usage of paid GitHub features. (Actually developing those is outside the scope of this project.)
 
-- Document how to build manually.
+- Document how to build manually ([#294][issue-294]).
 
-- Document how to deploy manually without Terraform.
+- Document how to reset Terraform Cloud state ([#295][issue-295]).
 
-- Articulate a process for planning and handling Terraform changes that require out-of-band work to change production. This process should avoid having configuration files and Terraform state out-of-sync for extended periods of time, and ensure that team members are notified about situation ahead of time.
+- Articulate a process for planning and handling Terraform changes that require out-of-band work to change production. This process should avoid having configuration files and Terraform state out-of-sync for extended periods of time, and ensure that team members are notified about situation ahead of time ([#296][issue-296]).
 
 
 ## Responders
@@ -136,3 +140,6 @@ Post-resolution:
 
 [issue-274]: https://github.com/usdigitalresponse/univaf/pull/274
 [issue-275]: https://github.com/usdigitalresponse/univaf/pull/275
+[issue-294]: https://github.com/usdigitalresponse/univaf/issues/294
+[issue-295]: https://github.com/usdigitalresponse/univaf/issues/295
+[issue-296]: https://github.com/usdigitalresponse/univaf/issues/296
