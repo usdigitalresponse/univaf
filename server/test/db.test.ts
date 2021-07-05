@@ -619,22 +619,24 @@ describe("db.addExternalIds", () => {
   const updatedData = {
     external_ids: [
       ["good", "1234"],
-      ["bad:", "987"]
-    ]
-  }
+      ["bad:", "987"],
+    ],
+  };
 
   describe("creating locations", () => {
     it("does not allow a colon in the externalId", async () => {
       const TestLocationInvalidExternalId = {
         ...TestLocation,
         ...updatedData,
-      }
+      };
       await expect(async () => {
         await createLocation(TestLocationInvalidExternalId);
       }).rejects.toThrow(ValueError);
 
-      const { external_ids } = await getLocationById(TestLocationInvalidExternalId.id);
-      expect(external_ids).toEqual([])
+      const { external_ids } = await getLocationById(
+        TestLocationInvalidExternalId.id
+      );
+      expect(external_ids).toEqual([]);
     });
   });
 
@@ -642,13 +644,13 @@ describe("db.addExternalIds", () => {
     it("does not allow a colon in the externalId", async () => {
       await createLocation(TestLocation2);
 
-      const originalExternalIds = TestLocation2.external_ids
+      const originalExternalIds = TestLocation2.external_ids;
       await expect(async () => {
         await updateLocation(TestLocation2, updatedData);
       }).rejects.toThrow(ValueError);
 
       const { external_ids } = await getLocationById(TestLocation2.id);
-      expect(external_ids).toEqual(originalExternalIds)
+      expect(external_ids).toEqual(originalExternalIds);
     });
   });
 });
