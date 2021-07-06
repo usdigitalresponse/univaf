@@ -63,7 +63,7 @@ export interface ProviderLocation {
   internal_notes: string;
   created_at: Date;
   updated_at: Date;
-  availability?: any;
+  availability?: LocationAvailability;
 }
 
 export interface LocationAvailability {
