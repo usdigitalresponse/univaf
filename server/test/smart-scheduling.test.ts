@@ -8,7 +8,6 @@ import app from "../src/app";
 import { createLocation, updateAvailability } from "../src/db";
 import { TestLocation, TestLocation2 } from "./fixtures";
 import { Availability } from "../src/interfaces";
-import { constant } from "async";
 
 installTestDatabaseHooks();
 
