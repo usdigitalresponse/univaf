@@ -10,7 +10,12 @@
 import { Request, Response } from "express";
 import { getHostUrl } from "./config";
 import * as db from "./db";
-import { Availability, LocationAvailability } from "./interfaces";
+import {
+  Availability,
+  LocationAvailability,
+  SlotRecord,
+  CapacityRecord,
+} from "./interfaces";
 import states from "./states.json";
 
 const BOOKING_DEEP_LINK =
@@ -246,7 +251,7 @@ export async function listSchedules(
         }
         if (provider.availability?.doses) {
           const doseNumbers = provider.availability.doses.flatMap(
-            (dose) => DOSE_NUMBERS[dose] || []
+            (dose: string) => DOSE_NUMBERS[dose] || []
           );
           for (const doseNumber of new Set(doseNumbers)) {
             extension.push({
@@ -313,7 +318,7 @@ export async function listSlots(req: Request, res: Response): Promise<void> {
           provider.availability?.slots || provider.availability?.capacity;
         if (!slots || !slots.length) return [];
 
-        return slots.map((slot) => {
+        return slots.map((slot: SlotRecord | CapacityRecord) => {
           const extension: Array<any> = [];
 
           if (slot.available_count != null) {
