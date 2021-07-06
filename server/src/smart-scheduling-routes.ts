@@ -20,6 +20,8 @@ const BOOKING_PHONE =
 
 const VTRCKS = "https://cdc.gov/vaccines/programs/vtrcks";
 
+const SYSTEM_CVX = "http://hl7.org/fhir/sid/cvx";
+
 const SERVICE_TYPE_HL7 = "http://terminology.hl7.org/CodeSystem/service-type";
 const SERVICE_TYPE_SMART =
   "http://fhir-registry.smarthealthit.org/CodeSystem/service-type";
@@ -30,6 +32,33 @@ const EXTENSION_LAST_SOURCE_SYNC =
   "http://hl7.org/fhir/StructureDefinition/lastSourceSync";
 const EXTENSION_SLOT_CAPACITY =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity";
+const EXTENSION_VACCINE_DOSE =
+  "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-dose";
+const EXTENSION_VACCINE_PRODUCT =
+  "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product";
+
+// https://www.cdc.gov/vaccines/programs/iis/COVID-19-related-codes.html
+const CVX_CODES: { [index: string]: number } = {
+  astra_zeneca: 210,
+  moderna: 207,
+  novavax: 211,
+  pfizer: 208,
+  jj: 212,
+};
+
+const PRODUCT_NAMES: { [index: string]: string } = {
+  astra_zeneca: "AstraZeneca",
+  moderna: "Moderna",
+  novavax: "NovaVax",
+  pfizer: "Pfizer",
+  jj: "Johnson & Johnson",
+};
+
+const DOSE_NUMBERS: { [index: string]: number[] } = {
+  all_doses: [1, 2],
+  first_dose_only: [1],
+  second_dose_only: [2],
+};
 
 interface FhirIssue {
   severity: "fatal" | "error" | "warning" | "information";
@@ -194,6 +223,39 @@ export async function listSchedules(
   res.header("Content-Type", "application/fhir+ndjson").send(
     providers
       .map((provider) => {
+        const extension: any[] = [
+          {
+            url: EXTENSION_HAS_AVAILABILITY,
+            valueCode: formatHasAvailability(provider.availability),
+          },
+        ];
+
+        // TODO: produce separate schedules for each combination of products
+        // and dose that appear in `availability.slots/capacity`.
+        if (provider.availability?.products) {
+          for (const product of provider.availability.products) {
+            extension.push({
+              url: EXTENSION_VACCINE_PRODUCT,
+              valueCoding: {
+                system: SYSTEM_CVX,
+                code: CVX_CODES[product],
+                display: PRODUCT_NAMES[product],
+              },
+            });
+          }
+        }
+        if (provider.availability?.doses) {
+          const doseNumbers = provider.availability.doses.flatMap(
+            (dose) => DOSE_NUMBERS[dose] || []
+          );
+          for (const doseNumber of new Set(doseNumbers)) {
+            extension.push({
+              url: EXTENSION_VACCINE_DOSE,
+              valueInteger: doseNumber,
+            });
+          }
+        }
+
         return JSON.stringify({
           resourceType: "Schedule",
           id: provider.id,
@@ -218,12 +280,7 @@ export async function listSchedules(
               reference: `Location/${provider.id}`,
             },
           ],
-          extension: [
-            {
-              url: EXTENSION_HAS_AVAILABILITY,
-              valueCode: formatHasAvailability(provider.availability),
-            },
-          ],
+          extension,
           meta: {
             extension: [
               {
