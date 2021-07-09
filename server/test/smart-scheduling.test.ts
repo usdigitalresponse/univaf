@@ -95,7 +95,7 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
       ...TestLocation.availability,
       available: Availability.UNKNOWN,
     });
-    // This location has not availability record at all.
+    // This location has no availability record at all.
     await createLocation({
       ...TestLocation,
       id: "456",
