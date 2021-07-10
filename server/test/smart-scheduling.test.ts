@@ -1,43 +1,17 @@
 import type { AddressInfo } from "net";
 import { DateTime } from "luxon";
 import {
+  createRandomLocation,
   useServerForTests,
   installTestDatabaseHooks,
   ndjsonParse,
 } from "./lib";
 import app from "../src/app";
-import { createLocation, updateAvailability } from "../src/db";
+import { createLocation } from "../src/db";
 import { TestLocation } from "./fixtures";
 import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
-
-/**
- * Create a new provider with random identifiers.
- * @param customizations Any specific values that should be set on the location.
- *        If the `availability` property is set, an availability record will
- *        also be created for the location (the value for `availability` only
- *        needs to have the values you want to customize, acceptable values for
- *        unspecified but required properties will be created for you).
- * @returns {ProviderLocation}
- */
-async function createRandomLocation(customizations: any) {
-  const location = await createLocation({
-    ...TestLocation,
-    id: null,
-    external_ids: [["test_id", Math.random().toString()]],
-    ...customizations,
-  });
-
-  if (customizations.availability) {
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      ...customizations.availability,
-    });
-  }
-
-  return location;
-}
 
 describe("GET /smart-scheduling/$bulk-publish", () => {
   const context = useServerForTests(app);
