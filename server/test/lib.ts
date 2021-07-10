@@ -3,8 +3,11 @@ import type { Application } from "express";
 import type { Server } from "http";
 import got, { Got } from "got";
 
-import { db } from "../src/db";
+import { db, createLocation, updateAvailability } from "../src/db";
 import { availabilityDb } from "../src/availability-log";
+import { ProviderLocation } from "../src/interfaces";
+import { TestLocation } from "./fixtures";
+
 import type { Knex } from "knex";
 
 interface Context {
@@ -82,6 +85,35 @@ function mockDbTransactions() {
       return await f(db);
     },
   });
+}
+
+/**
+ * Create a new provider with random identifiers.
+ * @param customizations Any specific values that should be set on the location.
+ *        If the `availability` property is set, an availability record will
+ *        also be created for the location (the value for `availability` only
+ *        needs to have the values you want to customize, acceptable values for
+ *        unspecified but required properties will be created for you).
+ * @returns {ProviderLocation}
+ */
+export async function createRandomLocation(
+  customizations: any
+): Promise<ProviderLocation> {
+  const location = await createLocation({
+    ...TestLocation,
+    id: null,
+    external_ids: [["test_id", Math.random().toString()]],
+    ...customizations,
+  });
+
+  if (customizations.availability) {
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      ...customizations.availability,
+    });
+  }
+
+  return location;
 }
 
 /**

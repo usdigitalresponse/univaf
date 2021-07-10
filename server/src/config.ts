@@ -22,8 +22,7 @@ export function getHostUrl(request?: Request): string {
     if (!request) {
       throw new Error("Cannot calculate host URL without a request");
     } else {
-      const port = request.app.get("port");
-      hostUrl = `${request.protocol}://${request.hostname}:${port}`;
+      hostUrl = `${request.protocol}://${request.headers.host}`;
     }
   }
   if (hostUrl.endsWith("/")) hostUrl = hostUrl.slice(0, -1);
