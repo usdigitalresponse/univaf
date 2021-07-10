@@ -305,6 +305,28 @@ export async function listSchedules(
   );
 }
 
+function formatSlotTimes(slot: SlotRecord | CapacityRecord) {
+  let start: string, end: string;
+
+  if ("start" in slot) {
+    // @ts-expect-error Slot times coming from the DB are always ISO strings.
+    start = slot.start;
+    // FHIR slots require an end time. Scrapers don’t always get one,
+    // so assume 15 minute slots when unknown.
+    // @ts-expect-error Slot times coming from the DB are always ISO strings.
+    end =
+      slot.end ||
+      DateTime.fromISO(slot.start as string, { setZone: true })
+        .plus({ minutes: 15 })
+        .toISO();
+  } else {
+    start = `${slot.date}T00:00:00Z`;
+    end = `${slot.date}T00:00:00Z`;
+  }
+
+  return { start, end };
+}
+
 export async function listSlots(req: Request, res: Response): Promise<void> {
   const where: Array<string> = [];
   const values = [];
@@ -343,20 +365,7 @@ export async function listSlots(req: Request, res: Response): Promise<void> {
             });
           }
 
-          let start, end;
-          if ("start" in slot) {
-            start = slot.start as string;
-            // FHIR slots require an end time. Scrapers don’t always get one,
-            // so assume 15 minute slots when unknown.
-            end =
-              (slot.end as string) ||
-              DateTime.fromISO(slot.start as string, { setZone: true })
-                .plus({ minutes: 15 })
-                .toISO();
-          } else {
-            start = `${slot.date}T00:00:00Z`;
-            end = `${slot.date}T00:00:00Z`;
-          }
+          const { start, end } = formatSlotTimes(slot);
 
           return JSON.stringify({
             resourceType: "Slot",
