@@ -1,4 +1,5 @@
 import type { AddressInfo } from "net";
+import { DateTime } from "luxon";
 import {
   useServerForTests,
   installTestDatabaseHooks,
@@ -128,14 +129,14 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
   });
 
   it("includes products as extensions", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      available: Availability.YES,
-      products: ["moderna", "jj"],
+    const location = await createRandomLocation({
+      availability: {
+        available: Availability.YES,
+        products: ["moderna", "jj"],
+      },
     });
 
-    const url = `smart-scheduling/schedules/states/${TestLocation.state}.ndjson`;
+    const url = `smart-scheduling/schedules/states/${location.state}.ndjson`;
     const response = await context.client.get(url, { responseType: "text" });
     expect(response.statusCode).toBe(200);
     const data = ndjsonParse(response.body);
@@ -174,24 +175,24 @@ describe("GET /smart-scheduling/slots/states/:state.ndjson", () => {
   });
 
   it("responds with all the relevant slots", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      slots: [
-        {
-          start: new Date(),
-          end: new Date(Date.now() + 10 * 60 * 1000),
-          available: Availability.YES,
-        },
-        {
-          start: new Date(Date.now() + 10 * 60 * 1000),
-          end: new Date(Date.now() + 20 * 60 * 1000),
-          available: Availability.NO,
-        },
-      ],
+    const location = await createRandomLocation({
+      availability: {
+        slots: [
+          {
+            start: DateTime.utc().toISO(),
+            end: DateTime.utc().plus({ minutes: 10 }).toISO(),
+            available: Availability.YES,
+          },
+          {
+            start: DateTime.utc().plus({ minutes: 10 }).toISO(),
+            end: DateTime.utc().plus({ minutes: 20 }).toISO(),
+            available: Availability.NO,
+          },
+        ],
+      },
     });
 
-    const url = `smart-scheduling/slots/states/${TestLocation.state}.ndjson`;
+    const url = `smart-scheduling/slots/states/${location.state}.ndjson`;
     const response = await context.client.get(url, { responseType: "text" });
     expect(response.statusCode).toBe(200);
     const data = ndjsonParse(response.body);
@@ -201,26 +202,24 @@ describe("GET /smart-scheduling/slots/states/:state.ndjson", () => {
   });
 
   it("responds capacity-based slots if we don't know slots", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      capacity: [
-        {
-          date: new Date().toISOString().slice(0, 10),
-          available: Availability.YES,
-          available_count: 10,
-        },
-        {
-          date: new Date(Date.now() + 24 * 60 * 60 * 1000)
-            .toISOString()
-            .slice(0, 10),
-          available: Availability.NO,
-          available_count: 0,
-        },
-      ],
+    const location = await createRandomLocation({
+      availability: {
+        capacity: [
+          {
+            date: DateTime.utc().toISODate(),
+            available: Availability.YES,
+            available_count: 10,
+          },
+          {
+            date: DateTime.utc().plus({ days: 1 }).toISODate(),
+            available: Availability.NO,
+            available_count: 0,
+          },
+        ],
+      },
     });
 
-    const url = `smart-scheduling/slots/states/${TestLocation.state}.ndjson`;
+    const url = `smart-scheduling/slots/states/${location.state}.ndjson`;
     const response = await context.client.get(url, { responseType: "text" });
     expect(response.statusCode).toBe(200);
     const data = ndjsonParse(response.body);

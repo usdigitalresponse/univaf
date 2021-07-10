@@ -8,6 +8,7 @@
  */
 
 import { Request, Response } from "express";
+import { DateTime } from "luxon";
 import { getHostUrl } from "./config";
 import * as db from "./db";
 import {
@@ -64,6 +65,8 @@ const DOSE_NUMBERS: { [index: string]: number[] } = {
   first_dose_only: [1],
   second_dose_only: [2],
 };
+
+const INVALID_ID_CHARACTERS = /[^A-Z\d.-]/gi;
 
 interface FhirIssue {
   severity: "fatal" | "error" | "warning" | "information";
@@ -340,27 +343,24 @@ export async function listSlots(req: Request, res: Response): Promise<void> {
             });
           }
 
-          let id = provider.id;
           let start, end;
           if ("start" in slot) {
-            start = slot.start;
-            // FHIR slots require an end time. Scrapers don’t always show one,
+            start = slot.start as string;
+            // FHIR slots require an end time. Scrapers don’t always get one,
             // so assume 15 minute slots when unknown.
             end =
-              slot.end ||
-              new Date(
-                new Date(slot.start).getTime() + 15 * 60 * 1000
-              ).toISOString();
-            id = `${id}-${new Date(slot.start).getTime()}`;
+              (slot.end as string) ||
+              DateTime.fromISO(slot.start as string, { setZone: true })
+                .plus({ minutes: 15 })
+                .toISO();
           } else {
             start = `${slot.date}T00:00:00Z`;
             end = `${slot.date}T00:00:00Z`;
-            id = `${id}-${slot.date}`;
           }
 
           return JSON.stringify({
             resourceType: "Slot",
-            id,
+            id: `${provider.id}-${start.replace(INVALID_ID_CHARACTERS, "")}`,
             schedule: {
               reference: `Schedule/${provider.id}`,
             },
