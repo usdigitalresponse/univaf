@@ -6,10 +6,37 @@ import {
 } from "./lib";
 import app from "../src/app";
 import { createLocation, updateAvailability } from "../src/db";
-import { TestLocation, TestLocation2 } from "./fixtures";
+import { TestLocation } from "./fixtures";
 import { Availability } from "../src/interfaces";
 
 installTestDatabaseHooks();
+
+/**
+ * Create a new provider with random identifiers.
+ * @param customizations Any specific values that should be set on the location.
+ *        If the `availability` property is set, an availability record will
+ *        also be created for the location (the value for `availability` only
+ *        needs to have the values you want to customize, acceptable values for
+ *        unspecified but required properties will be created for you).
+ * @returns {ProviderLocation}
+ */
+async function createRandomLocation(customizations: any) {
+  const location = await createLocation({
+    ...TestLocation,
+    id: null,
+    external_ids: [["test_id", Math.random().toString()]],
+    ...customizations,
+  });
+
+  if (customizations.availability) {
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      ...customizations.availability,
+    });
+  }
+
+  return location;
+}
 
 describe("GET /smart-scheduling/$bulk-publish", () => {
   const context = useServerForTests(app);
@@ -72,59 +99,31 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
     expect(data).toHaveLength(1);
   });
 
-  it("shows available with `has-availability` extension", async () => {
-    let location = await createLocation(TestLocation);
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      available: Availability.YES,
-    });
-    location = await createLocation({
-      ...TestLocation2,
-      state: TestLocation.state,
-    });
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      available: Availability.NO,
-    });
-    location = await createLocation({
-      ...TestLocation,
-      id: "123",
-      external_ids: [["random", "value"]],
-    });
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      available: Availability.UNKNOWN,
-    });
-    // This location has no availability record at all.
-    await createLocation({
-      ...TestLocation,
-      id: "456",
-      external_ids: [["another", "value"]],
-    });
-
-    const url = `smart-scheduling/schedules/states/${TestLocation.state}.ndjson`;
-    const response = await context.client.get(url, { responseType: "text" });
-    expect(response.statusCode).toBe(200);
-    const data = ndjsonParse(response.body);
-    expect(data).toHaveLength(4);
-
+  describe("`has-availability` extension", () => {
     const extension =
       "http://fhir-registry.smarthealthit.org/StructureDefinition/has-availability";
-    expect(data[0].extension).toContainEqual({
-      url: extension,
-      valueCode: "some",
-    });
-    expect(data[1].extension).toContainEqual({
-      url: extension,
-      valueCode: "none",
-    });
-    expect(data[2].extension).toContainEqual({
-      url: extension,
-      valueCode: "unknown",
-    });
-    expect(data[3].extension).toContainEqual({
-      url: extension,
-      valueCode: "unknown",
+
+    // Takes `LocationAvailability.available` value and
+    // expected `has-availability` extension value in SMART SL.
+    it.each([
+      [Availability.YES, "some"],
+      [Availability.NO, "none"],
+      [Availability.UNKNOWN, "unknown"],
+      // Test no availability record at all.
+      [null, "unknown"],
+    ])("represents %j as %j", async (available, expected) => {
+      const location = await createRandomLocation({
+        availability: available && { available },
+      });
+      const response = await context.client<any[]>(
+        `smart-scheduling/schedules/states/${location.state}.ndjson`,
+        { parseJson: ndjsonParse }
+      );
+
+      expect(response.body[0].extension).toContainEqual({
+        url: extension,
+        valueCode: expected,
+      });
     });
   });
 
