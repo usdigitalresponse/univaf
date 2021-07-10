@@ -253,14 +253,19 @@ export async function listSchedules(
           }
         }
         if (provider.availability?.doses) {
-          const doseNumbers = provider.availability.doses.flatMap(
-            (dose: string) => DOSE_NUMBERS[dose] || []
+          const doseNumbers = new Set(
+            provider.availability.doses.flatMap(
+              (dose: string) => DOSE_NUMBERS[dose] || []
+            )
           );
-          for (const doseNumber of new Set(doseNumbers)) {
-            extension.push({
-              url: EXTENSION_VACCINE_DOSE,
-              valueInteger: doseNumber,
-            });
+          // Ensure extensions numerically sorted (`DOSE_NUMBERS.*` should be).
+          for (const doseNumber of DOSE_NUMBERS.all_doses) {
+            if (doseNumbers.has(doseNumber)) {
+              extension.push({
+                url: EXTENSION_VACCINE_DOSE,
+                valueInteger: doseNumber,
+              });
+            }
           }
         }
 
