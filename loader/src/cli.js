@@ -77,7 +77,7 @@ async function run(options) {
           }`;
           const logData = {
             status_code: saveResult.statusCode,
-            source: data.availability.source,
+            source: data.availability?.source,
             location_id: data.id,
             location_name: data.name,
           };
