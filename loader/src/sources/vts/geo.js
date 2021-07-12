@@ -3,6 +3,8 @@ const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const { titleCase } = require("../../utils");
 
+updateworthyProviders = new Set(["CVS", "Rite-Aid"]);
+
 function warn(message, context) {
   console.warn(`VTS Geo: ${message}`, context);
   Sentry.captureMessage(message, Sentry.Severity.Info);
@@ -31,7 +33,11 @@ async function queryState(state) {
  * @returns {boolean}
  */
 function hasUsefulData(store) {
-  return store.properties.concordances?.length && store.geometry?.coordinates;
+  return (
+    store.properties.concordances?.length &&
+    store.geometry?.coordinates &&
+    updateworthyProviders.has(store.properties.provider?.name)
+  );
 }
 
 function formatStore(store) {
