@@ -1,3 +1,6 @@
+
+# The bastion server was manually created
+# this security group is associated with the server through the console.
 resource "aws_security_group" "bastion_security_group" {
 
   name        = "bastion-security"

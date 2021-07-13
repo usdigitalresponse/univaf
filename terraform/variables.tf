@@ -110,16 +110,6 @@ variable "loader_sentry_dsn" {
   sensitive   = true
 }
 
-variable "bastion_key_name" {
-  description = "The key pair name to use for running the bastion server"
-  default     = "univaf-bastion-key"
-}
-
-variable "bastion_ami_group_id" {
-  description = "AMI to be used for the bastion server"
-  default = "ami-03d5c68bab01f3496"
-}
-
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
   default     = "univaf-data-snapshots"
@@ -137,6 +127,7 @@ variable "datadog_api_key" {
   sensitive = true
 }
 
+# These AWS variables are present to clean up warnings in terraform
 variable "AWS_SECRET_ACCESS_KEY" {
   default = ""
 }
