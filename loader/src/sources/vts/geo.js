@@ -92,9 +92,20 @@ function formatStore(store) {
       ];
     }
 
+    systemsToSend = new Set([
+      "cvs",
+      "rite_aid",
+      "vaccinefinder_org",
+      "vaccinespotter_org",
+    ]);
+
     const externalIds = data.concordances
       .map(splitConcordance)
-      .filter((v) => v[0] != "getmyvax_org"); // ignore getmyvax concordances
+      .filter((v) => systemsToSend.has(v[0]));
+
+    if (!externalIds.length) {
+      return null;
+    }
 
     result = {
       name,
@@ -122,6 +133,7 @@ async function updateGeo(handler, options) {
     const formatted = stores.features
       .filter(hasUsefulData)
       .map(formatStore)
+      .filter(Boolean)
       .forEach((item) => handler(item, { update_location: true }));
 
     results = results.concat(formatted);
