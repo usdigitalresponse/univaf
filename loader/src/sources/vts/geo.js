@@ -99,9 +99,9 @@ function formatStore(store) {
       "vaccinespotter_org",
     ]);
 
-    const externalIds = data.concordances
-      .map(splitConcordance)
-      .filter((v) => systemsToSend.has(v[0]));
+    const concordances = data.concordances.map(splitConcordance);
+    const externalIds = concordances.filter((v) => systemsToSend.has(v[0]));
+    const univafPair = concordances.filter((v) => v[0] == "getmyvax_org")[0];
 
     if (!externalIds.length) {
       return null;
@@ -110,6 +110,7 @@ function formatStore(store) {
     result = {
       name,
       provider,
+      id: univafPair && univafPair[1],
       external_ids: externalIds,
       position: {
         longitude: store.geometry.coordinates[0],
