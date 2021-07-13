@@ -76,7 +76,7 @@ Follow this process when making any changes in terraform that may affect another
 2. Break out the parts that can be done advance of the above stuff and that can follow the normal path for doing things in code.
 3. Plan for when to do the work, giving an explicit time window for the changes so others on the team can be aware and avoid doing things that collide with it.
 4. Inform team members so they know you’ll be needing immediate review on some PRs.
-4. Give clear notification when you are starting and ending that work, so the rest of the team can act appropriately.
+5. Give clear notification when you are starting and ending that work, so the rest of the team can act appropriately.
 
 
 ## Bastion Server
