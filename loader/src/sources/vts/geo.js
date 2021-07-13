@@ -3,7 +3,29 @@ const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const { titleCase } = require("../../utils");
 
-updateworthyProviders = new Set(["CVS", "Rite-Aid"]);
+dataProviders = {
+  "Rite-Aid": {
+    provider: "rite_aid",
+    getStoreName: (data) => {
+      const m = data.name.match(/RITE AID PHARMACY #?(\d+)/i);
+      if (m) {
+        return `Rite Aid #${parseInt(m[1], 10)}`; // format as in riteaid/api.js
+      }
+      return data.name;
+    },
+  },
+  CVS: {
+    // modeled after code in cvs/api.js
+    provider: "cvs",
+    getStoreName: (data) => {
+      const m = data.name.match(/CVS Pharmacy, Inc. #?(\d+)/i);
+      if (m) {
+        return `CVS #${parseInt(m[1], 10)}`; // format as in cvs/api.js
+      }
+      return data.name;
+    },
+  },
+};
 
 function warn(message, context) {
   console.warn(`VTS Geo: ${message}`, context);
@@ -36,7 +58,8 @@ function hasUsefulData(store) {
   return (
     store.properties.concordances?.length &&
     store.geometry?.coordinates &&
-    updateworthyProviders.has(store.properties.provider?.name)
+    store.properties.provider?.name &&
+    store.properties.provider?.name in dataProviders
   );
 }
 
@@ -45,11 +68,20 @@ function formatStore(store) {
 
   let result;
   Sentry.withScope((scope) => {
+    const dataProvider = dataProviders[data.provider.name];
+    if (!dataProvider) {
+      error(`Unexpected provider name ${data.provider.name}`);
+      return null;
+    }
+
+    const provider = dataProvider.provider;
+    const name = dataProvider.getStoreName(data);
+
     scope.setContext("location", {
       id: store.id,
       url: data.vts_url,
-      name: data.name,
-      provider: data.provider,
+      name: name,
+      provider: provider,
     });
 
     function splitConcordance(concordance) {
@@ -65,7 +97,8 @@ function formatStore(store) {
       .filter((v) => v[0] != "getmyvax_org"); // ignore getmyvax concordances
 
     result = {
-      name: data.name,
+      name,
+      provider,
       external_ids: externalIds,
       position: {
         longitude: store.geometry.coordinates[0],
