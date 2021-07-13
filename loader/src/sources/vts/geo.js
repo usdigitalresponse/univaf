@@ -1,9 +1,7 @@
 const got = require("got");
 const Sentry = require("@sentry/node");
-const { Available, LocationType } = require("../../model");
-const { titleCase } = require("../../utils");
 
-dataProviders = {
+const dataProviders = {
   "Rite-Aid": {
     provider: "rite_aid",
     getStoreName: (data) => {
@@ -92,7 +90,7 @@ function formatStore(store) {
       ];
     }
 
-    systemsToSend = new Set([
+    const systemsToSend = new Set([
       "cvs",
       "rite_aid",
       "vaccinefinder_org",
@@ -122,7 +120,7 @@ function formatStore(store) {
 }
 
 async function updateGeo(handler, options) {
-  let states = options.states?.split(",").map((state) => state.trim());
+  const states = options.states?.split(",").map((state) => state.trim());
 
   if (!states || !states.length) {
     warn("No states specified for vts.geo");
