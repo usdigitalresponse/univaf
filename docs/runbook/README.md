@@ -64,6 +64,20 @@ After merging a PR into the `main` branch, you can deploy via the following step
 
 **The Demo UI** just runs as a GitHub pages site, and is automatically updated via the [`ui-deploy` workflow][workflow-ui-deploy] every time a commit lands on the `main` branch. You can view it at https://usdigitalresponse.github.io/univaf/.
 
+### Terraforming Locally
+
+In order to run terraform locally, you have to auth terraform to terraform cloud. This requires a cloud invite; reach out to the project owners to get an invite. Once you clone down the repository locally, navigate to the `terraform/` directory in your preferred shell. Run `terraform login`, which will create an API access token for you. You'll be prompted to paste it in to your shell in order to access it. Initialize to the backend using `terraform init`. At this point, you will be able to run terraform commands as expected: `terraform plan`, `terraform apply`, `terraform state list`...
+
+### Terraforming changes that require manual state intervention
+
+Follow this process when making any changes in terraform that may affect another person's work.
+
+1. Provide advance notice that this work would affect live TF/infra state outside just the code, and therefore bleed into any other things going on in parallel.
+2. Break out the parts that can be done advance of the above stuff and that can follow the normal path for doing things in code.
+3. Plan for when to do the work, giving an explicit time window for the changes so others on the team can be aware and avoid doing things that collide with it.
+4. Inform team members so they know you’ll be needing immediate review on some PRs.
+5. Give clear notification when you are starting and ending that work, so the rest of the team can act appropriately.
+
 
 ## Bastion Server
 

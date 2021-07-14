@@ -60,7 +60,7 @@ module "api_task" {
   source = "./modules/task"
 
   name   = "api"
-  image  = "${var.api_image}:${var.api_release_version}"
+  image  = "${aws_ecr_repository.server_repository.repository_url}:${var.api_release_version}"
   role   = aws_iam_role.ecs_task_execution_role.arn
   cpu    = var.cpu
   memory = var.memory
@@ -89,7 +89,7 @@ module "daily_data_snapshot_task" {
   source = "./modules/task"
 
   name    = "daily-data-snapshot"
-  image   = var.api_image
+  image   = aws_ecr_repository.server_repository.repository_url
   command = ["node", "scripts/availability_dump.js", "--write-to-s3", "--clear-log"]
   role    = aws_iam_role.ecs_task_execution_role.arn
 

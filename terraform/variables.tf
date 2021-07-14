@@ -18,11 +18,6 @@ variable "az_count" {
   default     = 2
 }
 
-variable "api_image" {
-  description = "Docker image to run in the ECS cluster"
-  default     = "681497372638.dkr.ecr.us-west-2.amazonaws.com/univaf-server"
-}
-
 variable "api_port" {
   description = "Port exposed by the docker image to redirect traffic to"
   default     = 3000
@@ -115,11 +110,6 @@ variable "loader_sentry_dsn" {
   sensitive   = true
 }
 
-variable "bastion_security_group_id" {
-  description = "ID for a security group in AWS that allows access to a bastion server inside our VPC. SSHing into this server will allow access to any services that allow this security group."
-  default     = "sg-06fc404762de692db"
-}
-
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
   default     = "univaf-data-snapshots"
@@ -135,4 +125,13 @@ variable "data_snapshot_aws_secret_key" {
 
 variable "datadog_api_key" {
   sensitive = true
+}
+
+# These AWS variables are present to clean up warnings in terraform
+variable "AWS_SECRET_ACCESS_KEY" {
+  default = ""
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  default = ""
 }
