@@ -1,6 +1,7 @@
 
 # The bastion server was manually created
 # this security group is associated with the server through the console.
+# The security group was manually imported to terraform state and is now tracked here.
 resource "aws_security_group" "bastion_security_group" {
 
   name        = "bastion-security"
