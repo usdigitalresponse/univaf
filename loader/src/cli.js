@@ -5,6 +5,7 @@ const Sentry = require("@sentry/node");
 const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
 const { sources } = require("./index");
+const { oneLine } = require("./utils");
 
 Sentry.init();
 
@@ -44,19 +45,14 @@ function createDatabaseSender() {
   };
 }
 
-function compoundHandler(...handlers) {
-  return function handler(...args) {
-    handlers.forEach((handle) => handle(...args));
-  };
-}
-
 // Returns true on success, and false on failure.
 async function run(options) {
-  const jsonSpacing = options.compact ? 0 : 2;
-
-  let handler = createResultLogger(jsonSpacing);
+  let handler;
   if (options.send) {
-    handler = compoundHandler(handler, createDatabaseSender());
+    handler = createDatabaseSender();
+  } else {
+    const jsonSpacing = options.compact ? 0 : 2;
+    handler = createResultLogger(jsonSpacing);
   }
 
   let success = true;
@@ -130,14 +126,20 @@ function main() {
         Load data about COVID-19 vaccine appointment availability from a
         variety of different sources.
 
+        Data about each vaccination location is written as a single line of JSON
+        on STDOUT, so you can pipe or stream the output to other files or
+        programs for processing. Informational messages are available on STDERR.
+
         Supported sources: ${Object.getOwnPropertyNames(sources).join(", ")}
       `.trim(),
       builder: (yargs) =>
         yargs
           .option("send", {
             type: "boolean",
-            describe:
-              "Send availability info to the API specified by the environment variable API_URL",
+            describe: oneLine`
+              Send availability info to the API specified by the environment
+              variable API_URL. If set, data will not be written to STDOUT.
+            `,
           })
           .option("compact", {
             type: "boolean",
@@ -145,8 +147,10 @@ function main() {
           })
           .option("states", {
             type: "string",
-            describe:
-              "Comma-separated list of states to query for multi-state sources (e.g. vaccinespotter)",
+            describe: oneLine`
+              Comma-separated list of states to query for multi-state sources
+              (e.g. vaccinespotter)
+            `,
           })
           .option("vaccinespotter-states", {
             type: "string",

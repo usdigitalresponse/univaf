@@ -17,20 +17,20 @@
   },
   "homepage": "https://getmyvax.org/",
   "devDependencies": {
-    "eslint": "^7.23.0",
-    "jest": "^26.6.3",
-    "nock": "^13.0.11",
+    "eslint": "^7.30.0",
+    "jest": "^27.0.6",
+    "nock": "^13.1.0",
     "prettier": "^2.2.1"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.10.0",
-    "@sentry/node": "^6.2.5",
-    "csv-parse": "^4.15.3",
-    "get-stream": "^5.2.0",
+    "@aws-sdk/client-s3": "^3.20.0",
+    "@sentry/node": "^6.8.0",
+    "csv-parse": "^4.16.0",
+    "get-stream": "^6.0.1",
     "got": "^11.8.2",
-    "luxon": "^1.26.0",
+    "luxon": "^1.27.0",
     "queue": "^6.0.2",
-    "yargs": "^15.4.1"
+    "yargs": "^17.0.1"
   },
   "jest": {
     "setupFilesAfterEnv": [

@@ -2,6 +2,7 @@ import {
   expectDatetimeString,
   installTestDatabaseHooks,
   useServerForTests,
+  ndjsonParse,
 } from "./lib";
 import "./matchers";
 import { getApiKeys } from "../src/config";
@@ -141,6 +142,26 @@ describe("GET /api/edge/locations", () => {
       products: ["pfizer", "moderna"],
     });
   });
+});
+
+describe("GET /api/edge/locations.ndjson", () => {
+  const context = useServerForTests(app);
+
+  it("responds with a list of locations containing external_ids", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+    const response = await context.client.get<any>({
+      url: "api/edge/locations.ndjson?external_id_format=v1",
+      responseType: "text",
+    } as any);
+    expect(response.statusCode).toBe(200);
+
+    const data = ndjsonParse(response.body);
+    expect(data).toHaveLength(1);
+    expect(data[0]).toHaveProperty("external_ids", TestLocation.external_ids);
+  });
+
+  // FIXME: this needs the same tests as the non-NDJSON formatted endpoint.
 });
 
 describe("GET /api/edge/locations/:id", () => {

@@ -115,7 +115,7 @@ export async function listStream(
       if (!started) {
         writeStart();
       }
-      await write(JSON.stringify(location + "\n"));
+      await write(JSON.stringify(location) + "\n");
     }
 
     // Stop if we've been reading for too long and write an error entry.

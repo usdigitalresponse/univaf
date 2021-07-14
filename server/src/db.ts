@@ -46,7 +46,6 @@ const providerLocationFields = [
   "info_url",
   "booking_phone",
   "booking_url",
-  "eligibility",
   "description",
   "requires_waitlist",
   "meta",

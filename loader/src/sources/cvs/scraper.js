@@ -1,3 +1,12 @@
+/**
+ * THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ *
+ * Scrape appointment availability from CVS's website.
+ * Note this scraper was originally focused only on the state of New Jersey,
+ * and has not been used in expanded capacity nationwide (it would probably
+ * need lots of updates to do so).
+ */
+
 const got = require("got");
 const knownStores = require("./known-stores");
 const { randomInt, randomUserAgent, warn } = require("../../utils");

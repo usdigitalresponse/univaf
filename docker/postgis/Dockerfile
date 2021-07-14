@@ -1,3 +1,9 @@
+# Custom build of PostGIS 3 w/ Postgres 13
+#
+# This exists because the official PostGIS images do not support ARM64
+# architectures and therefore can't be used on processors like the Apple M1.
+# See: https://github.com/postgis/docker-postgis/issues/216
+# (We can remove this custom image once that issue is resolved.)
 FROM postgres:13
 
 LABEL maintainer="PostGIS Project - https://postgis.net"

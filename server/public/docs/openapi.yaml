@@ -288,9 +288,48 @@ paths:
     get:
       summary: "SMART Scheduling Links"
       description: |
-        Provides location data according to the [SMART Scheduling Links standard](https://github.com/smart-on-fhir/smart-scheduling-links/specification.md).
-        Please see https://github.com/smart-on-fhir/smart-scheduling-links/ for
-        details.
+        Provides location data according to the [SMART Scheduling Links standard](https://github.com/smart-on-fhir/smart-scheduling-links/specification.md)
+        and follows the [guidelines for Slot Aggregators](https://github.com/smart-on-fhir/smart-scheduling-links/blob/master/specification.md#slot-aggregators).
+
+        Some particulars worth noting:
+
+        - Locations use the `meta.lastUpdated` to denote when information *about
+          the location* was last changed, not when availability was (this
+          matches the FHIR standard). For availability update times, check
+          *schedules* for `meta.extension` entries where `url == "http://hl7.org/fhir/StructureDefinition/lastSourceSync"`.
+          See the [section on freshness in the specification](https://github.com/smart-on-fhir/smart-scheduling-links/blob/master/specification.md#indicate-data-freshness)
+          for details.
+
+        - Locations currently have a single schedule. If product and dose info
+          is known, all available products and doses will be listed as
+          extensions on that schedule, rather than separate schedules for each
+          combination. (We may switch to multiple schedules in the future.)
+
+        - All schedules include the `"http://fhir-registry.smarthealthit.org/StructureDefinition/has-availability"`
+          extension. If you only need to know whether there are *some*
+          appointments available and don’t need information at the date or slot
+          level, you can use this and not bother requesting the slots at all.
+
+        - Locations with unknown availability have schedules, but no slots.
+
+        - Some locations do not list slots when they are busy. We do our best to
+          represent both free and busy slots, but some providers only publish
+          the slots that are available, and we can’t get details on unavailable
+          slots.
+
+        - Some slots are individual slots, while others represent larger
+          timeframes (often a whole day). The granularity of information depends
+          on the data source.
+
+        - Not all information about provider locations is available through this
+          API. In particular, it does not show:
+            - Provider organization name (`provider` in the main API), e.g. CVS,
+              Hope Hostpital, etc.
+            - Location type (`location_type` in the main API), e.g. mass
+              vaccination site, clinic, pharmacy.
+            - Whether you have to sign up for a waitlist (`requires_waitlist`
+              in the main API).
+            - Miscellaneous extra data (`meta` in the main API).
       responses:
         "200":
           description: SMART Scheduling Links manifest

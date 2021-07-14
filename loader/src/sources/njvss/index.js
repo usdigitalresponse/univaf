@@ -503,7 +503,6 @@ async function checkAvailability(handler, _options) {
       info_url: "https://covid19.nj.gov/pages/vaccine",
       booking_phone: "1-855-568-0545",
       booking_url: NJVSS_WEBSITE,
-      // eligibility: null
       description,
       requires_waitlist: false,
       meta: { njiis: location.provider_id },
