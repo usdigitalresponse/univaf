@@ -90,15 +90,17 @@ function formatStore(store) {
       ];
     }
 
-    const systemsToSend = new Set([
-      "cvs",
-      "rite_aid",
-      "vaccinefinder_org",
-      "vaccinespotter_org",
-    ]);
+    const systemsToSend = {
+      cvs: "cvs",
+      rite_aid: "rite_aid",
+      vaccinespotter_org: "vaccinespotter",
+      vaccinefinder_org: "vaccines_gov",
+    };
 
     const concordances = data.concordances.map(splitConcordance);
-    const externalIds = concordances.filter((v) => systemsToSend.has(v[0]));
+    const externalIds = concordances
+      .map((v) => (v[0] in systemsToSend ? [systemsToSend[v[0]], v[1]] : null))
+      .filter(Boolean);
     const univafPair = concordances.filter((v) => v[0] == "getmyvax_org")[0];
 
     if (!externalIds.length) {
