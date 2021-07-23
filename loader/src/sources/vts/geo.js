@@ -95,6 +95,7 @@ function formatStore(store) {
       rite_aid: "rite_aid",
       vaccinespotter_org: "vaccinespotter",
       vaccinefinder_org: "vaccines_gov",
+      vaccinefinder: "vaccines_gov",
     };
 
     const concordances = data.concordances.map(splitConcordance);
