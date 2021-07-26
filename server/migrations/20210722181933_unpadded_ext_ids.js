@@ -2,7 +2,7 @@ exports.up = async function (knex) {
   const zeroPaddedRows = await knex("external_ids")
     .select("provider_location_id", "system", "value")
     .where("system", "cvs")
-    .where("value", "~", "^0\\d+$");
+    .where("value", "~", String.raw`^0\d+$`);
 
   const unpaddedRows = zeroPaddedRows.map((r) => ({
     ...r,
