@@ -9,7 +9,10 @@ exports.up = async function (knex) {
     value: r.value.replace(/^0+/, ""),
   }));
 
-  return knex.batchInsert("external_ids", unpaddedRows);
+  return knex("external_ids")
+    .insert(unpaddedRows)
+    .onConflict(["provider_location_id", "system", "value"])
+    .ignore();
 };
 
 exports.down = async function () {
