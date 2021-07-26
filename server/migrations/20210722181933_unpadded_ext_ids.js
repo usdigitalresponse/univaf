@@ -11,9 +11,9 @@ exports.up = async function (knex) {
 
   if (unpaddedRows.length) {
     return knex("external_ids")
-    .insert(unpaddedRows)
-    .onConflict(["provider_location_id", "system", "value"])
-    .ignore();
+      .insert(unpaddedRows)
+      .onConflict(["provider_location_id", "system", "value"])
+      .ignore();
   }
 };
 
