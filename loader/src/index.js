@@ -1,4 +1,5 @@
 const sources = {
+  cdcApi: require("./sources/cdc/api"),
   cvsApi: require("./sources/cvs/api"),
   cvsScraper: require("./sources/cvs/scraper"),
   cvsSmart: require("./sources/cvs/smart"),
