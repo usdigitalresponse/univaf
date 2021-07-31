@@ -4,6 +4,7 @@ const sources = {
   cvsScraper: require("./sources/cvs/scraper"),
   cvsSmart: require("./sources/cvs/smart"),
   njvss: require("./sources/njvss"),
+  prepmod: require("./sources/prepmod"),
   riteAidApi: require("./sources/riteaid/api"),
   vaccinespotter: require("./sources/vaccinespotter"),
   waDoh: require("./sources/wa-doh"),
