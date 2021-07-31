@@ -41,8 +41,8 @@ async function queryState(state) {
       url: `https://api.vaccinatethestates.com/v0/${state}.geojson`,
     });
     return JSON.parse(response.body);
-  } catch (error) {
-    error(`Error fetching Vaccine Spotter data`, error);
+  } catch (e) {
+    error(`Error fetching Vaccine Spotter data`, e);
     return [];
   }
 }
