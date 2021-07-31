@@ -1,7 +1,7 @@
 const Sentry = require("@sentry/node");
 const got = require("got");
 
-const { Available, LocationType } = require("../../model");
+const { Available } = require("../../model");
 const { titleCase } = require("../../utils");
 
 function warn(message, context) {
@@ -25,7 +25,7 @@ async function* queryState(state) {
       });
       const results = JSON.parse(response.body);
 
-      for (result of results) {
+      for (const result of results) {
         yield result;
       }
 
