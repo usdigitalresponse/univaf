@@ -43,7 +43,7 @@ module "cvs_smart_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(2 minutes)"
+  schedule      = "rate(5 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -57,7 +57,7 @@ module "njvss_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(2 minutes)"
+  schedule      = "rate(5 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
