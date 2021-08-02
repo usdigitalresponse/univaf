@@ -55,8 +55,8 @@ function formatStore(storeItems) {
       provider: "cdc",
     });
 
-    const externalId = getExternalId(base);
-    if (!externalId) {
+    const storeExternalId = getStoreExternalId(base);
+    if (!storeExternalId) {
       return null;
     }
 
@@ -100,7 +100,10 @@ function formatStore(storeItems) {
 
     result = {
       id: `cdc:${base.provider_location_guid}`,
-      external_ids: [externalId],
+      external_ids: [
+        ["vaccines_gov", base.provider_location_guid],
+        storeExternalId,
+      ],
       name: titleCase(base.loc_name),
       provider: "cdc",
 
@@ -143,7 +146,7 @@ const systemNameRe = {
   walmart: /^Walmart/i,
 };
 
-function getExternalId(store) {
+function getStoreExternalId(store) {
   if (!store.loc_store_no || store.loc_store_no == "Not applicable") {
     return null;
   }
