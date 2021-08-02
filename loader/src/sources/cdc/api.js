@@ -55,6 +55,11 @@ function formatStore(storeItems) {
       provider: "cdc",
     });
 
+    const externalId = getExternalId(base);
+    if (!externalId) {
+      return null;
+    }
+
     const addressLines = [
       base.loc_admin_street1,
       base.loc_admin_street2,
@@ -95,7 +100,7 @@ function formatStore(storeItems) {
 
     result = {
       id: `cdc:${base.provider_location_guid}`,
-      external_ids: ["vaccines_gov", base.provider_location_guid], // XXX what's the right id to send here?
+      external_ids: [externalId],
       name: titleCase(base.loc_name),
       provider: "cdc",
 
@@ -124,6 +129,30 @@ function formatStore(storeItems) {
     };
   });
   return result;
+}
+
+const systemNameRe = {
+  costco: /^Costco/i,
+  cvs: /^CVS/i,
+  kroger: /^Kroger/i,
+  publix: /^Publix/i,
+  rite_aid: /^Rite Aid/i,
+  safeway: /^SAFEWAY/i,
+  sams_club: /^Sams Club/i,
+  walgreens: /^Walgreens/i,
+  walmart: /^Walmart/i,
+};
+
+function getExternalId(store) {
+  if (!store.loc_store_no || store.loc_store_no == "Not applicable") {
+    return null;
+  }
+
+  for (system in systemNameRe) {
+    if (store.loc_name.match(systemNameRe[system])) {
+      return [system, store.loc_store_no.replace(/[^0-9]/g, "")];
+    }
+  }
 }
 
 function formatValidAt(products) {
