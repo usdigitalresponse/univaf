@@ -164,9 +164,18 @@ function formatValidAt(products) {
 }
 
 function getAvailableCount(products) {
+  if (!Array.isArray(products)) {
+    products = [products];
+  }
+
   let sum = 0;
   for (const product of products) {
-    sum += parseInt(product.supply_level, 10);
+    const supplyLevel = parseInt(product.supply_level, 10);
+    if (supplyLevel > 0) {
+      sum += supplyLevel;
+    } else {
+      sum += product.in_stock ? 1 : 0;
+    }
   }
   return sum;
 }
