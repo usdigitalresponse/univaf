@@ -146,7 +146,7 @@ const systemNameRe = {
 };
 
 function getStoreExternalId(store) {
-  const m = store.loc_store_no.match(/^[A-Z]+(\d+)$/); // handle cases like RA105587 -> 105587
+  const m = store.loc_store_no.match(/^[A-Z]*(\d+)$/); // handle cases like RA105587 -> 105587
   if (!m) {
     return null;
   }
