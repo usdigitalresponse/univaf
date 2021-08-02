@@ -127,7 +127,6 @@ function formatStore(storeItems) {
         available: formatAvailable(productList),
         capacity: formatCapacity(productList),
         products: formatProductTypes(productList),
-        // XXX should doses be here?
       },
     };
   });
