@@ -176,29 +176,54 @@ function formatAvailable(products) {
   return getAvailableCount(products) > 0 ? Available.yes : Available.no;
 }
 
-function getProductType(productName) {
-  if (productName.startsWith("Pfizer")) {
-    return "pfizer";
+const ndcLookup = {
+  // from https://www.cdc.gov/vaccines/programs/iis/COVID-19-related-codes.html
+  // and https://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=ndc
+  [normalizeNDC("00310-1222-10")]: "astra_zeneca", //use
+  [normalizeNDC("00310-1222-15")]: "astra_zeneca", //sale
+  [normalizeNDC("59267-1000-01")]: "pfizer", //use
+  [normalizeNDC("59267-1000-02")]: "pfizer", //sale
+  [normalizeNDC("59267-1000-03")]: "pfizer", //sale
+  [normalizeNDC("59676-0580-05")]: "jj", //use
+  [normalizeNDC("59676-0580-15")]: "jj", //sale
+  [normalizeNDC("80631-0100-01")]: "novavax", //sale
+  [normalizeNDC("80631-0100-10")]: "novavax", //use
+  [normalizeNDC("80777-0273-10")]: "moderna", // use
+  [normalizeNDC("80777-0273-15")]: "moderna", // use
+  [normalizeNDC("80777-0273-98")]: "moderna", //sale
+  [normalizeNDC("80777-0273-99")]: "moderna", //sale
+};
+function normalizeNDC(ndcCode) {
+  // Note: this normalization makes consistent string values, not NDCs
+  const parsed = ndcCode.match(/^(\d+)-(\d+)-(\d+)$/);
+  if (!parsed) {
+    throw new Error(`Unexpected NDC format '${ndcCode}'`);
   }
-  if (productName.startsWith("Moderna")) {
-    return "moderna";
+  return parsed
+    .slice(1)
+    .map((n) => parseInt(n, 10).toString())
+    .join("~");
+}
+
+function getProductType(product) {
+  const found = ndcLookup[normalizeNDC(product.ndc)];
+  if (!found) {
+    throw new Error(
+      `Unexpected product NDC '${product.ndc}' (${JSON.stringify(product)})`
+    );
   }
-  if (productName.startsWith("Janssen")) {
-    return "jj";
-  }
-  // XXX Novavax, AstraZeneca?
-  throw new Error(`Unexpected product name '${productName}'`);
+  return found;
 }
 
 function formatProductTypes(products) {
-  return [...new Set(products.map((p) => getProductType(p.med_name)))];
+  return [...new Set(products.map((p) => getProductType(p)))];
 }
 
 function formatCapacity(products) {
   return products.map((product) => {
     const availableCount = parseInt(product.supply_level, 10);
     return {
-      products: [getProductType(product.med_name)],
+      products: [getProductType(product)],
       date: product.quantity_last_updated,
       available: availableCount > 0 ? Available.yes : Available.no,
       available_count: availableCount,
