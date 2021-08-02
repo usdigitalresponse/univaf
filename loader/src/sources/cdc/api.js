@@ -183,6 +183,7 @@ function getProductType(productName) {
   if (productName.startsWith("Janssen")) {
     return "jj";
   }
+  // XXX Novavax, AstraZeneca?
   throw new Error(`Unexpected product name '${productName}'`);
 }
 
