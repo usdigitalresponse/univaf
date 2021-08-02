@@ -148,7 +148,7 @@ function getExternalId(store) {
     return null;
   }
 
-  for (system in systemNameRe) {
+  for (const system in systemNameRe) {
     if (store.loc_name.match(systemNameRe[system])) {
       return [system, store.loc_store_no.replace(/[^0-9]/g, "")];
     }
