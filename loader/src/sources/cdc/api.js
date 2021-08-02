@@ -204,7 +204,6 @@ function formatCapacity(products) {
 }
 
 async function checkAvailability(handler, options) {
-  handler = (thing) => console.log(JSON.stringify(thing));
   const states = options.states?.split(",").map((state) => state.trim());
 
   if (!states || !states.length) {
