@@ -118,7 +118,7 @@ function formatStore(storeItems) {
         available_count: getAvailableCount(productList),
         available: formatAvailable(productList),
         capacity: formatCapacity(productList),
-        products: formatProducts(productList),
+        products: formatProductTypes(productList),
         // XXX should doses be here?
       },
     };
@@ -144,15 +144,28 @@ function formatAvailable(products) {
   return getAvailableCount(products) > 0 ? Available.yes : Available.no;
 }
 
-function formatProducts(products) {
-  [...new Set(products.map((p) => p.med_name))];
+function getProductType(productName) {
+  if (productName.startsWith("Pfizer")) {
+    return "pfizer";
+  }
+  if (productName.startsWith("Moderna")) {
+    return "moderna";
+  }
+  if (productName.startsWith("Janssen")) {
+    return "jj";
+  }
+  throw new Error(`Unexpected product name '${productName}'`);
+}
+
+function formatProductTypes(products) {
+  return [...new Set(products.map((p) => getProductType(p.med_name)))];
 }
 
 function formatCapacity(products) {
   return products.map((product) => {
     const availableCount = parseInt(product.supply_level, 10);
     return {
-      products: [product.med_name],
+      products: [getProductType(product.med_name)],
       date: product.quantity_last_updated,
       available: availableCount > 0 ? Available.yes : Available.no,
       available_count: availableCount,
