@@ -146,13 +146,15 @@ const systemNameRe = {
 };
 
 function getStoreExternalId(store) {
-  if (!store.loc_store_no || store.loc_store_no == "Not applicable") {
+  const m = store.loc_store_no.match(/^[A-Z]+(\d+)$/); // handle cases like RA105587 -> 105587
+  if (!m) {
     return null;
   }
+  const storeNumber = m[1];
 
   for (const system in systemNameRe) {
     if (store.loc_name.match(systemNameRe[system])) {
-      return [system, store.loc_store_no.replace(/[^0-9]/g, "")];
+      return [system, storeNumber];
     }
   }
 }
@@ -228,15 +230,22 @@ function formatProductTypes(products) {
 }
 
 function formatCapacity(products) {
-  return products.map((product) => {
-    const availableCount = parseInt(product.supply_level, 10);
-    return {
-      products: [getProductType(product)],
-      date: product.quantity_last_updated,
-      available: availableCount > 0 ? Available.yes : Available.no,
-      available_count: availableCount,
-    };
+  const byProductType = {};
+  products.forEach((product) => {
+    const productType = getProductType(product);
+    let cap = byProductType[productType];
+    if (!cap) {
+      byProductType[productType] = cap = {
+        products: [productType],
+        available_count: 0,
+      };
+    }
+
+    cap.date = product.quantity_last_updated;
+    cap.available_count += getAvailableCount(product);
+    cap.available = cap.available_count > 0 ? Available.yes : Available.no;
   });
+  return Object.values(byProductType);
 }
 
 async function checkAvailability(handler, options) {
