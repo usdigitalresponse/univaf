@@ -3,20 +3,21 @@ const { combine, timestamp, splat, printf, label } = format;
 
 const level = process.env.LOG_LEVEL || "info";
 
+const timestampPrefixLogFormat = printf(
+  ({ level, message, label, timestamp }) => {
+    return `${timestamp} [${label}] ${level}: ${message}`;
+  }
+);
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} [${label}] ${level}: ${message}`;
-});
-
-const simpleWithTimestamp = combine(
-  label({ label: 'univaf' }),
+const customFormatWithTimestamp = combine(
+  label({ label: "univaf" }),
   timestamp(),
   splat(),
-  myFormat
+  timestampPrefixLogFormat
 );
 
 export const logger: Logger = createLogger({
-  format: simpleWithTimestamp,
+  format: customFormatWithTimestamp,
   level: level,
   transports: [new transports.Console()],
 });
