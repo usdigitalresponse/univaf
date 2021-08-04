@@ -13,7 +13,7 @@ import Knex from "knex";
 import { validateAvailabilityInput } from "./validation";
 import { loadDbConfig } from "./config";
 import { UUID_PATTERN } from "./utils";
-import { logger } from "./logger";
+import { logger } from "./config";
 
 import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";

@@ -1,7 +1,7 @@
 import app from "./app";
 import process from "process";
 import { db } from "./db";
-import { logger } from "./logger";
+import { logger } from "./config";
 
 /**
  * Kill on SIGINT
@@ -21,12 +21,7 @@ process.on("SIGINT", () => {
  * Start Express server.
  */
 const server = app.listen(app.get("port"), () => {
-  logger.log(
-    "info",
-    "App is running at http://localhost:%s in %s mode",
-    app.get("port"),
-    app.get("env")
-  );
+  logger.info(`App is running at http://localhost:${app.get("port")} in ${app.get("env")} mode`);
   logger.info("Press CTRL-C to stop\n");
 });
 

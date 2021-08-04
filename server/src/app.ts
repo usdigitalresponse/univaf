@@ -5,7 +5,7 @@ import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
 import { authorizeRequest, versionedMiddleware } from "./middleware";
 import { datadogMiddleware } from "./datadog";
-import { logger } from "./logger";
+import { logger } from "./config";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
@@ -120,7 +120,7 @@ smartSchedulingApi.use((_req: Request, res: Response) =>
 smartSchedulingApi.use(Sentry.Handlers.errorHandler());
 smartSchedulingApi.use(
   (error: any, req: Request, res: Response, _next: NextFunction) => {
-    logger.error("ERRROR:", error);
+    logger.error(error);
     const diagnostics =
       app.get("env") === "development" ? error.stack : undefined;
     sendFhirError(res, 500, {
@@ -139,7 +139,7 @@ if (app.get("env") === "development") {
   app.use(errorHandler());
 } else {
   app.use((error: any, req: Request, res: Response, _next: NextFunction) => {
-    logger.error("ERROR:", error);
+    logger.error(error);
 
     // Get status code from error. This is stolen from Sentry.
     const errorStatus =
