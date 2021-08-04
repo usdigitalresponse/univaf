@@ -18,7 +18,6 @@ const customFormatWithTimestamp = combine(
   timestampPrefixLogFormat
 );
 
-
 export function getApiKeys(): Array<string> {
   let keyList = process.env.API_KEYS;
   if (!keyList) {
@@ -54,9 +53,16 @@ export function loadDbConfig(): Knex.Config {
   return knexfile[nodeEnv];
 }
 
-
 export const logger: Logger = createLogger({
   format: customFormatWithTimestamp,
   level: level,
   transports: [new transports.Console()],
 });
+
+export function logStackTrace(logger: Logger, err: any): void {
+  if (err instanceof Error) {
+    logger.error(`${err.stack || err}`);
+  } else {
+    logger.error(err);
+  }
+}

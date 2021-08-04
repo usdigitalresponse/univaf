@@ -13,7 +13,7 @@ import Knex from "knex";
 import { validateAvailabilityInput } from "./validation";
 import { loadDbConfig } from "./config";
 import { UUID_PATTERN } from "./utils";
-import { logger } from "./config";
+import { logger, logStackTrace } from "./config";
 
 import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
@@ -649,7 +649,7 @@ export async function updateAvailability(
   availabilityLog
     .write(id, { ...loggableUpdate, changed_at })
     .catch((error) => {
-      logger.error(error);
+      logStackTrace(logger, error);
       Sentry.captureException(error);
     });
 
