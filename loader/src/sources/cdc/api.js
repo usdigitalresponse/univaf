@@ -5,7 +5,7 @@ const { Available } = require("../../model");
 const { titleCase } = require("../../utils");
 
 function warn(message, context) {
-  console.warn(`VTS Geo: ${message}`, context);
+  console.warn(`CDC API: ${message}`, context);
   Sentry.captureMessage(message, Sentry.Severity.Info);
 }
 
