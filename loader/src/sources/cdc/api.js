@@ -10,7 +10,7 @@ function warn(message, context) {
 }
 
 function error(message, context) {
-  console.error(`VTS Geo: ${message}`, context);
+  console.error(`CDC API: ${message}`, context);
   Sentry.captureMessage(message, Sentry.Severity.Error);
 }
 
@@ -99,7 +99,6 @@ function formatStore(storeItems) {
     });
 
     result = {
-      id: `cdc:${base.provider_location_guid}`,
       external_ids: [
         ["vaccines_gov", base.provider_location_guid],
         storeExternalId,
@@ -108,27 +107,29 @@ function formatStore(storeItems) {
       provider: "cdc",
 
       address_lines: addressLines,
-      city: base.loc_admin_city,
+      city: titleCase(base.loc_admin_city),
       state: base.loc_admin_state,
       postal_code: base.loc_admin_zip,
-      position: {
-        longitude: base.longitude,
-        latitude: base.latitude,
-      },
       info_phone: base.loc_phone,
       info_url: base.web_address,
       meta,
 
       availability: {
-        source: "cdc",
+        source: storeExternalId[0],
         checked_at: new Date().toISOString(),
         valid_at: formatValidAt(productList),
         available_count: getAvailableCount(productList),
         available: formatAvailable(productList),
-        capacity: formatCapacity(productList),
         products: formatProductTypes(productList),
       },
     };
+
+    if (base.longitude && base.latitude) {
+      result.position = {
+        longitude: base.longitude,
+        latitude: base.latitude,
+      };
+    }
   });
   return result;
 }
@@ -227,25 +228,6 @@ function getProductType(product) {
 
 function formatProductTypes(products) {
   return [...new Set(products.map((p) => getProductType(p)))];
-}
-
-function formatCapacity(products) {
-  const byProductType = {};
-  products.forEach((product) => {
-    const productType = getProductType(product);
-    let cap = byProductType[productType];
-    if (!cap) {
-      byProductType[productType] = cap = {
-        products: [productType],
-        available_count: 0,
-      };
-    }
-
-    cap.date = product.quantity_last_updated;
-    cap.available_count += getAvailableCount(product);
-    cap.available = cap.available_count > 0 ? Available.yes : Available.no;
-  });
-  return Object.values(byProductType);
 }
 
 async function checkAvailability(handler, options) {
