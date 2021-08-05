@@ -1,7 +1,7 @@
 import app from "./app";
 import process from "process";
 import { db } from "./db";
-import { logger, logStackTrace } from "./config";
+import { logger, logStackTrace } from "./logger";
 
 const port = app.get("port");
 const env = app.get("env");

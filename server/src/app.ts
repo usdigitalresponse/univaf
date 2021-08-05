@@ -5,7 +5,7 @@ import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
 import { authorizeRequest, versionedMiddleware } from "./middleware";
 import { datadogMiddleware } from "./datadog";
-import { logger, logStackTrace } from "./config";
+import { logger, logStackTrace } from "./logger";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
