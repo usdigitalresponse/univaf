@@ -35,7 +35,7 @@ function error(message, context) {
   Sentry.captureMessage(message, Sentry.Severity.Error);
 }
 
-async function getStores(state) {
+async function getStores() {
   try {
     const response = await got({
       url: `https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/vts/vts-final-output-locations.geojson`,
