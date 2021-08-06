@@ -146,11 +146,18 @@ const systemNameRe = {
 };
 
 function getStoreExternalId(store) {
-  const m = store.loc_store_no.match(/^[A-Z]*(\d+)$/); // handle cases like RA105587 -> 105587
+  // handle numeric store numbers
+  let m = store.loc_store_no.match(/^(?<storeNo>\d+)$/);
+
+  if (!m) {
+    // handle vtrcks pins like RA105587 -> 5587 in addition to pure numeric store numbers
+    m = store.loc_store_no.match(/^([A-Z]{3}|[A-Z]{2}\d)(?<storeNo>\d{5})/i);
+  }
+
   if (!m) {
     return null;
   }
-  const storeNumber = m[1];
+  const storeNumber = parseInt(m.groups.storeNo, 10).toString();
 
   for (const system in systemNameRe) {
     if (store.loc_name.match(systemNameRe[system])) {
