@@ -35,14 +35,14 @@ function error(message, context) {
   Sentry.captureMessage(message, Sentry.Severity.Error);
 }
 
-async function queryState(state) {
+async function getStores(state) {
   try {
     const response = await got({
-      url: `https://api.vaccinatethestates.com/v0/${state}.geojson`,
+      url: `https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/vts/vts-final-output-locations.geojson`,
     });
     return JSON.parse(response.body);
   } catch (e) {
-    error(`Error fetching Vaccine Spotter data`, e);
+    error(`Error fetching stored Vaccine the States data`, e);
     return [];
   }
 }
@@ -111,7 +111,7 @@ function formatStore(store) {
     result = {
       name,
       provider,
-      id: univafPair && univafPair[1],
+      id: univafPair ? univafPair[1] : undefined,
       external_ids: externalIds,
       position: {
         longitude: store.geometry.coordinates[0],
@@ -129,17 +129,15 @@ async function updateGeo(handler, options) {
     warn("No states specified for vts.geo");
   }
 
-  let results = [];
-  for (const state of states) {
-    const stores = await queryState(state);
-    const formatted = stores.features
-      .filter(hasUsefulData)
-      .map(formatStore)
-      .filter(Boolean)
-      .forEach((item) => handler(item, { update_location: true }));
+  const statesFilter = new Set(states);
 
-    results = results.concat(formatted);
-  }
+  const stores = await getStores();
+  const results = stores.features
+    .filter((store) => statesFilter.has(store.properties.state))
+    .filter(hasUsefulData)
+    .map(formatStore)
+    .filter(Boolean)
+    .forEach((item) => handler(item, { update_location: true }));
 
   return results;
 }
