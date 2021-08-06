@@ -104,8 +104,7 @@ function formatStore(storeItems) {
         storeExternalId,
       ],
       name: titleCase(base.loc_name),
-      provider: "cdc",
-
+      provider: storeExternalId[0],
       address_lines: addressLines,
       city: titleCase(base.loc_admin_city),
       state: base.loc_admin_state,
@@ -115,7 +114,7 @@ function formatStore(storeItems) {
       meta,
 
       availability: {
-        source: storeExternalId[0],
+        source: "cdc",
         checked_at: new Date().toISOString(),
         valid_at: formatValidAt(productList),
         available_count: getAvailableCount(productList),
