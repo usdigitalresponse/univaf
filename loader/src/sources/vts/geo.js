@@ -90,6 +90,25 @@ function formatStore(store) {
       ];
     }
 
+    function filterConcordancePairs(pairs) {
+      return pairs
+        .filter(([systemCode, value]) => {
+          const system = systemsToSend[systemCode];
+          if (!system) {
+            return null;
+          }
+
+          if (system == "rite_aid" && value.match(/^1\d{5}$/)) {
+            // Stores like Rite Aid in this data set may have a store number like 105612.
+            // IDs with that shape (6 digits, starting with '1') are likely misparsed from VTrckS.
+            return null;
+          }
+
+          return [system, value];
+        })
+        .filter(Boolean);
+    }
+
     const systemsToSend = {
       cvs: "cvs",
       rite_aid: "rite_aid",
@@ -99,9 +118,7 @@ function formatStore(store) {
     };
 
     const concordances = data.concordances.map(splitConcordance);
-    const externalIds = concordances
-      .map((v) => (v[0] in systemsToSend ? [systemsToSend[v[0]], v[1]] : null))
-      .filter(Boolean);
+    const externalIds = filterConcordancePairs(concordances);
     const univafPair = concordances.filter((v) => v[0] == "getmyvax_org")[0];
 
     if (!externalIds.length) {
