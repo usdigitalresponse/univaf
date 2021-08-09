@@ -1,6 +1,8 @@
 import { Request } from "express";
 import type { Knex } from "knex";
 
+export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
+
 export function getApiKeys(): Array<string> {
   let keyList = process.env.API_KEYS;
   if (!keyList) {

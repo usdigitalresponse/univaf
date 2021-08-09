@@ -1,17 +1,21 @@
 import app from "./app";
 import process from "process";
 import { db } from "./db";
+import { logger, logStackTrace } from "./logger";
+
+const port = app.get("port");
+const env = app.get("env");
 
 /**
  * Kill on SIGINT
  */
 
 process.on("SIGINT", () => {
-  console.log("Received SIGINT: process exiting...");
+  logger.info("Received SIGINT: process exiting...");
   db.destroy()
     .then(() => process.exit(0))
     .catch((error: Error) => {
-      console.error(error);
+      logStackTrace(logger, error);
       process.exit(1);
     });
 });
@@ -19,13 +23,9 @@ process.on("SIGINT", () => {
 /**
  * Start Express server.
  */
-const server = app.listen(app.get("port"), () => {
-  console.log(
-    "  App is running at http://localhost:%d in %s mode",
-    app.get("port"),
-    app.get("env")
-  );
-  console.log("  Press CTRL-C to stop\n");
+const server = app.listen(port, () => {
+  logger.info(`App is running at http://localhost:${port} in ${env} mode`);
+  logger.info("Press CTRL-C to stop\n");
 });
 
 export default server;
