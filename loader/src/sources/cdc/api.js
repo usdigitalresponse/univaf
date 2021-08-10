@@ -2,7 +2,7 @@ const Sentry = require("@sentry/node");
 const got = require("got");
 
 const { Available } = require("../../model");
-const { titleCase } = require("../../utils");
+const { oneLine, titleCase } = require("../../utils");
 
 function warn(message, context) {
   console.warn(`CDC API: ${message}`, context);
@@ -295,9 +295,10 @@ function markUnexpectedCvsIds(store) {
   for (const [system, value] of store.external_ids) {
     if (unexpectedCvsIds.has(`${system}:${value}`)) {
       store.is_public = false;
-      store.internal_notes =
-        "Exists in CDC open data but not in CVS APIs; " +
-        "this location is probably not actually administering vaccines.";
+      store.internal_notes = oneLine`
+        Exists in CDC open data but not in CVS APIs;
+        this location is probably not actually administering vaccines.
+      `;
     }
   }
   return store;
