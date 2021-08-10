@@ -143,6 +143,7 @@ async function updateGeo(handler, options) {
 
   if (!states || !states.length) {
     warn("No states specified for vts.geo");
+    return [];
   }
 
   const statesFilter = new Set(states);
