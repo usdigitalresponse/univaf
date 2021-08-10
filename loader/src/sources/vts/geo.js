@@ -37,10 +37,9 @@ function error(message, context) {
 
 async function getStores() {
   try {
-    const response = await got({
-      url: `https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/vts/vts-final-output-locations.geojson`,
-    });
-    return JSON.parse(response.body);
+    return await got({
+      url: `https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/vts/vts-final-output-locations.geojson.gz`,
+    }).json();
   } catch (e) {
     error(`Error fetching stored Vaccine the States data`, e);
     return [];
