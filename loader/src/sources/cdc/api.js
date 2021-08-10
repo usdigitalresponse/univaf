@@ -257,8 +257,8 @@ async function checkAvailability(handler, options) {
     const stores = Object.values(entriesByStoreId);
     const formatted = stores
       .map(formatStore)
-      .map(markUnexpectedCVSs)
       .filter(Boolean)
+      .map(markUnexpectedCVSs)
       .forEach((item) => handler(item, { update_location: true }));
 
     results = results.concat(formatted);
@@ -291,10 +291,6 @@ const unexpectedCVSs = new Set([
 ]);
 
 function markUnexpectedCVSs(store) {
-  if (!store) {
-    return;
-  }
-
   // mutates stores that match above list to hide them and add an internal note
   for (const [system, value] of store.external_ids) {
     if (unexpectedCVSs.has(`${system}:${value}`)) {
