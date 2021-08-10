@@ -258,7 +258,7 @@ async function checkAvailability(handler, options) {
     const formatted = stores
       .map(formatStore)
       .filter(Boolean)
-      .map(markUnexpectedCVSs)
+      .map(markUnexpectedCvsIds)
       .forEach((item) => handler(item, { update_location: true }));
 
     results = results.concat(formatted);
@@ -269,7 +269,7 @@ async function checkAvailability(handler, options) {
 
 // 18 locations we don't have from the official CVS API that need special treatment
 // read more here: https://github.com/usdigitalresponse/univaf/pull/312#pullrequestreview-726002380
-const unexpectedCVSs = new Set([
+const unexpectedCvsIds = new Set([
   "cvs:9773",
   "cvs:9621",
   "cvs:9541",
@@ -290,10 +290,10 @@ const unexpectedCVSs = new Set([
   "cvs:7386",
 ]);
 
-function markUnexpectedCVSs(store) {
+function markUnexpectedCvsIds(store) {
   // mutates stores that match above list to hide them and add an internal note
   for (const [system, value] of store.external_ids) {
-    if (unexpectedCVSs.has(`${system}:${value}`)) {
+    if (unexpectedCvsIds.has(`${system}:${value}`)) {
       store.is_public = false;
       store.internal_notes =
         "Exists in CDC open data but not in CVS APIs; " +
