@@ -63,7 +63,7 @@ function formatStore(storeItems) {
     const addressLines = [
       base.loc_admin_street1,
       base.loc_admin_street2,
-    ].filter(Boolean);
+    ].filter((l) => l && l.match(/[a-z]+/i));
 
     const metaFields = [
       "insurance_accepted",
