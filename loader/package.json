@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test jest",
-    "eslint": "eslint --ext .js,.ts ."
+    "lint": "eslint --ext .js,.ts ."
   },
   "repository": {
     "type": "git",
