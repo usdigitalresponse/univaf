@@ -196,21 +196,21 @@ function formatAvailable(products) {
 const ndcLookup = {
   // from https://www.cdc.gov/vaccines/programs/iis/COVID-19-related-codes.html
   // and https://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=ndc
-  [normalizeNDC("00310-1222-10")]: "astra_zeneca", //use
-  [normalizeNDC("00310-1222-15")]: "astra_zeneca", //sale
-  [normalizeNDC("59267-1000-01")]: "pfizer", //use
-  [normalizeNDC("59267-1000-02")]: "pfizer", //sale
-  [normalizeNDC("59267-1000-03")]: "pfizer", //sale
-  [normalizeNDC("59676-0580-05")]: "jj", //use
-  [normalizeNDC("59676-0580-15")]: "jj", //sale
-  [normalizeNDC("80631-0100-01")]: "novavax", //sale
-  [normalizeNDC("80631-0100-10")]: "novavax", //use
-  [normalizeNDC("80777-0273-10")]: "moderna", // use
-  [normalizeNDC("80777-0273-15")]: "moderna", // use
-  [normalizeNDC("80777-0273-98")]: "moderna", //sale
-  [normalizeNDC("80777-0273-99")]: "moderna", //sale
+  [normalizeNdc("00310-1222-10")]: "astra_zeneca", //use
+  [normalizeNdc("00310-1222-15")]: "astra_zeneca", //sale
+  [normalizeNdc("59267-1000-01")]: "pfizer", //use
+  [normalizeNdc("59267-1000-02")]: "pfizer", //sale
+  [normalizeNdc("59267-1000-03")]: "pfizer", //sale
+  [normalizeNdc("59676-0580-05")]: "jj", //use
+  [normalizeNdc("59676-0580-15")]: "jj", //sale
+  [normalizeNdc("80631-0100-01")]: "novavax", //sale
+  [normalizeNdc("80631-0100-10")]: "novavax", //use
+  [normalizeNdc("80777-0273-10")]: "moderna", // use
+  [normalizeNdc("80777-0273-15")]: "moderna", // use
+  [normalizeNdc("80777-0273-98")]: "moderna", //sale
+  [normalizeNdc("80777-0273-99")]: "moderna", //sale
 };
-function normalizeNDC(ndcCode) {
+function normalizeNdc(ndcCode) {
   // Note: this normalization makes consistent string values, not NDCs
   const parsed = ndcCode.match(/^(\d+)-(\d+)-(\d+)$/);
   if (!parsed) {
@@ -223,7 +223,7 @@ function normalizeNDC(ndcCode) {
 }
 
 function getProductType(product) {
-  const found = ndcLookup[normalizeNDC(product.ndc)];
+  const found = ndcLookup[normalizeNdc(product.ndc)];
   if (!found) {
     throw new Error(
       `Unexpected product NDC '${product.ndc}' (${JSON.stringify(product)})`
