@@ -241,6 +241,7 @@ async function checkAvailability(handler, options) {
 
   if (!states || !states.length) {
     warn("No states specified for cdcApi");
+    return [];
   }
 
   let results = [];
