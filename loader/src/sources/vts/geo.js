@@ -1,5 +1,6 @@
 const got = require("got");
 const Sentry = require("@sentry/node");
+const { splitOnce } = require("../../utils");
 
 const dataProviders = {
   "Rite-Aid": {
@@ -60,11 +61,6 @@ function hasUsefulData(store) {
   );
 }
 
-function splitConcordance(concordance) {
-  const colon = concordance.indexOf(":");
-  return [concordance.substring(0, colon), concordance.substring(colon + 1)];
-}
-
 const systemsToSend = {
   cvs: "cvs",
   rite_aid: "rite_aid",
@@ -113,7 +109,7 @@ function formatStore(store) {
       provider: provider,
     });
 
-    const concordances = data.concordances.map(splitConcordance);
+    const concordances = data.concordances.map((c) => splitOnce(c, ":"));
     const externalIds = concordances.filter(validConcordance).map(renameSystem);
     const univafPair = concordances.filter((v) => v[0] == "getmyvax_org")[0];
 
