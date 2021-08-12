@@ -146,9 +146,9 @@ async function updateGeo(handler, options) {
     .filter((store) => statesFilter.has(store.properties.state))
     .filter(hasUsefulData)
     .map(formatStore)
-    .filter(Boolean)
-    .forEach((item) => handler(item, { update_location: true }));
+    .filter(Boolean);
 
+  results.forEach((item) => handler(item, { update_location: true }));
   return results;
 }
 
