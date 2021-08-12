@@ -171,7 +171,11 @@ function formatValidAt(products) {
 }
 
 function formatAvailable(products) {
-  return products.some((p) => p.in_stock) ? Available.yes : Available.no;
+  const availability = products.some((p) => {
+    const supplyLevel = parseInt(p.supply_level, 10);
+    return p.in_stock || supplyLevel > 0;
+  });
+  return availability ? Available.yes : Available.no;
 }
 
 const ndcLookup = {
