@@ -111,7 +111,6 @@ function formatStore(store) {
 
     const concordances = data.concordances.map((c) => splitOnce(c, ":"));
     const externalIds = concordances.filter(validConcordance).map(renameSystem);
-    const univafPair = concordances.filter((v) => v[0] == "getmyvax_org")[0];
 
     if (!externalIds.length) {
       return null;
@@ -120,7 +119,6 @@ function formatStore(store) {
     result = {
       name,
       provider,
-      id: univafPair ? univafPair[1] : undefined,
       external_ids: externalIds,
       position: {
         longitude: store.geometry.coordinates[0],
