@@ -87,7 +87,6 @@ function formatStore(storeItems) {
       "ndc",
       "med_name",
       "in_stock",
-      "supply_level",
       "quantity_last_updated",
     ];
     const productList = storeItems.map((item) => {
@@ -117,7 +116,6 @@ function formatStore(storeItems) {
         source: "cdc",
         checked_at: new Date().toISOString(),
         valid_at: formatValidAt(productList),
-        available_count: getAvailableCount(productList),
         available: formatAvailable(productList),
         products: formatProductTypes(productList),
       },
@@ -172,25 +170,8 @@ function formatValidAt(products) {
   return dates[dates.length - 1];
 }
 
-function getAvailableCount(products) {
-  if (!Array.isArray(products)) {
-    products = [products];
-  }
-
-  let sum = 0;
-  for (const product of products) {
-    const supplyLevel = parseInt(product.supply_level, 10);
-    if (supplyLevel > 0) {
-      sum += supplyLevel;
-    } else {
-      sum += product.in_stock ? 1 : 0;
-    }
-  }
-  return sum;
-}
-
 function formatAvailable(products) {
-  return getAvailableCount(products) > 0 ? Available.yes : Available.no;
+  return products.some((p) => p.in_stock) ? Available.yes : Available.no;
 }
 
 const ndcLookup = {
