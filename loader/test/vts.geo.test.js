@@ -16,7 +16,7 @@ describe("VtS Geo", () => {
   });
 
   it("gracefully handles no states", async () => {
-    locations = await checkAvailability(nopHandler, {});
+    const locations = await checkAvailability(nopHandler, {});
     expect(locations).toEqual([]);
   });
 
@@ -37,7 +37,6 @@ describe("VtS Geo", () => {
   });
 
   it("formats stores as expected", async () => {
-    // XXX one rite-aid, one cvs
     const locations = await checkAvailability(nopHandler, { states: "CA" });
     expect(locations[0]).toStrictEqual({
       external_ids: [
