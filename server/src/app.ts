@@ -11,7 +11,11 @@ import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
 
-Sentry.init();
+Sentry.init({
+  // Sentry's session tracking keeps the process running, which causes tests to
+  // hang. We don't really need session tracking, so turn it off.
+  autoSessionTracking: false,
+});
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.

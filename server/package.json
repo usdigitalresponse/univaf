@@ -16,7 +16,7 @@
     "serve-debug": "nodemon --inspect dist/src/server.js",
     "serve": "node dist/src/server.js",
     "start": "npm run serve",
-    "test": "NODE_ENV=test jest --coverage --verbose",
+    "test": "NODE_ENV=test jest --coverage --verbose --detectOpenHandles",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\"",
     "watch-node": "nodemon dist/src/server.js",
     "watch-test": "npm run test -- --watchAll",
@@ -31,8 +31,8 @@
     "lint": "eslint --ext .js,.ts ."
   },
   "dependencies": {
-    "@sentry/node": "^6.8.0",
-    "@sentry/tracing": "^6.8.0",
+    "@sentry/node": "^6.11.0",
+    "@sentry/tracing": "^6.11.0",
     "ajv": "^8.6.2",
     "ajv-formats": "^2.1.0",
     "ajv-keywords": "^5.0.0",
