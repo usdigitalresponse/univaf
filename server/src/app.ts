@@ -13,7 +13,7 @@ import bodyParser from "body-parser";
 
 Sentry.init({
   // shutdownTimeout: process.env.NODE_ENV === "test" ? 0 : undefined,
-  autoSessionTracking: false,
+  // autoSessionTracking: false,
 });
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
@@ -38,7 +38,7 @@ const app = express();
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 app.enable("trust proxy");
-app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.requestHandler({ flushTimeout: 0 }));
 app.use(logRequest);
 app.use(compression());
 app.use(bodyParser.json({ limit: "500kb" }));
