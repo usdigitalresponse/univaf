@@ -1,8 +1,7 @@
 import * as Sentry from "@sentry/node";
 
 afterAll(async () => {
-  const result = await Sentry.close();
-  console.log(`DONE WITH TEST TEARDOWN. Sentry closed? ${result}`);
+  await Sentry.close(2000);
 });
 
 // No-op to make TypeScript happy
