@@ -11,7 +11,9 @@ import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
 
-Sentry.init();
+Sentry.init({
+  shutdownTimeout: process.env.NODE_ENV === "test" ? 0 : undefined,
+});
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.
