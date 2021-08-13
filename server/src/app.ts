@@ -12,7 +12,8 @@ import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
 
 Sentry.init({
-  shutdownTimeout: process.env.NODE_ENV === "test" ? 0 : undefined,
+  // shutdownTimeout: process.env.NODE_ENV === "test" ? 0 : undefined,
+  autoSessionTracking: false,
 });
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
