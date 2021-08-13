@@ -60,6 +60,8 @@ jobs:
 
       - name: Run server tests
         run: |
+          printenv
+          echo '-------------------------'
           cd server
           npm run test
         env:
