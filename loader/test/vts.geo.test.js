@@ -45,7 +45,6 @@ describe("VtS Geo", () => {
         ["vaccinespotter", "270588201"],
         ["cvs", "09607"],
       ],
-      id: "5e13fa03-7763-4d74-81d0-54e4613cf56c",
       name:
         "CVS Pharmacy® & Drug Store at 901 Silver Spur Rd. Rolling Hills Estates, CA 90274",
       position: {
@@ -60,7 +59,6 @@ describe("VtS Geo", () => {
         ["vaccines_gov", "f8bd637a-1a6e-4262-b3f0-7c7a6b9b887d"],
         ["rite_aid", "6466"],
       ],
-      id: undefined,
       name: "Rite Aid #6466",
       position: {
         latitude: 32.71998,
