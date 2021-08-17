@@ -52,7 +52,7 @@
     "lodash": "4.17.21",
     "luxon": "^1.27.0",
     "pg": "^8.6.0",
-    "pg-query-stream": "^4.1.0",
+    "pg-query-stream": "^4.2.1",
     "winston": "3.3.3"
   },
   "devDependencies": {
