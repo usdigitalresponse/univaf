@@ -185,6 +185,7 @@ describe("GET /api/edge/locations/:id", () => {
       "data.external_ids",
       TestLocation.external_ids
     );
+    expect(res.body).toHaveProperty("data.position", TestLocation.position);
   });
 
   it("can be found by external_id containing external_ids", async () => {
@@ -207,6 +208,7 @@ describe("GET /api/edge/locations/:id", () => {
       "data.external_ids",
       TestLocation.external_ids
     );
+    expect(res.body).toHaveProperty("data.position", TestLocation.position);
   });
 
   it("does not mistakenly select by external_id", async () => {
