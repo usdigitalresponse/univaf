@@ -28,6 +28,10 @@ export const TestLocation: ProviderLocation = {
   state: "NJ",
   county: "Gloucester",
   postal_code: "06492-3109",
+  position: {
+    longitude: -74.17991,
+    latitude: 40.74444,
+  },
   booking_phone: "",
   booking_url: "https://covidvaccine.nj.gov/",
   description: "This location is available for 1st and 2nd dose recipients.",

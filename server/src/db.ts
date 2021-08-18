@@ -397,7 +397,9 @@ export async function getLocationByExternalIds(
       fields.map((name) => {
         name = `provider_locations.${name}`;
         // Ensure we return geo coordinates in an easy-to-handle format.
-        return name === "position" ? db.raw(selectSqlPoint(name)) : name;
+        return name === "provider_locations.position"
+          ? db.raw(selectSqlPoint(name))
+          : name;
       })
     )
     .modify((builder) => {
