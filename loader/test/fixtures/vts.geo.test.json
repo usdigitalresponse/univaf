@@ -1,0 +1,222 @@
+{
+  "type": "FeatureCollection",
+  "usage": {
+    "notice": "Please contact Vaccinate The States and let us know if you plan to rely on or publish this data. This data is provided with best-effort accuracy. If you are displaying this data, we expect you to display it responsibly. Please do not display it in a way that is easy to misread.",
+    "contact": {
+      "partnersEmail": "api@vaccinatethestates.com"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "rec06jodBnLAWp8WW",
+      "properties": {
+        "name": "CVS Pharmacy® & Drug Store at 901 Silver Spur Rd. Rolling Hills Estates, CA 90274",
+        "provider": {
+          "name": "CVS",
+          "provider_type": "Pharmacy",
+          "vaccine_info_url": "https://www.cvs.com/immunizations/covid-19-vaccine"
+        },
+        "state": "CA",
+        "location_type": "Pharmacy",
+        "phone_number": "310-377-6728",
+        "full_address": "901 Silver Spur Rd., Rolling Hills Estates CA, 90274",
+        "city": null,
+        "county": "Los Angeles",
+        "zip_code": null,
+        "hours": {
+          "unstructured": "Mo-Fr  08:00:00-23:00:00 | Sa  08:00:00-23:00:00 | Su  08:00:00-23:00:00",
+          "structured": [
+            {
+              "day": "monday",
+              "opens": "08:00",
+              "closes": "21:00"
+            },
+            {
+              "day": "tuesday",
+              "opens": "08:00",
+              "closes": "21:00"
+            },
+            {
+              "day": "wednesday",
+              "opens": "08:00",
+              "closes": "21:00"
+            },
+            {
+              "day": "thursday",
+              "opens": "08:00",
+              "closes": "21:00"
+            },
+            {
+              "day": "friday",
+              "opens": "08:00",
+              "closes": "21:00"
+            },
+            {
+              "day": "saturday",
+              "opens": "09:00",
+              "closes": "18:00"
+            },
+            {
+              "day": "sunday",
+              "opens": "10:00",
+              "closes": "18:00"
+            }
+          ]
+        },
+        "website": "https://www.cvs.com/store-locator/details-directions/9607",
+        "vaccines_offered": [
+          "Moderna"
+        ],
+        "accepts_appointments": true,
+        "accepts_walkins": false,
+        "concordances": [
+          "google_places:ChIJc16L9MBL3YARSU_SohHPFCA",
+          "vaccinefinder_org:d91cd449-36c2-4cf5-9c1a-f4136d9a2bf7",
+          "cvs:9607",
+          "placekey:zzw-223@5z6-3dn-td9",
+          "_tag_provider:cvs",
+          "us_carbon_health:bbe71944-72d4-4b85-84b8-f4a2bf057fae",
+          "us_giscorps_vaccine_providers:488752dd-bd86-4e0c-a5fa-f3ffe29f93e3",
+          "vaccinespotter_org:270588201",
+          "cvs:09607",
+          "vtrcks:CV1009607",
+          "getmyvax_org:5e13fa03-7763-4d74-81d0-54e4613cf56c"
+        ],
+        "last_verified_by_vts": "2021-05-12T21:18:41.722721+00:00",
+        "vts_url": "https://www.vaccinatethestates.com/?lng=-118.36650&lat=33.76920#rec06jodBnLAWp8WW"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.3665,
+          33.7692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "rec00SICtL8KJiLim",
+      "properties": {
+        "name": "RITE AID PHARMACY 06466",
+        "provider": {
+          "name": "Rite-Aid",
+          "provider_type": "Pharmacy",
+          "vaccine_info_url": null
+        },
+        "state": "CA",
+        "location_type": "Pharmacy",
+        "phone_number": "619-231-7405",
+        "full_address": "1411 KETTNER BOULEVARD, SAN DIEGO, CA 92101",
+        "city": null,
+        "county": "San Diego",
+        "zip_code": null,
+        "hours": {
+          "unstructured": "Monday - Sunday: 8:00 am-8:00 pm",
+          "structured": [
+            {
+              "day": "monday",
+              "opens": "08:00",
+              "closes": "20:00"
+            },
+            {
+              "day": "tuesday",
+              "opens": "08:00",
+              "closes": "20:00"
+            },
+            {
+              "day": "wednesday",
+              "opens": "08:00",
+              "closes": "20:00"
+            },
+            {
+              "day": "thursday",
+              "opens": "08:00",
+              "closes": "20:00"
+            },
+            {
+              "day": "friday",
+              "opens": "08:00",
+              "closes": "20:00"
+            },
+            {
+              "day": "saturday",
+              "opens": "10:00",
+              "closes": "18:00"
+            },
+            {
+              "day": "sunday",
+              "opens": "10:00",
+              "closes": "17:00"
+            }
+          ]
+        },
+        "website": null,
+        "vaccines_offered": [
+          "Moderna"
+        ],
+        "accepts_appointments": true,
+        "accepts_walkins": false,
+        "concordances": [
+          "google_places:ChIJt9skOKxU2YARERJMhNf4QfA",
+          "vaccinespotter_org:7382057",
+          "vaccinefinder_org:f8bd637a-1a6e-4262-b3f0-7c7a6b9b887d",
+          "rite_aid:106466",
+          "us_carbon_health:48063e1f-820f-4770-a9c5-3c4cb67077c7",
+          "_tag_provider:rite_aid",
+          "placekey:227@5z5-qf4-2tv",
+          "rite_aid:6466",
+          "us_carbon_health:c801fafc-0bc8-486c-b917-f4e188a0e0a3"
+        ],
+        "last_verified_by_vts": "2021-05-11T22:43:41.750424+00:00",
+        "vts_url": "https://www.vaccinatethestates.com/?lng=-117.16902&lat=32.71998#rec00SICtL8KJiLim"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.16902,
+          32.71998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "rec03MtqJLAZ6IHiu",
+      "properties": {
+        "name": "Farmacia Familiar",
+        "provider": null,
+        "state": "CA",
+        "location_type": "Pharmacy",
+        "phone_number": "714-486-2277",
+        "full_address": "1126 S Bristol St, Santa Ana, CA 92704",
+        "city": null,
+        "county": "Orange",
+        "zip_code": null,
+        "hours": {
+          "unstructured": "Monday - Friday: 9:00 AM – 7:00 PM\nSaturday: 9:30 AM – 4:00 PM\nSunday: Closed",
+          "structured": null
+        },
+        "website": null,
+        "vaccines_offered": [],
+        "accepts_appointments": false,
+        "accepts_walkins": true,
+        "concordances": [
+          "google_places:ChIJhyEF6OTY3IARa2rXtGIaQ4I",
+          "vaccinefinder_org:387354f1-02b6-4411-8a65-c2646fc9f820",
+          "us_carbon_health:c2baa160-7761-42ed-9d0c-68a244289e8a",
+          "placekey:zzw-228@5z4-rz4-jy9",
+          "us_giscorps_vaccine_providers:bf2ee838-acbb-4c15-9b51-cdd1b8f90b28"
+        ],
+        "last_verified_by_vts": "2021-05-26T00:50:01.129454+00:00",
+        "vts_url": "https://www.vaccinatethestates.com/?lng=-117.88518&lat=33.73392#rec03MtqJLAZ6IHiu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.88518,
+          33.73392
+        ]
+      }
+    }
+  ]
+}

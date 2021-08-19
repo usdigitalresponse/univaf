@@ -185,4 +185,19 @@ module.exports = {
   randomUserAgent() {
     return USER_AGENTS[module.exports.randomInt(0, USER_AGENTS.length)];
   },
+
+  /**
+   * Split `text` at most once by `delim`.
+   * @param {string} text
+   * @param {string} delim
+   * @returns {Array<string>}
+   */
+  splitOnce(text, delim) {
+    const i = text.indexOf(delim);
+    if (i < 0) {
+      return [text];
+    } else {
+      return [text.substring(0, i), text.substring(i + delim.length)];
+    }
+  },
 };
