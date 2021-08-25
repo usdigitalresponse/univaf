@@ -672,4 +672,19 @@ describe("POST /api/edge/update", () => {
     res = await context.client.get(`api/edge/locations/${location.id}`);
     expect(res.body).toHaveProperty("data.position", null);
   });
+
+  it("can create a location with is_public=false successfully", async () => {
+    let res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        ...TestLocation,
+        is_public: false,
+      },
+    });
+    expect(res.statusCode).toBe(201); // create instead of update
+    expect(res.body).toHaveProperty(
+      "data.availability.locationId",
+      TestLocation.id.toLowerCase()
+    );
+  });
 });
