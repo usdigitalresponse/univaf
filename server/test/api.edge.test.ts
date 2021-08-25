@@ -674,7 +674,7 @@ describe("POST /api/edge/update", () => {
   });
 
   it("can create a location with is_public=false successfully", async () => {
-    let res = await context.client.post("api/edge/update?update_location=1", {
+    const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
       json: {
         ...TestLocation,
