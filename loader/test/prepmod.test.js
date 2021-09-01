@@ -1,6 +1,6 @@
 const nock = require("nock");
 const { checkAvailability } = require("../src/sources/prepmod");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const { expectDatetimeString } = require("./support");
 
 describe("PrepMod API", () => {
   jest.setTimeout(60000);
