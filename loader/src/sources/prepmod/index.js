@@ -36,7 +36,7 @@ const PRODUCTS_BY_CVX_CODE = {
 
 // Use symbols to link slots -> schedules -> locations to avoid circular
 // references when serializing or logging data.
-const locationReference = Symbol("schedule");
+const locationReference = Symbol("location");
 const scheduleReference = Symbol("schedule");
 
 /**
