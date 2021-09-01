@@ -200,4 +200,22 @@ module.exports = {
       return [text.substring(0, i), text.substring(i + delim.length)];
     }
   },
+
+  /**
+   * Parse a Newline-Delimited JSON (NDJSON) document.
+   * @param {string} text
+   * @returns {Array<any>}
+   */
+  parseJsonLines(text) {
+    return text
+      .split("\n")
+      .filter(Boolean)
+      .map((line, index) => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          throw new SyntaxError(`Error parsing line ${index + 1}: ${line}`);
+        }
+      });
+  },
 };

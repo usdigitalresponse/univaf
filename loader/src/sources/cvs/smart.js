@@ -6,6 +6,7 @@
 const got = require("got");
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
+const { parseJsonLines } = require("../../utils");
 const { CVS_BOOKING_URL } = require("./shared");
 
 const CVS_SMART_API_URL =
@@ -23,24 +24,6 @@ const BOOKING_DEEP_LINK_EXTENSION =
 // references when serializing or logging data.
 const locationReference = Symbol("schedule");
 const scheduleReference = Symbol("schedule");
-
-/**
- * Parse a Newline-Delimited JSON (NDJSON) document.
- * @param {string} text
- * @returns {Array<any>}
- */
-function parseJsonLines(text) {
-  return text
-    .split("\n")
-    .filter(Boolean)
-    .map((line, index) => {
-      try {
-        return JSON.parse(line);
-      } catch (error) {
-        throw new SyntaxError(`Error parsing line ${index}: ${line}`);
-      }
-    });
-}
 
 /**
  * Lightweight wrapper for a SMART Scheduling Links API.
@@ -66,40 +49,28 @@ class SmartSchedulingLinksApi {
     return this.manifest.data;
   }
 
-  async *listLocations() {
+  async *listItems(type) {
     const manifest = await this.getManifest();
     for (const item of manifest.output) {
-      if (item.type === "Location") {
+      if (item.type === type) {
         const response = await got(item.url);
         for (const location of parseJsonLines(response.body)) {
           yield location;
         }
       }
     }
+  }
+
+  async *listLocations() {
+    yield* this.listItems("Location");
   }
 
   async *listSchedules() {
-    const manifest = await this.getManifest();
-    for (const item of manifest.output) {
-      if (item.type === "Schedule") {
-        const response = await got(item.url);
-        for (const location of parseJsonLines(response.body)) {
-          yield location;
-        }
-      }
-    }
+    yield* this.listItems("Schedule");
   }
 
   async *listSlots() {
-    const manifest = await this.getManifest();
-    for (const item of manifest.output) {
-      if (item.type === "Slot") {
-        const response = await got(item.url);
-        for (const location of parseJsonLines(response.body)) {
-          yield location;
-        }
-      }
-    }
+    yield* this.listItems("Slot");
   }
 }
 
