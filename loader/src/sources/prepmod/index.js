@@ -10,7 +10,7 @@ const got = require("got");
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const { parseJsonLines } = require("../../utils");
-const prepmodHostsByState = require("./hosts");
+const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
