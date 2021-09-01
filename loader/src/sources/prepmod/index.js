@@ -9,6 +9,7 @@
 const got = require("got");
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
+const { parseJsonLines } = require("../../utils");
 const prepmodHostsByState = require("./hosts");
 const { HTTPError } = require("got");
 
@@ -38,24 +39,6 @@ const PRODUCTS_BY_CVX_CODE = {
 // references when serializing or logging data.
 const locationReference = Symbol("location");
 const scheduleReference = Symbol("schedule");
-
-/**
- * Parse a Newline-Delimited JSON (NDJSON) document.
- * @param {string} text
- * @returns {Array<any>}
- */
-function parseJsonLines(text) {
-  return text
-    .split("\n")
-    .filter(Boolean)
-    .map((line, index) => {
-      try {
-        return JSON.parse(line);
-      } catch (error) {
-        throw new SyntaxError(`Error parsing line ${index}: ${line}`);
-      }
-    });
-}
 
 /**
  * Lightweight wrapper for a SMART Scheduling Links API.
