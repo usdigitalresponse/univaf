@@ -49,40 +49,28 @@ class SmartSchedulingLinksApi {
     return this.manifest.data;
   }
 
-  async *listLocations() {
+  async *listItems(type) {
     const manifest = await this.getManifest();
     for (const item of manifest.output) {
-      if (item.type === "Location") {
+      if (item.type === type) {
         const response = await got(item.url);
         for (const location of parseJsonLines(response.body)) {
           yield location;
         }
       }
     }
+  }
+
+  async *listLocations() {
+    yield* this.listItems("Location");
   }
 
   async *listSchedules() {
-    const manifest = await this.getManifest();
-    for (const item of manifest.output) {
-      if (item.type === "Schedule") {
-        const response = await got(item.url);
-        for (const location of parseJsonLines(response.body)) {
-          yield location;
-        }
-      }
-    }
+    yield* this.listItems("Schedule");
   }
 
   async *listSlots() {
-    const manifest = await this.getManifest();
-    for (const item of manifest.output) {
-      if (item.type === "Slot") {
-        const response = await got(item.url);
-        for (const location of parseJsonLines(response.body)) {
-          yield location;
-        }
-      }
-    }
+    yield* this.listItems("Slot");
   }
 }
 
