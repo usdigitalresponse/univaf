@@ -145,3 +145,18 @@ module "vts_geo_loader" {
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
 }
+
+module "prepmod_loader" {
+  source = "./modules/loader"
+
+  name          = "prepmod"
+  command       = ["--states", "AK,WA"]
+  loader_source = "prepmod"
+  api_url       = "http://${aws_alb.main.dns_name}"
+  api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
+  schedule      = "rate(5 minutes)"
+  cluster_arn   = aws_ecs_cluster.main.arn
+  role          = aws_iam_role.ecs_task_execution_role.arn
+  subnets       = aws_subnet.public.*.id
+}
