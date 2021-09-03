@@ -45,7 +45,7 @@ async function queryState(state) {
     url: RITE_AID_URL,
     headers: {
       "Proxy-Authorization": "ldap " + RITE_AID_KEY,
-      "User-Agent": process.env.USER_AGENT || ''
+      "User-Agent": process.env.USER_AGENT || "",
     },
     searchParams: { stateCode: state },
   }).json();

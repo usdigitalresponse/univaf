@@ -172,8 +172,9 @@ const njClinicZip = [
   "08046",
 ];
 
-const RANDOMIZE_USER_AGENT = (process.env.CVS_RANDOMIZE_USER_AGENT || 'true').toLowerCase() == 'true';
-const USER_AGENT = process.env.USER_AGENT || '';
+const RANDOMIZE_USER_AGENT =
+  (process.env.CVS_RANDOMIZE_USER_AGENT || "true").toLowerCase() == "true";
+const USER_AGENT = process.env.USER_AGENT || "";
 
 /**
  * Given an "address" string, invoke the CVS getIMZStores API.

@@ -13,7 +13,7 @@ async function queryState(state) {
   try {
     const response = await got({
       url: `https://www.vaccinespotter.org/api/v0/states/${state}.json`,
-      headers: { "User-Agent": process.env.USER_AGENT || '' }
+      headers: { "User-Agent": process.env.USER_AGENT || "" },
     });
     return JSON.parse(response.body);
   } catch (error) {
