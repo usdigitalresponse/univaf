@@ -134,7 +134,7 @@ export async function addExternalIds(
         if (system.includes(":")) {
           throw new ValueError(
             `Provider location ${id} externalIds include ${system} \
-            but ':' is not allowed`
+            but ':' is not allowed`.replace(/\n\s*/g, " ")
           );
         }
         return {
