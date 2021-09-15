@@ -229,6 +229,14 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     data = { ...data, external_ids: Object.entries(data.external_ids) };
   }
 
+  if ("address_lines" in data && !Array.isArray(data.address_lines)) {
+    if (!data.address_lines) {
+      data.address_lines = []; // substitute an empty array for any falsy input value
+    } else {
+      return sendError(res, "Invalid value for `address_lines`", 422);
+    }
+  }
+
   const result: any = { location: { action: null } };
 
   // FIXME: need to make this a single PG operation or add locks around it. It's

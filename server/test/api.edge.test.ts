@@ -702,6 +702,17 @@ describe("POST /api/edge/update", () => {
     expect(result).toHaveProperty("address_lines", []);
   });
 
+  it("create location errors with invalid address_lines value", async () => {
+    const res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        ...TestLocation,
+        address_lines: { test: 123 },
+      },
+    });
+    expect(res.statusCode).toBe(422);
+  });
+
   it("update location fails gracefully with empty string address_lines", async () => {
     const location = await createLocation(TestLocation);
     const res = await context.client.post("api/edge/update?update_location=1", {
@@ -715,5 +726,17 @@ describe("POST /api/edge/update", () => {
 
     const result = await getLocationById(location.id);
     expect(result).toHaveProperty("address_lines", []);
+  });
+
+  it("update location errors with invalid address_lines value", async () => {
+    const location = await createLocation(TestLocation);
+    const res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        address_lines: { test: 123 },
+      },
+    });
+    expect(res.statusCode).toBe(422);
   });
 });
