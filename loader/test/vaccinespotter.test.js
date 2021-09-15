@@ -383,4 +383,16 @@ describe("VaccineSpotter", () => {
     expect(result).toHaveProperty("name", "Harveys #1688");
     expect(result).toHaveProperty("external_ids.harveys", "1688");
   });
+
+  it("it should always send an array for address_lines", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        address: "",
+      },
+    });
+
+    expect(result).toHaveProperty("address_lines", []);
+  });
 });
