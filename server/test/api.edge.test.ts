@@ -687,4 +687,33 @@ describe("POST /api/edge/update", () => {
       TestLocation.id.toLowerCase()
     );
   });
+
+  it("create location fails gracefully with empty string address_lines", async () => {
+    const res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        ...TestLocation,
+        address_lines: "",
+      },
+    });
+    expect(res.statusCode).toBe(201); // create instead of update
+
+    const result = await getLocationById(TestLocation.id);
+    expect(result).toHaveProperty("address_lines", []);
+  });
+
+  it("update location fails gracefully with empty string address_lines", async () => {
+    const location = await createLocation(TestLocation);
+    const res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        id: location.id,
+        address_lines: "",
+      },
+    });
+    expect(res.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result).toHaveProperty("address_lines", []);
+  });
 });
