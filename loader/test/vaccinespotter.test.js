@@ -393,6 +393,6 @@ describe("VaccineSpotter", () => {
       },
     });
 
-    expect(result).toHaveProperty("address_lines", []);
+    expect(result).toHaveProperty("address_lines", undefined);
   });
 });

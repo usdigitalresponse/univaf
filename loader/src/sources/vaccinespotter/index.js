@@ -256,9 +256,9 @@ const formatters = {
       id = `vaccinespotter:${store.properties.id}`;
     }
 
-    const addressLines = [];
+    let addressLines;
     if (store.properties.address) {
-      addressLines.push(titleCase(store.properties.address));
+      addressLines = [titleCase(store.properties.address)];
     }
 
     return {

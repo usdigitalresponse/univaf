@@ -713,7 +713,7 @@ describe("POST /api/edge/update", () => {
     expect(res.statusCode).toBe(422);
   });
 
-  it("update location fails gracefully with empty string address_lines", async () => {
+  it("update location succeeds with empty string address_lines", async () => {
     const location = await createLocation(TestLocation);
     const res = await context.client.post("api/edge/update?update_location=1", {
       headers,
