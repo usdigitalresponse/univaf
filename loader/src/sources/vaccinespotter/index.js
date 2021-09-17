@@ -256,14 +256,17 @@ const formatters = {
       id = `vaccinespotter:${store.properties.id}`;
     }
 
+    let addressLines;
+    if (store.properties.address) {
+      addressLines = [titleCase(store.properties.address)];
+    }
+
     return {
       id,
       location_type: LocationType.pharmacy,
       name: store.properties.name || store.properties.provider_brand_name,
       provider: providerBrand,
-      address_lines: store.properties.address && [
-        titleCase(store.properties.address),
-      ],
+      address_lines: addressLines,
       city: store.properties.city && titleCase(store.properties.city),
       state: store.properties.state,
       postal_code: store.properties.postal_code,
