@@ -132,6 +132,12 @@ export async function addExternalIds(
   await dbConn("external_ids")
     .insert(
       toInsert.map(([system, value]: [string, string]) => {
+        if (system.includes(":")) {
+          throw new ValueError(
+            `Provider location ${id} externalIds include ${system} \
+            but ':' is not allowed`.replace(/\n\s*/g, " ")
+          );
+        }
         return {
           provider_location_id: id,
           system,
