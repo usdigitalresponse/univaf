@@ -9,7 +9,7 @@ module "db" {
   database          = "postgres" # RDS has a restriction here for the database name, no hyphens
   name              = "availability-db"
   engine            = "postgres"
-  engine_version    = "13.1"
+  engine_version    = "13.3"
   allocated_storage = var.db_size
   instance_class    = var.db_instance
   ingress_allow_security_groups = compact([
