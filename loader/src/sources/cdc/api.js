@@ -4,6 +4,9 @@ const got = require("got");
 const { Available } = require("../../model");
 const { oneLine, titleCase } = require("../../utils");
 
+const API_HOST = "https://data.cdc.gov";
+const API_PATH = "/resource/5jp2-pgaw.json";
+
 function warn(message, context) {
   console.warn(`CDC API: ${message}`, context);
   Sentry.captureMessage(message, Sentry.Severity.Info);
@@ -21,7 +24,12 @@ async function* queryState(state) {
   while (true) {
     try {
       const response = await got({
-        url: `https://data.cdc.gov/resource/5jp2-pgaw.json?$limit=${PAGE_SIZE}&$offset=${offset}&loc_admin_state=${state}`,
+        url: `${API_HOST}${API_PATH}`,
+        searchParams: {
+          $limit: PAGE_SIZE,
+          $offset: offset,
+          loc_admin_state: state,
+        },
       });
       const results = JSON.parse(response.body);
 
@@ -164,6 +172,11 @@ function getStoreExternalId(store) {
   }
 }
 
+function isInStock(product) {
+  const supplyLevel = parseInt(product.supply_level, 10);
+  return product.in_stock || supplyLevel > 0;
+}
+
 function formatValidAt(products) {
   const dates = products.map((p) => p.quantity_last_updated);
   dates.sort();
@@ -171,10 +184,7 @@ function formatValidAt(products) {
 }
 
 function formatAvailable(products) {
-  const availability = products.some((p) => {
-    const supplyLevel = parseInt(p.supply_level, 10);
-    return p.in_stock || supplyLevel > 0;
-  });
+  const availability = products.some(isInStock);
   return availability ? Available.yes : Available.no;
 }
 
@@ -195,6 +205,7 @@ const ndcLookup = {
   [normalizeNdc("80777-0273-98")]: "moderna", //sale
   [normalizeNdc("80777-0273-99")]: "moderna", //sale
 };
+
 function normalizeNdc(ndcCode) {
   // Note: this normalization makes consistent string values, not NDCs
   const parsed = ndcCode.match(/^(\d+)-(\d+)-(\d+)$/);
@@ -218,7 +229,7 @@ function getProductType(product) {
 }
 
 function formatProductTypes(products) {
-  return [...new Set(products.map((p) => getProductType(p)))];
+  return [...new Set(products.filter(isInStock).map(getProductType))];
 }
 
 async function checkAvailability(handler, options) {
@@ -243,8 +254,9 @@ async function checkAvailability(handler, options) {
     const formatted = stores
       .map(formatStore)
       .filter(Boolean)
-      .map(markUnexpectedCvsIds)
-      .forEach((item) => handler(item, { update_location: true }));
+      .map(markUnexpectedCvsIds);
+
+    formatted.forEach((item) => handler(item, { update_location: true }));
 
     results = results.concat(formatted);
   }
@@ -290,5 +302,7 @@ function markUnexpectedCvsIds(store) {
 }
 
 module.exports = {
+  API_HOST,
+  API_PATH,
   checkAvailability,
 };
