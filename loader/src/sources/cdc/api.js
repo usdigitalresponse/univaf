@@ -172,6 +172,11 @@ function getStoreExternalId(store) {
   }
 }
 
+function isInStock(product) {
+  const supplyLevel = parseInt(product.supply_level, 10);
+  return product.in_stock || supplyLevel > 0;
+}
+
 function formatValidAt(products) {
   const dates = products.map((p) => p.quantity_last_updated);
   dates.sort();
@@ -179,10 +184,7 @@ function formatValidAt(products) {
 }
 
 function formatAvailable(products) {
-  const availability = products.some((p) => {
-    const supplyLevel = parseInt(p.supply_level, 10);
-    return p.in_stock || supplyLevel > 0;
-  });
+  const availability = products.some(isInStock);
   return availability ? Available.yes : Available.no;
 }
 
@@ -203,6 +205,7 @@ const ndcLookup = {
   [normalizeNdc("80777-0273-98")]: "moderna", //sale
   [normalizeNdc("80777-0273-99")]: "moderna", //sale
 };
+
 function normalizeNdc(ndcCode) {
   // Note: this normalization makes consistent string values, not NDCs
   const parsed = ndcCode.match(/^(\d+)-(\d+)-(\d+)$/);
@@ -226,7 +229,7 @@ function getProductType(product) {
 }
 
 function formatProductTypes(products) {
-  return [...new Set(products.map((p) => getProductType(p)))];
+  return [...new Set(products.filter(isInStock).map(getProductType))];
 }
 
 async function checkAvailability(handler, options) {
