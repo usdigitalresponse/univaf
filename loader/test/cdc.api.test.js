@@ -12,6 +12,8 @@ describe("CDC Open Data API", () => {
   });
 
   it("should only show products that are in stock", async () => {
+    // This fixture lists Moderna, Pfizer, and J&J products, but only Pfizer is
+    // flagged as in stock.
     nock(API_HOST)
       .get(API_PATH)
       .query(true)
