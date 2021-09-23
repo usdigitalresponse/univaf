@@ -4,6 +4,9 @@ const got = require("got");
 const { Available } = require("../../model");
 const { oneLine, titleCase } = require("../../utils");
 
+const API_HOST = "https://data.cdc.gov";
+const API_PATH = "/resource/5jp2-pgaw.json";
+
 function warn(message, context) {
   console.warn(`CDC API: ${message}`, context);
   Sentry.captureMessage(message, Sentry.Severity.Info);
@@ -21,7 +24,12 @@ async function* queryState(state) {
   while (true) {
     try {
       const response = await got({
-        url: `https://data.cdc.gov/resource/5jp2-pgaw.json?$limit=${PAGE_SIZE}&$offset=${offset}&loc_admin_state=${state}`,
+        url: `${API_HOST}${API_PATH}`,
+        searchParams: {
+          $limit: PAGE_SIZE,
+          $offset: offset,
+          loc_admin_state: state,
+        },
       });
       const results = JSON.parse(response.body);
 
@@ -243,8 +251,9 @@ async function checkAvailability(handler, options) {
     const formatted = stores
       .map(formatStore)
       .filter(Boolean)
-      .map(markUnexpectedCvsIds)
-      .forEach((item) => handler(item, { update_location: true }));
+      .map(markUnexpectedCvsIds);
+
+    formatted.forEach((item) => handler(item, { update_location: true }));
 
     results = results.concat(formatted);
   }
@@ -290,5 +299,7 @@ function markUnexpectedCvsIds(store) {
 }
 
 module.exports = {
+  API_HOST,
+  API_PATH,
   checkAvailability,
 };
