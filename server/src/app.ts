@@ -53,13 +53,16 @@ app.use(urlDecodeSpecialPathChars);
  */
 
 app.get("/", (_req: Request, res: Response) => res.redirect("/docs/"));
-app.get("/debugme", (_req: Request, _res: Response) => {
-  throw new Error("TESTING SENTRY AGAIN");
-});
 app.get("/health", (req: Request, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
   res.status(200).send("OK!");
 });
+if (app.get("env") !== "production") {
+  // Use this route to test error handlers.
+  app.get("/debugme", (_req: Request, _res: Response) => {
+    throw new Error("This is an error from a route handler");
+  });
+}
 
 // Caching -------------------------------------------------------
 const shortCacheTime = 10;
