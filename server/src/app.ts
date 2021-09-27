@@ -38,7 +38,13 @@ const app = express();
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
+// We are behind AWS ELBs which set reverse-proxy related headers.
 app.enable("trust proxy");
+// Don't advertise that we are Express-based in case someone is scanning for
+// servers with exploitable vulnerabilities.
+app.disable("x-powered-by");
+
+// Middleware
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
 app.use(compression());
