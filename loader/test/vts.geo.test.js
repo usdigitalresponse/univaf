@@ -45,8 +45,7 @@ describe("VtS Geo", () => {
         ["vaccinespotter", "270588201"],
         ["cvs", "09607"],
       ],
-      name:
-        "CVS Pharmacy® & Drug Store at 901 Silver Spur Rd. Rolling Hills Estates, CA 90274",
+      name: "CVS Pharmacy® & Drug Store at 901 Silver Spur Rd. Rolling Hills Estates, CA 90274",
       position: {
         latitude: 33.7692,
         longitude: -118.3665,

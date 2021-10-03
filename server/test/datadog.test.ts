@@ -6,11 +6,11 @@ import { Response } from "express";
 installTestDatabaseHooks();
 
 const mockResponse = () => {
-  return ({
+  return {
     status: jest.fn().mockReturnThis(),
     json: jest.fn().mockReturnThis(),
     on: jest.fn(),
-  } as any) as Response;
+  } as any as Response;
 };
 
 describe("datadog middleware", () => {

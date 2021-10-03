@@ -90,14 +90,12 @@ const TestSlots = [
     end: "2021-05-18T19:00:00.000Z",
     extension: [
       {
-        url:
-          "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link",
+        url: "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link",
         valueUrl:
           "https://www.cvs.com/immunizations/covid-19-vaccine?cid=oc_vacfnd_cvd",
       },
       {
-        url:
-          "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
+        url: "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
         valueInteger: "0",
       },
     ],
@@ -113,14 +111,12 @@ const TestSlots = [
     end: "2021-05-19T19:00:00.000Z",
     extension: [
       {
-        url:
-          "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link",
+        url: "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link",
         valueUrl:
           "https://www.cvs.com/immunizations/covid-19-vaccine?cid=oc_vacfnd_cvd",
       },
       {
-        url:
-          "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
+        url: "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
         valueInteger: "1",
       },
     ],

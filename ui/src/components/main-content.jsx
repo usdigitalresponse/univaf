@@ -163,7 +163,8 @@ export default class MainContent extends React.Component {
 
       if (record.availability) {
         // TODO: this fix should happen in the API server.
-        record.availability.available = record.availability.available.toLowerCase();
+        record.availability.available =
+          record.availability.available.toLowerCase();
 
         record.availability.checked_at = new Date(
           record.availability.checked_at
