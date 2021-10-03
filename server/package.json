@@ -51,7 +51,6 @@
     "knex": "^0.95.11",
     "lodash": "4.17.21",
     "luxon": "^1.27.0",
-    "package.json": "^2.0.1",
     "pg": "^8.7.1",
     "pg-query-stream": "^4.1.0",
     "winston": "3.3.3"
