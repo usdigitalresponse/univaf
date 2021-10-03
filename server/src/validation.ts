@@ -50,7 +50,8 @@ ajv.addKeyword({
   },
 });
 
-const datetimePattern = /^\d{4}-\d\d-\d\d(T|\s)\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:?\d\d)?$/;
+const datetimePattern =
+  /^\d{4}-\d\d-\d\d(T|\s)\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:?\d\d)?$/;
 
 // Ensures a string is formatted as a W3C-Style ISO 8601 datetime with timezone.
 // If there's no timezone, it will set the default to the value of the keyword.

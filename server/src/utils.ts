@@ -2,7 +2,8 @@ import { NextFunction, RequestHandler, Request, Response } from "express";
 import { URLSearchParams, format as urlFormat, parse as urlParse } from "url";
 import { ValueError } from "./exceptions";
 
-export const UUID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
+export const UUID_PATTERN =
+  /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
 
 export type PromiseHandler = (
   request: Request,

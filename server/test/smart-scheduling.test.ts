@@ -116,8 +116,7 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
     const data = ndjsonParse(response.body);
 
     expect(data[0].extension).toContainEqual({
-      url:
-        "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product",
+      url: "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product",
       valueCoding: {
         system: "http://hl7.org/fhir/sid/cvx",
         code: 207,
@@ -125,8 +124,7 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
       },
     });
     expect(data[0].extension).toContainEqual({
-      url:
-        "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product",
+      url: "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product",
       valueCoding: {
         system: "http://hl7.org/fhir/sid/cvx",
         code: 212,
@@ -201,15 +199,13 @@ describe("GET /smart-scheduling/slots/states/:state.ndjson", () => {
 
     expect(data[0]).toHaveProperty("status", "free");
     expect(data[0].extension).toContainEqual({
-      url:
-        "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
+      url: "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
       valueInteger: 10,
     });
 
     expect(data[1]).toHaveProperty("status", "busy");
     expect(data[1].extension).toContainEqual({
-      url:
-        "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
+      url: "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
       valueInteger: 0,
     });
   });

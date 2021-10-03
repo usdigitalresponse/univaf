@@ -183,8 +183,7 @@ const njClinicZip = [
  */
 async function queryClinic(address) {
   const opt = {
-    url:
-      "https://www.cvs.com/Services/ICEAGPV1/immunization/1.0.0/getIMZStores",
+    url: "https://www.cvs.com/Services/ICEAGPV1/immunization/1.0.0/getIMZStores",
     method: "POST",
     headers: {
       Origin: "https://www.cvs.com",
