@@ -19,7 +19,7 @@
   "homepage": "https://getmyvax.org/",
   "devDependencies": {
     "eslint": "^7.30.0",
-    "jest": "^27.0.6",
+    "jest": "^27.2.4",
     "nock": "^13.1.0",
     "prettier": "^2.2.1"
   },
