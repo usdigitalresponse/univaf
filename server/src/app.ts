@@ -48,7 +48,7 @@ app.disable("x-powered-by");
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
 app.use(compression());
-app.use(bodyParser.json({ limit: "500kb" }));
+app.use(bodyParser.json({ limit: "1mb" }));
 app.use(cors());
 app.use(authorizeRequest);
 app.use(datadogMiddleware);
