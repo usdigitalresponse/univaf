@@ -172,10 +172,6 @@ const njClinicZip = [
   "08046",
 ];
 
-const RANDOMIZE_USER_AGENT =
-  (process.env.CVS_RANDOMIZE_USER_AGENT || "true").toLowerCase() == "true";
-const USER_AGENT = process.env.USER_AGENT || "";
-
 /**
  * Given an "address" string, invoke the CVS getIMZStores API.
  *
@@ -194,7 +190,7 @@ async function queryClinic(address) {
       Referer:
         "https://www.cvs.com/vaccine/intake/store/cvd-store-select/first-dose-select",
       TE: "Trailers",
-      "User-Agent": RANDOMIZE_USER_AGENT ? randomUserAgent() : USER_AGENT,
+      "User-Agent": randomUserAgent(),
     },
     json: {
       requestMetaData: {
