@@ -31,7 +31,7 @@
     "got": "^11.8.2",
     "luxon": "^1.27.0",
     "queue": "^6.0.2",
-    "yargs": "^17.2.0"
+    "yargs": "^17.2.1"
   },
   "jest": {
     "setupFilesAfterEnv": [
