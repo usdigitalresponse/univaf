@@ -174,7 +174,8 @@ function main() {
         return server.runServer(run, options);
       },
     })
-    .help().argv;
+    .help()
+    .parse();
 }
 
 module.exports = { main };
