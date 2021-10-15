@@ -1,7 +1,6 @@
-const got = require("got");
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
-const { titleCase } = require("../../utils");
+const { httpClient, titleCase } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
 function warn(message, context) {
@@ -11,7 +10,7 @@ function warn(message, context) {
 
 async function queryState(state) {
   try {
-    const response = await got({
+    const response = await httpClient({
       url: `https://www.vaccinespotter.org/api/v0/states/${state}.json`,
     });
     return JSON.parse(response.body);

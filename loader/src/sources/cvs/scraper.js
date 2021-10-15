@@ -7,9 +7,8 @@
  * need lots of updates to do so).
  */
 
-const got = require("got");
 const knownStores = require("./known-stores");
-const { randomInt, randomUserAgent, warn } = require("../../utils");
+const { httpClient, randomInt, randomUserAgent, warn } = require("../../utils");
 const { LocationType, Available } = require("../../model");
 const {
   CVS_BOOKING_URL,
@@ -215,7 +214,7 @@ async function queryClinic(address) {
   };
 
   try {
-    const response = await got(opt).json();
+    const response = await httpClient(opt).json();
     if (response.responseMetaData.statusCode !== "1010") {
       // Note to future readers: Please do not blindly delete these
       // log lines.

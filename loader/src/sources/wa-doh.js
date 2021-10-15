@@ -1,9 +1,8 @@
 // Washington State DoH hosts data for multiple states for some providers where
 // they have API access. (In practice, this is pretty much only Costco.)
 
-const got = require("got");
 const { Available, LocationType, VaccineProduct } = require("../model");
-const { warn } = require("../utils");
+const { httpClient, warn } = require("../utils");
 const { HttpApiError } = require("../exceptions");
 const allStates = require("../states.json");
 
@@ -87,7 +86,7 @@ async function* queryState(state) {
   const pageSize = 200;
 
   while (true) {
-    const response = await got({
+    const response = await httpClient({
       method: "POST",
       url: API_URL,
       responseType: "json",

@@ -1,3 +1,6 @@
+const got = require("got");
+const config = require("./config");
+
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
 const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’!()/\\]+/g;
 const ADDRESS_LINE_DELIMITER_PATTERN = /,|\n|\s-\s/g;
@@ -218,4 +221,12 @@ module.exports = {
         }
       });
   },
+
+  /**
+   * A pre-configured Got instance with appropriate headers, etc.
+   * @type {import("got").GotRequestFunction}
+   */
+  httpClient: got.extend({
+    headers: { "User-Agent": config.userAgent },
+  }),
 };

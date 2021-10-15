@@ -1,8 +1,7 @@
 const Sentry = require("@sentry/node");
-const got = require("got");
 
 const { Available } = require("../../model");
-const { oneLine, titleCase } = require("../../utils");
+const { httpClient, oneLine, titleCase } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
@@ -23,7 +22,7 @@ async function* queryState(state) {
   let offset = 0;
   while (true) {
     try {
-      const response = await got({
+      const response = await httpClient({
         url: `${API_HOST}${API_PATH}`,
         searchParams: {
           $limit: PAGE_SIZE,

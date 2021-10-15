@@ -11,7 +11,7 @@
 const got = require("got");
 const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
-const { oneLine, warn } = require("../../utils");
+const { httpClient, oneLine, warn } = require("../../utils");
 const {
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
   CVS_BOOKING_URL,
@@ -140,7 +140,7 @@ async function checkAvailability(handler, _options) {
   }
 
   try {
-    const body = await got({
+    const body = await httpClient({
       url: apiUrl + AVAILABILITY_ENDPOINT,
       searchParams: {
         // TODO: CLI options or something else should supply a list of states

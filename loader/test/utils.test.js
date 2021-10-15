@@ -1,4 +1,5 @@
-const { splitOnce } = require("../src/utils");
+const nock = require("nock");
+const { httpClient, splitOnce } = require("../src/utils");
 
 describe("splitOnce", () => {
   it("splits once on a single character", () => {
@@ -17,5 +18,31 @@ describe("splitOnce", () => {
     expect(splitOnce("test:123", "st:")).toEqual(["te", "123"]);
     expect(splitOnce("test-123", "12")).toEqual(["test-", "3"]);
     expect(splitOnce("test-123", "test-123")).toEqual(["", ""]);
+  });
+});
+
+describe("httpClient", () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
+  it("sets a standard User-Agent header", async () => {
+    let userAgent = null;
+
+    nock("https://example.com")
+      .get("/")
+      .reply(function () {
+        userAgent = this.req.headers["user-agent"];
+        return [200, "OK"];
+      });
+    await httpClient({ url: "https://example.com/" });
+
+    // The User Agent should be "univaf-loader/<version>" (where version is a
+    // (git hash or "#.#.#"), optionally followed by a space and anything else.
+    // Examples:
+    //   - "univaf-loader/0.1.0"
+    //   - "univaf-loader/abc123"
+    //   - "univaf-loader/0.1.0 <whatever>"
+    expect(userAgent).toMatch(/^univaf-loader\/[\w.]+(\s|$)/);
   });
 });

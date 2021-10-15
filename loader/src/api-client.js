@@ -1,6 +1,6 @@
-const got = require("got");
 const Queue = require("queue");
 const config = require("./config");
+const { httpClient } = require("./utils");
 const packageInfo = require("../package.json");
 
 const DEFAULT_CONCURRENCY = 10;
@@ -25,7 +25,7 @@ class ApiClient {
   }
 
   async getLocations(query) {
-    const { body } = await got({
+    const { body } = await httpClient({
       url: `${this.url}/locations`,
       searchParams: query,
       headers: {
@@ -42,7 +42,7 @@ class ApiClient {
       throw new TypeError("`options` must be an object");
     }
 
-    const response = await got.post({
+    const response = await httpClient.post({
       url: `${this.url}/update`,
       searchParams: options,
       headers: {

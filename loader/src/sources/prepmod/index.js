@@ -6,10 +6,9 @@
  * contact at least one (and sometimes several) hosts in each state.
  */
 
-const got = require("got");
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
-const { parseJsonLines } = require("../../utils");
+const { httpClient, parseJsonLines } = require("../../utils");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
 
@@ -58,7 +57,7 @@ class SmartSchedulingLinksApi {
       !this.manifest.data ||
       Date.now() - this.manifest.time > MANIFEST_TIMEOUT
     ) {
-      const data = await got(this.url).json();
+      const data = await httpClient(this.url).json();
       this.manifest = { time: Date.now(), data };
     }
     return this.manifest.data;
@@ -68,7 +67,7 @@ class SmartSchedulingLinksApi {
     const manifest = await this.getManifest();
     for (const item of manifest.output) {
       if (item.type === type) {
-        const response = await got(item.url);
+        const response = await httpClient(item.url);
         for (const location of parseJsonLines(response.body)) {
           yield location;
         }

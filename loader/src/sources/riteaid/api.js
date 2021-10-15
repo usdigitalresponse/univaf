@@ -1,9 +1,9 @@
 const { DateTime } = require("luxon");
-const got = require("got");
 const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
 // const { logger } = require("../logging");
 const { Available, LocationType } = require("../../model");
+const { httpClient } = require("../../utils");
 
 // FIXME: need to implement proper logging
 // const log = logger.child({ source: "riteaidApi" });
@@ -41,7 +41,7 @@ async function queryState(state) {
     );
   }
 
-  const body = await got({
+  const body = await httpClient({
     url: RITE_AID_URL,
     headers: { "Proxy-Authorization": "ldap " + RITE_AID_KEY },
     searchParams: { stateCode: state },
