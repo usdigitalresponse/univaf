@@ -35,8 +35,8 @@ describe("httpClient", () => {
         userAgent = this.req.headers["user-agent"];
         return [200, "OK"];
       });
-
     await httpClient({ url: "https://example.com/" });
+
     // The User Agent should be "univaf-loader/<version>" (where version is a
     // (git hash or "#.#.#"), optionally followed by a space and anything else.
     // Examples:
