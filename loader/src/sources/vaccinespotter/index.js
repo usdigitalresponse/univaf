@@ -1,6 +1,6 @@
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
-const { titleCase, httpClient } = require("../../utils");
+const { httpClient, titleCase } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
 function warn(message, context) {

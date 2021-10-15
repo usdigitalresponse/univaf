@@ -1,6 +1,5 @@
-const got = require("got");
 const Sentry = require("@sentry/node");
-const { splitOnce } = require("../../utils");
+const { httpClient, splitOnce } = require("../../utils");
 
 const dataProviders = {
   "Rite-Aid": {
@@ -38,7 +37,7 @@ function error(message, context) {
 
 async function getStores() {
   try {
-    return await got({
+    return await httpClient({
       url: `https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/vts/vts-final-output-locations.geojson.gz`,
     }).json();
   } catch (e) {
