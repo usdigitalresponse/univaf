@@ -1,6 +1,7 @@
 const { DateTime } = require("luxon");
 const got = require("got");
 const Sentry = require("@sentry/node");
+const config = require("../../config");
 const geocoding = require("../../geocoding");
 // const { logger } = require("../logging");
 const { Available, LocationType } = require("../../model");
@@ -45,7 +46,7 @@ async function queryState(state) {
     url: RITE_AID_URL,
     headers: {
       "Proxy-Authorization": "ldap " + RITE_AID_KEY,
-      "User-Agent": process.env.USER_AGENT || "",
+      "User-Agent": config.userAgent,
     },
     searchParams: { stateCode: state },
   }).json();

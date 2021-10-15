@@ -1,4 +1,6 @@
 FROM node:14
+# Name for the version/release of the software. (Optional)
+ARG RELEASE
 
 # Upgrade to NPM 7
 RUN npm install -g npm
@@ -13,8 +15,9 @@ COPY . .
 RUN rm -rf node_modules
 RUN npm install
 
+ENV RELEASE="${RELEASE}"
+
 # required exposed env vars
-ENV SOURCES=""
 ENV API_URL=""
 ENV API_KEY=""
 

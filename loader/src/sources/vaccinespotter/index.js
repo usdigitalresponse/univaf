@@ -1,5 +1,6 @@
 const got = require("got");
 const Sentry = require("@sentry/node");
+const config = require("../../config");
 const { Available, LocationType } = require("../../model");
 const { titleCase } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
@@ -13,7 +14,7 @@ async function queryState(state) {
   try {
     const response = await got({
       url: `https://www.vaccinespotter.org/api/v0/states/${state}.json`,
-      headers: { "User-Agent": process.env.USER_AGENT || "" },
+      headers: { "User-Agent": config.userAgent },
     });
     return JSON.parse(response.body);
   } catch (error) {
