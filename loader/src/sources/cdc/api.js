@@ -121,7 +121,7 @@ function formatStore(storeItems) {
       meta,
 
       availability: {
-        source: "cdc",
+        source: "univaf-cdc",
         checked_at: new Date().toISOString(),
         valid_at: formatValidAt(productList),
         available: formatAvailable(productList),
