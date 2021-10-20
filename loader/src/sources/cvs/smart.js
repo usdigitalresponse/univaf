@@ -5,134 +5,16 @@
 
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
-const { httpClient, parseJsonLines } = require("../../utils");
+const {
+  SYSTEMS,
+  EXTENSIONS,
+  SmartSchedulingLinksApi,
+  getLocations,
+} = require("../../smart-scheduling-links");
 const { CVS_BOOKING_URL } = require("./shared");
 
 const CVS_SMART_API_URL =
   "https://www.cvs.com/immunizations/inventory/data/$bulk-publish";
-const MANIFEST_TIMEOUT = 5 * 60 * 1000;
-const HL7_SERVICE_TYPE_SYSTEM =
-  "http://terminology.hl7.org/CodeSystem/service-type";
-const VTRCKS_SYSTEM = "https://cdc.gov/vaccines/programs/vtrcks";
-const CAPACITY_EXTENSION =
-  "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity";
-const BOOKING_DEEP_LINK_EXTENSION =
-  "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link";
-
-// Use symbols to link slots -> schedules -> locations to avoid circular
-// references when serializing or logging data.
-const locationReference = Symbol("schedule");
-const scheduleReference = Symbol("schedule");
-
-/**
- * Lightweight wrapper for a SMART Scheduling Links API.
- * This does some basic management around manifest caching and really basic
- * response parsing, but nothing too fancy.
- *
- * SMART SL Docs: https://github.com/smart-on-fhir/smart-scheduling-links/
- */
-class SmartSchedulingLinksApi {
-  constructor(url) {
-    this.url = url;
-    this.manifest = { time: 0, data: null };
-  }
-
-  async getManifest() {
-    if (
-      !this.manifest.data ||
-      Date.now() - this.manifest.time > MANIFEST_TIMEOUT
-    ) {
-      const data = await httpClient(this.url).json();
-      this.manifest = { time: Date.now(), data };
-    }
-    return this.manifest.data;
-  }
-
-  async *listItems(type) {
-    const manifest = await this.getManifest();
-    for (const item of manifest.output) {
-      if (item.type === type) {
-        const response = await httpClient(item.url);
-        for (const location of parseJsonLines(response.body)) {
-          yield location;
-        }
-      }
-    }
-  }
-
-  async *listLocations() {
-    yield* this.listItems("Location");
-  }
-
-  async *listSchedules() {
-    yield* this.listItems("Schedule");
-  }
-
-  async *listSlots() {
-    yield* this.listItems("Slot");
-  }
-}
-
-/**
- * Determine whether a SMART SL `Schedule` object represents COVID-19
- * vaccinations.
- * @param {any} schedule
- * @returns {boolean}
- */
-function isCovidSchedule(schedule) {
-  return schedule.serviceType.some((service) =>
-    service.coding.some(
-      (coding) =>
-        coding.system === HL7_SERVICE_TYPE_SYSTEM && coding.code === "57"
-    )
-  );
-}
-
-/**
- * Get a list of objects representing the locations available in a SMART SL API
- * along with their associaated schedules and slots.
- * @param {SmartSchedulingLinksApi} api
- * @returns {Array<{location: any, schedules: Array<any>, slots: Array<any>}>}
- */
-async function getLocations(api) {
-  const locations = Object.create(null);
-  for await (const location of api.listLocations()) {
-    locations[location.id] = { location, schedules: [], slots: [] };
-  }
-
-  const schedules = Object.create(null);
-  for await (const schedule of api.listSchedules()) {
-    schedules[schedule.id] = schedule;
-    if (isCovidSchedule(schedule)) {
-      // FIXME: This assumes the first actor is the location, which is not safe.
-      const locationId = schedule.actor[0].reference.split("/")[1];
-      const location = locations[locationId];
-      if (location) {
-        location.schedules.push(schedule);
-        schedule[locationReference] = location;
-      } else {
-        console.error(`Found schedule with unknown location: ${schedule.id}`);
-      }
-    } else {
-      console.warn(
-        `Found non-COVID schedule: ${JSON.stringify(schedule.serviceType)}`
-      );
-    }
-  }
-
-  for await (const slot of api.listSlots()) {
-    const scheduleId = slot.schedule.reference.split("/")[1];
-    const schedule = schedules[scheduleId];
-    if (schedule) {
-      slot[scheduleReference] = schedule;
-      schedule[locationReference].slots.push(slot);
-    } else {
-      console.error(`No schedule for slot ${slot.id}`);
-    }
-  }
-
-  return locations;
-}
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -155,7 +37,7 @@ function formatLocation(validTime, locationInfo) {
   const external_ids = { cvs: id };
   for (const identifier of smartLocation.identifier) {
     let system = identifier.system;
-    if (identifier.system === VTRCKS_SYSTEM) {
+    if (identifier.system === SYSTEMS.VTRCKS) {
       system = "vtrcks";
     }
     external_ids[system] = identifier.value;
@@ -222,7 +104,7 @@ function formatCapacity(slots) {
     let available = slot.status === "free" ? Available.yes : Available.no;
     let capacity;
     for (const extension of slot.extension) {
-      if (extension.url === CAPACITY_EXTENSION) {
+      if (extension.url === EXTENSIONS.CAPACITY) {
         // TODO: should have something that automatically parses by value type.
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
@@ -247,7 +129,7 @@ function formatCapacity(slots) {
             },
           });
         }
-      } else if (extension.url === BOOKING_DEEP_LINK_EXTENSION) {
+      } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         // We don't use the Booking URL; we hardcode a better one that puts you
         // directly into the screener flow instead of an interstitial page.
         // bookingLink = extension.valueUrl;
