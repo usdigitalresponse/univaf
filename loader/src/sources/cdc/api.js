@@ -94,6 +94,7 @@ function formatStore(storeItems) {
       "ndc",
       "med_name",
       "in_stock",
+      "supply_level",
       "quantity_last_updated",
     ];
     const productList = storeItems.map((item) => {
@@ -171,6 +172,31 @@ function getStoreExternalId(store) {
   }
 }
 
+/**
+ * Determine whether a particular vaccine product & location row indicates the
+ * product is in stock.
+ *
+ * This is not a perfect check, since the underlying data is not great. First,
+ * many locations report manually, and therefore irregularly. Data is not always
+ * fresh, even relative to the time it was entered.
+ *
+ * Further, this dataset contains two indicators for stock, and they often
+ * disagree (30-40% of the time!):
+ * - `in_stock` is a boolean indicating "Is this vaccine in stock for the public
+ *   at this location?" It appears to always be an actual boolean.
+ * - `supply_level` is a category indicating how long supply *should* last:
+ *   -1 = No report, 0 = No supply, 1-4 = ranging from <24 hours to >48 hours.
+ *   There's obviously a lot of room for editorializing there.
+ *
+ * ~2% of locations have all products mismatching on these fields.
+ * ~20-30% of locations have some products with -1 for `supply_level`.
+ * ~5-10% of locations have all prdoucts with -1 for `supply_level`.
+ *
+ * This function currently takes a relatively optimistic view, looking for a
+ * positive indication of in stock from either field.
+ * @param {any} product a row for a particular product & location.
+ * @returns {boolean}
+ */
 function isInStock(product) {
   const supplyLevel = parseInt(product.supply_level, 10);
   return product.in_stock || supplyLevel > 0;
