@@ -229,4 +229,16 @@ module.exports = {
   httpClient: got.extend({
     headers: { "User-Agent": config.userAgent },
   }),
+
+  /**
+   * Remove key/value pairs from an object using a filter function. Effectively
+   * the same as `Array.filter()`, but for Objects.
+   * @param {Object} source Object to filter entries from.
+   * @param {([string, any]) => boolean} predicate Filter function. Takes an
+   *        an array with an entry key and value as the only argument.
+   * @returns {Object}
+   */
+  filterObject(source, predicate) {
+    return Object.fromEntries(Object.entries(source).filter(predicate));
+  },
 };

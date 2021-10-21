@@ -3,7 +3,7 @@
  * https://github.com/smart-on-fhir/smart-scheduling-links/
  */
 
-const { httpClient, parseJsonLines } = require("./utils");
+const { httpClient, parseJsonLines, filterObject } = require("./utils");
 
 const MANIFEST_CACHE_TIME = 5 * 60 * 1000;
 
@@ -47,6 +47,25 @@ const scheduleReference = Symbol("schedule");
 const sourceReference = Symbol("source");
 
 /**
+ * Compare two lists of states to see if they include any states in common.
+ * If either of the values is `null` or `undefined` they are assumed to match.
+ * The second value *may* be a string identifying a single state instead of an
+ * array of states. A string is treated like an array with one entry.
+ * @param {Array<string>} a
+ * @param {Array<string>|string} b
+ * @returns {boolean}
+ */
+function matchStates(a, b) {
+  if (!a || !b) {
+    return true;
+  } else if (typeof b === "string") {
+    return a.includes(b);
+  } else {
+    return a.some((state) => b.includes(state));
+  }
+}
+
+/**
  * Lightweight wrapper for a SMART Scheduling Links API.
  * This does some basic management around manifest caching and really basic
  * response parsing, but nothing too fancy.
@@ -84,11 +103,7 @@ class SmartSchedulingLinksApi {
     const manifest = await this.getManifest();
     for (const item of manifest.output) {
       if (item.type === type) {
-        const mayMatchState =
-          !states ||
-          !item.extension?.state ||
-          states.some((state) => item.extension.state.includes(state));
-        if (mayMatchState) {
+        if (matchStates(states, item.extension?.state)) {
           const response = await httpClient({
             ...this.httpOptions,
             url: item.url,
@@ -184,12 +199,8 @@ async function getLocations(api, states) {
   if (!states) {
     return locations;
   } else {
-    return Object.fromEntries(
-      Object.entries(locations).filter(
-        ([_id, data]) =>
-          !data.location.address.state ||
-          states.includes(data.location.address.state)
-      )
+    return filterObject(locations, ([_, data]) =>
+      matchStates(states, data.location.address.state)
     );
   }
 }
