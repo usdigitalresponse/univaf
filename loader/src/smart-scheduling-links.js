@@ -42,6 +42,9 @@ const PRODUCTS_BY_CVX_CODE = {
 // references when serializing or logging data.
 const locationReference = Symbol("location");
 const scheduleReference = Symbol("schedule");
+// Link information about an item's source from the manifest file (e.g. a
+// Slot object will use this to reference the manifest item the slot was from).
+const sourceReference = Symbol("source");
 
 /**
  * Lightweight wrapper for a SMART Scheduling Links API.
@@ -85,8 +88,9 @@ class SmartSchedulingLinksApi {
           ...this.httpOptions,
           url: item.url,
         });
-        for (const location of parseJsonLines(response.body)) {
-          yield location;
+        for (const record of parseJsonLines(response.body)) {
+          record[sourceReference] = item;
+          yield record;
         }
       }
     }
@@ -175,4 +179,5 @@ module.exports = {
   isCovidSchedule,
   locationReference,
   scheduleReference,
+  sourceReference,
 };
