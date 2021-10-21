@@ -8,6 +8,7 @@ const sources = {
   riteAidApi: require("./sources/riteaid/api"),
   vaccinespotter: require("./sources/vaccinespotter"),
   waDoh: require("./sources/wa-doh"),
+  walgreensSmart: require("./sources/walgreens"),
   vtsGeo: require("./sources/vts/geo"),
 };
 
