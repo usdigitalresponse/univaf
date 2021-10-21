@@ -10,7 +10,10 @@ const MANIFEST_CACHE_TIME = 5 * 60 * 1000;
 /** Identifiers for types of records, extensions, etc. in FHIR and SMART SL. */
 const SYSTEMS = Object.freeze({
   HL7_SERVICE_TYPE: "http://terminology.hl7.org/CodeSystem/service-type",
+  /** CDC VTrckS PIN */
   VTRCKS: "https://cdc.gov/vaccines/programs/vtrcks",
+  /** National Privider ID from United States DHHS */
+  NPI_USA: "http://hl7.org/fhir/sid/us-npi",
 });
 
 /** Identifiers for types of extension objects in FHIR and SMART SL. */
@@ -19,6 +22,8 @@ const EXTENSIONS = Object.freeze({
     "http://fhir-registry.smarthealthit.org/StructureDefinition/slot-capacity",
   BOOKING_DEEP_LINK:
     "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link",
+  BOOKING_PHONE:
+    "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-phone",
   PRODUCT:
     "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product",
   DOSE: "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-dose",
