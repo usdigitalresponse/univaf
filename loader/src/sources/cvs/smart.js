@@ -169,7 +169,7 @@ async function checkAvailability(handler, options) {
     return [];
   }
 
-  let stores = await getData(states);
+  const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;
 }
