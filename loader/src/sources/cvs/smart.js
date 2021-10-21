@@ -10,7 +10,7 @@ const {
   SmartSchedulingLinksApi,
   getLocations,
   formatExternalIds,
-  createValueObject,
+  valuesAsObject,
 } = require("../../smart-scheduling-links");
 const { CVS_BOOKING_URL } = require("./shared");
 
@@ -38,7 +38,7 @@ function formatLocation(validTime, locationInfo) {
     smartIdName: "cvs",
   });
 
-  const booking_phone = createValueObject(smartLocation.telecom).phone;
+  const booking_phone = valuesAsObject(smartLocation.telecom).phone;
 
   const position = smartLocation.position || undefined;
   if (position) {

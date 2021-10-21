@@ -9,12 +9,11 @@ const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../model");
 const { titleCase } = require("../utils");
 const {
-  SYSTEMS,
   EXTENSIONS,
   SmartSchedulingLinksApi,
   getLocations,
   getExtensions,
-  createValueObject,
+  valuesAsObject,
   sourceReference,
   formatExternalIds,
 } = require("../smart-scheduling-links");
@@ -56,7 +55,7 @@ function formatLocation(locationInfo) {
   const slotExtensions = getExtensions(locationInfo.slots?.[0]);
   const booking_phone = slotExtensions[EXTENSIONS.BOOKING_PHONE];
   const booking_url = slotExtensions[EXTENSIONS.BOOKING_DEEP_LINK];
-  const { phone: info_phone, url: info_url } = createValueObject(
+  const { phone: info_phone, url: info_url } = valuesAsObject(
     smartLocation.telecom
   );
 

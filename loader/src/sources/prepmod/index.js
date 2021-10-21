@@ -14,7 +14,7 @@ const {
   getLocations,
   scheduleReference,
   formatExternalIds,
-  createValueObject,
+  valuesAsObject,
 } = require("../../smart-scheduling-links");
 const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
@@ -56,7 +56,7 @@ function formatLocation(host, validTime, locationInfo) {
     },
   });
 
-  const { phone: info_phone, url: info_url } = createValueObject(
+  const { phone: info_phone, url: info_url } = valuesAsObject(
     smartLocation.telecom
   );
 

@@ -1,13 +1,13 @@
 const {
-  createValueObject,
+  valuesAsObject,
   getExtensions,
   formatExternalIds,
 } = require("../src/smart-scheduling-links");
 
 describe("smart-scheduling-links", () => {
-  describe("createValueObject", () => {
+  describe("valuesAsObject", () => {
     it("should combine a list of FHIR values into an object", () => {
-      const result = createValueObject([
+      const result = valuesAsObject([
         { system: "phone", value: "1-800-555-1234" },
         { system: "url", value: "https://walgreens.com/" },
         { system: "phone", value: "1-800-555-6789" },
@@ -19,7 +19,7 @@ describe("smart-scheduling-links", () => {
     });
 
     it("should support alternative key names", () => {
-      const result = createValueObject(
+      const result = valuesAsObject(
         [
           { url: "phone", value: "1-800-555-1234" },
           { url: "url", value: "https://walgreens.com/" },
@@ -33,7 +33,7 @@ describe("smart-scheduling-links", () => {
     });
 
     it("should support a variety of value types", () => {
-      const result = createValueObject([
+      const result = valuesAsObject([
         {
           system: "systemA",
           valueUrl: "https://walgreens.com/covid/20134",

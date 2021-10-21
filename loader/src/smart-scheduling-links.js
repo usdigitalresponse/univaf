@@ -232,7 +232,7 @@ async function getLocations(api, states) {
  * }
  */
 function getExtensions(dataObject) {
-  return createValueObject(dataObject?.extension ?? [], "url");
+  return valuesAsObject(dataObject?.extension ?? [], "url");
 }
 
 /**
@@ -256,12 +256,12 @@ function getExtensions(dataObject) {
  *   { system: "url", value: "https://walgreens.com/" },
  *   { system: "phone", value: "1-800-555-6789" },
  * ];
- * createValueObject(telecoms, "system") === {
+ * valuesAsObject(telecoms, "system") === {
  *   phone: "1-800-555-1234",
  *   url: "https://walgreens.com/"
  * };
  */
-function createValueObject(valueList, keyName = "system") {
+function valuesAsObject(valueList, keyName = "system") {
   if (!valueList) return {};
 
   return valueList.reduce((result, item) => {
@@ -323,6 +323,6 @@ module.exports = {
   scheduleReference,
   sourceReference,
   getExtensions,
-  createValueObject,
+  valuesAsObject,
   formatExternalIds,
 };
