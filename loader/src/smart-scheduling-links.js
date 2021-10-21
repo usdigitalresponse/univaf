@@ -80,32 +80,38 @@ class SmartSchedulingLinksApi {
     return this.manifest.data;
   }
 
-  async *listItems(type) {
+  async *listItems(type, states) {
     const manifest = await this.getManifest();
     for (const item of manifest.output) {
       if (item.type === type) {
-        const response = await httpClient({
-          ...this.httpOptions,
-          url: item.url,
-        });
-        for (const record of parseJsonLines(response.body)) {
-          record[sourceReference] = item;
-          yield record;
+        const mayMatchState =
+          !states ||
+          !item.extension?.state ||
+          states.some((state) => item.extension.state.includes(state));
+        if (mayMatchState) {
+          const response = await httpClient({
+            ...this.httpOptions,
+            url: item.url,
+          });
+          for (const record of parseJsonLines(response.body)) {
+            record[sourceReference] = item;
+            yield record;
+          }
         }
       }
     }
   }
 
-  async *listLocations() {
-    yield* this.listItems("Location");
+  async *listLocations(states) {
+    yield* this.listItems("Location", states);
   }
 
-  async *listSchedules() {
-    yield* this.listItems("Schedule");
+  async *listSchedules(states) {
+    yield* this.listItems("Schedule", states);
   }
 
-  async *listSlots() {
-    yield* this.listItems("Slot");
+  async *listSlots(states) {
+    yield* this.listItems("Slot", states);
   }
 }
 
@@ -128,16 +134,20 @@ function isCovidSchedule(schedule) {
  * Get a list of objects representing the locations available in a SMART SL API
  * along with their associaated schedules and slots.
  * @param {SmartSchedulingLinksApi} api
+ * @param {Array<string>} [states] List of state abbreviations. If set, only
+ *        return data for locations possibly in the given states. Note this can
+ *        still return additional locations if an API endpoint does not provide
+ *        state information for some resources.
  * @returns {Array<{location: any, schedules: Array<any>, slots: Array<any>}>}
  */
-async function getLocations(api) {
+async function getLocations(api, states) {
   const locations = Object.create(null);
-  for await (const location of api.listLocations()) {
+  for await (const location of api.listLocations(states)) {
     locations[location.id] = { location, schedules: [], slots: [] };
   }
 
   const schedules = Object.create(null);
-  for await (const schedule of api.listSchedules()) {
+  for await (const schedule of api.listSchedules(states)) {
     schedules[schedule.id] = schedule;
     if (isCovidSchedule(schedule)) {
       // FIXME: This assumes the first actor is the location, which is not safe.
@@ -156,14 +166,35 @@ async function getLocations(api) {
     }
   }
 
-  for await (const slot of api.listSlots()) {
+  for await (const slot of api.listSlots(states)) {
     const scheduleId = slot.schedule.reference.split("/")[1];
     const schedule = schedules[scheduleId];
     if (schedule) {
       slot[scheduleReference] = schedule;
       schedule[locationReference].slots.push(slot);
     } else {
-      console.error(`No schedule for slot ${slot.id}`);
+      console.error(
+        `No schedule ${scheduleId} (referenced from slot ${slot.id})`,
+        slot[sourceReference]
+      );
+    }
+  }
+
+  // The SMART SL manifest file may specify relevant states only on some
+  // endpoints, so we could still receive locations from outside the requested
+  // states and need to do extra filtering here.
+  if (!states) {
+    return locations;
+  } else {
+    return Object.fromEntries(
+      Object.entries(locations).filter(
+        ([_id, data]) =>
+          !data.location.address.state ||
+          states.includes(data.location.address.state)
+      )
+    );
+  }
+}
     }
   }
 

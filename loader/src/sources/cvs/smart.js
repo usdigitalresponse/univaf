@@ -21,10 +21,10 @@ const CVS_SMART_API_URL =
  * SMART SL API.
  * @returns {Array<any>}
  */
-async function getData() {
+async function getData(states) {
   const api = new SmartSchedulingLinksApi(CVS_SMART_API_URL);
   const manifest = await api.getManifest();
-  const smartLocations = await getLocations(api);
+  const smartLocations = await getLocations(api, states);
   return Object.values(smartLocations).map((entry) =>
     formatLocation(manifest.transactionTime, entry)
   );
@@ -178,8 +178,7 @@ async function checkAvailability(handler, options) {
     return [];
   }
 
-  let stores = await getData();
-  stores = stores.filter((store) => states.includes(store.state));
+  let stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;
 }
