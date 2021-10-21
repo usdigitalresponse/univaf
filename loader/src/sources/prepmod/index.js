@@ -8,12 +8,13 @@
 
 const Sentry = require("@sentry/node");
 const {
-  SYSTEMS,
   EXTENSIONS,
   PRODUCTS_BY_CVX_CODE,
   SmartSchedulingLinksApi,
   getLocations,
   scheduleReference,
+  formatExternalIds,
+  createValueObject,
 } = require("../../smart-scheduling-links");
 const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
@@ -43,25 +44,21 @@ function formatLocation(host, validTime, locationInfo) {
   const smartLocation = locationInfo.location;
 
   const cleanHost = host.replace(/^https?:\/\//, "").toLowerCase();
-  const idSystem = `prepmod-${cleanHost}-location`;
+  const idPrefix = `prepmod-${cleanHost}`;
 
-  const external_ids = [[idSystem, smartLocation.id]];
-  for (const identifier of smartLocation.identifier) {
-    let system = identifier.system;
-    if (system === SYSTEMS.VTRCKS) {
-      system = "vtrcks";
-    } else if (/^urn:.*:prepmod:clinic$/.test(system)) {
-      system = `prepmod-${cleanHost}-clinic`;
-    }
-    external_ids.push([system, identifier.value]);
-  }
+  const external_ids = formatExternalIds(smartLocation, {
+    smartIdName: `${idPrefix}-location`,
+    formatUnknownId({ system, value }) {
+      if (/^urn:.*:prepmod:clinic$/.test(system)) {
+        return [`${idPrefix}-clinic`, value];
+      }
+      return [system, value];
+    },
+  });
 
-  let info_phone;
-  let info_url;
-  for (const entry of smartLocation.telecom) {
-    if (entry.system === "phone") info_phone = entry.value;
-    else if (entry.system === "url") info_url = entry.value;
-  }
+  const { phone: info_phone, url: info_url } = createValueObject(
+    smartLocation.telecom
+  );
 
   const position = smartLocation.position || undefined;
   if (position) {

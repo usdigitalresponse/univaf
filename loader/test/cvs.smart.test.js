@@ -1,25 +1,18 @@
 const nock = require("nock");
-const { URL } = require("url");
 const {
   checkAvailability,
   CVS_SMART_API_URL,
 } = require("../src/sources/cvs/smart");
-const { expectDatetimeString } = require("./support");
+const {
+  expectDatetimeString,
+  splitHostAndPath,
+  toNdJson,
+} = require("./support");
 const fixtures = require("./fixtures/cvs.smart.fixtures");
 const { Available } = require("../src/model");
 
-function toNdJson(items) {
-  return items
-    .map((item) => JSON.stringify(item))
-    .map((item) => `${item}\n`)
-    .join("");
-}
-
 describe("CVS SMART Scheduling Links API", () => {
-  const CVS_BASE = Object.assign(new URL(CVS_SMART_API_URL), {
-    pathname: "",
-  }).toString();
-  const CVS_MANIFEST_PATH = new URL(CVS_SMART_API_URL).pathname;
+  const [CVS_BASE, CVS_MANIFEST_PATH] = splitHostAndPath(CVS_SMART_API_URL);
 
   it("should load CVS SMART API data", async () => {
     nock(CVS_BASE).get(CVS_MANIFEST_PATH).reply(200, fixtures.TestManifest);
@@ -36,11 +29,10 @@ describe("CVS SMART Scheduling Links API", () => {
     const result = await checkAvailability(() => null, { states: "VA" });
     expect(result).toEqual([
       {
-        id: "CVS:02004",
-        external_ids: {
-          cvs: "02004",
-          vtrcks: "CV1002004",
-        },
+        external_ids: [
+          ["cvs", "2004"],
+          ["vtrcks", "CV1002004"],
+        ],
 
         location_type: "PHARMACY",
         provider: "cvs",

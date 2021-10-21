@@ -6,10 +6,11 @@
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const {
-  SYSTEMS,
   EXTENSIONS,
   SmartSchedulingLinksApi,
   getLocations,
+  formatExternalIds,
+  createValueObject,
 } = require("../../smart-scheduling-links");
 const { CVS_BOOKING_URL } = require("./shared");
 
@@ -32,21 +33,12 @@ async function getData(states) {
 
 function formatLocation(validTime, locationInfo) {
   const smartLocation = locationInfo.location;
-  const id = smartLocation.id.padStart(5, "0");
 
-  const external_ids = { cvs: id };
-  for (const identifier of smartLocation.identifier) {
-    let system = identifier.system;
-    if (identifier.system === SYSTEMS.VTRCKS) {
-      system = "vtrcks";
-    }
-    external_ids[system] = identifier.value;
-  }
+  const external_ids = formatExternalIds(smartLocation, {
+    smartIdName: "cvs",
+  });
 
-  let booking_phone;
-  for (const entry of smartLocation.telecom) {
-    if (entry.system === "phone") booking_phone = entry.value;
-  }
+  const booking_phone = createValueObject(smartLocation.telecom).phone;
 
   const position = smartLocation.position || undefined;
   if (position) {
@@ -65,7 +57,6 @@ function formatLocation(validTime, locationInfo) {
 
   const checkTime = new Date().toISOString();
   return {
-    id: `CVS:${id}`,
     name: `CVS #${smartLocation.id}`,
     external_ids,
     provider: "cvs",

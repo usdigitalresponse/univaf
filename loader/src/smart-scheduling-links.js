@@ -195,10 +195,105 @@ async function getLocations(api, states) {
     );
   }
 }
+
+/**
+ * Get the extensions for a SMART SL object as an object where the keys are the
+ * extension URLs and the values are the extension values. This generally makes
+ * parsing easier, BUT it is technically a bit lossy: extensions CAN repeat,
+ * and in rare cases the different value type names might be important.
+ *
+ * If a extension type repeats, the return value of this function will only
+ * contain the the first one.
+ * @param {any} dataObject The object to get extensions from, e.g. a Slot.
+ * @returns {Object<string,any>}
+ *
+ * @example
+ * // Given an object with extensions:
+ * const dataObject = {
+ *   // top-level properties...
+ *   extension: [
+ *     { url: "http://abc.com/x", valueString: "Hello" },
+ *     { url: "http://abc.com/y", valueInteger: 5 }
+ *   ]
+ * };
+ * // Get the extensions in a simpler form:
+ * getExtensions(dataObject) === {
+ *   "http://abc.com/x": "Hello",
+ *   "http://abc.com/y": 5
+ * }
+ */
+function getExtensions(dataObject) {
+  return createValueObject(dataObject?.extension ?? [], "url");
+}
+
+/**
+ * Create an object representing a list of FHIR value objects (e.g. telecoms,
+ * extensions, etc.). In the result, the keys are the type of value (e.g. a
+ * telecom system name or an extension URL) and the values are the value of the
+ * `value[x]` properties (e.g. the actual phone number, the extension value).
+ * The `keyName` argument indicates which property to treat as the key.
+ *
+ * WARNING: value types may repeat (potentially with different values) in a
+ * value list. This function will only get the *first* value of a given type
+ * (e.g. if there are multiple phone numbers in a list of telecom values, the
+ * result's `phone` property will be the first phone number).
+ * @param {Array<any>} valueList List of value objects to create an object from.
+ * @param {string} keyName Name of property to use as keys in the result.
+ * @returns {Object<string,any>}
+ *
+ * @example
+ * const telecoms = [
+ *   { system: "phone", value: "1-800-555-1234" },
+ *   { system: "url", value: "https://walgreens.com/" },
+ *   { system: "phone", value: "1-800-555-6789" },
+ * ];
+ * createValueObject(telecoms, "system") === {
+ *   phone: "1-800-555-1234",
+ *   url: "https://walgreens.com/"
+ * };
+ */
+function createValueObject(valueList, keyName = "system") {
+  if (!valueList) return {};
+
+  return valueList.reduce((result, item) => {
+    const key = item[keyName];
+    if (!(key in result)) {
+      const valueKey = Object.keys(item).find((k) => k.startsWith("value"));
+      result[key] = item[valueKey];
     }
+    return result;
+  }, Object.create(null));
+}
+
+/**
+ * Create UNIVAF-style external IDs for a SMART SL location object.
+ * @param {Object} location
+ * @returns {Array<[string,string]>}
+ */
+function formatExternalIds(location, { smartIdName, formatUnknownId }) {
+  const externalIds = [];
+
+  if (smartIdName) externalIds.push([smartIdName, location.id]);
+
+  for (const identifier of location.identifier) {
+    let { system, value } = identifier;
+    if (identifier.system === SYSTEMS.VTRCKS) {
+      system = "vtrcks";
+      // When there is no VTrckS PIN, some sources include an empty string, a
+      // null, or a human-readable error message (Walgreens) for the value
+      // instead of just dropping the identifier entry from the list.
+      if (!identifier.value || identifier.value.includes("unknown")) {
+        continue;
+      }
+    } else if (identifier.system === SYSTEMS.NPI_USA) {
+      system = "npi_usa";
+    } else if (formatUnknownId) {
+      [system, value] = formatUnknownId(identifier);
+    }
+    externalIds.push([system, value]);
   }
 
-  return locations;
+  return externalIds;
 }
 
 module.exports = {
@@ -211,4 +306,7 @@ module.exports = {
   locationReference,
   scheduleReference,
   sourceReference,
+  getExtensions,
+  createValueObject,
+  formatExternalIds,
 };
