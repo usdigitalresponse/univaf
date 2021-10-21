@@ -12,7 +12,7 @@ const SYSTEMS = Object.freeze({
   HL7_SERVICE_TYPE: "http://terminology.hl7.org/CodeSystem/service-type",
   /** CDC VTrckS PIN */
   VTRCKS: "https://cdc.gov/vaccines/programs/vtrcks",
-  /** National Privider ID from United States DHHS */
+  /** National Provider ID from United States DHHS */
   NPI_USA: "http://hl7.org/fhir/sid/us-npi",
 });
 
@@ -135,9 +135,7 @@ function isCovidSchedule(schedule) {
  * along with their associaated schedules and slots.
  * @param {SmartSchedulingLinksApi} api
  * @param {Array<string>} [states] List of state abbreviations. If set, only
- *        return data for locations possibly in the given states. Note this can
- *        still return additional locations if an API endpoint does not provide
- *        state information for some resources.
+ *        return data for locations possibly in the given states.
  * @returns {Array<{location: any, schedules: Array<any>, slots: Array<any>}>}
  */
 async function getLocations(api, states) {
