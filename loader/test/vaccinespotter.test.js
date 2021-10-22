@@ -104,10 +104,10 @@ describe("VaccineSpotter", () => {
       booking_url: "https://www.walgreens.com/findcare/vaccination/covid-19",
       city: "Eureka",
       county: undefined,
-      external_ids: {
-        vaccinespotter: "2736954",
-        walgreens: "5863",
-      },
+      external_ids: [
+        ["vaccinespotter", "2736954"],
+        ["walgreens", "5863"],
+      ],
       name: "Walgreen Drug Store",
       position: {
         latitude: 40.78085044,
@@ -381,7 +381,7 @@ describe("VaccineSpotter", () => {
     });
 
     expect(result).toHaveProperty("name", "Harveys #1688");
-    expect(result).toHaveProperty("external_ids.harveys", "1688");
+    expect(result.external_ids).toContainEqual(["harveys", "1688"]);
   });
 
   it("it should always send an array for address_lines", () => {
@@ -394,5 +394,36 @@ describe("VaccineSpotter", () => {
     });
 
     expect(result).toHaveProperty("address_lines", undefined);
+  });
+
+  it("should include an unpadded version of each external ID", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        provider_location_id: "005613",
+      },
+    });
+
+    expect(result.external_ids).toEqual([
+      ["vaccinespotter", "2736954"],
+      ["walgreens", "005613"],
+      ["walgreens", "5613"],
+    ]);
+  });
+
+  it("does not unpadd external IDs that look like UUIDs", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        provider_location_id: "00751004-25e5-4628-b606-a8bafb61581e",
+      },
+    });
+
+    expect(result.external_ids).toEqual([
+      ["vaccinespotter", "2736954"],
+      ["walgreens", "00751004-25e5-4628-b606-a8bafb61581e"],
+    ]);
   });
 });
