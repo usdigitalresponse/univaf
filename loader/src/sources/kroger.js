@@ -34,6 +34,27 @@ async function getData(states) {
 function formatLocation(validTime, locationInfo) {
   const smartLocation = locationInfo.location;
 
+  // ID systems:
+  // Harris Teeter: kroger_hart
+  // City Market Pharmacy: kroger_citymarket
+  //     ^ These have IDs starting with 625..., but we already have these same
+  //       locations with IDs starting with 620...!
+  // Copps Pharmacy: ~kroger_metro_market~ HMMMMMMM! Overloaded with actual Metro Market :(
+  // Dillons Pharmacy: kroger, kroger_dillons, kroger_payless (Seems like the pharmacy inside most Pay-Less Markets is Dillons)
+  // Fred Meyer Pharmacy: kroger_fred
+  // Frys Pharmacy: kroger_frys, kroger_covid
+  // Gerbes Pharmacy: kroger_gerbes
+  // JayC Pharmacy: kroger_jayc
+  // King Soopers Pharmacy: kroger_kingsoopers
+  // Kroger Pharmacy: kroger
+  // Mariano's Pharmacy: kroger_marianos
+  // Metro Market Pharmacy: kroger_metro_market
+  // Pick 'n Save Pharmacy: kroger_pick_n_save
+  // QFC Pharmacy: kroger_qfc
+  // Ralphs Pharmacy: kroger_ralphs
+  // Smith's Pharmacy: kroger_smiths
+  // The Little Clinic: kroger_the_little_clinic
+
   // XXX: we need to gin up the correct brand-based external ID names we've
   // been using in the past from vaccinespotter.
   // XXX: make sure we are removing zero-padding appropriately.
