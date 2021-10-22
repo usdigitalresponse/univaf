@@ -1,5 +1,5 @@
 const nock = require("nock");
-const { httpClient, splitOnce } = require("../src/utils");
+const { httpClient, splitOnce, filterObject } = require("../src/utils");
 
 describe("splitOnce", () => {
   it("splits once on a single character", () => {
@@ -44,5 +44,34 @@ describe("httpClient", () => {
     //   - "univaf-loader/abc123"
     //   - "univaf-loader/0.1.0 <whatever>"
     expect(userAgent).toMatch(/^univaf-loader\/[\w.]+(\s|$)/);
+  });
+});
+
+describe("filterObject", () => {
+  it("removes key/value pairs according to a filter function", () => {
+    const result = filterObject(
+      {
+        a: "A Value",
+        b: "B Value",
+        c: "C Value",
+      },
+      ([key, _]) => key > "b"
+    );
+    expect(result).toEqual({ c: "C Value" });
+  });
+
+  it("returns a new object", () => {
+    const original = {
+      a: "A Value",
+      b: "B Value",
+      c: "C Value",
+    };
+    const result = filterObject(original, ([key, _]) => key > "b");
+    expect(result).not.toBe(original);
+    expect(original).toEqual({
+      a: "A Value",
+      b: "B Value",
+      c: "C Value",
+    });
   });
 });

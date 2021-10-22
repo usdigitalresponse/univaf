@@ -6,10 +6,11 @@
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const {
-  SYSTEMS,
   EXTENSIONS,
   SmartSchedulingLinksApi,
   getLocations,
+  formatExternalIds,
+  valuesAsObject,
 } = require("../../smart-scheduling-links");
 const { CVS_BOOKING_URL } = require("./shared");
 
@@ -21,10 +22,10 @@ const CVS_SMART_API_URL =
  * SMART SL API.
  * @returns {Array<any>}
  */
-async function getData() {
+async function getData(states) {
   const api = new SmartSchedulingLinksApi(CVS_SMART_API_URL);
   const manifest = await api.getManifest();
-  const smartLocations = await getLocations(api);
+  const smartLocations = await getLocations(api, states);
   return Object.values(smartLocations).map((entry) =>
     formatLocation(manifest.transactionTime, entry)
   );
@@ -32,21 +33,12 @@ async function getData() {
 
 function formatLocation(validTime, locationInfo) {
   const smartLocation = locationInfo.location;
-  const id = smartLocation.id.padStart(5, "0");
 
-  const external_ids = { cvs: id };
-  for (const identifier of smartLocation.identifier) {
-    let system = identifier.system;
-    if (identifier.system === SYSTEMS.VTRCKS) {
-      system = "vtrcks";
-    }
-    external_ids[system] = identifier.value;
-  }
+  const external_ids = formatExternalIds(smartLocation, {
+    smartIdName: "cvs",
+  });
 
-  let booking_phone;
-  for (const entry of smartLocation.telecom) {
-    if (entry.system === "phone") booking_phone = entry.value;
-  }
+  const booking_phone = valuesAsObject(smartLocation.telecom).phone;
 
   const position = smartLocation.position || undefined;
   if (position) {
@@ -65,7 +57,6 @@ function formatLocation(validTime, locationInfo) {
 
   const checkTime = new Date().toISOString();
   return {
-    id: `CVS:${id}`,
     name: `CVS #${smartLocation.id}`,
     external_ids,
     provider: "cvs",
@@ -178,8 +169,7 @@ async function checkAvailability(handler, options) {
     return [];
   }
 
-  let stores = await getData();
-  stores = stores.filter((store) => states.includes(store.state));
+  const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;
 }

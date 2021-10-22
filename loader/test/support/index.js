@@ -24,4 +24,16 @@ module.exports = {
     parsedUrl.pathname = "";
     return [parsedUrl.href, path];
   },
+
+  /**
+   * Serialize a list of objects to Newline-Delimited JSON (ND-JSON).
+   * @param {Array<any>} items
+   * @returns {string}
+   */
+  toNdJson(items) {
+    return items
+      .map((item) => JSON.stringify(item))
+      .map((item) => `${item}\n`)
+      .join("");
+  },
 };
