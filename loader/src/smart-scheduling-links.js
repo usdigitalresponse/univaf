@@ -275,6 +275,19 @@ function valuesAsObject(valueList, keyName = "system") {
 }
 
 /**
+ * Determine whether an identifier is valid. Some SMART SL APIs always include
+ * an identifier for VTrckS, even if there's no VTrckS PIN, and indicate the
+ * non-value with strings like `""`, `"null"`, or even human-readable messages.
+ * @param {string} value The identifier's `value` property.
+ * @returns {boolean}
+ */
+function isValidIdentifier(value) {
+  return (
+    value && value !== "null" && value !== "nil" && !value.includes("unknown")
+  );
+}
+
+/**
  * Create UNIVAF-style external IDs for a SMART SL location object.
  * @param {Object} location
  * @param {Object} [options]
@@ -283,7 +296,7 @@ function valuesAsObject(valueList, keyName = "system") {
  * @param {(identifier: {system: string, value: string}) => [string, string]} options.formatUnknownId
  *        Customize handling of unknown ID systems. Normally, unknown system
  *        names are simply passed through, but you can provide custom mappings
- *        using this function.
+ *        using this function. Return `["", ""]` to drop the identifier.
  * @returns {Array<[string,string]>}
  */
 function formatExternalIds(location, { smartIdName, formatUnknownId } = {}) {
@@ -295,22 +308,14 @@ function formatExternalIds(location, { smartIdName, formatUnknownId } = {}) {
     let { system, value } = identifier;
     if (identifier.system === SYSTEMS.VTRCKS) {
       system = "vtrcks";
-      // When there is no VTrckS PIN, some sources include a variety of values
-      // indicating there is no PIN (empty strings, `"null"`, human-readable
-      // messages, etc.) instead of dropping the identifier entry from the list.
-      if (
-        !identifier.value ||
-        identifier.value === "null" ||
-        identifier.value.includes("unknown")
-      ) {
-        continue;
-      }
     } else if (identifier.system === SYSTEMS.NPI_USA) {
       system = "npi_usa";
     } else if (formatUnknownId) {
       [system, value] = formatUnknownId(identifier);
     }
-    externalIds.push([system, value]);
+    if (isValidIdentifier(value)) {
+      externalIds.push([system, value]);
+    }
   }
 
   return externalIds;
