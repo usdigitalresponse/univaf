@@ -97,29 +97,23 @@ describe("smart-scheduling-links", () => {
       ]);
     });
 
-    it("filters out non-entries for VTrckS", () => {
-      const location = {
-        identifier: [
-          {
-            system: "https://cdc.gov/vaccines/programs/vtrcks",
-            value: "unknown VTrckS pin for 13656",
-          },
-        ],
-      };
+    // Each of these values for a VTrckS identifier should be treated as if the
+    // identifier is not present at all.
+    it.each(["unknown VTrckS pin for 13656", "", "null"])(
+      "filters out non-entries for VTrckS",
+      (nonValue) => {
+        const location = {
+          identifier: [
+            {
+              system: "https://cdc.gov/vaccines/programs/vtrcks",
+              value: nonValue,
+            },
+          ],
+        };
 
-      expect(formatExternalIds(location)).toEqual([]);
-
-      const location2 = {
-        identifier: [
-          {
-            system: "https://cdc.gov/vaccines/programs/vtrcks",
-            value: "",
-          },
-        ],
-      };
-
-      expect(formatExternalIds(location2)).toEqual([]);
-    });
+        expect(formatExternalIds(location)).toEqual([]);
+      }
+    );
 
     it("includes the FHIR location ID when smartIdName is set", () => {
       const location = {

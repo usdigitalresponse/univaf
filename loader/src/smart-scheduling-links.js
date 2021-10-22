@@ -295,10 +295,14 @@ function formatExternalIds(location, { smartIdName, formatUnknownId } = {}) {
     let { system, value } = identifier;
     if (identifier.system === SYSTEMS.VTRCKS) {
       system = "vtrcks";
-      // When there is no VTrckS PIN, some sources include an empty string, a
-      // null, or a human-readable error message (Walgreens) for the value
-      // instead of just dropping the identifier entry from the list.
-      if (!identifier.value || identifier.value.includes("unknown")) {
+      // When there is no VTrckS PIN, some sources include a variety of values
+      // indicating there is no PIN (empty strings, `"null"`, human-readable
+      // messages, etc.) instead of dropping the identifier entry from the list.
+      if (
+        !identifier.value ||
+        identifier.value === "null" ||
+        identifier.value.includes("unknown")
+      ) {
         continue;
       }
     } else if (identifier.system === SYSTEMS.NPI_USA) {
