@@ -412,7 +412,7 @@ describe("VaccineSpotter", () => {
     ]);
   });
 
-  it("does not unpadd external IDs that look like UUIDs", () => {
+  it("does not unpad external IDs that look like UUIDs", () => {
     const result = formatStore({
       ...basicVaccineSpotterStore,
       properties: {
