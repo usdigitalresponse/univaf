@@ -241,7 +241,7 @@ function hasUsefulData(store) {
  * @returns {string}
  */
 function unpadNumber(numberString) {
-  return numberString.replace(/^0+([0-9a-fA-F]+)$/, "$1");
+  return numberString.replace(/^0+(\d+)$/, "$1");
 }
 
 /**
