@@ -113,69 +113,20 @@ function planMerge(target, ...toMerge) {
 }
 
 function dedupeNewExternalIds(allExternalIds, newId) {
-  const v0Ids = new Set();
-  const v1Ids = new Set();
-
-  // Extract v0 and v1 IDs and dedupe their values.
-  allExternalIds = allExternalIds.filter((id) => {
-    if (id.system.startsWith("univaf_v0")) {
-      v0Ids.add(id.value);
-      return false;
-    } else if (id.system.startsWith("univaf_v1")) {
-      v1Ids.add(id.value);
-      return false;
-    }
-    return true;
-  });
-
+  const seen = new Set();
   // Don't keep a reference to ourselves in the external IDs!
-  v1Ids.delete(newId);
-
-  // Add the v0/v1 IDs back it an integer on the system name to allow for more
-  // than one as v0/v1.
-  let index = 0;
-  v0Ids.forEach((value) => {
-    index++;
-    let system = "univaf_v0";
-    if (index > 1) system = `${system}_${index}`;
-
-    allExternalIds.push({ system, value });
-  });
-  index = 0;
-  v1Ids.forEach((value) => {
-    index++;
-    let system = "univaf_v1";
-    if (index > 1) system = `${system}_${index}`;
-
-    allExternalIds.push({ system, value });
-  });
-
-  // Remove duplicates.
-  const seen = new Map();
-  return allExternalIds.filter((id) => {
-    // Remove duplicates and sanity check.
-    const existing = seen.get(id.system);
-    if (existing) {
-      if (existing !== id.value) {
-        // Special case a known, OK scenario because of bad data in NJVSS
-        const badPair = ["10907:WALMART_2582", "10882:WALMART_2582"];
-        if (badPair.includes(existing) && badPair.includes(id.value)) {
-          // Just filter one out.
-          return false;
-        }
-
-        // Bail out if we need to set the same system to multiple values.
-        throw new Error(
-          `Multiple values for system "${id.system}": ("${id.value}", "${existing}")`
-        );
-      } else {
-        // Drop it if it's just a duplicate.
-        return false;
-      }
-    } else {
-      seen.set(id.system, id.value);
-      return true;
+  return allExternalIds.filter(({ system, value }) => {
+    if (system === "univaf_v1" && value === newId) {
+      return false;
     }
+
+    // Remove duplicates.
+    const stringId = `${system}:${value}`;
+    if (seen.has(stringId)) {
+      return false;
+    }
+    seen.add(stringId);
+    return true;
   });
 }
 
@@ -185,7 +136,7 @@ async function doMerge(plan, persist = false) {
   for (const from of plan.deleteLocations) writeLog("  from", from);
 
   for (const newId of plan.newIds) {
-    writeLog("  Adding ID:", JSON.stringify(newId));
+    writeLog("  Adding ID:", `${newId.system}:${newId.value}`);
   }
   if (plan.newData) {
     writeLog("  Updating fields:", JSON.stringify(plan.newData));
@@ -202,7 +153,7 @@ async function doMerge(plan, persist = false) {
               provider_location_id: plan.targetId,
             }))
           )
-          .onConflict(["provider_location_id", "system"])
+          .onConflict(["provider_location_id", "system", "value"])
           .merge();
       }
 
