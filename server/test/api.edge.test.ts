@@ -389,15 +389,18 @@ describe("POST /api/edge/update", () => {
     });
     const newName = "New Name";
 
-    let res = await context.client.post("api/edge/update?update_location=1", {
-      headers,
-      json: {
-        id: location.id,
-        name: newName,
-        is_public: false,
-      },
-    });
-    expect(res.statusCode).toBe(200);
+    const response = await context.client.post(
+      "api/edge/update?update_location=1",
+      {
+        headers,
+        json: {
+          id: location.id,
+          name: newName,
+          is_public: false,
+        },
+      }
+    );
+    expect(response.statusCode).toBe(200);
 
     const currentData = await getLocationById(location.id, {
       includePrivate: true,
