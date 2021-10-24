@@ -382,6 +382,32 @@ describe("POST /api/edge/update", () => {
     expect(res.body).toHaveProperty("data.availability.available", "UNKNOWN");
   });
 
+  it("updates non-public locations successfully", async () => {
+    const location = await createLocation({
+      ...TestLocation,
+      is_public: false,
+    });
+    const newName = "New Name";
+
+    const response = await context.client.post(
+      "api/edge/update?update_location=1",
+      {
+        headers,
+        json: {
+          id: location.id,
+          name: newName,
+          is_public: false,
+        },
+      }
+    );
+    expect(response.statusCode).toBe(200);
+
+    const currentData = await getLocationById(location.id, {
+      includePrivate: true,
+    });
+    expect(currentData).toHaveProperty("name", newName);
+  });
+
   it("updates location metadata based on `external_ids` if location matching `id` does not exist", async () => {
     const location = await createLocation(TestLocation);
     const newName = "New Name";
@@ -607,7 +633,7 @@ describe("POST /api/edge/update", () => {
     });
   });
 
-  it("should valid basic types in availability", async () => {
+  it("should validate basic types in availability", async () => {
     const location = await createLocation(TestLocation);
     const response = await context.client.post("update", {
       headers,

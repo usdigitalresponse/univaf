@@ -243,10 +243,12 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
   // possible for two concurrent updates to both try and create a location.
   let location;
   if (data.id && UUID_PATTERN.test(data.id)) {
-    location = await db.getLocationById(data.id);
+    location = await db.getLocationById(data.id, { includePrivate: true });
   }
   if (!location && data.external_ids) {
-    location = await db.getLocationByExternalIds(data.external_ids);
+    location = await db.getLocationByExternalIds(data.external_ids, {
+      includePrivate: true,
+    });
   }
   if (!location) {
     location = await db.createLocation(data);
