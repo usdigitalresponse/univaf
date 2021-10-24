@@ -234,6 +234,34 @@ function hasUsefulData(store) {
   );
 }
 
+/**
+ * Remove zeros from the leading edge of a numeric string. If the string has
+ * non-numeric characters (e.g. `-`), leave it alone.
+ * @param {string} numberString
+ * @returns {string}
+ */
+function unpadNumber(numberString) {
+  return numberString.replace(/^0+(\d+)$/, "$1");
+}
+
+/**
+ * Remove duplicate entries from a list of external IDs.
+ * @param {Array<[string,string]>} idList
+ * @returns {Array<[string,string]}
+ */
+function getUniqueExternalIds(idList) {
+  const seen = new Set();
+  const result = [];
+  for (const id of idList) {
+    const stringId = id.join(":");
+    if (!seen.has(stringId)) {
+      result.push(id);
+      seen.add(stringId);
+    }
+  }
+  return result;
+}
+
 const formatters = {
   _base(store, additions = null) {
     // Determine what identifier type to use for `external_ids`.
@@ -285,11 +313,11 @@ const formatters = {
 
       // Override any of the above with additions.
       ...additions,
-      external_ids: {
-        vaccinespotter: store.properties.id.toString(),
-        [providerBrand]: store.properties.provider_location_id,
-        ...additions?.external_ids,
-      },
+      external_ids: [
+        ["vaccinespotter", store.properties.id.toString()],
+        [providerBrand, store.properties.provider_location_id],
+        ...(additions?.external_ids || []),
+      ],
       availability: {
         ...formatAvailability(store.properties),
         ...additions?.availability,
@@ -307,7 +335,7 @@ const formatters = {
     // Make sure they all have IDs with the same scheme.
     return formatters._base(store, {
       id: `walgreens:${storeId}`,
-      external_ids: { walgreens: storeId },
+      external_ids: [["walgreens", storeId]],
       county: county && titleCase(county),
       booking_phone: "1-800-925-4733",
     });
@@ -330,7 +358,7 @@ const formatters = {
     if (idMatch) {
       const storeId = idMatch[1];
       formatted.id = `safeway:${storeId}`;
-      formatted.external_ids.safeway = storeId;
+      formatted.external_ids.push(["safeway", storeId]);
       formatted.name = `Safeway #${storeId}`;
     } else {
       console.warn(
@@ -362,10 +390,10 @@ const formatters = {
     const data = store.properties;
     let name = data.name || data.provider_brand_name;
     const storeNumber = (data.provider_location_id || "").split("-")[1];
-    const external_ids = {};
+    const external_ids = [];
     if (storeNumber) {
       name = `${name} #${storeNumber}`;
-      external_ids[data.provider_brand] = storeNumber.toString();
+      external_ids.push([data.provider_brand, storeNumber.toString()]);
     }
 
     return formatters._base(store, { name, external_ids });
@@ -394,6 +422,14 @@ function formatStore(store) {
       provider: data.provider,
     });
     result = formatter(store);
+
+    // Add an un-padded version of any numeric IDs and remove duplicates.
+    result.external_ids = getUniqueExternalIds(
+      result.external_ids.flatMap((id) => {
+        const unpadded = [id[0], unpadNumber(id[1])];
+        return [id, unpadded];
+      })
+    );
   });
   return result;
 }
