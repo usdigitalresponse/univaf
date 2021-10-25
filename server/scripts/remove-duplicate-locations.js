@@ -1,27 +1,7 @@
 #!/usr/bin/env node
 /**
- * Quick script for merging duplicate locations from the database based on
- * their external IDs.
- *
- * Use the `--unpad` option to check unpadded versions of external IDs when
- * merging. That is, the IDs `kroger:0123` and `kroger:123` will be considered
- * as if they were the same.
- *
- * Limit what systems to consider for merging by setting `--system` to a comma
- * separated list of systems, e.g. `--system 'cvs,kroger'` to only merge based
- * on `cvs:*` and `kroger:*` IDs, but not, for example, `walgreens:*` IDs.
- *
- * By default, this prints a plan of the steps it's going to take, but does not
- * alter the contents of the database. Add the `--commit` option to actually
- * make the changes.
- *
- * Multiple locations with the same external ID will get "merged" -- one
- * location will be given all the external IDs and availability records of the
- * others, and the others will be deleted. The IDs of the old locations are
- * preserved as a `univaf_v1` external ID on the remaining location.
- *
- * Old, `univaf_v0` IDs are preserved on the remaining, merged location in the
- * same way as described above for v1 IDs.
+ * Merge duplicate locations from the database based on their external IDs.
+ * See CLI help at bottom for complete description and options.
  */
 
 const { db, planMerge, doMerge, locationsQuery } = require("./merge-locations");
@@ -173,34 +153,35 @@ async function doChanges(plans, persist = false) {
   for (const plan of plans) {
     updated++;
     removed += plan.deleteLocations.length;
-    doMerge(plan, persist);
+    await doMerge(plan, persist);
     writeLog("");
   }
 
-  writeLog(`Removing ${removed} duplicates`);
-  writeLog(`Adding to ${updated} locations`);
+  return { removed, updated };
 }
 
 async function main(args) {
-  const commit = args.includes("--commit");
-  const unpadIds = args.includes("--unpad");
-  const systemIndex = args.findIndex((x) => x === "--system");
-  let systems = null;
-  if (systemIndex > -1) {
-    systems = args[systemIndex + 1].split(",").map((x) => x.trim());
-  }
-
   const locations = await locationsQuery();
   writeLog("Total locations:", locations.length);
-  const duplicates = groupDuplicateLocations(locations, systems, unpadIds);
+  const duplicates = groupDuplicateLocations(
+    locations,
+    args.system,
+    args.unpad
+  );
   const plans = planChanges(duplicates);
 
-  await doChanges(plans, commit);
+  const { removed, updated } = await doChanges(plans, args.commit);
 
-  if (!commit) {
-    writeLog("");
+  writeLog(`Removed ${removed} duplicates`);
+  writeLog(`Added to ${updated} locations`);
+  writeLog("");
+  if (args.commit) {
+    writeLog(`Updated ${removed + updated} location records`);
+  } else {
     writeLog("This is a plan. Run with --commit to actually make changes.");
   }
+
+  await db.destroy();
 }
 
 module.exports = {
@@ -211,10 +192,54 @@ module.exports = {
 };
 
 if (require.main === module) {
-  main(process.argv)
-    .catch((error) => {
-      console.error(error);
-      process.exitCode = 1;
+  const yargs = require("yargs");
+  yargs
+    .scriptName("remove-duplicate-locations")
+    .command({
+      command: "$0",
+      describe: `
+        Merge duplicate locations from the database based on their external IDs.
+
+        By default, this prints a plan of the steps it's going to take, but does
+        not alter the contents of the database. Add the '--commit' option to
+        actually make the changes.
+
+        Multiple locations with the same external ID will get "merged" -- one
+        location will be given all the external IDs and availability records of
+        the others, and the others will be deleted. The IDs of the old locations
+        are preserved as a "univaf_v1" external ID on the remaining location.
+
+        Old, "univaf_v0" IDs are preserved on the remaining, merged location in
+        the same way as described above for v1 IDs.
+      `.trim(),
+      builder: (yargs) =>
+        yargs
+          .option("unpad", {
+            type: "boolean",
+            describe: `
+              Check non-zero-padded versions of numeric IDs instead of looking
+              for exact matches. For example, this will cause the IDs
+              "kroger:123" and "kroger:0123" to match.
+            `.trim(),
+          })
+          .option("commit", {
+            type: "boolean",
+            describe: `
+              Actually remove duplicates in the database. If this option is not
+              set, the script will print a plan for what it will delete or
+              update, but not actually take any action.
+            `.trim(),
+          })
+          .option("system", {
+            type: "array",
+            describe: `
+              Only check a specific ID system for duplicates. Repeat this option
+              to list more than one to check. For example, to only check Kroger
+              and CVS IDs, use: "--system kroger --system cvs".
+            `.trim(),
+          }),
+      handler: main,
     })
-    .finally(() => db.destroy());
+    .help()
+    .parse();
 }

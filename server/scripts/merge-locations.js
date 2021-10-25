@@ -1,28 +1,7 @@
 #!/usr/bin/env node
 /**
  * Script for merging multiple locations together in the database.
- *
- * Call it with the IDs of the locations to be merged. The first ID is the
- * location that others will be merged into:
- *
- *     $ scripts/merge-locations.js <id_1> <id_2> <id_3> ...etc...
- *
- * By default, this prints a plan of the steps it's going to take, but does not
- * alter the contents of the database. Add the `--commit` option to actually
- * make the changes.
- *
- * At the end of the run, a JSON object will be printed on STDOUT that maps
- * old to new IDs for records that were merged.
- *
- * Merging means one location will be given all the external IDs and
- * availability records of the others, and the others will be deleted. The IDs
- * of the old locations are preserved as a `univaf_v1` external ID on the
- * remaining location. If more than one is merged, their external IDs will have
- * an incrementing number on the end, e.g. `univaf_v1`, `univaf_v1_2`,
- * `univaf_v1_3`.
- *
- * Old, `univaf_v0` IDs are preserved on the remaining, merged location in the
- * same way as described above for v1 IDs.
+ * See CLI help at bottom for complete description and options.
  */
 
 const Knex = require("knex");
@@ -189,7 +168,13 @@ function locationsQuery() {
 }
 
 async function loadLocation(id) {
-  return await locationsQuery().where("provider_locations.id", "=", id).first();
+  const location = await locationsQuery()
+    .where("provider_locations.id", "=", id)
+    .first();
+  if (!location) {
+    throw new Error(`Location not found: "${id}"`);
+  }
+  return location;
 }
 
 function planMerge(target, ...toMerge) {
@@ -343,24 +328,22 @@ async function doMerge(plan, persist = false) {
 }
 
 async function main(args) {
-  const ids = args.filter((arg) => !arg.startsWith("--"));
-  const options = args.filter((arg) => arg.startsWith("--"));
-  const commit = options.includes("--commit");
-
-  if (ids.length < 2) {
+  if (!args.IDs || args.IDs.length < 2) {
     writeLog("Please specify at least two locations to merge.");
     process.exitCode = 1;
     return;
   }
 
-  const locations = await Promise.all(ids.map((id) => loadLocation(id)));
+  const locations = await Promise.all(args.IDs.map((id) => loadLocation(id)));
   const plan = planMerge(...locations);
-  await doMerge(plan, commit);
+  await doMerge(plan, args.commit);
 
-  if (!commit) {
+  if (!args.commit) {
     writeLog("");
     writeLog("This is a plan. Run with --commit to actually make changes.");
   }
+
+  await db.destroy();
 }
 
 module.exports = {
@@ -374,10 +357,41 @@ module.exports = {
 };
 
 if (require.main === module) {
-  main(process.argv.slice(2))
-    .catch((error) => {
-      console.error(error);
-      process.exitCode = 1;
+  const yargs = require("yargs");
+  yargs
+    .scriptName("merge-locations")
+    .command({
+      command: "$0 [IDs...]",
+      describe: `
+        Merge multiple location records from the database. Pass the IDs of the
+        locations to be merged as positional arguments. The first ID is the
+        location that others will be merged into:
+
+            $ scripts/merge-locations.js <id_1> <id_2> <id_3> ...etc...
+
+        The first location
+        will be given all the external IDs and availability records of
+        the others, and the others will be deleted. The IDs of the old locations
+        are preserved as a "univaf_v1" external ID on the remaining location.
+
+        Old, "univaf_v0" IDs are preserved on the remaining, merged location in
+        the same way as described above for v1 IDs.
+
+        By default, this prints a plan of the steps it's going to take, but does
+        not alter the contents of the database. Add the '--commit' option to
+        actually make the changes.
+      `.trim(),
+      builder: (yargs) =>
+        yargs.option("commit", {
+          type: "boolean",
+          describe: `
+              Actually upate records in the database. If this option is not set,
+              the script will print a plan for what it will delete or update,
+              but not actually take any action.
+            `.trim(),
+        }),
+      handler: main,
     })
-    .finally(() => db.destroy());
+    .help()
+    .parse();
 }
