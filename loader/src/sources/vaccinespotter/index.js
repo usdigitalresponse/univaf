@@ -404,7 +404,7 @@ const formatters = {
     // are Kroger-wide unique identifiers, so add them as a generic `kroger` ID.
     const external_ids = [];
     const storeId = store.properties.provider_location_id;
-    if ((storeId && storeId.length === 7) || storeId.length === 8) {
+    if (storeId && (storeId.length === 7 || storeId.length === 8)) {
       external_ids.push(["kroger", storeId]);
     }
 
