@@ -30,12 +30,6 @@ function writeLog(...args) {
   console.warn(...args);
 }
 
-async function loadLocations() {
-  const locations = await locationsQuery();
-  writeLog("Total locations:", locations.length);
-  return locations;
-}
-
 /**
  * Group locations by external ID. Locations will appear in more than one group
  * if more than one external ID is shared.
@@ -44,7 +38,7 @@ async function loadLocations() {
  * @param {boolean} [unpadIds] Compare unpadded versions of numeric IDs.
  * @returns {Map<string,Array>}
  */
-function groupLocations(locations, systems = null, unpadIds = false) {
+function groupByExternalId(locations, systems = null, unpadIds = false) {
   const byExternalId = new Map();
 
   // Make a locations lookup and an external IDs lookup
@@ -74,30 +68,35 @@ function groupLocations(locations, systems = null, unpadIds = false) {
 }
 
 /**
- * Given an array of sets that may intersect, find all the unions of sets that
- * have intersections.
- * @param {Array<Set|Array>} sets
+ * Given an array of groups (arrays or sets) of locations, find all the groups
+ * that have locations in common and join those groups together. Returns an
+ * array of sets of locations.
+ * The input is meant to be locations grouped by an external ID; and a location
+ * might share different external IDs with different other locations, and thus
+ * be listed in multiple groups. We want to group all those locations together
+ * in order to merge them.
+ * @param {Map<string,Set|Array>} groups
  * @returns {Array<Set>}
  *
  * @example
- * const sets = [
- *   ['a', 'b', 'c'],
- *   ['a', 'd', 'e'],
- *   ['b', 'f'],
- *   ['e', 'g'],
- *   ['h', 'i'],
- *   ['i', 'k']
- * ];
- * unionsOfIntersectingSets(sets) === [
- *   {'a', 'b', 'c', 'd', 'e', 'f', 'g'},
- *   {'h', 'i', 'k'}
+ * const groups = new Map([
+ *   ["a:b", ["a", "b", "c"]],
+ *   ["a:c", ["a", "d", "e"]],
+ *   ["a:d", ["b", "f"]],
+ *   ["a:e", ["e", "g"]],
+ *   ["a:f", ["h", "i"]],
+ *   ["a:g", ["i", "k"]]
+ * ]);
+ * mergeGroupsWithCommonLocations(groups) === [
+ *   {"a", "b", "c", "d", "e", "f", "g"},
+ *   {"h", "i", "k"}
  * ];
  */
-function unionsOfIntersectingSets(sets) {
+function mergeGroupsWithCommonLocations(groups) {
   return (
-    sets
-      // Skip groups where there are no duplicates.
-      .filter((items) => items.length > 1)
+    [...groups.values()]
+      // Skip groups that don't represent duplicates.
+      .filter((items) => (items.size || items.length) > 1)
       // The next step will modify the sets, so make copies to work with.
       .map((items) => new Set(items))
       .map((items, index, allSets) => {
@@ -117,16 +116,25 @@ function unionsOfIntersectingSets(sets) {
 }
 
 /**
- * @param {Map<string,any>} locations
- * @param {Map<string,Array>} byExternalId
+ * Given a list of locations, find all the duplicates based on their external
+ * IDs. Returns an array of sets, where each set is a group of duplicate
+ * locations that should be merged together.
+ * @param {Array} locations List of locations to group.
+ * @param {string[]} systems List of external ID systems to group by. If not
+ *        set, all external ID systems will be used.
+ * @param {boolean} unpadIds If true, remove zero-padding from numeric IDs
+ *        before using them to find duplicates.
  */
-function planChanges(byExternalId) {
-  // A given location might share different external IDs with different other
-  // locations -- i.e. the same location might appear in more than one entry of
-  // `byExternalId`. We need to find the supersets of these commonalities to
-  // determine the complete list of locations to merge.
-  const mergeGroups = unionsOfIntersectingSets([...byExternalId.values()]);
+function groupDuplicateLocations(locations, systems = null, unpadIds = false) {
+  const byExternalId = groupByExternalId(locations, systems, unpadIds);
+  return mergeGroupsWithCommonLocations(byExternalId);
+}
 
+/**
+ * Create a merge plan for each group that needs to be merged.
+ * @param {Array<Set>} mergeGroups
+ */
+function planChanges(mergeGroups) {
   // Plan merges for each group.
   const plans = [];
   for (const group of mergeGroups) {
@@ -182,9 +190,10 @@ async function main() {
     systems = process.argv[systemIndex + 1].split(",").map((x) => x.trim());
   }
 
-  const locations = await loadLocations();
-  const byExternalId = groupLocations(locations, systems, unpadIds);
-  const plans = planChanges(byExternalId);
+  const locations = await locationsQuery();
+  writeLog("Total locations:", locations.length);
+  const duplicates = groupDuplicateLocations(locations, systems, unpadIds);
+  const plans = planChanges(duplicates);
 
   await doChanges(plans, commit);
 
