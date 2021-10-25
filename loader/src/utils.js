@@ -2,32 +2,84 @@ const got = require("got");
 const config = require("./config");
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
-const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’!()/\\]+/g;
+const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
+const POSSESSIVE_PATTERN = /['’]s /g;
 const ADDRESS_LINE_DELIMITER_PATTERN = /,|\n|\s-\s/g;
 
 // Common abbreviations in addresses and their expanded, full English form.
 // These are used to match similar addresses. For example:
-//   For example: "600 Ocean Blvd" and "600 Ocean Boulevard"
+//   For example: "600 Ocean Hwy" and "600 Ocean Highway"
 // They're always used in lower-case text where punctuation has been removed.
+// In some cases, the replacements *remove* the abbreviation entirely to enable
+// better loose matching (usually for road types, like "road" vs. "street").
 const ADDRESS_EXPANSIONS = [
-  [/ ave? /g, " avenue "],
-  [/ dr /g, " drive "],
-  [/ est(ate)? /g, " estates "],
+  [/ i /g, " interstate "],
+  [/ i-(\d+) /g, " interstate $1 "],
   [/ expy /g, " expressway "],
   [/ fwy /g, " freeway "],
-  [/ rd /g, " road "],
-  [/ st /g, " street "],
-  [/ blvd /g, " boulevard "],
-  [/ ln /g, " lane "],
-  [/ cir /g, " circle "],
-  [/ ct /g, " court "],
-  [/ cor /g, " corner "],
-  [/ (cmn|common) /g, " commons "],
-  [/ ctr /g, " center "],
+  [/ hwy /g, " highway "],
+  [/ (u s|us) /g, " "], // Frequently in "U.S. Highway / US Highway"
+  [/ (s r|sr|st rt|state route|state road) /g, " route "],
+  [/ rt /g, " route "],
+  [/ (tpke?|pike) /g, " turnpike "],
+  [/ ft /g, " fort "],
+  [/ mt /g, " mount "],
+  [/ mtn /g, " mountain "],
+  [/ (is|isl|island) /g, " "],
   [/ n /g, " north "],
   [/ s /g, " south "],
   [/ e /g, " east "],
   [/ w /g, " west "],
+  [/ nw /g, " northwest "],
+  [/ sw /g, " southwest "],
+  [/ ne /g, " northeast "],
+  [/ se /g, " southeast "],
+  [/ ave? /g, " "],
+  [/ avenue? /g, " "],
+  [/ dr /g, " "],
+  [/ drive /g, " "],
+  [/ rd /g, " "],
+  [/ road /g, " "],
+  [/ st /g, " "],
+  [/ street /g, " "],
+  [/ saint /g, " "], // Unfortunately, this gets mixed in with st for street.
+  [/ blvd /g, " "],
+  [/ boulevard /g, " "],
+  [/ ln /g, " "],
+  [/ lane /g, " "],
+  [/ cir /g, " "],
+  [/ circle /g, " "],
+  [/ ct /g, " "],
+  [/ court /g, " "],
+  [/ cor /g, " "],
+  [/ corner /g, " "],
+  [/ (cmn|common|commons) /g, " "],
+  [/ ctr /g, " "],
+  [/ center /g, " "],
+  [/ pl /g, " "],
+  [/ place /g, " "],
+  [/ plz /g, " "],
+  [/ plaza /g, " "],
+  [/ pkw?y /g, " "],
+  [/ parkway /g, " "],
+  [/ cswy /g, " "],
+  [/ causeway /g, " "],
+  [/ byp /g, " "],
+  [/ bypass /g, " "],
+  [/ mall /g, " "],
+  [/ (xing|crssng) /g, " "],
+  [/ crossing /g, " "],
+  [/ sq /g, " "],
+  [/ square /g, " "],
+  [/ trl? /g, " "],
+  [/ trail /g, " "],
+  [/ (twp|twsp|townsh(ip)?) /g, " "],
+  [/ est(ate)? /g, " estates "],
+  [/ vlg /g, " "],
+  [/ village /g, " "],
+  [/ (ste|suite|unit|apt|apartment) #?(\d+) /g, " $1 "],
+  [/ #?(\d+) /g, " $1 "],
+  [/ (&|and) /g, " "],
 ];
 
 const USER_AGENTS = [
@@ -53,10 +105,11 @@ module.exports = {
    */
   matchable(text) {
     return text
+      .toLowerCase()
+      .replace(POSSESSIVE_PATTERN, " ")
       .replace(PUNCTUATION_PATTERN, " ")
       .replace(MULTIPLE_SPACE_PATTERN, " ")
-      .trim()
-      .toLowerCase();
+      .trim();
   },
 
   matchableAddress(text, line = null) {
@@ -74,7 +127,7 @@ module.exports = {
       lines = lines.slice(line, line + 1);
     }
 
-    let result = module.exports.matchable(lines.join(", "));
+    let result = module.exports.matchable(lines.join(" "));
     for (const [pattern, expansion] of ADDRESS_EXPANSIONS) {
       result = result.replace(pattern, expansion);
     }

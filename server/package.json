@@ -52,7 +52,8 @@
     "luxon": "^1.27.0",
     "pg": "^8.7.1",
     "pg-query-stream": "^4.1.0",
-    "winston": "3.3.3"
+    "winston": "3.3.3",
+    "yargs": "^17.2.1"
   },
   "devDependencies": {
     "@types/async": "3.2.7",
