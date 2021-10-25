@@ -424,12 +424,14 @@ function formatStore(store) {
     result = formatter(store);
 
     // Add an un-padded version of any numeric IDs and remove duplicates.
-    result.external_ids = getUniqueExternalIds(
-      result.external_ids.flatMap((id) => {
-        const unpadded = [id[0], unpadNumber(id[1])];
-        return [id, unpadded];
-      })
-    );
+    if (result) {
+      result.external_ids = getUniqueExternalIds(
+        result.external_ids.flatMap((id) => {
+          const unpadded = [id[0], unpadNumber(id[1])];
+          return [id, unpadded];
+        })
+      );
+    }
   });
   return result;
 }
