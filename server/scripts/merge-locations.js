@@ -270,10 +270,13 @@ async function doMerge(plan, persist = false) {
     writeLog("  from      ", from, `(${plan.deleteDescriptions[index].text})`);
   });
 
-  plan.newIds
-    .map((id) => `${id.system}:${id.value}`)
-    .sort()
-    .forEach((id) => writeLog("  ID:", id));
+  writeLog(
+    "  IDs:",
+    plan.newIds
+      .map((id) => `${id.system}:${id.value}`)
+      .sort()
+      .join("\n       ")
+  );
 
   if (plan.newData) {
     writeLog("  Updating fields:", JSON.stringify(plan.newData));
