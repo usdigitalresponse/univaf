@@ -49,21 +49,6 @@ function groupLocations(locations, systems = null, unpadIds = false) {
 
   // Make a locations lookup and an external IDs lookup
   for (const location of locations) {
-    if (unpadIds) {
-      // Add un-zero-padded versions of all IDs for matching.
-      // e.g. if we have `kroger:01234567`, add `kroger:1234567`.
-      const simpleIds = new Set(
-        location.external_ids.map(({ system, value }) => `${system}:${value}`)
-      );
-      for (const { system, value } of location.external_ids.slice()) {
-        const unpadded = value.replace(/^0+(\d+)$/, "$1");
-        if (unpadded !== value && !simpleIds.has(`${system}:${unpadded}`)) {
-          simpleIds.add(`${system}:${unpadded}`);
-          location.external_ids.push({ system, value: unpadded });
-        }
-      }
-    }
-
     for (const { system, value } of location.external_ids) {
       // Skip not-quite-unique systems
       if (system === "vtrcks") continue;
@@ -74,7 +59,8 @@ function groupLocations(locations, systems = null, unpadIds = false) {
       // Only for specified systems
       if (systems && !systems.includes(system)) continue;
 
-      const simpleId = `${system}:${value}`;
+      const mergeValue = unpadIds ? value.replace(/^0+(\d+)$/, "$1") : value;
+      const simpleId = `${system}:${mergeValue}`;
       let locationSet = byExternalId.get(simpleId);
       if (!locationSet) {
         locationSet = [];
