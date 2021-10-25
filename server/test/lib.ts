@@ -46,7 +46,7 @@ export function useServerForTests(app: Application): Context {
   return context;
 }
 
-export function installTestDatabaseHooks(): void {
+export function installTestDatabaseHooks(...extraConnections: Knex[]): void {
   // Wait for all promises to settle, but reject afterward if at
   // least one of them rejected.
   function allResolved(promises: Promise<void>[]) {
@@ -61,7 +61,9 @@ export function installTestDatabaseHooks(): void {
     );
   }
 
-  const conns: Knex[] = [db, availabilityDb];
+  let conns: Knex[] = [db, availabilityDb, ...extraConnections];
+  conns = [...new Set(conns)];
+
   afterAll(async () => {
     await allResolved(conns.map((c) => c.destroy()));
   });
@@ -72,10 +74,10 @@ export function installTestDatabaseHooks(): void {
     await allResolved(conns.map((c) => c.raw("ROLLBACK")));
   });
 
-  mockDbTransactions();
+  conns.map(mockDbTransactions);
 }
 
-function mockDbTransactions() {
+function mockDbTransactions(db: Knex) {
   // mock out db.transaction since we only use one connection when testing
   // we use defineProperty here because it's defined as read-only
   // TODO: Find a way to carry per-request db connection state so that we don't

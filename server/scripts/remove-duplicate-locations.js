@@ -36,7 +36,7 @@ function writeLog(...args) {
  * @param {Array} locations
  * @param {Array<string>} [systems] Only consider these external ID systems.
  * @param {boolean} [unpadIds] Compare unpadded versions of numeric IDs.
- * @returns {Map<string,Array>}
+ * @returns {Map<string,Set>}
  */
 function groupByExternalId(locations, systems = null, unpadIds = false) {
   const byExternalId = new Map();
@@ -57,10 +57,10 @@ function groupByExternalId(locations, systems = null, unpadIds = false) {
       const simpleId = `${system}:${mergeValue}`;
       let locationSet = byExternalId.get(simpleId);
       if (!locationSet) {
-        locationSet = [];
+        locationSet = new Set();
         byExternalId.set(simpleId, locationSet);
       }
-      locationSet.push(location);
+      locationSet.add(location);
     }
   }
 
@@ -181,13 +181,13 @@ async function doChanges(plans, persist = false) {
   writeLog(`Adding to ${updated} locations`);
 }
 
-async function main() {
-  const commit = process.argv.includes("--commit");
-  const unpadIds = process.argv.includes("--unpad");
-  const systemIndex = process.argv.findIndex((x) => x === "--system");
+async function main(args) {
+  const commit = args.includes("--commit");
+  const unpadIds = args.includes("--unpad");
+  const systemIndex = args.findIndex((x) => x === "--system");
   let systems = null;
   if (systemIndex > -1) {
-    systems = process.argv[systemIndex + 1].split(",").map((x) => x.trim());
+    systems = args[systemIndex + 1].split(",").map((x) => x.trim());
   }
 
   const locations = await locationsQuery();
@@ -203,9 +203,18 @@ async function main() {
   }
 }
 
-main()
-  .catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  })
-  .finally(() => db.destroy());
+module.exports = {
+  main,
+  groupDuplicateLocations,
+  groupByExternalId,
+  mergeGroupsWithCommonLocations,
+};
+
+if (require.main === module) {
+  main(process.argv)
+    .catch((error) => {
+      console.error(error);
+      process.exitCode = 1;
+    })
+    .finally(() => db.destroy());
+}
