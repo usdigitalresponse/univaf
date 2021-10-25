@@ -384,6 +384,42 @@ describe("VaccineSpotter", () => {
     expect(result.external_ids).toContainEqual(["harveys", "1688"]);
   });
 
+  it("it should add a general `kroger` ID for Kroger-wide identifiers", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        name: "",
+        provider: "kroger",
+        provider_brand: "smiths",
+        provider_brand_id: 21,
+        provider_brand_name: "Smith's",
+        provider_location_id: "70600180",
+      },
+    });
+
+    expect(result.external_ids).toContainEqual(["kroger_smiths", "70600180"]);
+    expect(result.external_ids).toContainEqual(["kroger", "70600180"]);
+  });
+
+  it("it should not add a general `kroger` ID for short identifiers", () => {
+    const result = formatStore({
+      ...basicVaccineSpotterStore,
+      properties: {
+        ...basicVaccineSpotterStore.properties,
+        name: "",
+        provider: "kroger",
+        provider_brand: "smiths",
+        provider_brand_id: 21,
+        provider_brand_name: "Smith's",
+        provider_location_id: "180",
+      },
+    });
+
+    expect(result.external_ids).toContainEqual(["kroger_smiths", "180"]);
+    expect(result.external_ids).not.toContainEqual(["kroger", "180"]);
+  });
+
   it("it should always send an array for address_lines", () => {
     const result = formatStore({
       ...basicVaccineSpotterStore,

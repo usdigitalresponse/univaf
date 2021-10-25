@@ -399,6 +399,18 @@ const formatters = {
     return formatters._base(store, { name, external_ids });
   },
 
+  kroger(store) {
+    // Kroger's 8-digit IDs (sometimes 7 digits if they aren't zero-padded)
+    // are Kroger-wide unique identifiers, so add them as a generic `kroger` ID.
+    const external_ids = [];
+    const storeId = store.properties.provider_location_id;
+    if ((storeId && storeId.length === 7) || storeId.length === 8) {
+      external_ids.push(["kroger", storeId]);
+    }
+
+    return formatters._base(store, { external_ids });
+  },
+
   cvs() {
     // VaccineSpotter data for CVS is not currently very good; we rely on the
     // CVS API instead.
