@@ -229,6 +229,8 @@ function getBookingLink(locationInfo) {
   return link;
 }
 
+// TODO: unify this with similar code for CVS & Walgreens. They are largely the
+// same, but expect a few different values.
 function formatCapacity(slots) {
   const byDate = Object.create(null);
   for (const slot of slots) {
@@ -239,35 +241,17 @@ function formatCapacity(slots) {
       if (extension.url === EXTENSIONS.CAPACITY) {
         // TODO: should have something that automatically parses by value type.
         capacity = parseInt(extension.valueInteger);
-        if (isNaN(capacity)) {
+        if (isNaN(capacity) || capacity < 0) {
           available = Available.unknown;
-          console.error(`CVS SMART: non-integer capcity: ${extension}`);
-          Sentry.captureMessage(`Unparseable slot capacity`, {
-            level: Sentry.Severity.Error,
-            contexts: {
-              raw_slot: slot,
-            },
-          });
-        } else if (capacity > 1) {
-          // The CVS API currently returns 0 (no appointments) or 1 (*some*
-          // appointments) rather than actual capacity estimates. It doesn't
-          // indicate this in any way, so watch for unexpected values in case
-          // something in their implementation to be more detailed.
-          console.warn(`Got unexpected > 1 capacity for CVS: ${slot}`);
-          Sentry.captureMessage(`Unexpected > 1 capacity for CVS`, {
-            level: Sentry.Severity.Info,
-            contexts: {
-              raw_slot: slot,
-            },
-          });
+          warn("Kroger SMART: invalid slot capcity", { extension });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         // We don't use the Booking URL; we hardcode a better one that puts you
         // directly into the screener flow instead of an interstitial page.
         // bookingLink = extension.valueUrl;
       } else {
-        console.warn(`Got unexpected slot extension for CVS: ${slot}`);
-        Sentry.captureMessage(`Unexpected slot extension for CVS`, {
+        console.warn(`Got unexpected slot extension for Kroger: ${slot}`);
+        Sentry.captureMessage(`Unexpected slot extension for Kroger`, {
           level: Sentry.Severity.Info,
           contexts: {
             raw_slot: slot,
@@ -277,7 +261,7 @@ function formatCapacity(slots) {
     }
 
     // TODO: look at the slot's schedule to determine product/dose.
-    // CVS's current implementation doesn't specify those, but a more general
+    // Kroger's current implementation doesn't specify those, but a more general
     // SMART Scheduling Links client will need to support it.
 
     if (byDate[date]) {
