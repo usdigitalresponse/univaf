@@ -7,7 +7,7 @@
 
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../model");
-const { titleCase } = require("../utils");
+const { titleCase, unpadNumber } = require("../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -43,7 +43,7 @@ function formatLocation(locationInfo) {
     formatUnknownId({ system, value }) {
       if (system === WALGREENS_ID_SYSTEM) {
         // Get rid of any zero-padding
-        const id = parseInt(value, 10) || value;
+        const id = unpadNumber(value);
         return ["walgreens", id.toString()];
       }
       return [system, value];
