@@ -28,8 +28,8 @@ describe("Kroger SMART Scheduling Links API", () => {
       {
         external_ids: [
           ["kroger", "70100011"],
-          ["kroger_fred", "70100011"],
           ["vtrcks", "40173465"],
+          ["kroger_fred", "70100011"],
         ],
 
         location_type: "PHARMACY",
