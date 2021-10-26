@@ -106,10 +106,44 @@ describe("Kroger SMART Scheduling Links API", () => {
       .get("/v1/health-wellness/schedules/vaccines/schedules.ndjson")
       .reply(200, toNdJson(fixtures.TestSchedules));
     nock(API_BASE)
-      .get("/v1/health-wellness/schedules/vaccines/slot_AK.ndjson")
+      .get("/v1/health-wellness/schedules/vaccines/slot_NJ.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
     const result = await checkAvailability(() => null, { states: "NJ" });
+    expect(result).toHaveLength(0);
+  });
+
+  // 99999 represents a non-real test location.
+  it("should not include locations with ID 99999", async () => {
+    nock(API_BASE).get(MANIFEST_PATH).reply(200, fixtures.TestManifest);
+    nock(API_BASE)
+      .get("/v1/health-wellness/schedules/vaccines/locations.ndjson")
+      .reply(200, () => {
+        const items = JSON.parse(JSON.stringify(fixtures.TestLocations));
+        items[0].id = "99999";
+        return toNdJson(items);
+      });
+    nock(API_BASE)
+      .get("/v1/health-wellness/schedules/vaccines/schedules.ndjson")
+      .reply(200, () => {
+        const items = JSON.parse(JSON.stringify(fixtures.TestSchedules));
+        items[0].id = "99999";
+        items[0].actor[0].reference = "Location/99999";
+        return toNdJson(items);
+      });
+    nock(API_BASE)
+      .get("/v1/health-wellness/schedules/vaccines/slot_AK.ndjson")
+      .reply(200, () => {
+        const items = JSON.parse(JSON.stringify(fixtures.TestSlots)).map(
+          (item) => {
+            item.schedule.reference = "Schedule/99999";
+            return item;
+          }
+        );
+        return toNdJson(items);
+      });
+
+    const result = await checkAvailability(() => null, { states: "AK" });
     expect(result).toHaveLength(0);
   });
 });

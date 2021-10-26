@@ -32,9 +32,9 @@ async function getData(states) {
   const api = new SmartSchedulingLinksApi(API_URL);
   const manifest = await api.getManifest();
   const smartLocations = await getLocations(api, states);
-  return Object.values(smartLocations).map((entry) =>
-    formatLocation(manifest.transactionTime, entry)
-  );
+  return Object.values(smartLocations)
+    .map((entry) => formatLocation(manifest.transactionTime, entry))
+    .filter(Boolean);
 }
 
 const KROGER_BRAND_ID_SYSTEMS = [
@@ -143,6 +143,9 @@ function formatKrogerExternalIds(location) {
 
 function formatLocation(validTime, locationInfo) {
   const smartLocation = locationInfo.location;
+
+  // 99999 and similar IDs are test locations. Don't include them.
+  if (/^9+$/.test(smartLocation.id)) return null;
 
   const external_ids = formatKrogerExternalIds(smartLocation);
   const { phone: info_phone, url: info_url } = valuesAsObject(
