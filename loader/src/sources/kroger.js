@@ -155,9 +155,7 @@ function formatLocation(validTime, locationInfo) {
   const { phone: info_phone, url: info_url } = valuesAsObject(
     smartLocation.telecom
   );
-  // XXX: verify that all slots share identical booking URLs
-  const slotExtensions = getExtensions(locationInfo.slots?.[0]);
-  const booking_url = slotExtensions[EXTENSIONS.BOOKING_DEEP_LINK];
+  const booking_url = getBookingLink(locationInfo);
 
   const position = smartLocation.position || undefined;
   if (position) {
@@ -203,6 +201,32 @@ function formatLocation(validTime, locationInfo) {
       capacity,
     },
   };
+}
+
+/**
+ * Get a booking link from the slots. All slots currently share a booking link,
+ * but this will validate that and warn us if that ever changes.
+ * @returns {string}
+ */
+function getBookingLink(locationInfo) {
+  if (!locationInfo.slots) return null;
+
+  let link;
+  for (const slot of locationInfo.slots) {
+    const slotLink = getExtensions(slot)[EXTENSIONS.BOOKING_DEEP_LINK];
+    if (!link) {
+      link = slotLink;
+    } else if (link !== slotLink) {
+      warn("Kroger slots have different booking links", {
+        id: locationInfo.location.id,
+        name: locationInfo.location.name,
+        state: locationInfo.location.address.state,
+      });
+      return null;
+    }
+  }
+
+  return link;
 }
 
 function formatCapacity(slots) {
