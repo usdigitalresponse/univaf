@@ -76,7 +76,7 @@ module "vaccinespotter_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(10 minutes)"
+  schedule      = "cron(0/10 * * * ? *)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -110,7 +110,7 @@ module "walgreens_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(10 minutes)"
+  schedule      = "cron(2/10 * * * ? *)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -125,7 +125,7 @@ module "kroger_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(10 minutes)"
+  schedule      = "cron(4/10 * * * ? *)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
