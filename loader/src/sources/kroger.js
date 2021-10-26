@@ -38,17 +38,21 @@ async function getData(states) {
 }
 
 const KROGER_BRAND_ID_SYSTEMS = [
-  { pattern: /^Harris Teeter/i, system: "kroger_hart" },
+  { pattern: /^Baker's Pharmacy/i, system: "kroger_bakers" },
   { pattern: /^Copps Pharmacy/i, system: "kroger_copps" },
   { pattern: /^Dillons Pharmacy/i, system: "kroger_dillons" },
+  { pattern: /^Food[-\s]4[-\s]Less/i, system: "kroger_food_4_less" },
+  { pattern: /^Foods Co/i, system: "kroger_foods_co" },
   { pattern: /^Fred Meyer Pharmacy/i, system: "kroger_fred" },
   { pattern: /^Frys Pharmacy/i, system: "kroger_frys" },
   { pattern: /^Gerbes Pharmacy/i, system: "kroger_gerbes" },
+  { pattern: /^Harris Teeter/i, system: "kroger_hart" },
   { pattern: /^JayC Pharmacy/i, system: "kroger_jayc" },
   { pattern: /^King Soopers Pharmacy/i, system: "kroger_kingsoopers" },
   { pattern: /^Kroger Pharmacy/i, system: "kroger" },
   { pattern: /^Mariano's Pharmacy/i, system: "kroger_marianos" },
   { pattern: /^Metro Market Pharmacy/i, system: "kroger_metro_market" },
+  { pattern: /^Pay[-\s]?less/i, system: "kroger_payless" },
   { pattern: /^Pick 'n Save Pharmacy/i, system: "kroger_pick_n_save" },
   { pattern: /^QFC Pharmacy/i, system: "kroger_qfc" },
   { pattern: /^Ralphs Pharmacy/i, system: "kroger_ralphs" },
