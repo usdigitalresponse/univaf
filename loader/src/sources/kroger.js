@@ -1,6 +1,24 @@
 /**
  * Load data from Kroger's SMART Scheduling Links API
  * https://github.com/smart-on-fhir/smart-scheduling-links/
+ *
+ * A note on Kroger IDs:
+ * Kroger is both a supermarket/pharmacy chain and an umbrella company for
+ * variety of other supermarket and pharmacy brands. Since we have a variety of
+ * data from other sources keyed to these sub-brands, we do a lot of work here
+ * to come up with the broadest set of IDs we can for effective matching.
+ *
+ * In the SMART Scheduling Links API, most locations use an 8-digit ID. These
+ * IDs are actually a 3-digit division code (e.g. "Mid Atlantic" is 029,
+ * "Nashville" is 026, etc.) followed by a 5-digit store number. This gets a
+ * little rocky when it comes to pop-up events and clinics or other
+ * non-permanent facilities/stores, though -- according to Kroger's tech folks,
+ * their business teams sometimes come up with new numbering schemes for these.
+ * They may fit into the 3 + 5 scheme (but use division codes that don't match
+ * what you might expect for their geographic area) or may be an entirely
+ * different size string, but are guaranteed not to collide with other existing
+ * store numbers. You can see one flavor of this with the IDs for
+ * "The Little Clinic" locations.
  */
 
 const Sentry = require("@sentry/node");
