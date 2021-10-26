@@ -3,7 +3,12 @@
  * https://github.com/smart-on-fhir/smart-scheduling-links/
  */
 
-const { httpClient, parseJsonLines, filterObject } = require("./utils");
+const {
+  httpClient,
+  parseJsonLines,
+  filterObject,
+  oneLine,
+} = require("./utils");
 
 const MANIFEST_CACHE_TIME = 5 * 60 * 1000;
 
@@ -170,7 +175,10 @@ async function getLocations(api, states) {
         location.schedules.push(schedule);
         schedule[locationReference] = location;
       } else {
-        console.error(`Found schedule with unknown location: ${schedule.id}`);
+        console.error(oneLine`
+          Found schedule with unknown location: ${schedule.id}
+          (references location ${locationId})
+        `);
       }
     } else {
       console.warn(
@@ -184,7 +192,7 @@ async function getLocations(api, states) {
     const schedule = schedules[scheduleId];
     if (schedule) {
       slot[scheduleReference] = schedule;
-      schedule[locationReference].slots.push(slot);
+      schedule[locationReference]?.slots?.push(slot);
     } else {
       console.error(
         `No schedule ${scheduleId} (referenced from slot ${slot.id})`,
