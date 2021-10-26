@@ -5,6 +5,7 @@
 
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../model");
+const { unpadNumber, getUniqueExternalIds } = require("../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -16,6 +17,11 @@ const {
 
 const API_URL =
   "https://api.kroger.com/v1/health-wellness/schedules/vaccines/$bulk-publish";
+
+function warn(message, context) {
+  console.warn(`Kroger: ${message}`, context);
+  Sentry.captureMessage(message, Sentry.Severity.Info);
+}
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -31,37 +37,114 @@ async function getData(states) {
   );
 }
 
-function formatLocation(validTime, locationInfo) {
-  const smartLocation = locationInfo.location;
+const KROGER_BRAND_ID_SYSTEMS = [
+  { pattern: /^Harris Teeter/i, system: "kroger_hart" },
+  { pattern: /^Copps Pharmacy/i, system: "kroger_copps" },
+  { pattern: /^Dillons Pharmacy/i, system: "kroger_dillons" },
+  { pattern: /^Fred Meyer Pharmacy/i, system: "kroger_fred" },
+  { pattern: /^Frys Pharmacy/i, system: "kroger_frys" },
+  { pattern: /^Gerbes Pharmacy/i, system: "kroger_gerbes" },
+  { pattern: /^JayC Pharmacy/i, system: "kroger_jayc" },
+  { pattern: /^King Soopers Pharmacy/i, system: "kroger_kingsoopers" },
+  { pattern: /^Kroger Pharmacy/i, system: "kroger" },
+  { pattern: /^Mariano's Pharmacy/i, system: "kroger_marianos" },
+  { pattern: /^Metro Market Pharmacy/i, system: "kroger_metro_market" },
+  { pattern: /^Pick 'n Save Pharmacy/i, system: "kroger_pick_n_save" },
+  { pattern: /^QFC Pharmacy/i, system: "kroger_qfc" },
+  { pattern: /^Ralphs Pharmacy/i, system: "kroger_ralphs" },
+  { pattern: /^Smith's Pharmacy/i, system: "kroger_smiths" },
+  {
+    pattern: /^City Market Pharmacy/i,
+    getIds(location) {
+      const ids = [["kroger_citymarket", location.id]];
+      // We have existing records for all the same places that start with "625",
+      // but instead our existing IDs are "620...". Add those IDs to facilitate
+      // matching.
+      if (location.id.startsWith("625")) {
+        ids.push(["kroger_citymarket", `620${location.id.slice(3)}`]);
+      }
+      return ids;
+    },
+  },
+  {
+    pattern: /^The Little Clinic/i,
+    getIds(location) {
+      const ids = [["kroger_the_little_clinic", location.id]];
 
-  // ID systems:
-  // Harris Teeter: kroger_hart
-  // City Market Pharmacy: kroger_citymarket
-  //     ^ These have IDs starting with 625..., but we already have these same
-  //       locations with IDs starting with 620...!
-  // Copps Pharmacy: ~kroger_metro_market~ HMMMMMMM! Overloaded with actual Metro Market :(
-  // Dillons Pharmacy: kroger, kroger_dillons, kroger_payless (Seems like the pharmacy inside most Pay-Less Markets is Dillons)
-  // Fred Meyer Pharmacy: kroger_fred
-  // Frys Pharmacy: kroger_frys, kroger_covid
-  // Gerbes Pharmacy: kroger_gerbes
-  // JayC Pharmacy: kroger_jayc
-  // King Soopers Pharmacy: kroger_kingsoopers
-  // Kroger Pharmacy: kroger
-  // Mariano's Pharmacy: kroger_marianos
-  // Metro Market Pharmacy: kroger_metro_market
-  // Pick 'n Save Pharmacy: kroger_pick_n_save
-  // QFC Pharmacy: kroger_qfc
-  // Ralphs Pharmacy: kroger_ralphs
-  // Smith's Pharmacy: kroger_smiths
-  // The Little Clinic: kroger_the_little_clinic
+      // The Little Clinic often uses a different 5-digit identifier. These are
+      // mappable to the 8-digit IDs, though! 5-digit IDs have a 2-digit prefix
+      // that corresponds to a 5-digit prefix for the 8-digit ID.
+      // (The ID may also be an unpadded 4-digit number.)
+      const shortId = location.id.padStart(5, "0");
+      if (shortId.length === 5) {
+        const prefixMap = {
+          "03": "85100",
+          "06": "85200",
+          11: "85600",
+          15: "85800",
+          17: "86100",
+          18: "85300",
+          36: "85400",
+          43: "85500",
+          47: "85900",
+        };
+        const prefix = shortId.slice(0, 2);
+        const newPrefix = prefixMap[prefix];
+        if (newPrefix) {
+          const longId = `${newPrefix}${shortId.slice(2)}`;
+          ids.push(["kroger_the_little_clinic", longId], ["kroger", longId]);
+        } else {
+          warn(`Unknown ID prefix for The Little Clinic "${shortId}"`, {
+            id: location.id,
+            name: location.name,
+            state: location.address.state,
+          });
+        }
+      }
 
-  // XXX: we need to gin up the correct brand-based external ID names we've
-  // been using in the past from vaccinespotter.
-  // XXX: make sure we are removing zero-padding appropriately.
-  const external_ids = formatExternalIds(smartLocation, {
+      return ids;
+    },
+  },
+];
+
+function formatKrogerExternalIds(location) {
+  // Get generic, SMART IDs.
+  let external_ids = formatExternalIds(location, {
     smartIdName: "kroger",
   });
 
+  // Kroger's API returns differentiated data for a whole mess of sub-brands.
+  let foundSubBrand = false;
+  for (const brandSystem of KROGER_BRAND_ID_SYSTEMS) {
+    if (brandSystem.pattern.test(location.name)) {
+      foundSubBrand = true;
+      if (brandSystem.getIds) {
+        external_ids.push(...brandSystem.getIds(location));
+      } else {
+        external_ids.push([brandSystem.system, location.id]);
+      }
+    }
+  }
+  if (!foundSubBrand) {
+    warn(`Unknown sub-brand for Kroger store "${location.name}"`, {
+      id: location.id,
+      name: location.name,
+      state: location.address.state,
+    });
+  }
+
+  external_ids = external_ids.flatMap((id) => [
+    id,
+    [id[0], unpadNumber(id[1])],
+  ]);
+
+  return getUniqueExternalIds(external_ids);
+}
+
+function formatLocation(validTime, locationInfo) {
+  const smartLocation = locationInfo.location;
+
+  const external_ids = formatKrogerExternalIds(smartLocation);
   const { phone: info_phone, url: info_url } = valuesAsObject(
     smartLocation.telecom
   );
