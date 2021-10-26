@@ -3,13 +3,14 @@ const sources = {
   cvsApi: require("./sources/cvs/api"),
   cvsScraper: require("./sources/cvs/scraper"),
   cvsSmart: require("./sources/cvs/smart"),
+  krogerSmart: require("./sources/kroger"),
   njvss: require("./sources/njvss"),
   prepmod: require("./sources/prepmod"),
   riteAidApi: require("./sources/riteaid/api"),
   vaccinespotter: require("./sources/vaccinespotter"),
+  vtsGeo: require("./sources/vts/geo"),
   waDoh: require("./sources/wa-doh"),
   walgreensSmart: require("./sources/walgreens"),
-  vtsGeo: require("./sources/vts/geo"),
 };
 
 module.exports = { sources };

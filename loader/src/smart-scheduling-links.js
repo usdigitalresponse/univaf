@@ -3,7 +3,12 @@
  * https://github.com/smart-on-fhir/smart-scheduling-links/
  */
 
-const { httpClient, parseJsonLines, filterObject } = require("./utils");
+const {
+  httpClient,
+  parseJsonLines,
+  filterObject,
+  oneLine,
+} = require("./utils");
 
 const MANIFEST_CACHE_TIME = 5 * 60 * 1000;
 
@@ -170,7 +175,10 @@ async function getLocations(api, states) {
         location.schedules.push(schedule);
         schedule[locationReference] = location;
       } else {
-        console.error(`Found schedule with unknown location: ${schedule.id}`);
+        console.error(oneLine`
+          Found schedule with unknown location: ${schedule.id}
+          (references location ${locationId})
+        `);
       }
     } else {
       console.warn(
@@ -184,7 +192,7 @@ async function getLocations(api, states) {
     const schedule = schedules[scheduleId];
     if (schedule) {
       slot[scheduleReference] = schedule;
-      schedule[locationReference].slots.push(slot);
+      schedule[locationReference]?.slots?.push(slot);
     } else {
       console.error(
         `No schedule ${scheduleId} (referenced from slot ${slot.id})`,
@@ -275,6 +283,19 @@ function valuesAsObject(valueList, keyName = "system") {
 }
 
 /**
+ * Determine whether an identifier is valid. Some SMART SL APIs always include
+ * an identifier for VTrckS, even if there's no VTrckS PIN, and indicate the
+ * non-value with strings like `""`, `"null"`, or even human-readable messages.
+ * @param {string} value The identifier's `value` property.
+ * @returns {boolean}
+ */
+function isValidIdentifier(value) {
+  return (
+    value && value !== "null" && value !== "nil" && !value.includes("unknown")
+  );
+}
+
+/**
  * Create UNIVAF-style external IDs for a SMART SL location object.
  * @param {Object} location
  * @param {Object} [options]
@@ -283,7 +304,7 @@ function valuesAsObject(valueList, keyName = "system") {
  * @param {(identifier: {system: string, value: string}) => [string, string]} options.formatUnknownId
  *        Customize handling of unknown ID systems. Normally, unknown system
  *        names are simply passed through, but you can provide custom mappings
- *        using this function.
+ *        using this function. Return `["", ""]` to drop the identifier.
  * @returns {Array<[string,string]>}
  */
 function formatExternalIds(location, { smartIdName, formatUnknownId } = {}) {
@@ -295,18 +316,14 @@ function formatExternalIds(location, { smartIdName, formatUnknownId } = {}) {
     let { system, value } = identifier;
     if (identifier.system === SYSTEMS.VTRCKS) {
       system = "vtrcks";
-      // When there is no VTrckS PIN, some sources include an empty string, a
-      // null, or a human-readable error message (Walgreens) for the value
-      // instead of just dropping the identifier entry from the list.
-      if (!identifier.value || identifier.value.includes("unknown")) {
-        continue;
-      }
     } else if (identifier.system === SYSTEMS.NPI_USA) {
       system = "npi_usa";
     } else if (formatUnknownId) {
       [system, value] = formatUnknownId(identifier);
     }
-    externalIds.push([system, value]);
+    if (isValidIdentifier(value)) {
+      externalIds.push([system, value]);
+    }
   }
 
   return externalIds;

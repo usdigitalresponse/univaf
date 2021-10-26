@@ -1,5 +1,11 @@
 const nock = require("nock");
-const { httpClient, splitOnce, filterObject } = require("../src/utils");
+const {
+  httpClient,
+  splitOnce,
+  filterObject,
+  unpadNumber,
+  getUniqueExternalIds,
+} = require("../src/utils");
 
 describe("splitOnce", () => {
   it("splits once on a single character", () => {
@@ -73,5 +79,32 @@ describe("filterObject", () => {
       b: "B Value",
       c: "C Value",
     });
+  });
+});
+
+describe("unpadNumber", () => {
+  it("removes leading zeroes from decimal strings", () => {
+    expect(unpadNumber("000123")).toBe("123");
+    expect(unpadNumber("123")).toBe("123");
+    expect(unpadNumber("100123")).toBe("100123");
+  });
+
+  it("does not change non-decimal strings", () => {
+    expect(unpadNumber("00012a3")).toBe("00012a3");
+    expect(unpadNumber("0001-2-5")).toBe("0001-2-5");
+  });
+});
+
+describe("getUniqueExternalIds", () => {
+  it("should remove duplicate entries from an array of external IDs", () => {
+    const input = [
+      ["a", "1"],
+      ["b", "1"],
+      ["a", "1"],
+    ];
+    expect(getUniqueExternalIds(input)).toEqual([
+      ["a", "1"],
+      ["b", "1"],
+    ]);
   });
 });

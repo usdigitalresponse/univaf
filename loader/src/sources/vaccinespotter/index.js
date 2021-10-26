@@ -1,6 +1,11 @@
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
-const { httpClient, titleCase } = require("../../utils");
+const {
+  httpClient,
+  titleCase,
+  unpadNumber,
+  getUniqueExternalIds,
+} = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
 function warn(message, context) {
@@ -232,34 +237,6 @@ function hasUsefulData(store) {
     store.properties.city ||
     store.properties.address
   );
-}
-
-/**
- * Remove zeros from the leading edge of a numeric string. If the string has
- * non-numeric characters (e.g. `-`), leave it alone.
- * @param {string} numberString
- * @returns {string}
- */
-function unpadNumber(numberString) {
-  return numberString.replace(/^0+(\d+)$/, "$1");
-}
-
-/**
- * Remove duplicate entries from a list of external IDs.
- * @param {Array<[string,string]>} idList
- * @returns {Array<[string,string]}
- */
-function getUniqueExternalIds(idList) {
-  const seen = new Set();
-  const result = [];
-  for (const id of idList) {
-    const stringId = id.join(":");
-    if (!seen.has(stringId)) {
-      result.push(id);
-      seen.add(stringId);
-    }
-  }
-  return result;
 }
 
 const formatters = {
