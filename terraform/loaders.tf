@@ -76,7 +76,7 @@ module "vaccinespotter_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(5 minutes)"
+  schedule      = "cron(0/10 * * * ? *)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -99,6 +99,36 @@ module "rite_aid_loader" {
     RITE_AID_URL = var.rite_aid_api_url
     RITE_AID_KEY = var.rite_aid_api_key
   }
+}
+
+module "walgreens_loader" {
+  source = "./modules/loader"
+
+  name          = "walgreensSmart"
+  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
+  loader_source = "walgreensSmart"
+  api_url       = "http://${aws_alb.main.dns_name}"
+  api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
+  schedule      = "cron(2/10 * * * ? *)"
+  cluster_arn   = aws_ecs_cluster.main.arn
+  role          = aws_iam_role.ecs_task_execution_role.arn
+  subnets       = aws_subnet.public.*.id
+}
+
+module "kroger_loader" {
+  source = "./modules/loader"
+
+  name          = "krogerSmart"
+  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
+  loader_source = "krogerSmart"
+  api_url       = "http://${aws_alb.main.dns_name}"
+  api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
+  schedule      = "cron(4/10 * * * ? *)"
+  cluster_arn   = aws_ecs_cluster.main.arn
+  role          = aws_iam_role.ecs_task_execution_role.arn
+  subnets       = aws_subnet.public.*.id
 }
 
 module "washington_doh_loader" {
