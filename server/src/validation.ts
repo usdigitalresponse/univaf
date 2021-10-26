@@ -192,24 +192,26 @@ function capacityFromSlots(slots: Array<SlotRecord>): Array<CapacityRecord> {
     const products = slot.products ? slot.products.toString() : "";
     const key = `${date}::${products}::${slot.dose}`;
 
-    // A slot that doesn't specify any counts is available. But if it only has
-    // an unavailable count, assume it's not available.
-    let availableCount = slot.available_count;
-    if (availableCount == null) {
-      if (slot.unavailable_count) availableCount = 0;
-      else availableCount = 1;
+    let availableCount = slot.available_count || 0;
+    let unavailableCount = slot.unavailable_count || 0;
+    if (!availableCount && !unavailableCount) {
+      if (slot.available === Availability.YES) {
+        availableCount = 1;
+      } else if (slot.available === Availability.NO) {
+        unavailableCount = 1;
+      }
     }
 
     if (key in categorized) {
       categorized[key].available_count += availableCount;
-      categorized[key].unavailable_count += slot.unavailable_count || 0;
+      categorized[key].unavailable_count += unavailableCount;
       if (availableCount) categorized[key].available = Availability.YES;
     } else {
       categorized[key] = {
         date,
         available: availableFromCount(availableCount, Availability.YES),
         available_count: availableCount,
-        unavailable_count: slot.unavailable_count || 0,
+        unavailable_count: unavailableCount,
         products: slot.products,
         dose: slot.dose,
       };
