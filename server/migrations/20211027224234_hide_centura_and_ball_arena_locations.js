@@ -13,9 +13,7 @@ exports.up = async function (knex) {
 };
 
 exports.down = async function (knex) {
-  const result = await knex("provider_locations")
-    .where("provider", ["centura_driveup_event", "denver_ball_arena"])
-    .update({ is_public: true });
-
-  console.log("Updated", result, "locations");
+  console.log(
+    "hide_centura_and_ball_arena_locations.js: No migrated rows changed."
+  );
 };
