@@ -12,7 +12,7 @@ exports.up = async function (knex) {
   console.log("Updated", result, "locations");
 };
 
-exports.down = async function (knex) {
+exports.down = async function () {
   console.log(
     "hide_centura_and_ball_arena_locations.js: No migrated rows changed."
   );
