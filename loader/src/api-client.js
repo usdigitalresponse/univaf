@@ -1,7 +1,6 @@
 const Queue = require("queue");
 const config = require("./config");
 const { httpClient } = require("./utils");
-const packageInfo = require("../package.json");
 
 const DEFAULT_CONCURRENCY = 10;
 
@@ -21,17 +20,13 @@ class ApiClient {
     if (url.endsWith("/")) url = url.slice(0, -1);
     this.url = url;
     this.key = key;
-    this.userAgent = `univaf-loader/${packageInfo.version}`;
   }
 
   async getLocations(query) {
     const { body } = await httpClient({
       url: `${this.url}/locations`,
       searchParams: query,
-      headers: {
-        "x-api-key": this.key,
-        "User-Agent": this.userAgent,
-      },
+      headers: { "x-api-key": this.key },
       responseType: "json",
     });
     return body;
@@ -45,10 +40,7 @@ class ApiClient {
     const response = await httpClient.post({
       url: `${this.url}/update`,
       searchParams: options,
-      headers: {
-        "x-api-key": this.key,
-        "User-Agent": this.userAgent,
-      },
+      headers: { "x-api-key": this.key },
       json: data,
       responseType: "json",
       throwHttpErrors: false,
