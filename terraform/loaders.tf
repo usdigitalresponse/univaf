@@ -1,38 +1,9 @@
-
-
-# module "cvs_scraper_loader" {
-#   source = "./modules/loader"
-
-#   name = "cvs-scraper"
-#   loader_source = "cvsScraper"
-#   api_url = "http://${aws_alb.main.dns_name}"
-#   api_key = var.api_key
-#   sentry_dsn = var.loader_sentry_dsn
-#   schedule = "rate(10 minutes)"
-#   cluster_arn = aws_ecs_cluster.main.arn
-#   role = aws_iam_role.ecs_task_execution_role.arn
-#   subnets = aws_subnet.public.*.id
-# }
-
-# Disable the CVS API loader; the CVS SMART API loader is covering the same
-# data and doing it better for now.
-# module "cvs_api_loader" {
-#   source = "./modules/loader"
-
-#   name          = "cvs-api"
-#   loader_source = "cvsApi"
-#   api_url       = "http://${aws_alb.main.dns_name}"
-#   api_key       = var.api_key
-#   sentry_dsn    = var.loader_sentry_dsn
-#   schedule      = "rate(3 minutes)"
-#   cluster_arn   = aws_ecs_cluster.main.arn
-#   role          = aws_iam_role.ecs_task_execution_role.arn
-#   subnets       = aws_subnet.public.*.id
-#   env_vars = {
-#     CVS_API_URL = "https://api.cvshealth.com/"
-#     CVS_API_KEY = var.cvs_api_key
-#   }
-# }
+# Data Loaders
+#
+# These each run as a script on a schedule. They are responsible for loading
+# data from a particular type of source (e.g. the CVS SMART Scheduling Links
+# API, the PrepMod API), reformatting that data for UNIVAF, and posting it to
+# the server's `/update` endpoint to be saved.
 
 module "cvs_smart_loader" {
   source = "./modules/loader"
@@ -65,21 +36,6 @@ module "njvss_loader" {
     NJVSS_AWS_KEY_ID     = var.njvss_aws_key_id
     NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
   }
-}
-
-module "vaccinespotter_loader" {
-  source = "./modules/loader"
-
-  name          = "vaccinespotter"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
-  loader_source = "vaccinespotter"
-  api_url       = "http://${aws_alb.main.dns_name}"
-  api_key       = var.api_key
-  sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "cron(0/10 * * * ? *)"
-  cluster_arn   = aws_ecs_cluster.main.arn
-  role          = aws_iam_role.ecs_task_execution_role.arn
-  subnets       = aws_subnet.public.*.id
 }
 
 module "rite_aid_loader" {
