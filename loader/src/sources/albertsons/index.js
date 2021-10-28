@@ -200,7 +200,7 @@ const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
  * Parse a location name and address from Albertsons (they're both part of
  * the same string).
  * @param {string} text
- * @returns {{name: string, storeNumber?: string, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
+ * @returns {{name: string, storeNumber: string|undefined, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
  */
 function parseNameAndAddress(text) {
   const partMatch = text.match(addressFieldParts);
@@ -253,10 +253,10 @@ function formatProducts(raw) {
 }
 
 function formatLocation(data, validAt, checkedAt) {
-  const address = parseNameAndAddress(data.address);
-  const brand = BRANDS.find((item) => item.pattern.test(address.name));
+  const { name, storeNumber, address } = parseNameAndAddress(data.address);
+  const brand = BRANDS.find((item) => item.pattern.test(name));
   if (!brand) {
-    warn("Could not find a matching brand", { name: address.name });
+    warn("Could not find a matching brand", { name });
     return null;
   }
 
@@ -264,19 +264,19 @@ function formatLocation(data, validAt, checkedAt) {
     ["albertsons", data.id],
     [`albertsons_${brand.key}`, data.id],
   ];
-  if (address.storeNumber) {
-    external_ids.push([brand.key, address.storeNumber]);
+  if (storeNumber) {
+    external_ids.push([brand.key, storeNumber]);
   }
 
   return {
-    name: address.name,
+    name,
     external_ids,
     provider: "albertsons",
     location_type: LocationType.pharmacy,
-    address_lines: address.address.lines,
-    city: address.address.city,
-    state: address.address.state,
-    postal_code: address.address.zip,
+    address_lines: address.lines,
+    city: address.city,
+    state: address.state,
+    postal_code: address.zip,
     position: {
       longitude: parseFloat(data.long),
       latitude: parseFloat(data.lat),
