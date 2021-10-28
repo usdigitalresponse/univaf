@@ -4,7 +4,7 @@ const { HttpApiError } = require("../../exceptions");
 const { httpClient } = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
 
-const DATA_URL =
+const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
 
 // Maps Albertsons product names to our product names.
@@ -151,16 +151,12 @@ function warn(message, context) {
 }
 
 async function fetchRawData() {
-  const response = await httpClient(DATA_URL, {
+  const response = await httpClient(API_URL, {
     // Bust caches with a random querystring.
     searchParams: { v: Math.random() * 999999999999 },
     responseType: "json",
     timeout: 30000,
   });
-
-  if (response.statusCode >= 400) {
-    throw new HttpApiError(response);
-  }
 
   return {
     validAt: DateTime.fromHTTP(response.headers["last-modified"], {
@@ -306,5 +302,5 @@ async function checkAvailability(handler, options) {
 
 module.exports = {
   checkAvailability,
-  DATA_URL,
+  API_URL,
 };
