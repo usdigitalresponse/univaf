@@ -1,3 +1,15 @@
+/**
+ * Get official apointment data from Albertsons. This works via a file they
+ * publish to S3 for appointment finders and other consumers like us, although
+ * it does not appear to be officially documented anywhere. It could disappear
+ * in the future without notice.
+ *
+ * Most of the logic and branding information here is based on an original
+ * implementation by Nick Muerdter of VaccineSpotter.org (which has now been
+ * shut down).
+ * https://github.com/GUI/covid-vaccine-spotter/tree/main/src/providers
+ */
+
 const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
 const { httpClient, parseUsAddress } = require("../../utils");
