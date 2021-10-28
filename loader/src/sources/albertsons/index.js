@@ -175,14 +175,14 @@ async function getData(states) {
 }
 
 // TODO: Unify address parsing with NJVSS and generale in utils module.
-const addressFieldParts = /^(?<name>.+?)\s+-\s+(?<address>.+)$/;
+const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
 const addressPattern = /^(.+),\s+([^,]+),\s+([A-Z]{2}),\s+(\d+(-\d{4})?)\s*$/i;
 
 /**
  * Parse a location address from Albertsons. Note the location's name is part of
  * the address.
  * @param {string} address
- * @returns {{name: string, address_lines: Array<string>, city: string, state: string, postal_code: string}}
+ * @returns {{name: string, storeNumber?: string, address: {address_lines: Array<string>, city: string, state: string, postal_code?: string}}}
  */
 function parseAddress(text) {
   const partMatch = text.match(addressFieldParts);
@@ -190,10 +190,18 @@ function parseAddress(text) {
     warn("Could not separate name from address", { address: text });
     return null;
   }
-  const { name, address } = partMatch.groups;
+  let { name, address } = partMatch.groups;
 
-  // FIXME: sometimes the name repeats after the store number
-  // e.g. "Safeway 3189 Safeway"
+  // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
+  // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
+  const numberMatch = name.match(
+    /^(?<name>.*?)\s+(?<number>\d{3,6})(?:\s+\1)?/
+  );
+  let storeNumber;
+  if (numberMatch) {
+    storeNumber = numberMatch.groups.number;
+    name = `${numberMatch.groups.name} ${storeNumber}`;
+  }
 
   const match = address.match(addressPattern);
   if (!match) {
@@ -210,10 +218,13 @@ function parseAddress(text) {
 
   return {
     name: name.trim(),
-    address_lines: [match[1]],
-    city: match[2],
-    state: match[3].toUpperCase(),
-    postal_code,
+    storeNumber,
+    address: {
+      address_lines: [match[1]],
+      city: match[2],
+      state: match[3].toUpperCase(),
+      postal_code,
+    },
   };
 }
 
@@ -252,26 +263,34 @@ function formatLocation(data, validAt, checkedAt) {
     return null;
   }
 
-  // XXX: matching for brands!
-  // TODO: match store number from the name? It's different from the Albertson's-wide ID
-  const external_ids = [];
+  const external_ids = [
+    ["albertsons", data.id],
+    [`albertsons_${brand.key}`, data.id],
+  ];
+  if (address.storeNumber) {
+    external_ids.push([brand.key, address.storeNumber]);
+  }
 
   return {
-    ...address,
+    name: address.name,
     external_ids,
     provider: "albertsons",
     location_type: LocationType.pharmacy,
+    ...address.address,
     position: {
       longitude: parseFloat(data.long),
       latitude: parseFloat(data.lat),
     },
 
+    info_url: brand.url,
+    booking_url: data.coach_url || undefined,
+    meta: {
+      albertsons_region: data.region,
+    },
+
     // These aren't currently available
     // county,
     // info_phone,
-
-    info_url: brand.url,
-    booking_url: data.coach_url || undefined,
 
     availability: {
       source: "univaf-albertsons",
