@@ -1,4 +1,5 @@
 const { Available, LocationType, VaccineProduct } = require("../../model");
+const { parseUsAddress } = require("../../utils");
 const crypto = require("crypto");
 const csvParse = require("csv-parse/lib/sync");
 const getStream = require("get-stream");
@@ -384,34 +385,18 @@ function parseVaccineProducts(text) {
   return result;
 }
 
-const addressPattern = /^(.*),\s([^,]+),\s+NJ\s+(\d+(-\d{4})?)\s*$/;
-
 /**
- * Parse a location address from NJVSS. (Luckily these are all very regularly
- * formatted so address parsing is not hard.)
+ * Parse a location address from NJVSS.
  * @param {string} address
  * @returns {{lines: Array<string>, city: string, state: string, zip: string}}
  */
-function parseAddress(address) {
-  const match = address.match(addressPattern);
-  if (!match) {
-    warn(`Could not parse NJVSS address: "${address}"`);
+function parseNjvssAddress(address) {
+  try {
+    return parseUsAddress(address);
+  } catch (error) {
+    warn(error.message);
     return { lines: [address], city: null, state: "NJ", zip: null };
   }
-
-  let zip = match[3];
-  if (zip.split("-")[0].length < 5) {
-    warn(`Invalid ZIP code in NJVSS address: "${address}"`);
-    // Set as undefined so we don't override manual fixes in the DB.
-    zip = undefined;
-  }
-
-  return {
-    lines: [match[1]],
-    city: match[2],
-    state: "NJ",
-    zip,
-  };
 }
 
 const walmartPattern = /(walmart(?<sams>\/Sams)?) #?(?<storeId>\d+)\s*$/i;
@@ -437,7 +422,7 @@ async function checkAvailability(handler, _options) {
     // `_options.send` is true (we expect NJVSS to have messy data, and
     // manually entered data in the DB will be better). This may need some
     // changes on the API side, too.
-    const address = parseAddress(location.vras_provideraddress);
+    const address = parseNjvssAddress(location.vras_provideraddress);
     const products = parseVaccineProducts(location.vras_typetext);
 
     // Description in the API is dynamic -- if there's no availability, it's a

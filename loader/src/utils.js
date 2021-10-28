@@ -1,10 +1,14 @@
 const got = require("got");
 const config = require("./config");
+const { ParseError } = require("./exceptions");
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
 const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
 const POSSESSIVE_PATTERN = /['’]s /g;
 const ADDRESS_LINE_DELIMITER_PATTERN = /,|\n|\s-\s/g;
+
+const ADDRESS_PATTERN =
+  /^(.*),\s+([^,]+),\s+([A-Z]{2}),?\s+(\d+(-\d{4})?)\s*$/i;
 
 // Common abbreviations in addresses and their expanded, full English form.
 // These are used to match similar addresses. For example:
@@ -133,6 +137,31 @@ module.exports = {
     }
 
     return result;
+  },
+
+  /**
+   * Parse a US-style address string.
+   * @param {string} address
+   * @returns {{lines: Array<string>, city: string, state: string, zip: string}}
+   */
+  parseUsAddress(address) {
+    const match = address.match(ADDRESS_PATTERN);
+    if (!match) {
+      throw new ParseError(`Could not parse address: "${address}"`);
+    }
+
+    let zip = match[4];
+    if (zip.split("-")[0].length < 5) {
+      module.exports.warn(`Invalid ZIP code in address: "${address}"`);
+      zip = undefined;
+    }
+
+    return {
+      lines: [match[1]],
+      city: match[2],
+      state: match[3].toUpperCase(),
+      zip,
+    };
   },
 
   /**

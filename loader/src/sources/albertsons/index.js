@@ -1,8 +1,8 @@
 const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
-const { HttpApiError } = require("../../exceptions");
-const { httpClient } = require("../../utils");
+const { httpClient, parseUsAddress } = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
+const { ParseError } = require("../../exceptions");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
@@ -147,7 +147,12 @@ const BRANDS = [
 
 function warn(message, context) {
   console.warn(`Albertsons: ${message}`, context);
-  Sentry.captureMessage(message, Sentry.Severity.Info);
+  // Sentry does better fingerprinting with an actual exception object.
+  if (message instanceof Error) {
+    Sentry.captureException(message, { level: Sentry.Severity.Info });
+  } else {
+    Sentry.captureMessage(message, Sentry.Severity.Info);
+  }
 }
 
 async function fetchRawData() {
@@ -170,25 +175,37 @@ async function getData(states) {
   const { validAt, data } = await fetchRawData();
   const checkedAt = new Date().toISOString();
   return data
-    .map((entry) => formatLocation(entry, validAt, checkedAt))
+    .map((entry) => {
+      let formatted;
+      Sentry.withScope((scope) => {
+        scope.setContext("location", {
+          id: entry.id,
+          address: entry.address,
+          provider: "albertsons",
+        });
+        try {
+          formatted = formatLocation(entry, validAt, checkedAt);
+        } catch (error) {
+          warn(error);
+        }
+      });
+      return formatted;
+    })
     .filter((location) => states.includes(location.state));
 }
 
-// TODO: Unify address parsing with NJVSS and generale in utils module.
 const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
-const addressPattern = /^(.+),\s+([^,]+),\s+([A-Z]{2}),\s+(\d+(-\d{4})?)\s*$/i;
 
 /**
- * Parse a location address from Albertsons. Note the location's name is part of
- * the address.
- * @param {string} address
- * @returns {{name: string, storeNumber?: string, address: {address_lines: Array<string>, city: string, state: string, postal_code?: string}}}
+ * Parse a location name and address from Albertsons (they're both part of
+ * the same string).
+ * @param {string} text
+ * @returns {{name: string, storeNumber?: string, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
  */
-function parseAddress(text) {
+function parseNameAndAddress(text) {
   const partMatch = text.match(addressFieldParts);
   if (!partMatch) {
-    warn("Could not separate name from address", { address: text });
-    return null;
+    throw new ParseError(`Could not separate name and address in "${address}"`);
   }
   let { name, address } = partMatch.groups;
 
@@ -203,28 +220,10 @@ function parseAddress(text) {
     name = `${numberMatch.groups.name} ${storeNumber}`;
   }
 
-  const match = address.match(addressPattern);
-  if (!match) {
-    warn("Could not parse address", { address });
-    return null;
-  }
-
-  let postal_code = match[4];
-  if (postal_code.split("-")[0].length < 5) {
-    warn("Invalid ZIP code in address", { address });
-    // Set as undefined so we don't override manual fixes in the DB.
-    postal_code = undefined;
-  }
-
   return {
     name: name.trim(),
     storeNumber,
-    address: {
-      address_lines: [match[1]],
-      city: match[2],
-      state: match[3].toUpperCase(),
-      postal_code,
-    },
+    address: parseUsAddress(address),
   };
 }
 
@@ -254,9 +253,7 @@ function formatProducts(raw) {
 }
 
 function formatLocation(data, validAt, checkedAt) {
-  const address = parseAddress(data.address);
-  if (!address) return null;
-
+  const address = parseNameAndAddress(data.address);
   const brand = BRANDS.find((item) => item.pattern.test(address.name));
   if (!brand) {
     warn("Could not find a matching brand", { name: address.name });
@@ -276,7 +273,10 @@ function formatLocation(data, validAt, checkedAt) {
     external_ids,
     provider: "albertsons",
     location_type: LocationType.pharmacy,
-    ...address.address,
+    address_lines: address.address.lines,
+    city: address.address.city,
+    state: address.address.state,
+    postal_code: address.address.zip,
     position: {
       longitude: parseFloat(data.long),
       latitude: parseFloat(data.lat),
@@ -287,10 +287,6 @@ function formatLocation(data, validAt, checkedAt) {
     meta: {
       albertsons_region: data.region,
     },
-
-    // These aren't currently available
-    // county,
-    // info_phone,
 
     availability: {
       source: "univaf-albertsons",
