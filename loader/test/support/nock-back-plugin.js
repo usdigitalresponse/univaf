@@ -17,8 +17,8 @@ const JEST_TEST_FUNCTIONS = ["test", "it", "fit", "xit"];
  */
 function setupJestNockBack() {
   for (const jestTestFunction of JEST_TEST_FUNCTIONS) {
-    global[jestTestFunction].nock = function (testName, testFunction) {
-      global[jestTestFunction](testName, withNockBack(testFunction));
+    global[jestTestFunction].nock = function (testName, options, testFunction) {
+      global[jestTestFunction](testName, withNockBack(options, testFunction));
     };
   }
 
@@ -59,21 +59,49 @@ function setupNockBack(mode, fixturePath) {
  * recordings will be disallowed. Delete the recording files to record new
  * responses if the upstream server has changed.
  *
- * @param {string} name The test name
+ * @param {any} [options] Options for handling recorded data.
+ * @param {boolean} [options.ignoreQuery] Ignore querystrings in requests.
+ * @param {(any) => void} [options.prepareScope] Function that will be called
+ *        with each recorded request definition before installing them to be
+ *        replayed. Use this, for example, to make recordings match when parts
+ *        of a request (e.g. the path) are random or change from test run to
+ *        test run.
  * @param {() => Promise} testFunction A Promise-returning test function
- * @returns {[string, () => Promise]}
+ * @returns {() => Promise}
  */
-function withNockBack(testFunction) {
+function withNockBack(options, testFunction) {
+  if (typeof options === "function") {
+    testFunction = options;
+    options = {};
+  }
+
+  const originalMode = nock.back.currentMode;
   module.exports.setupNockBack();
+  nock.back.setMode("record");
+
   return async () => {
     const name = expect.getState().currentTestName;
     const fileName = `${name.replace(/\s+/g, "_").toLowerCase()}.json`;
-    const { nockDone } = await nock.back(fileName);
+    const { nockDone } = await nock.back(fileName, {
+      before(scope) {
+        if (options.ignoreQuery) {
+          const filteringPath = (path) => path.replace(/\?.*$/, "");
+          scope.path = filteringPath(scope.path);
+          scope.filteringPath = filteringPath;
+        }
+        if (options.prepareScope) {
+          options.prepareScope(scope);
+        }
+      },
+    });
+
     try {
       return await testFunction();
     } finally {
       nockDone();
       nock.cleanAll();
+      // Reset the mode so it doesn't affect other tests.
+      nock.back.setMode(originalMode);
     }
   };
 }
