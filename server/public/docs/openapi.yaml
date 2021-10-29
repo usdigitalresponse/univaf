@@ -35,6 +35,8 @@ info:
     standard, a national standard for vaccine appointment availability data.
     Other names indicate custom or proprietary APIs.
 
+    See below for detailed notes and caveats on some sources.
+
 
     ### Albertsons (`univaf-albertsons`)
 
@@ -63,17 +65,20 @@ info:
     and for what vaccine product.
 
 
-    ### CDC (`univaf-cdc`)
+    ### Centers for Disease Control (`cdc`, `univaf-cdc`)
 
-    The Centers for Disease Control (CDC) publishes open data about vaccine
-    *stock*, not appointments. For a given location, another source's data will
-    usually override the `availability.available` field from the CDC, and the
-    end result is that the CDC’s data is mainly used to add vaccine product
-    information where other sources don’t supply it.
+    **The Centers for Disease Control (CDC) publishes open data about vaccine
+    stock, not appointments.** We include it because it provides valuable other
+    details, like which vaccine products are available or what the operating
+    hours are at a given location, that other sources do not.
 
-    However, if you’re looking for 100% accurate information about appointments
+    In general, you should only use it in combination with other sources (the
+    default behavior), meaning the API will show appointment availability from
+    a different, more accurate source, but add other details from this one.
+
+    If you’re looking for 100% accurate information about appointments
     (see “appointments vs. stock” below), you should use the `sources` query
-    parameter to strip out the `univaf-cdc` source when calling the API.
+    parameter to strip out the `cdc` source when calling the API.
 
     Stock information from the CDC is also extremely rough — many locations
     report this information by hand at the end of a day, or every few days,
@@ -87,10 +92,12 @@ info:
     ## Appointments vs. Stock
 
     This API does its best to provide reliable information about vaccine
-    *appointment* availability. Many official sources (such as the CDC) mainly
-    provide information about what vaccines are *in stock* at a given location,
-    which turns out not to relate to whether *appointments* are bookable at all.
-    For example:
+    *appointment* availability. That’s different from many official sources
+    (such as the CDC), which mainly provide information about what vaccines are
+    *in stock* at a given location. One reason we built this API is that stock
+    turns out not to relate to whether *appointments* are bookable at all.
+
+    For example, we’ve seen all of the following approaches at various clinics:
 
     - A location may be out of stock, but still be booking future appointments
       under the assumption that vaccine shipments will arrive on time.
@@ -101,7 +108,7 @@ info:
 
     As of late summer 2021, demand is lower than supply at *most* locations, so
     having vaccines in stock more often indicates appointments are available.
-    This is still not always true, though!
+    This is still not *always* true, though.
   contact:
     email: univaf@usdigitalresponse.org
   license:

@@ -1,3 +1,29 @@
+/**
+ * Load data from the CDC open data portal (https://data.cdc.gov)
+ *
+ * This source gets information about locations and their vaccine *stock* from
+ * the CDC's open data portal. Since it has stock information rather than
+ * appointment info, we should view the `availability.available` field this
+ * source generates with some skepticism. (That said, most places have a major
+ * supply surplus now, so stock may be reasonable to use.)
+ *
+ * The more important need this fills for us is determining *which products*
+ * are available at a location, as well as getting us a more comprehensive list
+ * of locations and metadata, like operating hours. Many official sources
+ * (e.g. CVS's API) don't include product info, so combining this with other
+ * data lets us paint a more complete picture overall.
+ *
+ * There are some idiosyncracies to keep in mind here:
+ * - The dataset is updated daily.
+ * - The data comes from the pharmacies and clinics listed, and each does so on
+ *   a different schedule. While the dataset is published once a day, individual
+ *   locations may be more out of date or intermittently updated than that.
+ * - Some locations send automated reports while others enter data by hand.
+ *   Sometimes there are typos, mistakes, or fields that conflict.
+ *
+ * Metadata about this dataset: https://data.cdc.gov/resource/5jp2-pgaw
+ */
+
 const Sentry = require("@sentry/node");
 
 const { Available } = require("../../model");
