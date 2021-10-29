@@ -87,7 +87,7 @@ module "kroger_loader" {
   subnets       = aws_subnet.public.*.id
 }
 
-module "kroger_loader" {
+module "albertsons_loader" {
   source = "./modules/loader"
 
   name          = "albertsons"
