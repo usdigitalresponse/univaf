@@ -28,6 +28,9 @@ class HttpApiError extends Error {
   }
 }
 
+class ParseError extends Error {}
+
 module.exports = {
   HttpApiError,
+  ParseError,
 };

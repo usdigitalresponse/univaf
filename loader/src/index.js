@@ -1,4 +1,5 @@
 const sources = {
+  albertsons: require("./sources/albertsons"),
   cdcApi: require("./sources/cdc/api"),
   cvsApi: require("./sources/cvs/api"),
   cvsScraper: require("./sources/cvs/scraper"),

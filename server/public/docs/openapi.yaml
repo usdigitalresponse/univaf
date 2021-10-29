@@ -20,6 +20,7 @@ info:
     - CVS Pharmacy (source names: `univaf-cvs-api`, `univaf-cvs-smart`)
     - Walgreens Pharmacy (source name: `univaf-walgreens-smart`)
     - Rite Aid Pharmacy (source name: `univaf-rite-aid-api`)
+    - Albertsons (source name: `univaf-albertsons`)
     - State of New Jersey Vaccine Scheduling System (source name: `univaf-njvss`)
     - VaccineSpotter.org (source names: `univaf-vaccinespotter`, `vaccinespotter`)
 
@@ -32,6 +33,33 @@ info:
     [SMART Scheduling Links](https://github.com/smart-on-fhir/smart-scheduling-links/)
     standard, a national standard for vaccine appointment availability data.
     Other names indicate custom or proprietary APIs.
+
+
+    ### Albertsons (`univaf-albertsons`)
+
+    [Albertsons](https://www.albertsonscompanies.com/) is the parent company for
+    a number of major grocery store and pharmacy chains. This source provides
+    data for the following stores:
+    - ACME
+    - Albertsons/Albertsons Market
+    - Amigos
+    - Carrs
+    - Haggen
+    - Jewel-Osco
+    - Lucky
+    - Market Street
+    - Pak ’n Save
+    - Pavilions
+    - Randalls/Randalls Pharmacy
+    - Safeway
+    - Shaw’s
+    - Tom Thumb
+    - United Supermarkets
+    - Vons
+
+    Albertsons does not provide day-by-day counts of appointment availability
+    or specific appointment slot times; only that slots are generally available
+    and for what vaccine product.
   contact:
     email: univaf@usdigitalresponse.org
   license:
