@@ -270,7 +270,7 @@ function formatLocation(data) {
 
     availability: {
       source: "univaf-wa-doh",
-      updated_at: data.updatedAt,
+      valid_at: data.updatedAt,
       checked_at: checkTime,
       available: toAvailable(data.vaccineAvailability),
       products:
