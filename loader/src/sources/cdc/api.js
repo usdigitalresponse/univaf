@@ -174,7 +174,8 @@ function getStoreExternalId(store) {
 
 /**
  * Determine whether a particular vaccine product & location row indicates the
- * product is in stock.
+ * product is in stock. Returns unknown if the various stock-related fields
+ * conflict (see below).
  *
  * This is not a perfect check, since the underlying data is not great. First,
  * many locations report manually, and therefore irregularly. Data is not always
@@ -191,15 +192,18 @@ function getStoreExternalId(store) {
  * ~2% of locations have all products mismatching on these fields.
  * ~20-30% of locations have some products with -1 for `supply_level`.
  * ~5-10% of locations have all prdoucts with -1 for `supply_level`.
- *
- * This function currently takes a relatively optimistic view, looking for a
- * positive indication of in stock from either field.
  * @param {any} product a row for a particular product & location.
- * @returns {boolean}
+ * @returns {Available}
  */
 function isInStock(product) {
   const supplyLevel = parseInt(product.supply_level, 10);
-  return product.in_stock || supplyLevel > 0;
+  if (product.in_stock && supplyLevel > 0) {
+    return Available.yes;
+  } else if (!product.in_stock && supplyLevel === 0) {
+    return Available.no;
+  } else {
+    return Available.unknown;
+  }
 }
 
 function formatValidAt(products) {
@@ -209,8 +213,16 @@ function formatValidAt(products) {
 }
 
 function formatAvailable(products) {
-  const availability = products.some(isInStock);
-  return availability ? Available.yes : Available.no;
+  let result = Available.no;
+  for (const product of products) {
+    const inStock = isInStock(product);
+    if (inStock === Available.yes) {
+      return inStock;
+    } else if (inStock === Available.unknown) {
+      result = inStock;
+    }
+  }
+  return result;
 }
 
 const ndcLookup = {
@@ -253,8 +265,18 @@ function getProductType(product) {
   return found;
 }
 
+/**
+ * Get the vaccines that may be in stock at a given location. This includes
+ * vaccine products where the stock level is unknown or unreported.
+ * @param {Array} products
+ * @returns {Array<string>}
+ */
 function formatProductTypes(products) {
-  return [...new Set(products.filter(isInStock).map(getProductType))];
+  return [
+    ...new Set(
+      products.filter((p) => isInStock(p) !== Available.no).map(getProductType)
+    ),
+  ];
 }
 
 async function checkAvailability(handler, options) {

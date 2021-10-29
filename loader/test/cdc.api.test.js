@@ -27,7 +27,42 @@ describe("CDC Open Data API", () => {
     expect(locations[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
 
-  it("should fall back to `supply_level` if `in_stock` is false or not set", async () => {
+  it("should report availability based on supply and stock", async () => {
+    const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
+    nock(API_HOST)
+      .get(API_PATH)
+      .query(true)
+      .reply(200, [
+        {
+          ...baseEntry,
+          provider_location_guid: "a",
+          in_stock: true,
+          supply_level: "2",
+        },
+        {
+          ...baseEntry,
+          provider_location_guid: "b",
+          in_stock: false,
+          supply_level: "0",
+        },
+        {
+          ...baseEntry,
+          provider_location_guid: "c",
+          in_stock: false,
+          supply_level: "-1",
+        },
+      ]);
+
+    const locations = await checkAvailability(() => null, { states: "NJ" });
+    expect(locations).toHaveProperty("0.availability.available", Available.yes);
+    expect(locations).toHaveProperty("1.availability.available", Available.no);
+    expect(locations).toHaveProperty(
+      "2.availability.available",
+      Available.unknown
+    );
+  });
+
+  it("reports unknown availability if `in_stock` and `supply_level` conflict", async () => {
     const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
     nock(API_HOST)
       .get(API_PATH)
@@ -42,13 +77,19 @@ describe("CDC Open Data API", () => {
         {
           ...baseEntry,
           provider_location_guid: "b",
-          in_stock: false,
+          in_stock: true,
           supply_level: "0",
         },
       ]);
 
     const locations = await checkAvailability(() => null, { states: "NJ" });
-    expect(locations).toHaveProperty("0.availability.available", Available.yes);
-    expect(locations).toHaveProperty("1.availability.available", Available.no);
+    expect(locations).toHaveProperty(
+      "0.availability.available",
+      Available.unknown
+    );
+    expect(locations).toHaveProperty(
+      "1.availability.available",
+      Available.unknown
+    );
   });
 });
