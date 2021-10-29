@@ -169,14 +169,12 @@ export default class MainContent extends React.Component {
         record.availability.checked_at = new Date(
           record.availability.checked_at
         );
-        record.availability.updated_at = new Date(
-          record.availability.updated_at
-        );
+        record.availability.valid_at = new Date(record.availability.valid_at);
 
         // If a record is too old, consider it unknown.
         if (
           record.availability.available !== "unknown" &&
-          now - record.availability.updated_at > MAX_AVAILABILITY_AGE
+          now - record.availability.valid_at > MAX_AVAILABILITY_AGE
         ) {
           record.availability.available = "unknown";
         }
