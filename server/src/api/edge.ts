@@ -264,6 +264,10 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
       await db.updateLocation(location, data);
       result.location.action = "updated";
     }
+  } else if (data.external_ids?.length) {
+    // Otherwise just update the external IDs. This ensures we track every
+    // relevant external ID we've seen for a location.
+    await db.addExternalIds(location.id, data.external_ids);
   }
 
   if (data.availability) {

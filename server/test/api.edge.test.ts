@@ -481,6 +481,25 @@ describe("POST /api/edge/update", () => {
     ]);
   });
 
+  it("merges new values into external_ids even if `update_location` is not set", async () => {
+    const location = await createLocation(TestLocation);
+
+    const response = await context.client.post("api/edge/update", {
+      headers,
+      json: {
+        id: location.id,
+        external_ids: [["testid", "this is a test"]],
+      },
+    });
+    expect(response.statusCode).toBe(200);
+
+    const result = await getLocationById(location.id);
+    expect(result.external_ids).toEqual([
+      ...TestLocation.external_ids,
+      ["testid", "this is a test"],
+    ]);
+  });
+
   it("supports the old external_ids input format", async () => {
     const location = await createLocation(TestLocation);
 
