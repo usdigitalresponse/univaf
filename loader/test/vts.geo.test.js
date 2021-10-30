@@ -4,7 +4,7 @@ const { checkAvailability } = require("../src/sources/vts/geo");
 const apiResponse = require("./fixtures/vts.geo.test.json");
 const noopHandler = () => {};
 
-describe("VtS Geo", () => {
+describe.skip("VtS Geo", () => {
   const S3_URL = "https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/";
 
   beforeEach(() => {

@@ -1,5 +1,5 @@
 const Sentry = require("@sentry/node");
-const { httpClient, splitOnce } = require("../../utils");
+const { httpClient, splitOnce, oneLine } = require("../../utils");
 
 const dataProviders = {
   "Rite-Aid": {
@@ -129,6 +129,11 @@ function formatStore(store) {
 }
 
 async function updateGeo(handler, options) {
+  throw new Error(oneLine`
+    The vtsGeo source is unsafe!
+    Please fix https://github.com/usdigitalresponse/univaf/issues/433 first.
+  `);
+  /* eslint-disable no-unreachable */
   const states = options.states?.split(",").map((state) => state.trim());
 
   if (!states || !states.length) {
@@ -147,6 +152,7 @@ async function updateGeo(handler, options) {
 
   results.forEach((item) => handler(item, { update_location: true }));
   return results;
+  /* eslint-enable no-unreachable */
 }
 
 module.exports = {
