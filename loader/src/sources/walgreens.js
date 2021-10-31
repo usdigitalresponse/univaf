@@ -49,6 +49,11 @@ function formatLocation(locationInfo) {
       return [system, value];
     },
   });
+  const npiNumber = external_ids.find((id) => id[0] === "npi_usa")?.[1];
+  let meta;
+  if (npiNumber) {
+    meta = { npi_usa: npiNumber };
+  }
 
   // All Walgreens slots for a location share an identical booking URL/phone,
   // so just grab one from the first slot in a location.
@@ -95,6 +100,7 @@ function formatLocation(locationInfo) {
     info_url,
     booking_phone,
     booking_url,
+    meta,
 
     availability: {
       source: "univaf-walgreens-smart",

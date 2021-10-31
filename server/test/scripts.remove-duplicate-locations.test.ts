@@ -184,6 +184,30 @@ describe("groupDuplicateLocations", () => {
     expect(idGroups).toEqual([]);
   });
 
+  it("should not match on npi_usa", async () => {
+    const a = {
+      ...TestLocation,
+      id: "a",
+      external_ids: [
+        { system: "npi_usa", value: "x" },
+        { system: "other_id", value: "y" },
+      ],
+    };
+    const b = {
+      ...TestLocation,
+      id: "b",
+      external_ids: [
+        { system: "npi_usa", value: "x" },
+        { system: "other_id", value: "z" },
+      ],
+    };
+
+    const groups = groupDuplicateLocations([a, b], null, true);
+    // Replace objects with IDs for easier comparisons.
+    const idGroups = groups.map((group) => [...group].map((x) => x.id));
+    expect(idGroups).toEqual([]);
+  });
+
   it("should only match IDs by the given systems", async () => {
     const a = {
       ...TestLocation,

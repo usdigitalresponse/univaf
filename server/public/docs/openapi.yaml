@@ -109,6 +109,44 @@ info:
     As of late summer 2021, demand is lower than supply at *most* locations, so
     having vaccines in stock more often indicates appointments are available.
     This is still not *always* true, though.
+
+
+    ## External IDs
+
+    Every location has a list of “external IDs” in the `external_ids` property.
+    These represent ways that other systems might identify the same location
+    (for example, the store number for a CVS pharmacy, or the ID of the same
+    site in [vaccines.gov](https://vaccines.gov)). An external ID is an array,
+    where the first element names system (e.g. `cvs`) and the second is the ID
+    in that system. For example:
+
+    ```js
+    [
+      // CVS Store #10047
+      ["cvs", "10047"],
+      // ID on the Vaccines.gov website
+      ["vaccines_gov", "56789b30-ed05-4b28-b864-0b21b048a341"]
+    ]
+    ```
+
+    In general, these external IDs are unique to a location (that is, no two
+    locations in this API should ever have an identical `[system, id]`
+    combination).
+
+    **However, the `vtrcks` and `npi_usa` systems are not
+    unique!** They exist in `external_ids` for historical reasons (we thought
+    these were unique early on, and later learned this was not so). You should
+    not assume a given `vtrcks` or `npi_usa` ID represents only one location.
+
+    You can also look up locations by their external ID. The `id` path parameter
+    can be an external ID in the form `system:id` instead of the actual location
+    ID. For example, these paths all get the same location:
+
+    ```txt
+    /api/edge/locations/215f56ac-8bda-4ae9-ad5e-a567ebe8c1bb
+    /api/edge/locations/cvs:10047
+    /api/edge/locations/vaccines_gov:56789b30-ed05-4b28-b864-0b21b048a341
+    ```
   contact:
     email: univaf@usdigitalresponse.org
   license:

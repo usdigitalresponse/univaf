@@ -49,6 +49,8 @@ describe("Walgreens SMART Scheduling Links API", () => {
         booking_phone: "1-800-925-4733",
         booking_url: "https://www.walgreens.com/findcare/vaccination/covid-19",
 
+        meta: { npi_usa: "1598055964" },
+
         availability: {
           source: "univaf-walgreens-smart",
           available: "YES",
