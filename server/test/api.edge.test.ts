@@ -444,7 +444,7 @@ describe("POST /api/edge/update", () => {
   });
 
   it("should not update based on vtrcks PINs", async () => {
-    await createLocation(TestLocation);
+    const location = await createLocation(TestLocation);
     const newName = "New Name";
 
     const res = await context.client.post("api/edge/update?update_location=1", {
@@ -457,6 +457,25 @@ describe("POST /api/edge/update", () => {
       },
     });
     expect(res.statusCode).toBe(201);
+    expect(await getLocationById(location.id)).not.toEqual(newName);
+  });
+
+  it("should not update based on NPI numbers", async () => {
+    const location = await createLocation({
+      ...TestLocation,
+      external_ids: [...TestLocation.external_ids, ["npi_usa", "test"]],
+    });
+    const newName = "New Name";
+
+    const res = await context.client.post("api/edge/update?update_location=1", {
+      headers,
+      json: {
+        external_ids: [["npi_usa", "test"]],
+        name: newName,
+      },
+    });
+    expect(res.statusCode).toBe(201);
+    expect(await getLocationById(location.id)).not.toEqual(newName);
   });
 
   it("merges new values into the existing list of external_ids", async () => {

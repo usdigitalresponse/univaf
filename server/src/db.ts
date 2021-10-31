@@ -381,7 +381,7 @@ export async function getLocationByExternalIds(
   // (It's a bit of a historical mistake that these are here instead of in
   // the `meta` field.)
   const queryableIds = externalIds.filter(([system, _]) => {
-    return system !== "vtrcks";
+    return system !== "vtrcks" && system !== "npi_usa";
   });
 
   // Bail out early if there was nothing to actually query on.

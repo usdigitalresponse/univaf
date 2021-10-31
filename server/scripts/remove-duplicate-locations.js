@@ -26,6 +26,7 @@ function groupByExternalId(locations, systems = null, unpadIds = false) {
     for (const { system, value } of location.external_ids) {
       // Skip not-quite-unique systems
       if (system === "vtrcks") continue;
+      if (system === "npi_usa") continue;
       // Skip internal identifiers
       if (system === "univaf_v0") continue;
       if (system === "univaf_v1") continue;
