@@ -17,8 +17,8 @@ const JEST_TEST_FUNCTIONS = ["test", "it", "fit", "xit"];
  */
 function setupJestNockBack() {
   for (const jestTestFunction of JEST_TEST_FUNCTIONS) {
-    global[jestTestFunction].nock = function (testName, testFunction) {
-      global[jestTestFunction](testName, withNockBack(testFunction));
+    global[jestTestFunction].nock = function (testName, options, testFunction) {
+      global[jestTestFunction](testName, withNockBack(options, testFunction));
     };
   }
 
@@ -31,16 +31,8 @@ function setupJestNockBack() {
   });
 }
 
-let isNockBackInitialized = false;
-
-function setupNockBack(mode, fixturePath) {
-  // If nock.back has already been set up and we're not explicitly modifying
-  // settings, don't reset everything.
-  if (isNockBackInitialized && !mode && !fixturePath) return;
-
-  nock.back.setMode(mode || "record");
+function setupNockBack(fixturePath) {
   nock.back.fixtures = fixturePath || DEFAULT_NOCKBACK_PATH;
-  isNockBackInitialized = true;
 }
 
 /**
@@ -59,23 +51,75 @@ function setupNockBack(mode, fixturePath) {
  * recordings will be disallowed. Delete the recording files to record new
  * responses if the upstream server has changed.
  *
- * @param {string} name The test name
+ * @param {any} [options] Options for handling recorded data.
+ * @param {boolean|string[]} [options.ignoreQuery] Ignore querystrings or
+ *        specific querystring parameters in requests. If `true`, then the
+ *        entire querystring will be ignored. If a list of strings, only query
+ *        parameters with those names will be ignored.
+ * @param {(any) => void} [options.prepareScope] Function that will be called
+ *        with each recorded request definition before installing them to be
+ *        replayed. Use this, for example, to make recordings match when parts
+ *        of a request (e.g. the path) are random or change from test run to
+ *        test run.
  * @param {() => Promise} testFunction A Promise-returning test function
- * @returns {[string, () => Promise]}
+ * @returns {() => Promise}
  */
-function withNockBack(testFunction) {
-  module.exports.setupNockBack();
+function withNockBack(options, testFunction) {
+  if (typeof options === "function") {
+    testFunction = options;
+    options = {};
+  }
+
+  const originalMode = nock.back.currentMode;
+  setupNockBack();
+  nock.back.setMode("record");
+
   return async () => {
     const name = expect.getState().currentTestName;
     const fileName = `${name.replace(/\s+/g, "_").toLowerCase()}.json`;
-    const { nockDone } = await nock.back(fileName);
+    const { nockDone } = await nock.back(fileName, {
+      before(scope) {
+        if (options.ignoreQuery) {
+          const filteringPath = (path) => {
+            return removeQueryParameters(path, options.ignoreQuery);
+          };
+          scope.path = filteringPath(scope.path);
+          scope.filteringPath = filteringPath;
+        }
+        if (options.prepareScope) {
+          options.prepareScope(scope);
+        }
+      },
+    });
+
     try {
       return await testFunction();
     } finally {
       nockDone();
       nock.cleanAll();
+      // Reset the mode so it doesn't affect other, non-nock-back tests.
+      nock.back.setMode(originalMode);
     }
   };
+}
+
+function removeQueryParameters(url, parameterNames) {
+  return url.replace(/\?(.*)$/, (match, query) => {
+    if (Array.isArray(parameterNames)) {
+      const newParameters = query
+        .split("&")
+        .filter((parameter) => {
+          const name = decodeURIComponent(parameter.split("=")[0]);
+          return !parameterNames.includes(name);
+        })
+        .join("");
+      return newParameters ? `?${newParameters}` : "";
+    } else if (parameterNames) {
+      return "";
+    } else {
+      return match;
+    }
+  });
 }
 
 module.exports = {

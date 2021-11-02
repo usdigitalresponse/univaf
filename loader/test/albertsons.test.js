@@ -11,6 +11,11 @@ describe("Albertsons", () => {
     nock.cleanAll();
   });
 
+  it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
+    const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
+  });
+
   it("should successfully format results", async () => {
     nock(API_URL_BASE)
       .get(API_URL_PATH)
