@@ -23,7 +23,10 @@ function toMatchSchema(received, schema) {
     pass,
     message() {
       return (validator.errors || [])
-        .map((error) => `${error.instancePath} ${error.message}`)
+        .map((error) => {
+          const value = JSON.stringify(error.data) || "undefined";
+          return `${error.instancePath} ${error.message} (value: \`${value}\`)`;
+        })
         .join("\n");
     },
   };
