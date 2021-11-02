@@ -28,6 +28,7 @@ const slotSchema = {
     unavailable_count: { type: "integer", minimum: 0 },
     products: productsSchema,
     dose: { type: "string" },
+    booking_url: { type: "string", format: "uri" },
   },
   required: ["start"],
   additionalProperties: false,
@@ -61,9 +62,19 @@ const availabilitySchema = {
       uniqueItems: true,
       minItems: 1,
     },
+    capacity: { type: "array", items: capacitySchema },
+    slots: { type: "array", items: slotSchema },
     is_public: { type: "boolean" },
+    // checked_at should *always* be a specific time, but valid_at can be a
+    // less-precise date, because the source data is sometimes imprecise.
+    // (The server will process this into 00:00:00Z on that date.)
     checked_at: { type: "string", format: "date-time" },
-    valid_at: { type: "string", format: "date-time" },
+    valid_at: {
+      oneOf: [
+        { type: "string", format: "date-time" },
+        { type: "string", format: "date" },
+      ],
+    },
   },
   required: ["source", "checked_at", "available"],
   additionalProperties: false,
