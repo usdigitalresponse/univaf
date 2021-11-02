@@ -187,7 +187,7 @@ function formatLocation(data) {
   );
   if (!state) console.error(`WA DoH: Unknown state "${data.state}"`);
 
-  const external_ids = { wa_doh: data.locationId };
+  const external_ids = [["wa_doh", data.locationId]];
 
   // The API has IDs like `costco-293`, but the number is not a Costco ID or
   // store number (it appears to be an ID in appointment-plus). However,
@@ -195,7 +195,7 @@ function formatLocation(data) {
   if (provider === "costco") {
     const storeEmailMatch = data.email.match(/^w0*(\d+)phm@/i);
     if (storeEmailMatch) {
-      external_ids.costco = storeEmailMatch[1];
+      external_ids.push(["costco", storeEmailMatch[1]]);
     } else {
       console.error(
         `WA DoH: Unable to determine Costco store number for "${data.locationid}"`
@@ -205,7 +205,7 @@ function formatLocation(data) {
 
   if (data.schedulingLink.toLowerCase().includes("appointment-plus")) {
     const idMatch = data.locationId.match(/-0*(\d+)$/);
-    if (idMatch) external_ids.appointment_plus = idMatch[1];
+    if (idMatch) external_ids.push(["appointment_plus", idMatch[1]]);
   }
 
   const metaFields = [
@@ -249,7 +249,6 @@ function formatLocation(data) {
 
   const checkTime = new Date().toISOString();
   return {
-    id: data.locationId,
     name: data.locationName,
     external_ids,
     provider,

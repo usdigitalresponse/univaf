@@ -1,5 +1,6 @@
 const nock = require("nock");
 const { checkAvailability, queryState } = require("../src/sources/riteaid/api");
+const { locationSchema } = require("./support/schemas");
 
 describe("Rite Aid Source", () => {
   const API_URL = "https://api.riteaid.com/test";
@@ -35,10 +36,7 @@ describe("Rite Aid Source", () => {
     expect(locations.length).toBe(108);
 
     expect(locations[0]).toStrictEqual({
-      id: "rite_aid:116",
-      external_ids: {
-        rite_aid: "116",
-      },
+      external_ids: [["rite_aid", "116"]],
       location_type: "PHARMACY",
       name: "Rite Aid #116",
       provider: "rite_aid",
@@ -47,7 +45,6 @@ describe("Rite Aid Source", () => {
       state: "NJ",
       postal_code: "08332-3762",
       county: "Cumberland",
-      position: null,
       info_phone: "(856) 825-7742",
       info_url: "https://www.riteaid.com/covid-19",
       booking_phone: "(856) 825-7742",
@@ -176,9 +173,7 @@ describe("Rite Aid Source", () => {
       },
     });
 
-    for (const location of locations) {
-      expect(location.availability.checked_at).not.toBeUndefined();
-    }
+    expect(locations).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("does not attempt to load states without Rite Aid stores", async () => {

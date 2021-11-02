@@ -2,6 +2,7 @@ const nock = require("nock");
 const { API_URL, checkAvailability } = require("../src/sources/albertsons");
 const { Available } = require("../src/model");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
+const { locationSchema } = require("./support/schemas");
 
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
@@ -42,6 +43,7 @@ describe("Albertsons", () => {
       );
 
     const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
         name: "Safeway 3410",
@@ -128,6 +130,7 @@ describe("Albertsons", () => {
     const result = await checkAvailability(() => {}, { states: "AK" });
     expect(result[0]).toHaveProperty("name", "Safeway 3410");
     expect(result[0]).toHaveProperty("address_lines", ["30 College Rd"]);
+    expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("handles unexpected availability strings", async () => {
@@ -148,6 +151,7 @@ describe("Albertsons", () => {
       ]);
 
     const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty(
       "availability.available",
       Available.unknown
@@ -171,6 +175,7 @@ describe("Albertsons", () => {
       ]);
 
     const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0].availability.products).toBe(undefined);
   });
 
@@ -192,6 +197,7 @@ describe("Albertsons", () => {
       ]);
 
     const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
 

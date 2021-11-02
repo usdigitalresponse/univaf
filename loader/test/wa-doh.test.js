@@ -5,6 +5,7 @@ const {
   WaDohApiError,
 } = require("../src/sources/wa-doh");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
+const { locationSchema } = require("./support/schemas");
 
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
@@ -31,12 +32,11 @@ describe("Washington DoH API", () => {
         city: "Caguas",
         county: undefined,
         description: "null",
-        external_ids: {
-          appointment_plus: "625",
-          costco: "365",
-          wa_doh: "costco-625",
-        },
-        id: "costco-625",
+        external_ids: [
+          ["wa_doh", "costco-625"],
+          ["costco", "365"],
+          ["appointment_plus", "625"],
+        ],
         info_url: undefined,
         location_type: "PHARMACY",
         meta: {},
@@ -64,12 +64,11 @@ describe("Washington DoH API", () => {
         city: "Bayamon",
         county: undefined,
         description: "null",
-        external_ids: {
-          appointment_plus: "621",
-          costco: "363",
-          wa_doh: "costco-621",
-        },
-        id: "costco-621",
+        external_ids: [
+          ["wa_doh", "costco-621"],
+          ["costco", "363"],
+          ["appointment_plus", "621"],
+        ],
         info_url: undefined,
         location_type: "PHARMACY",
         meta: {},
@@ -83,6 +82,7 @@ describe("Washington DoH API", () => {
         state: "PR",
       },
     ]);
+    expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("should throw WaDohApiError with detailed error info", async () => {

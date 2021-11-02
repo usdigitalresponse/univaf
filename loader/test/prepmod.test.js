@@ -1,6 +1,7 @@
 const nock = require("nock");
 const { checkAvailability } = require("../src/sources/prepmod");
 const { expectDatetimeString } = require("./support");
+const { locationSchema } = require("./support/schemas");
 
 describe("PrepMod API", () => {
   jest.setTimeout(60000);
@@ -573,5 +574,6 @@ describe("PrepMod API", () => {
         },
       },
     ]);
+    expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 });

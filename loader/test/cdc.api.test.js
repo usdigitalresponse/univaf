@@ -7,6 +7,7 @@ const {
   checkAvailability,
 } = require("../src/sources/cdc/api");
 const { Available } = require("../src/model");
+const { locationSchema } = require("./support/schemas");
 
 describe("CDC Open Data API", () => {
   afterEach(() => {
@@ -60,6 +61,7 @@ describe("CDC Open Data API", () => {
       "2.availability.available",
       Available.unknown
     );
+    expect(locations).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("reports unknown availability if `in_stock` and `supply_level` conflict", async () => {
@@ -91,5 +93,6 @@ describe("CDC Open Data API", () => {
       "1.availability.available",
       Available.unknown
     );
+    expect(locations).toContainItemsMatchingSchema(locationSchema);
   });
 });
