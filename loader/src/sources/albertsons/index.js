@@ -175,10 +175,12 @@ async function fetchRawData() {
     timeout: 30000,
   });
 
+  const lastModified = response.headers["last-modified"];
+
   return {
-    validAt: DateTime.fromHTTP(response.headers["last-modified"], {
-      zone: "utc",
-    }).toISO(),
+    validAt: lastModified
+      ? DateTime.fromHTTP(lastModified, { zone: "utc" }).toISO()
+      : undefined,
     data: response.body,
   };
 }

@@ -156,10 +156,15 @@ function formatStore(storeItems) {
     };
 
     if (base.longitude && base.latitude) {
-      result.position = {
-        longitude: base.longitude,
-        latitude: base.latitude,
+      const position = {
+        longitude: Number(base.longitude),
+        latitude: Number(base.latitude),
       };
+      if (isNaN(position.longitude) || isNaN(position.longitude)) {
+        error("longitude and latitude are not numbers");
+      } else {
+        result.position = position;
+      }
     }
   });
   return result;
@@ -298,11 +303,12 @@ function getProductType(product) {
  * @returns {Array<string>}
  */
 function formatProductTypes(products) {
-  return [
+  const result = [
     ...new Set(
       products.filter((p) => isInStock(p) !== Available.no).map(getProductType)
     ),
   ];
+  return result.length ? result : undefined;
 }
 
 async function checkAvailability(handler, options) {

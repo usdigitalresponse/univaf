@@ -94,10 +94,9 @@ function formatStore(provider) {
   }
 
   return {
-    id: `rite_aid:${provider.id}`,
     // All API locations are named "Rite Aid", so add the store number.
     name: `Rite Aid #${provider.id}`,
-    external_ids: { rite_aid: provider.id.toString() },
+    external_ids: [["rite_aid", provider.id.toString()]],
     provider: "rite_aid",
     location_type: LocationType.pharmacy,
 
@@ -106,7 +105,6 @@ function formatStore(provider) {
     state: provider.location.state,
     postal_code: provider.location.zipcode,
     county,
-    position: null,
     booking_phone: provider.contact.booking_phone,
     booking_url: provider.contact.booking_url,
     info_phone: provider.contact.info_phone,

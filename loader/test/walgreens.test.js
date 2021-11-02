@@ -5,6 +5,7 @@ const {
   splitHostAndPath,
   toNdJson,
 } = require("./support");
+const { locationSchema } = require("./support/schemas");
 const fixtures = require("./fixtures/walgreens.smart.fixtures");
 const { Available } = require("../src/model");
 
@@ -65,6 +66,8 @@ describe("Walgreens SMART Scheduling Links API", () => {
     // Expect the `checked_at` time to be recent.
     const checkedDate = new Date(result[0].availability.checked_at);
     expect(Date.now() - checkedDate).toBeLessThan(1000);
+
+    expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("should set availability to NO if no slots are free", async () => {
@@ -86,6 +89,7 @@ describe("Walgreens SMART Scheduling Links API", () => {
 
     const result = await checkAvailability(() => null, { states: "AK" });
     expect(result).toHaveProperty("0.availability.available", Available.no);
+    expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("should set availability to NO if there are no slots", async () => {
@@ -100,6 +104,7 @@ describe("Walgreens SMART Scheduling Links API", () => {
 
     const result = await checkAvailability(() => null, { states: "AK" });
     expect(result).toHaveProperty("0.availability.available", Available.no);
+    expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
   it("should not return results outside the requested states", async () => {
