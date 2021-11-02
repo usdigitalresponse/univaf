@@ -31,16 +31,8 @@ function setupJestNockBack() {
   });
 }
 
-let isNockBackInitialized = false;
-
-function setupNockBack(mode, fixturePath) {
-  // If nock.back has already been set up and we're not explicitly modifying
-  // settings, don't reset everything.
-  if (isNockBackInitialized && !mode && !fixturePath) return;
-
-  nock.back.setMode(mode || "record");
+function setupNockBack(fixturePath) {
   nock.back.fixtures = fixturePath || DEFAULT_NOCKBACK_PATH;
-  isNockBackInitialized = true;
 }
 
 /**
@@ -60,7 +52,10 @@ function setupNockBack(mode, fixturePath) {
  * responses if the upstream server has changed.
  *
  * @param {any} [options] Options for handling recorded data.
- * @param {boolean} [options.ignoreQuery] Ignore querystrings in requests.
+ * @param {boolean|string[]} [options.ignoreQuery] Ignore querystrings or
+ *        specific querystring parameters in requests. If `true`, then the
+ *        entire querystring will be ignored. If a list of strings, only query
+ *        parameters with those names will be ignored.
  * @param {(any) => void} [options.prepareScope] Function that will be called
  *        with each recorded request definition before installing them to be
  *        replayed. Use this, for example, to make recordings match when parts
@@ -76,7 +71,7 @@ function withNockBack(options, testFunction) {
   }
 
   const originalMode = nock.back.currentMode;
-  module.exports.setupNockBack();
+  setupNockBack();
   nock.back.setMode("record");
 
   return async () => {
@@ -85,7 +80,9 @@ function withNockBack(options, testFunction) {
     const { nockDone } = await nock.back(fileName, {
       before(scope) {
         if (options.ignoreQuery) {
-          const filteringPath = (path) => path.replace(/\?.*$/, "");
+          const filteringPath = (path) => {
+            return removeQueryParameters(path, options.ignoreQuery);
+          };
           scope.path = filteringPath(scope.path);
           scope.filteringPath = filteringPath;
         }
@@ -100,10 +97,29 @@ function withNockBack(options, testFunction) {
     } finally {
       nockDone();
       nock.cleanAll();
-      // Reset the mode so it doesn't affect other tests.
+      // Reset the mode so it doesn't affect other, non-nock-back tests.
       nock.back.setMode(originalMode);
     }
   };
+}
+
+function removeQueryParameters(url, parameterNames) {
+  return url.replace(/\?(.*)$/, (match, query) => {
+    if (Array.isArray(parameterNames)) {
+      const newParameters = query
+        .split("&")
+        .filter((parameter) => {
+          const name = decodeURIComponent(parameter.split("=")[0]);
+          return !parameterNames.includes(name);
+        })
+        .join("");
+      return newParameters ? `?${newParameters}` : "";
+    } else if (parameterNames) {
+      return "";
+    } else {
+      return match;
+    }
+  });
 }
 
 module.exports = {

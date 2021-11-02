@@ -11,7 +11,7 @@ describe("Albertsons", () => {
     nock.cleanAll();
   });
 
-  it.nock("should output valid data", { ignoreQuery: true }, async () => {
+  it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
     const result = await checkAvailability(() => {}, { states: "AK" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
