@@ -29,9 +29,14 @@ const LocationType = {
  * @enum {string}
  */
 const VaccineProduct = {
-  pfizer: "pfizer",
-  moderna: "moderna",
+  astraZeneca: "astra_zeneca",
   janssen: "jj",
+  moderna: "moderna",
+  novavax: "novavax",
+  pfizer: "pfizer",
+  pfizerAge5_11: "pfizer_age_5_11",
+  pfizerAge2_4: "pfizer_age_2_4",
+  pfizerPediatric: "pfizer_pediatric",
 };
 
 module.exports = {
