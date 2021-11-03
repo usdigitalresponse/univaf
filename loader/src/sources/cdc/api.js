@@ -26,7 +26,7 @@
 
 const Sentry = require("@sentry/node");
 
-const { Available } = require("../../model");
+const { Available, VaccineProduct } = require("../../model");
 const { httpClient, oneLine, titleCase } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
@@ -259,19 +259,32 @@ function formatAvailable(products) {
 const ndcLookup = {
   // from https://www.cdc.gov/vaccines/programs/iis/COVID-19-related-codes.html
   // and https://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=ndc
-  [normalizeNdc("00310-1222-10")]: "astra_zeneca", //use
-  [normalizeNdc("00310-1222-15")]: "astra_zeneca", //sale
-  [normalizeNdc("59267-1000-01")]: "pfizer", //use
-  [normalizeNdc("59267-1000-02")]: "pfizer", //sale
-  [normalizeNdc("59267-1000-03")]: "pfizer", //sale
-  [normalizeNdc("59676-0580-05")]: "jj", //use
-  [normalizeNdc("59676-0580-15")]: "jj", //sale
-  [normalizeNdc("80631-0100-01")]: "novavax", //sale
-  [normalizeNdc("80631-0100-10")]: "novavax", //use
-  [normalizeNdc("80777-0273-10")]: "moderna", // use
-  [normalizeNdc("80777-0273-15")]: "moderna", // use
-  [normalizeNdc("80777-0273-98")]: "moderna", //sale
-  [normalizeNdc("80777-0273-99")]: "moderna", //sale
+  [normalizeNdc("00310-1222-10")]: VaccineProduct.astraZeneca, // use
+  [normalizeNdc("00310-1222-15")]: VaccineProduct.astraZeneca, // sale
+  [normalizeNdc("59267-1000-01")]: VaccineProduct.pfizer, // use
+  [normalizeNdc("59267-1000-02")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("59267-1000-03")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("59267-1025-01")]: VaccineProduct.pfizer, // use
+  [normalizeNdc("59267-1025-02")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("59267-1025-03")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("59267-1025-04")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("00069-1000-01")]: VaccineProduct.pfizer, // use
+  [normalizeNdc("00069-1000-02")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("00069-1000-03")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("59267-1055-01")]: VaccineProduct.pfizerAge5_11, // use
+  [normalizeNdc("59267-1055-02")]: VaccineProduct.pfizerAge5_11, // sale
+  [normalizeNdc("59267-1055-04")]: VaccineProduct.pfizerAge5_11, // sale
+  [normalizeNdc("59267-0078-01")]: VaccineProduct.pfizerAge2_4, // use
+  [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge2_4, // sale
+  [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge2_4, // sale
+  [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
+  [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
+  [normalizeNdc("80631-0100-01")]: VaccineProduct.novavax, // sale
+  [normalizeNdc("80631-0100-10")]: VaccineProduct.novavax, // use
+  [normalizeNdc("80777-0273-10")]: VaccineProduct.moderna, // use
+  [normalizeNdc("80777-0273-15")]: VaccineProduct.moderna, // use
+  [normalizeNdc("80777-0273-98")]: VaccineProduct.moderna, // sale
+  [normalizeNdc("80777-0273-99")]: VaccineProduct.moderna, // sale
 };
 
 function normalizeNdc(ndcCode) {
