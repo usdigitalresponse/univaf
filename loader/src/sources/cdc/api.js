@@ -286,6 +286,11 @@ const locationSystems = [
       return null;
     },
   },
+  // These Hannaford store numbers do not match up to the store numbers on the
+  // Hannaford website, but they *do* match up to store numbers in their COVID
+  // vaccine scheduling system (rxtouch.com). Not sure if these are just
+  // arbitrarily different, or if they are a pharmacy-specific ID or something.
+  { system: "hannaford", pattern: /^Hannaford/i },
 ];
 
 function getStoreExternalId(location) {
