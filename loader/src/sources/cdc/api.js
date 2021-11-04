@@ -211,6 +211,28 @@ const locationSystems = [
   { system: "walgreens", pattern: /^Walgreens/i },
   { system: "sams_club", pattern: /^Sams Club/i, getId: getWalmartId },
   { system: "walmart", pattern: /^Walmart/i, getId: getWalmartId },
+  {
+    system: "shoprite",
+    // "Klein's Shoprite" is the same Shoprite as Shoprite, but just encompasses
+    // a subset of stores in Maryland.
+    pattern: /^(klein )?shoprite/i,
+    getId(location) {
+      let id;
+      // This is the only one not formatted with a # sign.
+      // TODO: this appears to be the same as store 322046, and I can't figure
+      // out which is "correct". Ideally we'd just put in both, but the current
+      // framework here can't handle that.
+      if (location.loc_name.toLowerCase().trim() === "Shoprite Pharmacy 801") {
+        id = "801";
+      }
+      // Some stores have a loc_store_no value, but some don't and just have
+      // the store number in the name.
+      if (!id) {
+        id = getSimpleId(location) || location.loc_name.match(/#(\d+)/)?.[1];
+      }
+      return id;
+    },
+  },
 ];
 
 function getStoreExternalId(location) {
