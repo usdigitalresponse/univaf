@@ -19,6 +19,7 @@ const {
 const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
+const { matchVaccineProduct } = require("../../utils");
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
 
@@ -149,18 +150,7 @@ function formatSlots(smartSlots) {
           if (extension.valueCoding.code) {
             product = PRODUCTS_BY_CVX_CODE[extension.valueCoding.code];
           } else {
-            const name = extension.valueCoding.display.toLowerCase();
-            if (/astra\s*zeneca/.test(name)) {
-              product = "astra_zeneca";
-            } else if (name.includes("moderna")) {
-              product = "moderna";
-            } else if (/nova\s*vax/.test(name)) {
-              product = "novavax";
-            } else if (name.includes("pfizer")) {
-              product = "pfizer";
-            } else if (/janssen|johnson/.test(name)) {
-              product = "jj";
-            }
+            product = matchVaccineProduct(extension.valueCoding.display);
           }
           if (product) {
             products.add(product);
@@ -261,6 +251,7 @@ async function checkAvailability(handler, options) {
 }
 
 module.exports = {
-  checkAvailability,
   API_PATH,
+  checkAvailability,
+  formatLocation,
 };

@@ -1,7 +1,10 @@
 const nock = require("nock");
-const { checkAvailability } = require("../src/sources/prepmod");
+const { checkAvailability, formatLocation } = require("../src/sources/prepmod");
+const { createSmartLocation } = require("./support/smart-scheduling-links");
 const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
+const { VaccineProduct } = require("../src/model");
+const { EXTENSIONS } = require("../src/smart-scheduling-links");
 
 describe("PrepMod API", () => {
   jest.setTimeout(60000);
@@ -575,5 +578,89 @@ describe("PrepMod API", () => {
       },
     ]);
     expect(result).toContainItemsMatchingSchema(locationSchema);
+  });
+
+  it("identifies Pfizer for 5-11 year olds", async () => {
+    const testLocation = createSmartLocation({
+      schedules: [
+        {
+          extension: [
+            {
+              url: EXTENSIONS.PRODUCT,
+              valueCoding: {
+                system: "http://hl7.org/fhir/sid/cvx",
+                code: null,
+                display: "Pfizer Pediatric COVID-19 Vaccine (Ages 5-11)",
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toHaveProperty("availability.slots.0.products", [
+      VaccineProduct.pfizerAge5_11,
+    ]);
+  });
+
+  it("identifies Pfizer for 2-4 year olds", async () => {
+    const testLocation = createSmartLocation({
+      schedules: [
+        {
+          extension: [
+            {
+              url: EXTENSIONS.PRODUCT,
+              valueCoding: {
+                system: "http://hl7.org/fhir/sid/cvx",
+                code: null,
+                display: "Pfizer Pediatric COVID-19 Vaccine (Ages 2-4)",
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toHaveProperty("availability.slots.0.products", [
+      VaccineProduct.pfizerAge2_4,
+    ]);
+  });
+
+  it("identifies Pfizer for adults", async () => {
+    const testLocation = createSmartLocation({
+      schedules: [
+        {
+          extension: [
+            {
+              url: EXTENSIONS.PRODUCT,
+              valueCoding: {
+                system: "http://hl7.org/fhir/sid/cvx",
+                code: null,
+                display: "Pfizer-BioNTech COVID-19 Vaccine",
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toHaveProperty("availability.slots.0.products", [
+      VaccineProduct.pfizer,
+    ]);
   });
 });

@@ -1,6 +1,7 @@
 const got = require("got");
 const config = require("./config");
 const { ParseError } = require("./exceptions");
+const { VaccineProduct } = require("./model");
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
 const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
@@ -350,5 +351,34 @@ module.exports = {
       }
     }
     return result;
+  },
+
+  /**
+   * Fuzzily match a vaccine name string to one of our product types. Returns
+   * `undefined` if there's no match.
+   * @param {string} name
+   * @returns {VaccineProduct}
+   */
+  matchVaccineProduct(name) {
+    const text = name.toLowerCase();
+    if (/astra\s*zeneca/.test(text)) {
+      return VaccineProduct.astraZeneca;
+    } else if (text.includes("moderna")) {
+      return VaccineProduct.moderna;
+    } else if (/nova\s*vax/.test(text)) {
+      return VaccineProduct.novavax;
+    } else if (text.includes("pfizer")) {
+      if (/ages?\s+2/i.test(text)) {
+        return VaccineProduct.pfizerAge2_4;
+      } else if (/pediatric|children|ages?\s+5/i.test(text)) {
+        return VaccineProduct.pfizerAge5_11;
+      } else {
+        return VaccineProduct.pfizer;
+      }
+    } else if (/janssen|johnson/.test(text)) {
+      return VaccineProduct.janssen;
+    }
+
+    return undefined;
   },
 };

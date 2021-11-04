@@ -486,7 +486,8 @@ components:
             type: string
           description: |
             List of vaccine products available on this date. Not present if not
-            known. Current possible values include: `moderna`, `pfizer`, `jj`.
+            known. Current possible values include: `moderna`, `pfizer`,
+            `pfizer_age_5_11`, `pfizer_age_2_4`, `jj`.
         dose:
           type: string
           description: |
@@ -536,7 +537,8 @@ components:
             type: string
           description: |
             List of vaccine products available for this slot. Not present if not
-            known. Current possible values include: `moderna`, `pfizer`, `jj`.
+            known. Current possible values include: `moderna`, `pfizer`,
+            `pfizer_age_5_11`, `pfizer_age_2_4`, `jj`.
         dose:
           type: string
           description: |
@@ -598,7 +600,8 @@ components:
             type: string
           description: |
             List of vaccine products available. Not present if not known.
-            Current possible values include: `moderna`, `pfizer`, `jj`.
+            Current possible values include: `moderna`, `pfizer`,
+            `pfizer_age_5_11`, `pfizer_age_2_4`, `jj`.
         doses:
           type: array
           items:

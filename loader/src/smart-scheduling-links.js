@@ -40,6 +40,8 @@ const PRODUCTS_BY_CVX_CODE = {
   207: "moderna",
   211: "novavax",
   208: "pfizer",
+  218: "pfizer_age_5_11",
+  219: "pfizer_age_2_4",
   212: "jj",
 };
 

@@ -1,8 +1,10 @@
 const nock = require("nock");
+const { VaccineProduct } = require("../src/model");
 const {
   API_URL,
   checkAvailability,
   WaDohApiError,
+  formatLocation,
 } = require("../src/sources/wa-doh");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
@@ -106,5 +108,64 @@ describe("Washington DoH API", () => {
     );
     expect(error).toBeInstanceOf(WaDohApiError);
     expect(error.message).toContain("Expected type Int!");
+  });
+
+  it("identifies Pfizer adult and pediatric vaccines", () => {
+    const result = formatLocation({
+      locationId: "costco-625",
+      locationName: "Costco Caguas",
+      locationType: "Pharmacy",
+      providerId: null,
+      providerName: null,
+      departmentId: "costco-625",
+      departmentName: "Costco Caguas",
+      addressLine1: "PR #30 INTERSECCION AVENDIA",
+      addressLine2: "RAFAEL CORDERO BARIO",
+      city: "Caguas",
+      state: "PR",
+      zipcode: "PR00725",
+      county: null,
+      latitude: 18.251949,
+      longitude: -66.024857,
+      description: null,
+      contactFirstName: "Leticia",
+      contactLastName: "Ortiz Vazquez",
+      fax: "(787) 653-6948",
+      phone: "(787) 653-6929",
+      email: "w365phm@costco.com",
+      schedulingLink: "https://book.appointment-plus.com/d133yng2",
+      vaccineAvailability: "UNAVAILABLE",
+      vaccineTypes: [
+        "Pfizer-BioNTech (Comirnaty), ages 12 and up",
+        "Pfizer-BioNTech Pediatric, ages 5 - 11",
+      ],
+      infoLink: null,
+      timeZoneId: "56",
+      directions: "",
+      updatedAt: "2021-06-05T19:10:58.407Z",
+      rawDataSourceName: "CostcoLocationsFn",
+      accessibleParking: null,
+      additionalSupports: null,
+      commCardAvailable: null,
+      commCardBrailleAvailable: null,
+      driveupSite: null,
+      interpretersAvailable: null,
+      interpretersDesc: null,
+      supportUrl: null,
+      waitingArea: null,
+      walkupSite: null,
+      wheelchairAccessible: null,
+      scheduleOnline: null,
+      scheduleByPhone: null,
+      scheduleByEmail: null,
+      walkIn: null,
+      waitList: null,
+      __typename: "Location",
+    });
+
+    expect(result).toHaveProperty("availability.products", [
+      VaccineProduct.pfizer,
+      VaccineProduct.pfizerAge5_11,
+    ]);
   });
 });
