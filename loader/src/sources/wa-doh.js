@@ -1,8 +1,9 @@
 // Washington State DoH hosts data for multiple states for some providers where
 // they have API access. (In practice, this is pretty much only Costco.)
 
+const Sentry = require("@sentry/node");
 const { Available, LocationType, VaccineProduct } = require("../model");
-const { httpClient, warn } = require("../utils");
+const { httpClient } = require("../utils");
 const { HttpApiError } = require("../exceptions");
 const allStates = require("../states.json");
 
@@ -64,6 +65,16 @@ const LOCATIONS_QUERY = `
     }
   }
 `;
+
+function warn(message, context) {
+  console.warn(`WA DoH: ${message}`, context);
+  // Sentry does better fingerprinting with an actual exception object.
+  if (message instanceof Error) {
+    Sentry.captureException(message, { level: Sentry.Severity.Info });
+  } else {
+    Sentry.captureMessage(message, Sentry.Severity.Info);
+  }
+}
 
 class WaDohApiError extends HttpApiError {
   parse(response) {
@@ -137,7 +148,7 @@ function toLocationType(apiValue) {
   else if (text === "pharmacy") return LocationType.pharmacy;
   else if (text === "store") return LocationType.pharmacy;
 
-  console.error(`WA DoH: Unknown location type "${apiValue}"`);
+  warn(`Unknown location type "${apiValue}"`);
   return LocationType.pharmacy;
 }
 
@@ -147,12 +158,26 @@ function toLocationType(apiValue) {
  * @returns {VaccineProduct}
  */
 function toProduct(apiValue) {
-  const text = apiValue.toLowerCase();
-  if (text === "pfizer-biontech") return VaccineProduct.pfizer;
-  else if (text === "moderna") return VaccineProduct.moderna;
-  else if (text.includes("johnson & johnson")) return VaccineProduct.janssen;
+  const name = apiValue.toLowerCase();
+  if (/astra\s*zeneca/.test(name)) {
+    return VaccineProduct.astraZeneca;
+  } else if (name.includes("moderna")) {
+    return VaccineProduct.moderna;
+  } else if (/nova\s*vax/.test(name)) {
+    return VaccineProduct.novavax;
+  } else if (name.includes("pfizer")) {
+    if (/ages?\s+2/i.test(name)) {
+      return VaccineProduct.pfizerAge2_4;
+    } else if (/pediatric|children|ages?\s+5/i.test(name)) {
+      return VaccineProduct.pfizerAge5_11;
+    } else {
+      return VaccineProduct.pfizer;
+    }
+  } else if (/janssen|johnson/.test(name)) {
+    return VaccineProduct.janssen;
+  }
 
-  console.error(`WA DoH: Unknown product type "${apiValue}"`);
+  warn(`Unknown product type "${name}"`);
   return null;
 }
 
@@ -175,7 +200,7 @@ function formatLocation(data) {
     provider = "costco";
   }
   if (!provider) {
-    warn(`WA DoH: Unable to determine provider for ${data.locationId}`);
+    warn(`Unable to determine provider for ${data.locationId}`);
   }
 
   const address_lines = [];
@@ -185,7 +210,7 @@ function formatLocation(data) {
   const state = allStates.find(
     (state) => state.name === data.state || state.usps === data.state
   );
-  if (!state) console.error(`WA DoH: Unknown state "${data.state}"`);
+  if (!state) warn(`Unknown state "${data.state}"`);
 
   const external_ids = [["wa_doh", data.locationId]];
 
@@ -197,9 +222,7 @@ function formatLocation(data) {
     if (storeEmailMatch) {
       external_ids.push(["costco", storeEmailMatch[1]]);
     } else {
-      console.error(
-        `WA DoH: Unable to determine Costco store number for "${data.locationid}"`
-      );
+      warn(`Unable to determine Costco store number for "${data.locationid}"`);
     }
   }
 
@@ -324,4 +347,9 @@ async function checkAvailability(handler, options) {
   return results;
 }
 
-module.exports = { API_URL, checkAvailability, WaDohApiError };
+module.exports = {
+  API_URL,
+  checkAvailability,
+  formatLocation,
+  WaDohApiError,
+};
