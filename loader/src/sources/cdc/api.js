@@ -233,6 +233,7 @@ const locationSystems = [
       return id;
     },
   },
+  { system: "stop_and_shop", pattern: /^stop & shop/i },
 ];
 
 function getStoreExternalId(location) {
