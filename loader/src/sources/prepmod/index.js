@@ -16,7 +16,7 @@ const {
   formatExternalIds,
   valuesAsObject,
 } = require("../../smart-scheduling-links");
-const { Available, LocationType, VaccineProduct } = require("../../model");
+const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
 const { matchVaccineProduct } = require("../../utils");
