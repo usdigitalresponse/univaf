@@ -246,6 +246,28 @@ const locationSystems = [
   // `store_banner.ext_id`. None of them match in any way to the CDC numbers.
   // { system: "wegmans", pattern: /^wegmans/i },
   { system: "genoa_healthcare", pattern: /^Genoa Healthcare/i },
+  {
+    system: "bartell",
+    pattern: /bartell drug/i,
+    getId(location) {
+      // Bartell store numbers are prefixed with "69" and sometimes have
+      // additional 0-padding.
+      // Can dig up more details on Bartell stores at:
+      //   https://www.bartelldrugs.com/wp-json/api/stores?per_page=100&orderby=title&order=ASC
+      // Also worth noting: it appears that the WA DoH API only sometimes
+      // surfaces store numbers, and also has addresses and store names mixed
+      // up in a few cases. Makes one worry about the data accuracy :|
+      // There doesn't appear to be a simple way to match up to their data here.
+      const id = location.loc_store_no.match(/^\s*0*69(\d\d)\s*$/)?.[1];
+      if (!id) {
+        warn("Unexpected Bartell ID format", {
+          id: location.provider_location_guid,
+          storeNumber: location.loc_store_no,
+        });
+      }
+      return id;
+    },
+  },
 ];
 
 function getStoreExternalId(location) {
