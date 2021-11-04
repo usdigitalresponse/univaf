@@ -245,6 +245,7 @@ const locationSystems = [
   // the `retailer_store_id` field. There's also `ext_id` and
   // `store_banner.ext_id`. None of them match in any way to the CDC numbers.
   // { system: "wegmans", pattern: /^wegmans/i },
+  { system: "genoa_healthcare", pattern: /^Genoa Healthcare/i },
 ];
 
 function getStoreExternalId(location) {
