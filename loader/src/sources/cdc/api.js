@@ -27,7 +27,7 @@
 const Sentry = require("@sentry/node");
 
 const { Available, VaccineProduct } = require("../../model");
-const { httpClient, oneLine, titleCase } = require("../../utils");
+const { httpClient, oneLine, titleCase, unpadNumber } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
@@ -170,35 +170,54 @@ function formatStore(storeItems) {
   return result;
 }
 
-const systemNameRe = {
-  costco: /^Costco/i,
-  cvs: /^CVS/i,
-  kroger: /^Kroger/i,
-  publix: /^Publix/i,
-  rite_aid: /^Rite Aid/i,
-  safeway: /^SAFEWAY/i,
-  sams_club: /^Sams Club/i,
-  walgreens: /^Walgreens/i,
-  walmart: /^Walmart/i,
-};
-
-function getStoreExternalId(store) {
-  // handle numeric store numbers
-  let m = store.loc_store_no.match(/^(?<storeNo>\d+)$/);
+/**
+ * Get a simplistic, numeric or VTrckS-style location external ID value.
+ */
+function getSimpleId(location) {
+  // Handle numeric store numbers
+  let m = location.loc_store_no.match(/^(?<storeNo>\d+)$/);
 
   if (!m) {
-    // handle vtrcks pins like RA105587 -> 5587 in addition to pure numeric store numbers
-    m = store.loc_store_no.match(/^([A-Z]{3}|[A-Z]{2}\d)(?<storeNo>\d{5})/i);
+    // Handle VTrckS pins like RA105587 -> 5587 instead of pure numeric strings.
+    // For major pharmacies, these are usually a 3-character prefix followed
+    // by the store number. (They get to pick everything after the prefix.)
+    m = location.loc_store_no.match(/^([A-Z]{3}|[A-Z]{2}\d)(?<storeNo>\d{5})/i);
   }
 
-  if (!m) {
-    return null;
-  }
-  const storeNumber = parseInt(m.groups.storeNo, 10).toString();
+  return m ? unpadNumber(m.groups.storeNo) : null;
+}
 
-  for (const system in systemNameRe) {
-    if (store.loc_name.match(systemNameRe[system])) {
-      return [system, storeNumber];
+// Walmart and Sam's are listed with store numbers in the format
+// `10-<store_number>`. They always have `10-` as the prefix, and not any other
+// number. ¯\_(ツ)_/¯
+function getWalmartId(location) {
+  if (location.loc_store_no.startsWith("10-")) {
+    return location.loc_store_no.slice(3);
+  }
+  warn("Unexpected Walmart/Sams ID format", {
+    id: location.provider_location_guid,
+    storeNumber: location.loc_store_no,
+  });
+  return null;
+}
+
+const locationSystems = [
+  { system: "costco", pattern: /^Costco/i },
+  { system: "cvs", pattern: /^CVS/i },
+  { system: "kroger", pattern: /^Kroger/i },
+  { system: "publix", pattern: /^Publix/i },
+  { system: "rite_aid", pattern: /^Rite Aid/i },
+  { system: "safeway", pattern: /^SAFEWAY/i },
+  { system: "walgreens", pattern: /^Walgreens/i },
+  { system: "sams_club", pattern: /^Sams Club/i, getId: getWalmartId },
+  { system: "walmart", pattern: /^Walmart/i, getId: getWalmartId },
+];
+
+function getStoreExternalId(location) {
+  for (const definition of locationSystems) {
+    if (definition.pattern.test(location.loc_name)) {
+      const idValue = (definition.getId || getSimpleId)(location);
+      return idValue ? [definition.system, idValue] : null;
     }
   }
 }
@@ -397,4 +416,5 @@ module.exports = {
   API_HOST,
   API_PATH,
   checkAvailability,
+  queryState,
 };
