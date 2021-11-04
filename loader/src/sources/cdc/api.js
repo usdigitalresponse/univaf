@@ -237,6 +237,14 @@ const locationSystems = [
   // Sav-On has a handful of locations with no store number. Not sure there's
   // any useful way to handle those.
   { system: "sav_on", pattern: /^sav-?on/i },
+  // FIXME: Wegmans is disabled for now because the store numbers in CDC's data
+  // don't match up to *anything* else I can find for Wegmans. You can get some
+  // detailed data from https://shop.wegmans.com/api/v2/stores
+  // We have "wegmans" IDs that correspond to `id` in that API, but it appears
+  // the public facing store numbers (which are hard to find anyway) are really
+  // the `retailer_store_id` field. There's also `ext_id` and
+  // `store_banner.ext_id`. None of them match in any way to the CDC numbers.
+  // { system: "wegmans", pattern: /^wegmans/i },
 ];
 
 function getStoreExternalId(location) {
