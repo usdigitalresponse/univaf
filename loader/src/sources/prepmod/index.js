@@ -19,6 +19,7 @@ const {
 const { Available, LocationType, VaccineProduct } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
+const { matchVaccineProduct } = require("../../utils");
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
 
@@ -149,24 +150,7 @@ function formatSlots(smartSlots) {
           if (extension.valueCoding.code) {
             product = PRODUCTS_BY_CVX_CODE[extension.valueCoding.code];
           } else {
-            const name = extension.valueCoding.display.toLowerCase();
-            if (/astra\s*zeneca/.test(name)) {
-              product = VaccineProduct.astraZeneca;
-            } else if (name.includes("moderna")) {
-              product = VaccineProduct.moderna;
-            } else if (/nova\s*vax/.test(name)) {
-              product = VaccineProduct.novavax;
-            } else if (name.includes("pfizer")) {
-              if (/ages?\s+2/i.test(name)) {
-                product = VaccineProduct.pfizerAge2_4;
-              } else if (/pediatric|children|ages?\s+5/i.test(name)) {
-                product = VaccineProduct.pfizerAge5_11;
-              } else {
-                product = VaccineProduct.pfizer;
-              }
-            } else if (/janssen|johnson/.test(name)) {
-              product = VaccineProduct.janssen;
-            }
+            product = matchVaccineProduct(extension.valueCoding.display);
           }
           if (product) {
             products.add(product);

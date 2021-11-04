@@ -2,8 +2,8 @@
 // they have API access. (In practice, this is pretty much only Costco.)
 
 const Sentry = require("@sentry/node");
-const { Available, LocationType, VaccineProduct } = require("../model");
-const { httpClient } = require("../utils");
+const { Available, LocationType } = require("../model");
+const { httpClient, matchVaccineProduct } = require("../utils");
 const { HttpApiError } = require("../exceptions");
 const allStates = require("../states.json");
 
@@ -158,27 +158,11 @@ function toLocationType(apiValue) {
  * @returns {VaccineProduct}
  */
 function toProduct(apiValue) {
-  const name = apiValue.toLowerCase();
-  if (/astra\s*zeneca/.test(name)) {
-    return VaccineProduct.astraZeneca;
-  } else if (name.includes("moderna")) {
-    return VaccineProduct.moderna;
-  } else if (/nova\s*vax/.test(name)) {
-    return VaccineProduct.novavax;
-  } else if (name.includes("pfizer")) {
-    if (/ages?\s+2/i.test(name)) {
-      return VaccineProduct.pfizerAge2_4;
-    } else if (/pediatric|children|ages?\s+5/i.test(name)) {
-      return VaccineProduct.pfizerAge5_11;
-    } else {
-      return VaccineProduct.pfizer;
-    }
-  } else if (/janssen|johnson/.test(name)) {
-    return VaccineProduct.janssen;
+  const product = matchVaccineProduct(apiValue);
+  if (!product) {
+    warn(`Unknown product type "${apiValue}"`);
   }
-
-  warn(`Unknown product type "${name}"`);
-  return null;
+  return product;
 }
 
 /**
