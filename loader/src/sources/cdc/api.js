@@ -234,6 +234,9 @@ const locationSystems = [
     },
   },
   { system: "stop_and_shop", pattern: /^stop & shop/i },
+  // Sav-On has a handful of locations with no store number. Not sure there's
+  // any useful way to handle those.
+  { system: "sav_on", pattern: /^sav-?on/i },
 ];
 
 function getStoreExternalId(location) {
