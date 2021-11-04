@@ -635,4 +635,32 @@ describe("PrepMod API", () => {
       VaccineProduct.pfizerAge2_4,
     ]);
   });
+
+  it("identifies Pfizer for adults", async () => {
+    const testLocation = createSmartLocation({
+      schedules: [
+        {
+          extension: [
+            {
+              url: EXTENSIONS.PRODUCT,
+              valueCoding: {
+                system: "http://hl7.org/fhir/sid/cvx",
+                code: null,
+                display: "Pfizer-BioNTech COVID-19 Vaccine",
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toHaveProperty("availability.slots.0.products", [
+      VaccineProduct.pfizer,
+    ]);
+  });
 });
