@@ -269,6 +269,23 @@ const locationSystems = [
     },
   },
   { system: "meijer", pattern: /^Meijer/i },
+  {
+    system: "southeastern_grocers_winn_dixie",
+    pattern: /^Winn-?Dixie/i,
+    getId(location) {
+      const storeNumber = getSimpleId(location);
+      if (storeNumber) {
+        // We got these IDs originally from VaccineSpotter, and they are always
+        // the store number prefixed with "1-".
+        return `1-${storeNumber}`;
+      }
+      warn("Unexpected Winn-Dixie ID format", {
+        id: location.provider_location_guid,
+        storeNumber: location.loc_store_no,
+      });
+      return null;
+    },
+  },
 ];
 
 function getStoreExternalId(location) {
