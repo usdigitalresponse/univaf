@@ -268,6 +268,7 @@ const locationSystems = [
       return id;
     },
   },
+  { system: "meijer", pattern: /^Meijer/i },
 ];
 
 function getStoreExternalId(location) {
