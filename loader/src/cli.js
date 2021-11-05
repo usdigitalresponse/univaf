@@ -7,7 +7,7 @@ const { ApiClient } = require("./api-client");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
 
-Sentry.init()
+Sentry.init();
 
 async function runSources(targets, handler, options) {
   targets =
