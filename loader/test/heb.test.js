@@ -54,11 +54,12 @@ describe("H-E-B", () => {
       },
       booking_url:
         "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000Gub6QAC",
-      is_public: true,
       availability: {
         source: "univaf-heb",
+        //valid_at: undefined,
         available: Available.yes,
         checked_at: expectDatetimeString(),
+        is_public: true,
         available_count: 76,
         products: ["jj", "moderna", "pfizer"],
       },

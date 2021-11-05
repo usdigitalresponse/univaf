@@ -1,6 +1,6 @@
 /**
- * Get official apointment data from Albertsons. This works via a file they
- * publish to S3 for appointment finders and other consumers like us, although
+ * Get official apointment data from H-E-B. This works via a file they
+ * publish to their own website for appointment finders and other consumers like us, although
  * it does not appear to be officially documented anywhere. It could disappear
  * in the future without notice.
  *
@@ -17,23 +17,45 @@ const { LocationType, VaccineProduct, Available } = require("../../model");
 const { ParseError } = require("../../exceptions");
 
 const API_URL =
-  "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
+  "https://heb-ecom-covid-vaccine.hebdigital-prd.com/vaccine_locations.json";
 
-// Maps Albertsons product names to our product names.
+// Maps H-E-B product names to our product names.
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
   moderna: VaccineProduct.moderna,
-  jnj: VaccineProduct.janssen,
+  janssen: VaccineProduct.janssen,
 };
+
+function formatAvailability(openSlots) {
+  if (openSlots > 0) {
+    return Available.yes;
+  } else {
+    return Available.no;
+  }
+}
+
+function formatAvailableProducts(raw) {
+  if (!raw) return undefined;
+  
+  return raw
+  .map((value) => {
+    const formatted = PRODUCT_NAMES[value.manufacturer.toLowerCase()];
+    if (!formatted) {
+      warn(`Unknown 'drugName' value: ${value}`);
+    }
+    return formatted;
+  })
+  .filter(Boolean);
+}
 
 function formatLocation(data, checkedAt, validAt) {
   if (!checkedAt) checkedAt = new Date().toISOString();
 
   const external_ids = [
-    // XXX: is this reliable for all entries?
-    ["heb", data.storeNumber.toString()],
-    // XXX: fix this!
-    ["heb", "UHOH THE ABOVE DOESN'T MATCH VACCINESPOTTER"],
+    // NOTE: this is not reliable for all entries
+    // Should we use the address or booking url 
+    // as another external id?
+    ["heb", data.storeNumber.toString()]
   ];
 
   return {
@@ -54,12 +76,12 @@ function formatLocation(data, checkedAt, validAt) {
 
     availability: {
       source: "univaf-heb",
-      valid_at: validAt,
+//    valid_at: validAt,
       checked_at: checkedAt,
       is_public: true,
-      available: "NOPE",
+      available: formatAvailability(data.openAppointmentSlots),
       available_count: data.openAppointmentSlots,
-      products: ["NOPE"],
+      products: formatAvailableProducts(data.slotDetails),
     },
   };
 }
