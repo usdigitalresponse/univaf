@@ -111,21 +111,13 @@ jobs:
           cd ../ui
           npm ci
 
-      - name: DEBUG
-        if: github.event_name == 'pull_request' &&
-          github.event.head.repo.full_name != github.repository
-        run: |
-          echo 'github.event_name: "${{ github.event_name }}"'
-          echo 'github.repository: "${{ github.repository }}"'
-          echo 'github.event.pull_request.head.repo.full_name: "${{ github.event.pull_request.head.repo.full_name }}"'
-
       # We have ESLint and Prettier installed separately in each subproject,
       # but this action can only run once per job. So we run the versions
       # installed in the server project on both at once, and have some weird
       # arguments.
       - name: Lint JS Code
         if: github.event_name != 'pull_request' ||
-          github.event.head.repo.full_name == github.repository
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: wearerequired/lint-action@v1
         with:
           eslint: true
@@ -138,7 +130,7 @@ jobs:
 
       - name: Lint JS Code (without GitHub checks)
         if: github.event_name == 'pull_request' &&
-          github.event.head.repo.full_name != github.repository
+          github.event.pull_request.head.repo.full_name != github.repository
         run: |
           cd server
           echo "ESLint:"
