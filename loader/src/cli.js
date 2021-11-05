@@ -13,7 +13,7 @@ async function runSources(targets, handler, options) {
   targets =
     targets && targets.length ? targets : Object.getOwnPropertyNames(sources);
 
-  let runs = targets.map((name) => {
+  const runs = targets.map((name) => {
     const source = sources[name];
     const run = source
       ? source.checkAvailability(handler, options)

@@ -135,7 +135,7 @@ jobs:
           npx eslint --ext 'js,ts' . ../loader/ ../ui/
           echo "--------------------------------------------------------------"
           echo "Prettier:"
-          npx prettier . ../loader/ ../ui/
+          npx prettier --check . ../loader/ ../ui/
 
   lint_workflows:
     runs-on: ubuntu-latest
