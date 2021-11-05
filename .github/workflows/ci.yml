@@ -111,6 +111,14 @@ jobs:
           cd ../ui
           npm ci
 
+      - name: DEBUG
+        if: github.event_name == 'pull_request' &&
+          github.event.head.repo.full_name != github.repository
+        run: |
+          echo 'github.event_name: "${{ github.event_name }}"'
+          echo 'github.repository: "${{ github.repository }}"'
+          echo 'github.event.head.repo.full_name: "${{ github.event.head.repo.full_name }}"'
+
       # We have ESLint and Prettier installed separately in each subproject,
       # but this action can only run once per job. So we run the versions
       # installed in the server project on both at once, and have some weird
