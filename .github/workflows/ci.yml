@@ -117,7 +117,7 @@ jobs:
         run: |
           echo 'github.event_name: "${{ github.event_name }}"'
           echo 'github.repository: "${{ github.repository }}"'
-          echo 'github.event.head.repo.full_name: "${{ github.event.head.repo.full_name }}"'
+          echo 'github.event.pull_request.head.repo.full_name: "${{ github.event.pull_request.head.repo.full_name }}"'
 
       # We have ESLint and Prettier installed separately in each subproject,
       # but this action can only run once per job. So we run the versions
