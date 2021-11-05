@@ -116,6 +116,7 @@ jobs:
       # installed in the server project on both at once, and have some weird
       # arguments.
       - name: Lint JS Code
+        if: github.event.head.repo.full_name == github.repository
         uses: wearerequired/lint-action@v1
         with:
           eslint: true
@@ -125,6 +126,16 @@ jobs:
           prettier: true
           prettier_dir: server/
           prettier_args: . ../loader/ ../ui/
+
+      - name: Lint JS Code (without GitHub checks)
+        if: github.event.head.repo.full_name != github.repository
+        run: |
+          cd server
+          echo "ESLint:"
+          npx eslint --ext 'js,ts' . ../loader/ ../ui/
+          echo "--------------------------------------------------------------"
+          echo "Prettier:"
+          npx prettier . ../loader/ ../ui/
 
   lint_workflows:
     runs-on: ubuntu-latest
