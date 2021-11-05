@@ -383,7 +383,7 @@ function parseVaccineProducts(text) {
       "<li>Pediatrics Pfizer Covid-19 Vaccine for age (5-11) years</li>"
     )
   ) {
-    result.push(vaccineProducts.pfizerAge5_11);
+    result.push(vaccineProduct.pfizerAge5_11);
   }
   
   if (text.includes("<li>Janssen (J&J) COVID-19 Vaccine</li>")) {
