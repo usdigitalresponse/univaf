@@ -27,7 +27,7 @@
 const Sentry = require("@sentry/node");
 
 const { Available, VaccineProduct } = require("../../model");
-const { httpClient, oneLine, titleCase } = require("../../utils");
+const { httpClient, oneLine, titleCase, unpadNumber } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
@@ -170,35 +170,134 @@ function formatStore(storeItems) {
   return result;
 }
 
-const systemNameRe = {
-  costco: /^Costco/i,
-  cvs: /^CVS/i,
-  kroger: /^Kroger/i,
-  publix: /^Publix/i,
-  rite_aid: /^Rite Aid/i,
-  safeway: /^SAFEWAY/i,
-  sams_club: /^Sams Club/i,
-  walgreens: /^Walgreens/i,
-  walmart: /^Walmart/i,
-};
-
-function getStoreExternalId(store) {
-  // handle numeric store numbers
-  let m = store.loc_store_no.match(/^(?<storeNo>\d+)$/);
+/**
+ * Get a simplistic, numeric or VTrckS-style location external ID value.
+ */
+function getSimpleId(location) {
+  // Handle numeric store numbers
+  let m = location.loc_store_no.match(/^(?<storeNo>\d+)$/);
 
   if (!m) {
-    // handle vtrcks pins like RA105587 -> 5587 in addition to pure numeric store numbers
-    m = store.loc_store_no.match(/^([A-Z]{3}|[A-Z]{2}\d)(?<storeNo>\d{5})/i);
+    // Handle VTrckS pins like RA105587 -> 5587 instead of pure numeric strings.
+    // For major pharmacies, these are usually a 3-character prefix followed
+    // by the store number. (They get to pick everything after the prefix.)
+    m = location.loc_store_no.match(/^([A-Z]{3}|[A-Z]{2}\d)(?<storeNo>\d{5})/i);
   }
 
-  if (!m) {
-    return null;
-  }
-  const storeNumber = parseInt(m.groups.storeNo, 10).toString();
+  return m ? unpadNumber(m.groups.storeNo) : null;
+}
 
-  for (const system in systemNameRe) {
-    if (store.loc_name.match(systemNameRe[system])) {
-      return [system, storeNumber];
+// Walmart and Sam's are listed with store numbers in the format
+// `10-<store_number>`. They always have `10-` as the prefix, and not any other
+// number. ¯\_(ツ)_/¯
+function getWalmartId(location) {
+  if (location.loc_store_no.startsWith("10-")) {
+    return location.loc_store_no.slice(3);
+  }
+  warn("Unexpected Walmart/Sams ID format", {
+    id: location.provider_location_guid,
+    storeNumber: location.loc_store_no,
+  });
+  return null;
+}
+
+const locationSystems = [
+  { system: "costco", pattern: /^Costco/i },
+  { system: "cvs", pattern: /^CVS/i },
+  { system: "kroger", pattern: /^Kroger/i },
+  { system: "publix", pattern: /^Publix/i },
+  { system: "rite_aid", pattern: /^Rite Aid/i },
+  { system: "safeway", pattern: /^SAFEWAY/i },
+  { system: "walgreens", pattern: /^Walgreens/i },
+  { system: "sams_club", pattern: /^Sams Club/i, getId: getWalmartId },
+  { system: "walmart", pattern: /^Walmart/i, getId: getWalmartId },
+  {
+    system: "shoprite",
+    // "Klein's Shoprite" is the same Shoprite as Shoprite, but just encompasses
+    // a subset of stores in Maryland.
+    pattern: /^(klein )?shoprite/i,
+    getId(location) {
+      let id;
+      // This is the only one not formatted with a # sign.
+      // TODO: this appears to be the same as store 322046, and I can't figure
+      // out which is "correct". Ideally we'd just put in both, but the current
+      // framework here can't handle that.
+      if (location.loc_name.toLowerCase().trim() === "Shoprite Pharmacy 801") {
+        id = "801";
+      }
+      // Some stores have a loc_store_no value, but some don't and just have
+      // the store number in the name.
+      if (!id) {
+        id = getSimpleId(location) || location.loc_name.match(/#(\d+)/)?.[1];
+      }
+      return id;
+    },
+  },
+  { system: "stop_and_shop", pattern: /^stop & shop/i },
+  // Sav-On has a handful of locations with no store number. Not sure there's
+  // any useful way to handle those.
+  { system: "sav_on", pattern: /^sav-?on/i },
+  // FIXME: Wegmans is disabled for now because the store numbers in CDC's data
+  // don't match up to *anything* else I can find for Wegmans. You can get some
+  // detailed data from https://shop.wegmans.com/api/v2/stores
+  // We have "wegmans" IDs that correspond to `id` in that API, but it appears
+  // the public facing store numbers (which are hard to find anyway) are really
+  // the `retailer_store_id` field. There's also `ext_id` and
+  // `store_banner.ext_id`. None of them match in any way to the CDC numbers.
+  // { system: "wegmans", pattern: /^wegmans/i },
+  { system: "genoa_healthcare", pattern: /^Genoa Healthcare/i },
+  {
+    system: "bartell",
+    pattern: /bartell drug/i,
+    getId(location) {
+      // Bartell store numbers are prefixed with "69" and sometimes have
+      // additional 0-padding.
+      // Can dig up more details on Bartell stores at:
+      //   https://www.bartelldrugs.com/wp-json/api/stores?per_page=100&orderby=title&order=ASC
+      // Also worth noting: it appears that the WA DoH API only sometimes
+      // surfaces store numbers, and also has addresses and store names mixed
+      // up in a few cases. Makes one worry about the data accuracy :|
+      // There doesn't appear to be a simple way to match up to their data here.
+      const id = location.loc_store_no.match(/^\s*0*69(\d\d)\s*$/)?.[1];
+      if (!id) {
+        warn("Unexpected Bartell ID format", {
+          id: location.provider_location_guid,
+          storeNumber: location.loc_store_no,
+        });
+      }
+      return id;
+    },
+  },
+  { system: "meijer", pattern: /^Meijer/i },
+  {
+    system: "southeastern_grocers_winn_dixie",
+    pattern: /^Winn-?Dixie/i,
+    getId(location) {
+      const storeNumber = getSimpleId(location);
+      if (storeNumber) {
+        // We got these IDs originally from VaccineSpotter, and they are always
+        // the store number prefixed with "1-".
+        return `1-${storeNumber}`;
+      }
+      warn("Unexpected Winn-Dixie ID format", {
+        id: location.provider_location_guid,
+        storeNumber: location.loc_store_no,
+      });
+      return null;
+    },
+  },
+  // These Hannaford store numbers do not match up to the store numbers on the
+  // Hannaford website, but they *do* match up to store numbers in their COVID
+  // vaccine scheduling system (rxtouch.com). Not sure if these are just
+  // arbitrarily different, or if they are a pharmacy-specific ID or something.
+  { system: "hannaford", pattern: /^Hannaford/i },
+];
+
+function getStoreExternalId(location) {
+  for (const definition of locationSystems) {
+    if (definition.pattern.test(location.loc_name)) {
+      const idValue = (definition.getId || getSimpleId)(location);
+      return idValue ? [definition.system, idValue] : null;
     }
   }
 }
@@ -397,4 +496,5 @@ module.exports = {
   API_HOST,
   API_PATH,
   checkAvailability,
+  queryState,
 };
