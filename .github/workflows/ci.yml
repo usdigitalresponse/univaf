@@ -116,7 +116,8 @@ jobs:
       # installed in the server project on both at once, and have some weird
       # arguments.
       - name: Lint JS Code
-        if: github.event.head.repo.full_name == github.repository
+        if: github.event_name != 'pull_request' ||
+          github.event.head.repo.full_name == github.repository
         uses: wearerequired/lint-action@v1
         with:
           eslint: true
@@ -128,7 +129,8 @@ jobs:
           prettier_args: . ../loader/ ../ui/
 
       - name: Lint JS Code (without GitHub checks)
-        if: github.event.head.repo.full_name != github.repository
+        if: github.event_name == 'pull_request' &&
+          github.event.head.repo.full_name != github.repository
         run: |
           cd server
           echo "ESLint:"
