@@ -4,6 +4,14 @@
  * This uses the same GraphQL API that the HyVee's website uses for booking. It
  * gets us structured data, but isn't a public API and could change without
  * notice. Booking site: https://www.hy-vee.com/my-pharmacy/vaccine-consent
+ *
+ * This fills in:
+ * - `available`
+ * - `products`
+ *
+ * Getting specific appointment slot info and dose info appears possible, but
+ * requires making a query for every location/product combination, which is
+ * not worthwhile at the moment.
  */
 
 const Sentry = require("@sentry/node");

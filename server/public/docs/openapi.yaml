@@ -21,6 +21,7 @@ info:
     - Walgreens Pharmacy (source name: `univaf-walgreens-smart`)
     - Rite Aid Pharmacy (source name: `univaf-rite-aid-api`)
     - Albertsons (source name: `univaf-albertsons`)
+    - HyVee (source name: `univaf-hyvee`)
     - State of New Jersey Vaccine Scheduling System (source name: `univaf-njvss`)
     - VaccineSpotter.org (source names: `univaf-vaccinespotter`, `vaccinespotter`)
     - Centers for Disease Control (CDC) (source name: `cdc`, `univaf-cdc`)
@@ -63,6 +64,15 @@ info:
     Albertsons does not provide day-by-day counts of appointment availability
     or specific appointment slot times; only that slots are generally available
     and for what vaccine product.
+
+
+    ### HyVee (`univaf-hyvee`)
+
+    [HyVee](https://www.hy-vee.com/corporate) is a large employee-co-op grocery
+    chain in the midwest. The `univaf-hyvee` source scrapes their booking
+    website’s API for data about vaccine products and availability. It does not
+    gather available appointment counts by day (`capacity`) or individual
+    appointment slots (`slots`).
 
 
     ### Centers for Disease Control (`cdc`, `univaf-cdc`)
