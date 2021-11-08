@@ -65,7 +65,7 @@ const RawLocation = {
   __typename: "Location",
 };
 
-describe("H-E-B", () => {
+describe("HyVee", () => {
   jest.setTimeout(30_000);
 
   it("should format correct output for a store", () => {
