@@ -66,6 +66,8 @@ const RawLocation = {
 };
 
 describe("H-E-B", () => {
+  jest.setTimeout(30_000);
+
   it("should format correct output for a store", () => {
     const formatted = formatLocation(RawLocation, "2021-10-11T00:00:00Z");
 
@@ -128,8 +130,8 @@ describe("H-E-B", () => {
     );
   });
 
-  it("should output valid data", async () => {
-    const states = stateData.map((x) => x.usps);
+  it.nock("should output valid data", async () => {
+    const states = stateData.map((x) => x.usps).join(",");
     const result = await checkAvailability(() => {}, { states });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });

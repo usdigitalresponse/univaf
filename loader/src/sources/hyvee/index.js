@@ -1,3 +1,11 @@
+/**
+ * HyVee Co-op Grocery
+ *
+ * This uses the same GraphQL API that the HyVee's website uses for booking. It
+ * gets us structured data, but isn't a public API and could change without
+ * notice. Booking site: https://www.hy-vee.com/my-pharmacy/vaccine-consent
+ */
+
 const Sentry = require("@sentry/node");
 const { httpClient, matchVaccineProduct } = require("../../utils");
 const { LocationType, Available } = require("../../model");
@@ -17,6 +25,15 @@ function warn(message, context) {
   }
 }
 
+/**
+ * Get an array of raw store & covid availability records from the HyVee API.
+ * This isn't a public API with any special support; we're just hitting the
+ * GraphQL endpoints the their appointment booker web pages do, so it could
+ * change.
+ * Visit https://www.hy-vee.com/my-pharmacy/vaccine-consent and monitor the
+ * network requests it makes to find the most up-to-date query to use here.
+ * @returns {Promise<any[]>}
+ */
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
     method: "POST",
@@ -109,10 +126,10 @@ function formatLocation(data, checkedAt) {
       latitude: data.address.latitude,
     },
 
-    info_phone: data.phoneNumber,
+    info_phone: data.phoneNumber || undefined,
     booking_url: BOOKING_URL,
     description,
-    meta: { hyvee_nickname: data.nickname },
+    meta: { hyvee_nickname: data.nickname || undefined },
 
     availability: {
       source: SOURCE_NAME,
@@ -129,7 +146,7 @@ function formatLocation(data, checkedAt) {
 }
 
 function formatProducts(vaccineData) {
-  return vaccineData.availableCovidVaccineManufacturers
+  const products = vaccineData.availableCovidVaccineManufacturers
     .filter((product) => product.manufacturerName !== "Flu Vaccine")
     .map((product) => {
       const result = matchVaccineProduct(product.manufacturerName);
@@ -138,9 +155,50 @@ function formatProducts(vaccineData) {
       }
       return result;
     });
+
+  return products.length ? products : undefined;
+}
+
+async function getData(states) {
+  const rawLocations = await fetchRawData();
+  const checkedAt = new Date().toISOString();
+  return rawLocations
+    .map((entry) => {
+      let formatted;
+      Sentry.withScope((scope) => {
+        scope.setContext("location", {
+          id: entry.location.locationId,
+          provider: "hyvee",
+        });
+        try {
+          formatted = formatLocation(entry.location, checkedAt);
+        } catch (error) {
+          warn(error);
+        }
+      });
+      return formatted;
+    })
+    .filter((location) => states.includes(location.state));
+}
+
+async function checkAvailability(handler, options) {
+  let states = [];
+  if (options.states) {
+    states = options.states.split(",").map((state) => state.trim());
+  }
+
+  if (!states.length) {
+    console.warn("No states specified for HyVee");
+    return [];
+  }
+
+  const locations = await getData(states);
+  locations.forEach((location) => handler(location));
+  return locations;
 }
 
 module.exports = {
+  checkAvailability,
   fetchRawData,
   formatLocation,
 };
