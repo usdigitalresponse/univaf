@@ -100,7 +100,7 @@ function formatAvailableProducts(raw) {
   .map((value) => {
     const formatted = PRODUCT_NAMES[value.manufacturer.toLowerCase()];
     if (!formatted) {
-      //warn(`Unknown 'drugName' value: ${value.manufacturer}`);
+      warn(`Unknown product type`, value.manufacturer);
     }
     return formatted;
   })

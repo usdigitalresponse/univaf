@@ -63,7 +63,7 @@ describe("H-E-B", () => {
         "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000Gub6QAC",
       availability: {
         source: "univaf-heb",
-        //valid_at: undefined,
+        valid_at: undefined,
         available: Available.yes,
         checked_at: expectDatetimeString(),
         is_public: true,
