@@ -1,8 +1,15 @@
-const { formatLocation } = require("../src/sources/heb");
-const { Available, LocationType } = require("../src/model");
+const { checkAvailability, formatLocation } = require("../src/sources/heb");
+const { LocationType, Available } = require("../src/model");
 const { expectDatetimeString } = require("./support");
+const { locationSchema } = require("./support/schemas");
 
 describe("H-E-B", () => {
+
+  it("should output valid data", async () => {
+    const result = await checkAvailability(() => {}, { states: "TX" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
+  });
+  
   it("should format correct output for a store", () => {
     const formatted = formatLocation({
       zip: "78209-5703",
