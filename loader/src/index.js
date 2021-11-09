@@ -4,6 +4,7 @@ const sources = {
   cvsApi: require("./sources/cvs/api"),
   cvsScraper: require("./sources/cvs/scraper"),
   cvsSmart: require("./sources/cvs/smart"),
+  hyvee: require("./sources/hyvee"),
   krogerSmart: require("./sources/kroger"),
   njvss: require("./sources/njvss"),
   prepmod: require("./sources/prepmod"),
