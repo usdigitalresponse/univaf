@@ -23,7 +23,7 @@ const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
   moderna: VaccineProduct.moderna,
   janssen: VaccineProduct.janssen,
-  pediatric_pfizer: VaccineProduct.pfizerAge5_11
+  pediatric_pfizer: VaccineProduct.pfizerAge5_11,
 };
 
 async function fetchRawData() {
@@ -47,22 +47,22 @@ async function fetchRawData() {
 /**
  * H-E-B has several locations missing a store number and/or
  * missing a booking URL. Not including those locations in results.
- * @param {*} states 
- * @returns 
+ * @param {*} states
+ * @returns
  */
 async function getData(states) {
   const { validAt, data } = await fetchRawData();
   const checkedAt = new Date().toISOString();
 
   return data.locations
-    .filter(location => Boolean(location.storeNumber))
-    .filter(location => location.url!=null)
+    .filter((location) => Boolean(location.storeNumber))
+    .filter((location) => location.url != null)
     .map((entry) => {
       let formatted;
       Sentry.withScope((scope) => {
         scope.setContext("location", {
           id: entry.storeNumber,
-          provider: "heb"
+          provider: "heb",
         });
         try {
           formatted = formatLocation(entry, validAt, checkedAt);
@@ -95,16 +95,16 @@ function formatAvailability(openSlots) {
 
 function formatAvailableProducts(raw) {
   if (!raw) return undefined;
-  
+
   return raw
-  .map((value) => {
-    const formatted = PRODUCT_NAMES[value.manufacturer.toLowerCase()];
-    if (!formatted) {
-      warn(`Unknown product type`, value.manufacturer);
-    }
-    return formatted;
-  })
-  .filter(Boolean);
+    .map((value) => {
+      const formatted = PRODUCT_NAMES[value.manufacturer.toLowerCase()];
+      if (!formatted) {
+        warn(`Unknown product type`, value.manufacturer);
+      }
+      return formatted;
+    })
+    .filter(Boolean);
 }
 
 function formatLocation(data, checkedAt, validAt) {
@@ -113,7 +113,7 @@ function formatLocation(data, checkedAt, validAt) {
   const external_ids = [
     // TODO: used munged address as secondary
     // external id like vaccine spotter
-    ["heb", `${data.storeNumber || ''}`]
+    ["heb", `${data.storeNumber || ""}`],
   ];
 
   return {

@@ -4,12 +4,11 @@ const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 describe("H-E-B", () => {
-
   it("should output valid data", async () => {
     const result = await checkAvailability(() => {}, { states: "TX" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
-  
+
   it("should format correct output for a store", () => {
     const formatted = formatLocation({
       zip: "78209-5703",
