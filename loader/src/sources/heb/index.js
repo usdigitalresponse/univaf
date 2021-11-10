@@ -119,6 +119,7 @@ function formatLocation(data, checkedAt, validAt) {
 
   const external_ids = [
     ["heb", `${data.storeNumber}`],
+    ["heb", `${LocationType.pharmacy}-${data.zip}-${data.street}`]
   ];
 
   return {
