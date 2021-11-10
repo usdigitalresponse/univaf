@@ -55,7 +55,7 @@ async function getData(states) {
 
   return data.locations
     .filter((location) => Boolean(location.storeNumber))
-    .filter((location) => location.openAppointmentSlots>0)
+    .filter((location) => location.openAppointmentSlots > 0)
     .map((entry) => {
       let formatted;
       Sentry.withScope((scope) => {
@@ -94,7 +94,7 @@ function formatAvailability(openSlots) {
 
 /**
  * H-E-B includes "other" products in their list
- * of available vaccine types. Likely a flu vaccine / 
+ * of available vaccine types. Likely a flu vaccine /
  * not relevant for covid vaccine scheduling.
  */
 function formatAvailableProducts(raw) {
@@ -104,10 +104,10 @@ function formatAvailableProducts(raw) {
     .map((value) => {
       const productType = value.manufacturer.toLowerCase();
       const formatted = PRODUCT_NAMES[productType];
-      if (productType!='other'&&!formatted) {
-          warn(`Unknown product type`, value.manufacturer);
+      if (productType != "other" && !formatted) {
+        warn(`Unknown product type`, value.manufacturer);
       }
-      if (value.openAppointmentSlots>0) {
+      if (value.openAppointmentSlots > 0) {
         return formatted;
       }
     })
@@ -119,7 +119,7 @@ function formatLocation(data, checkedAt, validAt) {
 
   const external_ids = [
     ["heb", `${data.storeNumber}`],
-    ["heb", `${LocationType.pharmacy}-${data.zip}-${data.street}`]
+    ["heb", `${LocationType.pharmacy}-${data.zip}-${data.street}`],
   ];
 
   return {
@@ -151,7 +151,7 @@ function formatLocation(data, checkedAt, validAt) {
 }
 
 function formatUrl(url) {
-  return url? url : 'https://vaccine.heb.com/scheduler';
+  return url ? url : "https://vaccine.heb.com/scheduler";
 }
 
 async function checkAvailability(handler, options) {
