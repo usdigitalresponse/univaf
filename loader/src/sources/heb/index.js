@@ -45,10 +45,9 @@ async function fetchRawData() {
 }
 
 /**
- * H-E-B has several locations missing a store number and/or
- * missing a booking URL. Not including those locations in results.
- * @param {*} states
- * @returns
+ * H-E-B has several locations missing a store number.
+ * Not including those locations in results, or locations
+ * with no open appointment slots.
  */
 async function getData(states) {
   const { validAt, data } = await fetchRawData();
@@ -56,7 +55,7 @@ async function getData(states) {
 
   return data.locations
     .filter((location) => Boolean(location.storeNumber))
-    .filter((location) => location.url != null)
+    .filter((location) => location.openAppointmentSlots>0)
     .map((entry) => {
       let formatted;
       Sentry.withScope((scope) => {
@@ -93,16 +92,24 @@ function formatAvailability(openSlots) {
   }
 }
 
+/**
+ * H-E-B includes "other" products in their list
+ * of available vaccine types. Likely a flu vaccine / 
+ * not relevant for covid vaccine scheduling.
+ */
 function formatAvailableProducts(raw) {
   if (!raw) return undefined;
 
   return raw
     .map((value) => {
-      const formatted = PRODUCT_NAMES[value.manufacturer.toLowerCase()];
-      if (!formatted) {
-        warn(`Unknown product type`, value.manufacturer);
+      const productType = value.manufacturer.toLowerCase();
+      const formatted = PRODUCT_NAMES[productType];
+      if (productType!='other'&&!formatted) {
+          warn(`Unknown product type`, value.manufacturer);
       }
-      return formatted;
+      if (value.openAppointmentSlots>0) {
+        return formatted;
+      }
     })
     .filter(Boolean);
 }
@@ -111,9 +118,7 @@ function formatLocation(data, checkedAt, validAt) {
   if (!checkedAt) checkedAt = new Date().toISOString();
 
   const external_ids = [
-    // TODO: used munged address as secondary
-    // external id like vaccine spotter
-    ["heb", `${data.storeNumber || ""}`],
+    ["heb", `${data.storeNumber}`],
   ];
 
   return {
@@ -130,7 +135,7 @@ function formatLocation(data, checkedAt, validAt) {
       latitude: data.latitude,
     },
 
-    booking_url: data.url,
+    booking_url: formatUrl(data.url),
 
     availability: {
       source: "univaf-heb",
@@ -142,6 +147,10 @@ function formatLocation(data, checkedAt, validAt) {
       products: formatAvailableProducts(data.slotDetails),
     },
   };
+}
+
+function formatUrl(url) {
+  return url? url : 'https://vaccine.heb.com/scheduler';
 }
 
 async function checkAvailability(handler, options) {
