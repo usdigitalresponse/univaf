@@ -23,13 +23,29 @@ class ApiClient {
   }
 
   async getLocations(query) {
-    const { body } = await httpClient({
-      url: `${this.url}/locations`,
+    let options = {
+      url: `${this.url}/api/edge/locations`,
       searchParams: query,
       headers: { "x-api-key": this.key },
       responseType: "json",
-    });
-    return body;
+    };
+
+    const results = [];
+    while (options) {
+      const { body } = await httpClient(options);
+      results.push(...body.data);
+
+      if (body.links?.next) {
+        options = {
+          ...options,
+          url: new URL(body.links.next, this.url).href,
+          searchParams: undefined,
+        };
+      } else {
+        options = null;
+      }
+    }
+    return results;
   }
 
   async sendUpdate(data, options) {
@@ -38,7 +54,7 @@ class ApiClient {
     }
 
     const response = await httpClient.post({
-      url: `${this.url}/update`,
+      url: `${this.url}/api/edge/update`,
       searchParams: options,
       headers: { "x-api-key": this.key },
       json: data,

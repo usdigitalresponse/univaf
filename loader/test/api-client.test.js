@@ -1,6 +1,30 @@
-const { UpdateQueue } = require("../src/api-client");
+const { UpdateQueue, ApiClient } = require("../src/api-client");
+const nock = require("nock");
+
+const MOCK_HOST = "http://univaf.test";
 
 describe("API Client", () => {
+  describe("getLocations", () => {
+    it("handles paginated results", async () => {
+      nock(MOCK_HOST)
+        .get("/api/edge/locations")
+        .reply(200, {
+          links: { next: "/api/edge/locations?p2" },
+          data: [{ id: 1 }],
+        });
+      nock(MOCK_HOST)
+        .get("/api/edge/locations?p2")
+        .reply(200, {
+          links: {},
+          data: [{ id: 2 }],
+        });
+
+      const client = new ApiClient(MOCK_HOST, "abc");
+      const result = await client.getLocations();
+      expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+    });
+  });
+
   describe("UpdateQueue", () => {
     it("should limit concurrent calls", async () => {
       let currentCalls = 0;
