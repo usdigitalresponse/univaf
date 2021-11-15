@@ -7,6 +7,7 @@
  */
 
 const Sentry = require("@sentry/node");
+const { ApiClient } = require("../../api-client");
 const {
   EXTENSIONS,
   PRODUCTS_BY_CVX_CODE,
@@ -51,6 +52,27 @@ async function getDataForHost(host) {
   );
 }
 
+async function getKnownLocations(state) {
+  const client = ApiClient.fromEnv();
+  const locations = await client.getLocations({
+    state,
+    provider: "prepmod",
+  });
+
+  // Create a lookup object indexed by external ID.
+  const result = new Map();
+  for (const location of locations) {
+    // Drop `availability` so we don't wind up sending out-of-date info back.
+    // TODO: remove after doing https://github.com/usdigitalresponse/univaf/issues/201
+    delete location.availability;
+    const data = { location, found: false };
+    for (const externalId of location.external_ids) {
+      result.set(externalId.join(":"), data);
+    }
+  }
+  return result;
+}
+
 function formatLocation(host, validTime, locationInfo) {
   const smartLocation = locationInfo.location;
 
@@ -81,6 +103,7 @@ function formatLocation(host, validTime, locationInfo) {
 
   const checkTime = new Date().toISOString();
   return {
+    is_public: true,
     name: smartLocation.name,
     external_ids,
     provider: "prepmod",
@@ -204,10 +227,28 @@ async function checkAvailability(handler, options) {
   let results = [];
   for (const [state, namedHosts] of Object.entries(prepmodHostsByState)) {
     if (states.includes(state)) {
+      // Load known locations in the state so we can mark any that are missing
+      // from PrepMod as private. (It's not unusual for locations to be public
+      // and later become private, at which point we should hide them, too.)
+      const knownLocations = options.hideMissingLocations
+        ? await getKnownLocations(state)
+        : new Map();
+
       for (const host of Object.values(namedHosts)) {
         try {
           const hostLocations = await getDataForHost(host);
-          hostLocations.forEach((location) => handler(location));
+          hostLocations.forEach((location) => {
+            handler(location);
+
+            // If we already knew about this location, mark it as found.
+            for (const externalId of location.external_ids) {
+              const known = knownLocations.get(externalId.join(":"));
+              if (known) {
+                known.found = true;
+                break;
+              }
+            }
+          });
           results = results.concat(hostLocations);
         } catch (error) {
           // FIXME: this should be a custom error emitted by the
@@ -217,6 +258,14 @@ async function checkAvailability(handler, options) {
           } else {
             throw error;
           }
+        }
+      }
+
+      for (const known of new Set([...knownLocations.values()])) {
+        if (!known.found) {
+          const newData = { ...known.location, is_public: false };
+          results.push(newData);
+          handler(newData, { update_location: true });
         }
       }
     }

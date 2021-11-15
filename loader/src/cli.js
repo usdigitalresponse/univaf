@@ -159,6 +159,18 @@ function main() {
           .option("rite-aid-states", {
             type: "string",
             describe: "Overrides the `--states` option for riteAidApi",
+          })
+          .option("hide-missing-locations", {
+            type: "boolean",
+            describe: oneLine`
+              If a previously found location stops being returned by a source,
+              output it with \`is_public: false\`. Only use this with sources
+              that are "authoritative" -- that is, you expect them to output a
+              *complete* list of whatever type of locations they cover.
+              ("Previously found" locations are loaded from the server specified
+              by the API_URL environment variable. This is currently only
+              supported by the \`prepmod\` source.)
+            `,
           }),
       handler: run,
     })

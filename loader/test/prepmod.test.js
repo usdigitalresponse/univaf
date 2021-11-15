@@ -1,7 +1,16 @@
 const nock = require("nock");
-const { checkAvailability, formatLocation } = require("../src/sources/prepmod");
-const { createSmartLocation } = require("./support/smart-scheduling-links");
-const { expectDatetimeString } = require("./support");
+const config = require("../src/config");
+const {
+  API_PATH,
+  checkAvailability,
+  formatLocation,
+} = require("../src/sources/prepmod");
+const { prepmodHostsByState } = require("../src/sources/prepmod/hosts");
+const {
+  createSmartLocation,
+  createSmartManifest,
+} = require("./support/smart-scheduling-links");
+const { expectDatetimeString, toNdJson } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const { VaccineProduct } = require("../src/model");
 const { EXTENSIONS } = require("../src/smart-scheduling-links");
@@ -9,7 +18,9 @@ const { EXTENSIONS } = require("../src/smart-scheduling-links");
 describe("PrepMod API", () => {
   jest.setTimeout(60000);
 
+  const _apiUrl = config.apiUrl;
   afterEach(() => {
+    config.apiUrl = _apiUrl;
     nock.cleanAll();
     nock.enableNetConnect();
   });
@@ -42,7 +53,7 @@ describe("PrepMod API", () => {
         postal_code: "99362",
         provider: "prepmod",
         state: "WA",
-
+        is_public: true,
         availability: {
           available: "YES",
           checked_at: expectDatetimeString(),
@@ -216,6 +227,7 @@ describe("PrepMod API", () => {
         postal_code: "98944",
         provider: "prepmod",
         state: "WA",
+        is_public: true,
         availability: {
           available: "YES",
           checked_at: expectDatetimeString(),
@@ -662,5 +674,50 @@ describe("PrepMod API", () => {
     expect(result).toHaveProperty("availability.slots.0.products", [
       VaccineProduct.pfizer,
     ]);
+  });
+
+  it("hides locations not in the API response when --hide-missing-locations is set", async () => {
+    const testLocation = createSmartLocation({ id: "abc123" });
+    // A UNIVAF-formatted location that matches the above SMART SL data.
+    const testSavedLocation = {
+      id: "saved-abc123",
+      external_ids: [["prepmod-myhealth.alaska.gov-location", "abc123"]],
+    };
+    // A UNIVAF-formatted location that will be missing from the SMART SL data.
+    const testMissingLocation = {
+      id: "saved-def456",
+      external_ids: [["prepmod-myhealth.alaska.gov-location", "def456"]],
+    };
+
+    config.apiUrl = "http://univaf.test";
+    nock(config.apiUrl)
+      .get("/api/edge/locations")
+      .query(true)
+      .reply(200, {
+        links: {},
+        data: [testSavedLocation, testMissingLocation],
+      });
+
+    const apiHost = prepmodHostsByState.AK.state;
+    nock(apiHost)
+      .get(API_PATH)
+      .reply(200, createSmartManifest(apiHost, API_PATH));
+    nock(apiHost)
+      .get("/test/locations.ndjson")
+      .reply(200, toNdJson([testLocation.location]));
+    nock(apiHost)
+      .get("/test/schedules.ndjson")
+      .reply(200, toNdJson(testLocation.schedules));
+    nock(apiHost)
+      .get("/test/slots.ndjson")
+      .reply(200, toNdJson(testLocation.slots));
+
+    const results = await checkAvailability(() => {}, {
+      states: "AK",
+      hideMissingLocations: true,
+    });
+    expect(results).toHaveLength(2);
+    expect(results).toHaveProperty("0.is_public", true);
+    expect(results).toHaveProperty("1.is_public", false);
   });
 });
