@@ -60,14 +60,14 @@ async function getKnownLocations(state) {
   });
 
   // Create a lookup object indexed by external ID.
-  const result = new Map();
+  const result = Object.create(null);
   for (const location of locations) {
     // Drop `availability` so we don't wind up sending out-of-date info back.
     // TODO: remove after doing https://github.com/usdigitalresponse/univaf/issues/201
     delete location.availability;
     const data = { location, found: false };
     for (const externalId of location.external_ids) {
-      result.set(externalId.join(":"), data);
+      result[externalId.join(":")] = data;
     }
   }
   return result;
@@ -232,7 +232,7 @@ async function checkAvailability(handler, options) {
       // and later become private, at which point we should hide them, too.)
       const knownLocations = options.hideMissingLocations
         ? await getKnownLocations(state)
-        : new Map();
+        : Object.create(null);
 
       for (const host of Object.values(namedHosts)) {
         try {
@@ -242,7 +242,7 @@ async function checkAvailability(handler, options) {
 
             // If we already knew about this location, mark it as found.
             for (const externalId of location.external_ids) {
-              const known = knownLocations.get(externalId.join(":"));
+              const known = knownLocations[externalId.join(":")];
               if (known) {
                 known.found = true;
                 break;
@@ -261,7 +261,7 @@ async function checkAvailability(handler, options) {
         }
       }
 
-      for (const known of new Set([...knownLocations.values()])) {
+      for (const known of new Set([...Object.values(knownLocations)])) {
         if (!known.found) {
           const newData = { ...known.location, is_public: false };
           results.push(newData);
