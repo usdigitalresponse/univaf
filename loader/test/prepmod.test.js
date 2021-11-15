@@ -19,8 +19,10 @@ describe("PrepMod API", () => {
   jest.setTimeout(60000);
 
   const _apiUrl = config.apiUrl;
+  const _apiKey = config.apiKey;
   afterEach(() => {
     config.apiUrl = _apiUrl;
+    config.apiKey = _apiKey;
     nock.cleanAll();
     nock.enableNetConnect();
   });
@@ -689,7 +691,9 @@ describe("PrepMod API", () => {
       external_ids: [["prepmod-myhealth.alaska.gov-location", "def456"]],
     };
 
+    // Mock the UNIVAF API returning both locations.
     config.apiUrl = "http://univaf.test";
+    config.apiKey = "abc";
     nock(config.apiUrl)
       .get("/api/edge/locations")
       .query(true)
@@ -698,6 +702,7 @@ describe("PrepMod API", () => {
         data: [testSavedLocation, testMissingLocation],
       });
 
+    // Mock the PrepMod API returning only one of the locations.
     const apiHost = prepmodHostsByState.AK.state;
     nock(apiHost)
       .get(API_PATH)
