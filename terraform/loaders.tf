@@ -166,7 +166,7 @@ module "prepmod_loader" {
   source = "./modules/loader"
 
   name          = "prepmod"
-  command       = ["--states", "AK,WA"]
+  command       = ["--states", "AK,WA", "--hide-missing-locations"]
   loader_source = "prepmod"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key

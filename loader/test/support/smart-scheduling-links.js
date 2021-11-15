@@ -22,7 +22,7 @@ const {
  * @returns {{location: any, schedules any[], slots: any[]}}
  */
 function createSmartLocation(overrides) {
-  const schedulesData = overrides?.schedules || {};
+  const schedulesData = overrides?.schedules || [{}];
   delete overrides?.schedules;
 
   const id = Math.random().toString().slice(2);
@@ -142,8 +142,31 @@ function createSmartSlot(schedule, idSuffix, overrides) {
   };
 }
 
+function createSmartManifest(apiHost, apiPath) {
+  return {
+    transactionTime: "2021-05-17T16:41:05.534Z",
+    request: `${apiHost}${apiPath}`,
+    output: [
+      {
+        type: "Location",
+        url: `${apiHost}/test/locations.ndjson`,
+      },
+      {
+        type: "Schedule",
+        url: `${apiHost}/test/schedules.ndjson`,
+      },
+      {
+        type: "Slot",
+        url: `${apiHost}/test/slots.ndjson`,
+      },
+    ],
+    error: [],
+  };
+}
+
 module.exports = {
   createSmartLocation,
   createSmartSchedule,
   createSmartSlot,
+  createSmartManifest,
 };

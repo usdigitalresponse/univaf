@@ -7,6 +7,7 @@
  */
 
 const Sentry = require("@sentry/node");
+const { ApiClient } = require("../../api-client");
 const {
   EXTENSIONS,
   PRODUCTS_BY_CVX_CODE,
@@ -22,6 +23,16 @@ const { HTTPError } = require("got");
 const { matchVaccineProduct } = require("../../utils");
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
+
+function warn(message, context) {
+  console.warn(`PrepMod: ${message}`, context);
+  // Sentry does better fingerprinting with an actual exception object.
+  if (message instanceof Error) {
+    Sentry.captureException(message, { level: Sentry.Severity.Info });
+  } else {
+    Sentry.captureMessage(message, Sentry.Severity.Info);
+  }
+}
 
 function getApiForHost(host) {
   return new SmartSchedulingLinksApi(`${host}${API_PATH}`);
@@ -39,6 +50,27 @@ async function getDataForHost(host) {
   return Object.values(smartLocations).map((entry) =>
     formatLocation(host, manifest.transactionTime, entry)
   );
+}
+
+async function getKnownLocations(state) {
+  const client = ApiClient.fromEnv();
+  const locations = await client.getLocations({
+    state,
+    provider: "prepmod",
+  });
+
+  // Create a lookup object indexed by external ID.
+  const result = Object.create(null);
+  for (const location of locations) {
+    // Drop `availability` so we don't wind up sending out-of-date info back.
+    // TODO: remove after doing https://github.com/usdigitalresponse/univaf/issues/201
+    delete location.availability;
+    const data = { location, found: false };
+    for (const externalId of location.external_ids) {
+      result[externalId.join(":")] = data;
+    }
+  }
+  return result;
 }
 
 function formatLocation(host, validTime, locationInfo) {
@@ -71,6 +103,7 @@ function formatLocation(host, validTime, locationInfo) {
 
   const checkTime = new Date().toISOString();
   return {
+    is_public: true,
     name: smartLocation.name,
     external_ids,
     provider: "prepmod",
@@ -113,29 +146,15 @@ function formatSlots(smartSlots) {
         // TODO: should have something that automatically parses by value type.
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
-          console.error(
-            `PrepMod: non-integer capcity: ${JSON.stringify(extension)}`
-          );
-          Sentry.captureMessage(`Unparseable slot capacity`, {
-            level: Sentry.Severity.Error,
-            contexts: {
-              raw_slot: smartSlot,
-            },
+          warn(`Non-integer capacity: ${JSON.stringify(extension)}`, {
+            slotId: smartSlot.id,
           });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         booking_url = extension.valueUrl;
       } else {
-        console.warn(
-          `Got unexpected slot slot url for PrepMod: ${JSON.stringify(
-            extension
-          )}`
-        );
-        Sentry.captureMessage(`Unexpected slot extension url for PrepMod`, {
-          level: Sentry.Severity.Info,
-          contexts: {
-            raw_slot: smartSlot,
-          },
+        warn(`Unknown slot extension url: ${JSON.stringify(extension)}`, {
+          slotId: smartSlot.id,
         });
       }
     }
@@ -154,38 +173,17 @@ function formatSlots(smartSlots) {
           }
           if (product) {
             products.add(product);
-          } else {
-            console.warn(
-              `Got unparseable product extension for PrepMod: ${JSON.stringify(
-                extension
-              )}`
-            );
+          } else if (!/^influenza|flu/i.test(extension.valueCoding.display)) {
+            warn(`Unparseable product extension: ${JSON.stringify(extension)}`);
           }
         } else if (extension.url === EXTENSIONS.DOSE) {
           if (extension.valueInteger >= 1 && extension.valueInteger <= 2) {
             doses.add(extension.valueInteger);
           } else {
-            console.warn(
-              `Got unknown dose extension value for PrepMod: ${JSON.stringify(
-                extension
-              )}`
-            );
+            warn(`Unparseable dose extension: ${JSON.stringify(extension)}`);
           }
         } else {
-          console.warn(
-            `Got unexpected schedule extension url for PrepMod: ${JSON.stringify(
-              extension
-            )}`
-          );
-          Sentry.captureMessage(
-            `Unexpected schdule extension url for PrepMod`,
-            {
-              level: Sentry.Severity.Info,
-              contexts: {
-                raw_slot: smartSlot,
-              },
-            }
-          );
+          warn(`Unknown schedule extension url: ${JSON.stringify(extension)}`);
         }
       }
     }
@@ -229,10 +227,28 @@ async function checkAvailability(handler, options) {
   let results = [];
   for (const [state, namedHosts] of Object.entries(prepmodHostsByState)) {
     if (states.includes(state)) {
+      // Load known locations in the state so we can mark any that are missing
+      // from PrepMod as private. (It's not unusual for locations to be public
+      // and later become private, at which point we should hide them, too.)
+      const knownLocations = options.hideMissingLocations
+        ? await getKnownLocations(state)
+        : Object.create(null);
+
       for (const host of Object.values(namedHosts)) {
         try {
           const hostLocations = await getDataForHost(host);
-          hostLocations.forEach((location) => handler(location));
+          hostLocations.forEach((location) => {
+            handler(location);
+
+            // If we already knew about this location, mark it as found.
+            for (const externalId of location.external_ids) {
+              const known = knownLocations[externalId.join(":")];
+              if (known) {
+                known.found = true;
+                break;
+              }
+            }
+          });
           results = results.concat(hostLocations);
         } catch (error) {
           // FIXME: this should be a custom error emitted by the
@@ -242,6 +258,14 @@ async function checkAvailability(handler, options) {
           } else {
             throw error;
           }
+        }
+      }
+
+      for (const known of new Set([...Object.values(knownLocations)])) {
+        if (!known.found) {
+          const newData = { ...known.location, is_public: false };
+          results.push(newData);
+          handler(newData, { update_location: true });
         }
       }
     }
