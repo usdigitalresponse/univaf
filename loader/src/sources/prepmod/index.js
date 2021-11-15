@@ -154,7 +154,7 @@ function formatSlots(smartSlots) {
           }
           if (product) {
             products.add(product);
-          } else {
+          } else if (!/^influenza|flu/i.test(extension.valueCoding.display)) {
             console.warn(
               `Got unparseable product extension for PrepMod: ${JSON.stringify(
                 extension
