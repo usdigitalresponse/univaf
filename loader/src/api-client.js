@@ -22,30 +22,39 @@ class ApiClient {
     this.key = key;
   }
 
-  async getLocations(query) {
-    let options = {
-      url: `${this.url}/api/edge/locations`,
-      searchParams: query,
-      headers: { "x-api-key": this.key },
+  async _request(options) {
+    return httpClient({
+      ...options,
+      url: new URL(options.url, this.url).href,
+      headers: { "x-api-key": this.key, ...options.headers },
       responseType: "json",
-    };
+    });
+  }
+
+  async _requestAllPages(requestOptions) {
+    // This gets updated on each response with the options for the next page.
+    let nextOptions = requestOptions;
 
     const results = [];
-    while (options) {
-      const { body } = await httpClient(options);
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { body } = await this._request(nextOptions);
       results.push(...body.data);
 
       if (body.links?.next) {
-        options = {
-          ...options,
-          url: new URL(body.links.next, this.url).href,
-          searchParams: undefined,
-        };
+        nextOptions = { url: body.links.next };
       } else {
-        options = null;
+        break;
       }
     }
     return results;
+  }
+
+  async getLocations(query) {
+    return this._requestAllPages({
+      url: "/api/edge/locations",
+      searchParams: query,
+    });
   }
 
   async sendUpdate(data, options) {
@@ -53,12 +62,11 @@ class ApiClient {
       throw new TypeError("`options` must be an object");
     }
 
-    const response = await httpClient.post({
-      url: `${this.url}/api/edge/update`,
+    const response = await this._request({
+      method: "POST",
+      url: "/api/edge/update",
       searchParams: options,
-      headers: { "x-api-key": this.key },
       json: data,
-      responseType: "json",
       throwHttpErrors: false,
     });
 

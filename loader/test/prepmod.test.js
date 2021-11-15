@@ -23,6 +23,7 @@ describe("PrepMod API", () => {
   afterEach(() => {
     config.apiUrl = _apiUrl;
     config.apiKey = _apiKey;
+
     nock.cleanAll();
     nock.enableNetConnect();
   });

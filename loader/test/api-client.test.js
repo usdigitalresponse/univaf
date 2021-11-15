@@ -25,6 +25,29 @@ describe("API Client", () => {
     });
   });
 
+  describe("sendUpdate", () => {
+    it("sends data", async () => {
+      nock(MOCK_HOST)
+        .post("/api/edge/update")
+        .query({ test: "value" })
+        .reply(200, {
+          data: {
+            location: { action: "created" },
+            availability: { action: "created" },
+          },
+        });
+
+      const client = new ApiClient(MOCK_HOST, "abc");
+      const result = await client.sendUpdate({ id: 1 }, { test: "value" });
+      expect(result).toEqual({
+        data: {
+          location: { action: "created" },
+          availability: { action: "created" },
+        },
+      });
+    });
+  });
+
   describe("UpdateQueue", () => {
     it("should limit concurrent calls", async () => {
       let currentCalls = 0;
