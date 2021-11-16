@@ -49,10 +49,7 @@ describe("H-E-B", () => {
       name: "Broadway Central Market",
       location_type: LocationType.pharmacy,
       provider: "heb",
-      external_ids: [
-        ["heb", "191"],
-        ["heb", "PHARMACY-78209-5703-4821 BROADWAY"],
-      ],
+      external_ids: [["heb", "191"]],
       address_lines: ["4821 BROADWAY"],
       city: "SAN ANTONIO",
       state: "TX",

@@ -55,7 +55,6 @@ async function getData(states) {
 
   return data.locations
     .filter((location) => Boolean(location.storeNumber))
-    .filter((location) => location.openAppointmentSlots > 0)
     .map((entry) => {
       let formatted;
       Sentry.withScope((scope) => {
@@ -100,7 +99,7 @@ function formatAvailability(openSlots) {
 function formatAvailableProducts(raw) {
   if (!raw) return undefined;
 
-  return raw
+  const formatted = raw
     .map((value) => {
       const productType = value.manufacturer.toLowerCase();
       const formatted = PRODUCT_NAMES[productType];
@@ -112,15 +111,14 @@ function formatAvailableProducts(raw) {
       }
     })
     .filter(Boolean);
+
+  return formatted.length ? formatted : undefined;
 }
 
 function formatLocation(data, checkedAt, validAt) {
   if (!checkedAt) checkedAt = new Date().toISOString();
 
-  const external_ids = [
-    ["heb", `${data.storeNumber}`],
-    ["heb", `${LocationType.pharmacy}-${data.zip}-${data.street}`],
-  ];
+  const external_ids = [["heb", `${data.storeNumber}`]];
 
   return {
     name: data.name,
