@@ -199,6 +199,7 @@ The list is manually managed.
 | [📆](# "Project Management") | [Emilia Ndely](https://github.com/endely) |
 | [💻](# "Code") [⚠️](# "Tests") | [Alan Ning](https://github.com/askldjd) |
 | [🔬](# "Research") [💻](# "Code") | [Jan Overgoor](https://github.com/janovergoor) |
+| [💻](# "Code") [⚠️](# "Tests") | [Christina Roberts](https://github.com/cmroberts) |
 | [🔬](# "Research") [📓](# "User Testing") | [Mollie Ruskin](https://github.com/mollieru) |
 | [💻](# "Code") | [Greg Sandstrom](https://github.com/gsandstrom) |
 | [💻](# "Code") [⚠️](# "Tests") | [Stephan Schmidt](https://github.com/stephan-schmidt) |
