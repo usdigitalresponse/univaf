@@ -91,7 +91,7 @@ const locationSchema = {
       type: "array",
       items: {
         type: "array",
-        items: { type: "string" },
+        items: { type: "string", minLength: 1 },
       },
     },
     provider: { type: "string" },
