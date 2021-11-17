@@ -107,7 +107,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
     )
     VALUES (${sqlFields.map((_) => "?").join(", ")})
     RETURNING id`,
-      sqlFields.map((x) => (x[1] !== undefined ? x[1] : null))
+      sqlFields.map((x) => x[1] ?? null)
     );
 
     const locationId = inserted.rows[0].id;
