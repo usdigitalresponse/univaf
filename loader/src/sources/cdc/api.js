@@ -293,7 +293,26 @@ const locationSystems = [
   { system: "hannaford", pattern: /^Hannaford/i },
 ];
 
+// FIXME: these need to be able to correct more than just the ID.
+const mislabeledLocations = {
+  // These are all actually Sam's Clubs, and the names are wrong, too :(
+  // Check the Sam's website at: https://www.samsclub.com/club/<store_number>
+  // This one has "not applicable" for the store number.
+  "d3f48823-d527-49bd-ae93-cf66998f689e": { system: "walmart", value: "8169" },
+  // And these ones all have "-<store number>", e.g. "-6270".
+  "21b0ebe2-13fd-46d9-9ccb-56facd9f3b34": { system: "walmart", value: "6270" },
+  "1f6938e4-06a3-4115-b760-7f202f4bc02e": { system: "walmart", value: "6689" },
+  "dd6b4d94-0243-4017-8ef7-c2c806594b54": { system: "walmart", value: "6543" },
+  "0e2c2e74-a160-457f-b1e2-6cc104d2a70d": { system: "walmart", value: "6680" },
+  "019de7c9-956f-40b5-8e3b-deb67c8a1b95": { system: "walmart", value: "6690" },
+};
+
 function getStoreExternalId(location) {
+  const correction = mislabeledLocations[location.provider_location_guid];
+  if (correction) {
+    return [correction.system, correction.value];
+  }
+
   for (const definition of locationSystems) {
     if (definition.pattern.test(location.loc_name)) {
       const idValue = (definition.getId || getSimpleId)(location);
