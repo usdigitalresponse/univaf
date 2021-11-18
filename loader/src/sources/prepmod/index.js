@@ -276,7 +276,7 @@ async function checkAvailability(handler, options) {
         try {
           const hostLocations = await getDataForHost(host);
           hostLocations.forEach((location) => {
-            handler(location);
+            handler(location, { update_location: true });
 
             // If we already knew about this location, mark it as found.
             for (const externalId of location.external_ids) {
