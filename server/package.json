@@ -37,7 +37,6 @@
     "ajv-formats": "^2.1.1",
     "ajv-keywords": "^5.0.0",
     "aws-sdk": "^2.1015.0",
-    "bluebird": "3.7.2",
     "body-parser": "1.19.0",
     "compression": "1.7.4",
     "cors": "^2.8.5",
@@ -55,7 +54,6 @@
     "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "@types/bluebird": "3.5.36",
     "@types/body-parser": "1.19.1",
     "@types/chai": "4.2.21",
     "@types/compression": "1.7.1",
