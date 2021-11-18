@@ -47,6 +47,8 @@ describe("PrepMod API", () => {
         ],
         info_phone: "509-730-3669",
         info_url: "https://prepmod.doh.wa.gov//?locale=en",
+        booking_url:
+          "https://prepmod.doh.wa.gov/appointment/en/clinic/search?location=99362&search_radius=10+miles&q%5Bvenue_search_name_or_venue_name_i_cont%5D=Walla+Walla+Mobile+Units",
         location_type: "CLINIC",
         name: "Walla Walla Mobile Units",
         position: {
@@ -221,6 +223,8 @@ describe("PrepMod API", () => {
         ],
         info_phone: undefined,
         info_url: "https://prepmod.doh.wa.gov//?locale=en",
+        booking_url:
+          "https://prepmod.doh.wa.gov/appointment/en/clinic/search?location=98944&search_radius=10+miles&q%5Bvenue_search_name_or_venue_name_i_cont%5D=Yakima+County+Health+District+COVID+Vaccination+Site",
         location_type: "CLINIC",
         name: "Yakima County Health District COVID Vaccination Site",
         position: {
