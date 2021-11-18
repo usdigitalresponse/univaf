@@ -116,6 +116,7 @@ function formatLocation(host, validTime, locationInfo) {
     county: smartLocation.address.district || undefined,
     position,
 
+    booking_url: formatLocationBookingUrl(host, smartLocation),
     info_url,
     info_phone,
 
@@ -128,6 +129,43 @@ function formatLocation(host, validTime, locationInfo) {
       slots,
     },
   };
+}
+
+/**
+ * Get a URL to use as a location's booking URL.
+ *
+ * Because a location represents many clinics, we can't provide a booking URL
+ * that takes you straight to picking a time slot. Instead, we link to a
+ * targeted search that gives you a narrower list of places to pick from. There
+ * are some downsides here, though: the search may include *other* locations,
+ * since it doesn't give us the parameters we need for more speicific results.
+ *
+ * @param {string} host PrepMod host URL, e.g. "https://myhealth.alaska.gov"
+ * @param {Object} location A SMART SL location object.
+ * @returns {string}
+ */
+function formatLocationBookingUrl(host, location) {
+  // Possible querysting parameters include:
+  //   "search_radius" (a string like "25 miles")
+  //   "location" (a zip code)
+  //   "q[venue_search_name_or_venue_name_i_cont]" (name of a venue)
+  //   "clinic_date_eq[month]" (month of event)
+  //   "clinic_date_eq[day]" (day of event)
+  //   "clinic_date_eq[year]" (year of event)
+  //   "q[vaccinations_name_i_cont]" (friendly name of vaccine, e.g.
+  //       "Moderna COVID-19 Vaccine". This will differ by host.)
+  const bookingUrlData = new URL(`${host}/appointment/en/clinic/search`);
+  bookingUrlData.searchParams.set("location", location.address.postalCode);
+  // Sadly, the search is always relative to the centroid of the zip code, and
+  // may actually exclude some locations in the requested zip code! 10 miles
+  // is our happy medium: it should *usually* cover the entire zip code. It's
+  // not perfect, and will sometimes be too small, but often be too large.
+  bookingUrlData.searchParams.set("search_radius", "10 miles");
+  bookingUrlData.searchParams.set(
+    "q[venue_search_name_or_venue_name_i_cont]",
+    location.name
+  );
+  return bookingUrlData.href;
 }
 
 function formatSlots(smartSlots) {
