@@ -11,6 +11,7 @@
  */
 
 const Sentry = require("@sentry/node");
+const _ = require("lodash");
 const { DateTime } = require("luxon");
 const {
   httpClient,
@@ -190,18 +191,6 @@ async function fetchRawData() {
   };
 }
 
-function groupBy(items, keyFunction) {
-  const groups = Object.create(null);
-  for (const item of items) {
-    const key = keyFunction(item);
-    if (!(key in groups)) {
-      groups[key] = [];
-    }
-    groups[key].push(item);
-  }
-  return groups;
-}
-
 async function getData(states) {
   const { validAt, data } = await fetchRawData();
   const checkedAt = new Date().toISOString();
@@ -227,7 +216,7 @@ async function getData(states) {
 
   // Adult & Pediatric vaccines at the same locations get different listings in
   // the Albertsons API, so we need to group and merge them.
-  const groups = groupBy(formatted, (location) => {
+  const groups = _.groupBy(formatted, (location) => {
     return (
       location.external_ids.find(
         (id) => id[0] === "albertsons_store_number"
