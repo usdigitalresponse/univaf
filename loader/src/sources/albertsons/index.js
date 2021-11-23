@@ -190,12 +190,23 @@ async function fetchRawData() {
   };
 }
 
+function groupBy(items, keyFunction) {
+  const groups = Object.create(null);
+  for (const item of items) {
+    const key = keyFunction(item);
+    if (!(key in groups)) {
+      groups[key] = [];
+    }
+    groups[key].push(item);
+  }
+  return groups;
+}
+
 async function getData(states) {
   const { validAt, data } = await fetchRawData();
   const checkedAt = new Date().toISOString();
 
-  const byStoreNumber = Object.create(null);
-  return data
+  const formatted = data
     .map((entry) => {
       let formatted;
       Sentry.withScope((scope) => {
@@ -212,56 +223,53 @@ async function getData(states) {
       });
       return formatted;
     })
-    .filter((location) => states.includes(location.state))
-    .reduce((result, location) => {
-      const storeNumber = location.external_ids.find(
-        (id) => id[0] === "albertsons_store_number"
-      )?.[1];
-      const otherStore = storeNumber && byStoreNumber[storeNumber];
-      if (otherStore) {
-        const bookingUrl =
-          otherStore.meta.booking_url_adult || location.meta.booking_url_adult;
-        if (!bookingUrl) {
-          warn("Trying to merge locations other than an adult and pediatric!", {
-            location1: otherStore,
-            location2: location,
-          });
-        }
+    .filter((location) => states.includes(location.state));
 
-        otherStore.booking_url = bookingUrl;
-        otherStore.external_ids = getUniqueExternalIds([
-          ...otherStore.external_ids,
-          ...location.external_ids,
-        ]);
-        otherStore.meta = {
-          ...otherStore.meta,
-          ...location.meta,
-        };
-        otherStore.availability = {
-          ...otherStore.availability,
-          available:
-            otherStore.availability.available === Available.yes ||
-            location.availability.available === Available.yes
-              ? Available.yes
-              : otherStore.availability.available === Available.no &&
-                location.availability.available === Available.no
-              ? Available.no
-              : Available.unknown,
-          products: [
-            ...new Set([
-              ...otherStore.availability.products,
-              ...location.availability.products,
-            ]),
-          ],
-        };
-      } else {
-        if (storeNumber) {
-          byStoreNumber[storeNumber] = location;
-        }
-        result.push(location);
-      }
-      return result;
-    }, []);
+  // Adult & Pediatric vaccines at the same locations get different listings in
+  // the Albertsons API, so we need to group and merge them.
+  const groups = groupBy(formatted, (location) => {
+    return (
+      location.external_ids.find(
+        (id) => id[0] === "albertsons_store_number"
+      )?.[1] ?? location.name
+    );
+  });
+
+  return Object.values(groups).map((group) => {
+    if (group.length === 1) return group[0];
+
+    const adult = group.find((l) => l.meta.booking_url_adult);
+    const pediatric = group.find((l) => l.meta.booking_url_pediatric);
+
+    if (!adult || !pediatric) {
+      warn(
+        "Trying to merge locations other than an adult and pediatric!",
+        group
+      );
+    }
+
+    const result = Object.assign({}, ...group);
+    result.meta = {
+      ...adult.meta,
+      booking_url_adult: adult.booking_url,
+      booking_url_pediatric: pediatric.booking_url,
+    };
+    result.booking_url = adult.booking_url;
+    result.external_ids = getUniqueExternalIds(
+      group.flatMap((l) => l.external_ids)
+    );
+    result.availability.products = [
+      ...new Set(group.flatMap((l) => l.availability.products)),
+    ];
+    result.availability.available = Available.unknown;
+    if (group.some((l) => l.availability.available === Available.yes)) {
+      result.availability.available = Available.yes;
+    } else if (group.every((l) => l.availability.available === Available.no)) {
+      result.availability.available = Available.no;
+    }
+
+    return result;
+  });
 }
 
 const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
