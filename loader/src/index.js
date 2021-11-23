@@ -10,6 +10,7 @@ const sources = {
   njvss: require("./sources/njvss"),
   prepmod: require("./sources/prepmod"),
   riteAidApi: require("./sources/riteaid/api"),
+  riteAidScraper: require("./sources/riteaid/scraper"),
   vaccinespotter: require("./sources/vaccinespotter"),
   vtsGeo: require("./sources/vts/geo"),
   waDoh: require("./sources/wa-doh"),
