@@ -171,6 +171,13 @@ function main() {
               by the API_URL environment variable. This is currently only
               supported by the \`prepmod\` source.)
             `,
+          })
+          .option("rate-limit", {
+            type: "number",
+            describe: oneLine`
+              Only make this many HTTP requests per second. (Only applies to
+              the "riteAidScraper" source for now.)
+            `,
           }),
       handler: run,
     })

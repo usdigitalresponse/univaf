@@ -226,6 +226,10 @@ async function checkAvailability(handler, options) {
     console.warn(`No states set for riteAidApi`);
   }
 
+  if (options.rateLimit != null && isNaN(options.rateLimit)) {
+    throw new Error("Invalid --rate-limit set.");
+  }
+
   const rateLimit = new RateLimit(options.rateLimit || 1);
 
   const results = [];
