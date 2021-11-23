@@ -8,6 +8,13 @@
  * implementation by Nick Muerdter of VaccineSpotter.org (which has now been
  * shut down).
  * https://github.com/GUI/covid-vaccine-spotter/tree/main/src/providers
+ *
+ * Notes and caveats:
+ *
+ * Adult & Pediatric vaccinations get separate entries in the API. We combine
+ * them into a single output entry per physical location, and preserve their
+ * individual booking locations in `meta.booking_url_adult` and
+ * `meta.booking_url_pediatric`.
  */
 
 const Sentry = require("@sentry/node");
@@ -23,6 +30,12 @@ const { ParseError } = require("../../exceptions");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
+
+// The API gives us nice, deep-linked booking URLs for every entry, but in
+// locations where both adult & pediatric vaccines are offered, they have
+// different booking URLs. Since our locations only have one `booking_url`
+// field, we use this generic URL instead in those cases.
+const GENERIC_BOOKING_URL = "https://www.mhealthappointments.com/covidappt";
 
 // Maps Albertsons product names to our product names.
 const PRODUCT_NAMES = {
@@ -244,7 +257,7 @@ async function getData(states) {
         booking_url_adult: adult.booking_url,
         booking_url_pediatric: pediatric.booking_url,
       };
-      result.booking_url = adult.booking_url;
+      result.booking_url = GENERIC_BOOKING_URL;
       result.external_ids = getUniqueExternalIds(
         group.flatMap((l) => l.external_ids)
       );

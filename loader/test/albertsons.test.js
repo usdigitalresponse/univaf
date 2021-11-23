@@ -269,7 +269,7 @@ describe("Albertsons", () => {
           latitude: 38.939784,
         },
         info_url: "https://www.safeway.com/pharmacy/covid-19.html",
-        booking_url: "https://kordinator.mhealthcoach.net/vcl/1600100807144",
+        booking_url: "https://www.mhealthappointments.com/covidappt",
         availability: {
           source: "univaf-albertsons",
           available: "YES",
