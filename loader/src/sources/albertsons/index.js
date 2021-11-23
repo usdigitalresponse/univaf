@@ -11,7 +11,7 @@
  */
 
 const Sentry = require("@sentry/node");
-const _ = require("lodash");
+const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
 const {
   httpClient,
@@ -216,49 +216,53 @@ async function getData(states) {
 
   // Adult & Pediatric vaccines at the same locations get different listings in
   // the Albertsons API, so we need to group and merge them.
-  const groups = _.groupBy(formatted, (location) => {
-    return (
-      location.external_ids.find(
-        (id) => id[0] === "albertsons_store_number"
-      )?.[1] ?? location.name
+  const groups = groupBy(formatted, (location) => {
+    const storeId = location.external_ids.find(
+      (id) => id[0] === "albertsons_store_number"
     );
+    return storeId ? storeId[1] : location.name;
   });
 
-  return Object.values(groups).map((group) => {
-    if (group.length === 1) return group[0];
+  return Object.values(groups)
+    .map((group) => {
+      if (group.length === 1) return group[0];
 
-    const adult = group.find((l) => l.meta.booking_url_adult);
-    const pediatric = group.find((l) => l.meta.booking_url_pediatric);
+      const adult = group.find((l) => l.meta.booking_url_adult);
+      const pediatric = group.find((l) => l.meta.booking_url_pediatric);
 
-    if (!adult || !pediatric) {
-      warn(
-        "Trying to merge locations other than an adult and pediatric!",
-        group
+      if (!adult || !pediatric) {
+        warn(
+          "Trying to merge locations other than an adult and pediatric!",
+          group
+        );
+        return null;
+      }
+
+      const result = Object.assign({}, ...group);
+      result.meta = {
+        ...adult.meta,
+        booking_url_adult: adult.booking_url,
+        booking_url_pediatric: pediatric.booking_url,
+      };
+      result.booking_url = adult.booking_url;
+      result.external_ids = getUniqueExternalIds(
+        group.flatMap((l) => l.external_ids)
       );
-    }
+      result.availability.products = [
+        ...new Set(group.flatMap((l) => l.availability.products)),
+      ];
+      result.availability.available = Available.unknown;
+      if (group.some((l) => l.availability.available === Available.yes)) {
+        result.availability.available = Available.yes;
+      } else if (
+        group.every((l) => l.availability.available === Available.no)
+      ) {
+        result.availability.available = Available.no;
+      }
 
-    const result = Object.assign({}, ...group);
-    result.meta = {
-      ...adult.meta,
-      booking_url_adult: adult.booking_url,
-      booking_url_pediatric: pediatric.booking_url,
-    };
-    result.booking_url = adult.booking_url;
-    result.external_ids = getUniqueExternalIds(
-      group.flatMap((l) => l.external_ids)
-    );
-    result.availability.products = [
-      ...new Set(group.flatMap((l) => l.availability.products)),
-    ];
-    result.availability.available = Available.unknown;
-    if (group.some((l) => l.availability.available === Available.yes)) {
-      result.availability.available = Available.yes;
-    } else if (group.every((l) => l.availability.available === Available.no)) {
-      result.availability.available = Available.no;
-    }
-
-    return result;
-  });
+      return result;
+    })
+    .filter(Boolean);
 }
 
 const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
