@@ -1,3 +1,4 @@
+const Sentry = require("@sentry/node");
 const got = require("got");
 const config = require("./config");
 const { ParseError } = require("./exceptions");
@@ -99,8 +100,78 @@ const USER_AGENTS = [
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134",
 ];
 
+// US standard/daylight time zone names mapped to ISO 8601-style offset strings.
+const TIME_ZONE_OFFSET_STRINGS = {
+  AKDT: "-08:00",
+  AKST: "-09:00",
+  CDT: "-05:00",
+  CST: "-06:00",
+  EDT: "-04:00",
+  EST: "-05:00",
+  HDT: "-09:00",
+  HST: "-10:00",
+  MDT: "-06:00",
+  MST: "-07:00",
+  PDT: "-07:00",
+  PST: "-08:00",
+};
+
+/**
+ * Enforce rate limits on operations by awaiting the `ready()` method on
+ * instances of this class.
+ *
+ * @example
+ * // Log every two seconds (10 times).
+ * const rateLimit = new RateLimit(0.5);
+ * for (let i = 0; i < 10; i++) {
+ *   await rateLimit.ready();
+ *   console.log(new Date);
+ * }
+ */
+class RateLimit {
+  /**
+   * Create a new instance of `RateLimit` with a given rate.
+   * @param {number} callsPerSecond Maximum number of times per second that
+   *        the `ready()` method will resolve.
+   */
+  constructor(callsPerSecond) {
+    this.interval = callsPerSecond > 0 ? 1000 / callsPerSecond : 0;
+    this._waiting = null;
+    this._lastUsed = 0;
+  }
+
+  async ready() {
+    // If something else is already waiting, wait with it.
+    while (this._waiting) {
+      await this._waiting;
+    }
+
+    // If it hasn't been long enough since the last call, wait.
+    const minimumWait = this.interval - (Date.now() - this._lastUsed);
+    if (minimumWait > 0) {
+      let release;
+      this._waiting = new Promise((r) => (release = r));
+
+      await module.exports.wait(minimumWait);
+
+      // Schedule `_waiting` to release in the next microtask.
+      Promise.resolve().then(() => {
+        this._waiting = null;
+        release();
+      });
+    }
+
+    this._lastUsed = Date.now();
+    return;
+  }
+}
+
 module.exports = {
   USER_AGENTS,
+
+  TIME_ZONE_OFFSET_STRINGS,
+
+  RateLimit,
 
   /**
    * Simplify a text string (especially an address) as much as possible so that
@@ -243,6 +314,18 @@ module.exports = {
   warn(...infos) {
     // TODO: replace with real logger, maybe with fancy colors and whatnot.
     console.warn("Warning:", ...infos);
+  },
+
+  createWarningLogger(prefix) {
+    return function warn(message, context) {
+      console.warn(`${prefix}: ${message}`, context);
+      // Sentry does better fingerprinting with an actual exception object.
+      if (message instanceof Error) {
+        Sentry.captureException(message, { level: Sentry.Severity.Info });
+      } else {
+        Sentry.captureMessage(message, Sentry.Severity.Info);
+      }
+    };
   },
 
   /**

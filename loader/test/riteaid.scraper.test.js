@@ -2,6 +2,7 @@ const nock = require("nock");
 const { Available } = require("../src/model");
 const {
   API_URL,
+  RiteAidXhrError,
   checkAvailability,
 } = require("../src/sources/riteaid/scraper");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
@@ -198,5 +199,19 @@ describe("Rite Aid Scraper", () => {
     const result = await checkAvailability(() => {}, { states: "NJ" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toHaveProperty("0.availability.available", Available.no);
+  });
+
+  it("raises RiteAidXhrError on API error responses", async () => {
+    nock(API_URL_BASE).get(API_URL_PATH).query(true).reply(200, {
+      Data: null,
+      Status: "ERROR",
+      ErrCde: "RA0005",
+      ErrMsg: "Something went wrong. Please contact Customer Care to continue.",
+      ErrMsgDtl: null,
+    });
+
+    expect(async () => {
+      await checkAvailability(() => {}, { states: "NJ" });
+    }).rejects.toThrow(RiteAidXhrError);
   });
 });

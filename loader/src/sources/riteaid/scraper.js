@@ -13,7 +13,12 @@ const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
 const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType, VaccineProduct } = require("../../model");
-const { httpClient, wait } = require("../../utils");
+const {
+  httpClient,
+  RateLimit,
+  TIME_ZONE_OFFSET_STRINGS,
+  createWarningLogger,
+} = require("../../utils");
 const { zipCodesCovering100Miles } = require("./zip-codes");
 
 const API_URL =
@@ -39,70 +44,14 @@ const VACCINE_IDS = {
 // response.
 const VACCINE_IDS_SHORT = mapKeys(VACCINE_IDS, (_, key) => key.split("-")[0]);
 
-const TIME_ZONE_OFFSETS = {
-  AKDT: "-08:00",
-  AKST: "-09:00",
-  CDT: "-05:00",
-  CST: "-06:00",
-  EDT: "-04:00",
-  EST: "-05:00",
-  HDT: "-09:00",
-  HST: "-10:00",
-  MDT: "-06:00",
-  MST: "-07:00",
-  PDT: "-07:00",
-  PST: "-08:00",
-};
-
-function warn(message, context) {
-  console.warn(`Rite Aid Scraper: ${message}`, context);
-  // Sentry does better fingerprinting with an actual exception object.
-  if (message instanceof Error) {
-    Sentry.captureException(message, { level: Sentry.Severity.Info });
-  } else {
-    Sentry.captureMessage(message, Sentry.Severity.Info);
-  }
-}
+const warn = createWarningLogger("Rite Aid Scraper");
 
 class RiteAidXhrError extends HttpApiError {
   parse(response) {
-    if (typeof response.body === "object") {
-      this.details = response.body;
-    } else {
-      this.details = JSON.parse(response.body);
-    }
+    super.parse(response);
     this.message = `${this.details.Status} ${this.details.ErrCde}: ${this.details.ErrMsg}`;
   }
 }
-
-var RateLimit = class RateLimit {
-  constructor(callsPerSecond) {
-    this.interval = callsPerSecond > 0 ? 1000 / callsPerSecond : 0;
-    this._waiting = null;
-    this._lastUsed = 0;
-  }
-
-  async ready() {
-    while (this._waiting) {
-      await this._waiting;
-    }
-
-    let release;
-    this._waiting = new Promise((r) => (release = r));
-    const minimumWait = this.interval - (Date.now() - this._lastUsed);
-    if (minimumWait > 0) {
-      await wait(minimumWait);
-    }
-    // Schedule `_waiting` to release in the next microtask.
-    Promise.resolve().then(() => {
-      this._waiting = null;
-      release();
-    });
-
-    this._lastUsed = Date.now();
-    return;
-  }
-};
 
 async function queryZipCode(zip, radius = 100) {
   const response = await httpClient({
@@ -209,7 +158,7 @@ const timestampPattern =
 // listed with more than one vaccine type.
 function formatSlots(location) {
   const { availableSlots, timeZone, storeNumber } = location;
-  const timeOffset = TIME_ZONE_OFFSETS[timeZone];
+  const timeOffset = TIME_ZONE_OFFSET_STRINGS[timeZone];
   if (!timeOffset) {
     throw new Error(`Unknown time zone: "${timeZone}"`);
   }
@@ -302,6 +251,7 @@ module.exports = {
   API_URL,
   VACCINE_IDS,
   VACCINE_IDS_SHORT,
+  RiteAidXhrError,
   checkAvailability,
   queryState,
   queryZipCode,
