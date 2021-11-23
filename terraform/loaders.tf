@@ -47,7 +47,7 @@ module "rite_aid_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(5 minutes)"
+  schedule      = "rate(30 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -55,6 +55,21 @@ module "rite_aid_loader" {
     RITE_AID_URL = var.rite_aid_api_url
     RITE_AID_KEY = var.rite_aid_api_key
   }
+}
+
+module "rite_aid_scraper_loader" {
+  source = "./modules/loader"
+
+  name          = "riteAidScraper"
+  loader_source = "riteAidScraper"
+  command       = ["--states", "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
+  api_url       = "http://${aws_alb.main.dns_name}"
+  api_key       = var.api_key
+  sentry_dsn    = var.loader_sentry_dsn
+  schedule      = "rate(10 minutes)"
+  cluster_arn   = aws_ecs_cluster.main.arn
+  role          = aws_iam_role.ecs_task_execution_role.arn
+  subnets       = aws_subnet.public.*.id
 }
 
 module "walgreens_loader" {
