@@ -56,6 +56,7 @@ describe("Albertsons", () => {
           ["albertsons", "1600116808972"],
           ["albertsons_safeway", "1600116808972"],
           ["safeway", "3410"],
+          ["albertsons_store_number", "safeway:3410"],
         ],
         location_type: "PHARMACY",
         provider: "albertsons",
@@ -79,6 +80,8 @@ describe("Albertsons", () => {
         },
         meta: {
           albertsons_region: "Alaska",
+          booking_url_adult:
+            "https://kordinator.mhealthcoach.net/vcl/1600116808972",
         },
       },
       {
@@ -87,6 +90,7 @@ describe("Albertsons", () => {
           ["albertsons", "1600114849843"],
           ["albertsons_carrs", "1600114849843"],
           ["carrs", "1813"],
+          ["albertsons_store_number", "carrs:1813"],
         ],
         location_type: "PHARMACY",
         provider: "albertsons",
@@ -110,6 +114,8 @@ describe("Albertsons", () => {
         },
         meta: {
           albertsons_region: "Alaska",
+          booking_url_adult:
+            "https://kordinator.mhealthcoach.net/vcl/1600114849843",
         },
       },
     ]);
@@ -204,6 +210,83 @@ describe("Albertsons", () => {
     const result = await checkAvailability(() => {}, { states: "AK" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty("availability.products", ["pfizer"]);
+  });
+
+  it("handles separate adult and pediatric entries for the same location", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(
+        200,
+        [
+          {
+            id: "1635993536219",
+            region: "Eastern_-_6",
+            address:
+              "Pfizer Child - Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
+            lat: "38.939784",
+            long: "-77.332298",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1635993536219",
+            availability: "yes",
+            drugName: ["PfizerChild"],
+          },
+          {
+            id: "1600100807144",
+            region: "Virginia",
+            address:
+              "Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
+            lat: "38.939784",
+            long: "-77.332298",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1600100807144",
+            availability: "yes",
+            drugName: ["Pfizer", "Moderna", "JnJ"],
+          },
+        ],
+        { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
+      );
+
+    const result = await checkAvailability(() => {}, { states: "VA" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
+    expect(result).toEqual([
+      {
+        name: "Safeway 0005",
+        external_ids: [
+          ["albertsons", "1635993536219"],
+          ["albertsons_safeway", "1635993536219"],
+          ["safeway", "0005"],
+          ["albertsons_store_number", "safeway:0005"],
+          ["albertsons", "1600100807144"],
+          ["albertsons_safeway", "1600100807144"],
+        ],
+        location_type: "PHARMACY",
+        provider: "albertsons",
+        address_lines: ["11120 South Lakes Drive"],
+        city: "Reston",
+        state: "VA",
+        postal_code: "20191",
+        position: {
+          longitude: -77.332298,
+          latitude: 38.939784,
+        },
+        info_url: "https://www.safeway.com/pharmacy/covid-19.html",
+        booking_url: "https://www.mhealthappointments.com/covidappt",
+        availability: {
+          source: "univaf-albertsons",
+          available: "YES",
+          products: ["pfizer_age_5_11", "pfizer", "moderna", "jj"],
+          is_public: true,
+          checked_at: expectDatetimeString(),
+          valid_at: "2021-10-28T07:06:13.000Z",
+        },
+        meta: {
+          albertsons_region: "Virginia",
+          booking_url_adult:
+            "https://kordinator.mhealthcoach.net/vcl/1600100807144",
+          booking_url_pediatric:
+            "https://kordinator.mhealthcoach.net/vcl/1635993536219",
+        },
+      },
+    ]);
   });
 
   it("should throw an error when HTTP requests fail", async () => {

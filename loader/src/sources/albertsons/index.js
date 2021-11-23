@@ -8,22 +8,41 @@
  * implementation by Nick Muerdter of VaccineSpotter.org (which has now been
  * shut down).
  * https://github.com/GUI/covid-vaccine-spotter/tree/main/src/providers
+ *
+ * Notes and caveats:
+ *
+ * Adult & Pediatric vaccinations get separate entries in the API. We combine
+ * them into a single output entry per physical location, and preserve their
+ * individual booking locations in `meta.booking_url_adult` and
+ * `meta.booking_url_pediatric`.
  */
 
 const Sentry = require("@sentry/node");
+const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
-const { httpClient, parseUsAddress } = require("../../utils");
+const {
+  httpClient,
+  parseUsAddress,
+  getUniqueExternalIds,
+} = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
 const { ParseError } = require("../../exceptions");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
 
+// The API gives us nice, deep-linked booking URLs for every entry, but in
+// locations where both adult & pediatric vaccines are offered, they have
+// different booking URLs. Since our locations only have one `booking_url`
+// field, we use this generic URL instead in those cases.
+const GENERIC_BOOKING_URL = "https://www.mhealthappointments.com/covidappt";
+
 // Maps Albertsons product names to our product names.
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
   moderna: VaccineProduct.moderna,
   jnj: VaccineProduct.janssen,
+  pfizerchild: VaccineProduct.pfizerAge5_11,
 };
 
 const BASE_BRAND = {
@@ -158,7 +177,7 @@ const BRANDS = [
 ];
 
 function warn(message, context) {
-  console.warn(`Albertsons: ${message}`, context);
+  console.warn(`Albertsons: ${message}`, context || "");
   // Sentry does better fingerprinting with an actual exception object.
   if (message instanceof Error) {
     Sentry.captureException(message, { level: Sentry.Severity.Info });
@@ -188,7 +207,8 @@ async function fetchRawData() {
 async function getData(states) {
   const { validAt, data } = await fetchRawData();
   const checkedAt = new Date().toISOString();
-  return data
+
+  const formatted = data
     .map((entry) => {
       let formatted;
       Sentry.withScope((scope) => {
@@ -206,18 +226,73 @@ async function getData(states) {
       return formatted;
     })
     .filter((location) => states.includes(location.state));
+
+  // Adult & Pediatric vaccines at the same locations get different listings in
+  // the Albertsons API, so we need to group and merge them.
+  const groups = groupBy(formatted, (location) => {
+    const storeId = location.external_ids.find(
+      (id) => id[0] === "albertsons_store_number"
+    );
+    return storeId ? storeId[1] : location.name;
+  });
+
+  return Object.values(groups)
+    .map((group) => {
+      if (group.length === 1) return group[0];
+
+      const adult = group.find((l) => l.meta.booking_url_adult);
+      const pediatric = group.find((l) => l.meta.booking_url_pediatric);
+
+      if (!adult || !pediatric) {
+        warn(
+          "Trying to merge locations other than an adult and pediatric!",
+          group
+        );
+        return null;
+      }
+
+      const result = Object.assign({}, ...group);
+      result.meta = {
+        ...adult.meta,
+        booking_url_adult: adult.booking_url,
+        booking_url_pediatric: pediatric.booking_url,
+      };
+      result.booking_url = GENERIC_BOOKING_URL;
+      result.external_ids = getUniqueExternalIds(
+        group.flatMap((l) => l.external_ids)
+      );
+      result.availability.products = [
+        ...new Set(group.flatMap((l) => l.availability.products)),
+      ];
+      result.availability.available = Available.unknown;
+      if (group.some((l) => l.availability.available === Available.yes)) {
+        result.availability.available = Available.yes;
+      } else if (
+        group.every((l) => l.availability.available === Available.no)
+      ) {
+        result.availability.available = Available.no;
+      }
+
+      return result;
+    })
+    .filter(Boolean);
 }
 
 const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
+const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
 
 /**
  * Parse a location name and address from Albertsons (they're both part of
  * the same string).
  * @param {string} text
- * @returns {{name: string, storeNumber: string|undefined, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
+ * @returns {{name: string, storeBrand: string|undefined, storeNumber: string|undefined, isPediatric: boolean, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
  */
 function parseNameAndAddress(text) {
-  const partMatch = text.match(addressFieldParts);
+  // Some locations have separate pediatric and non-pediatric API locations.
+  // The pediatric ones are prefixed with "Pfizer Child".
+  const { pediatric, body } = text.match(pediatricPrefixParts).groups;
+
+  const partMatch = body.match(addressFieldParts);
   if (!partMatch) {
     throw new ParseError(`Could not separate name and address in "${address}"`);
   }
@@ -234,10 +309,17 @@ function parseNameAndAddress(text) {
     name = `${numberMatch.groups.name} ${storeNumber}`;
   }
 
+  const storeBrand = BRANDS.find((item) => item.pattern.test(name));
+  if (!storeBrand) {
+    warn("Could not find a matching brand", { name });
+  }
+
   return {
     name: name.trim(),
+    storeBrand,
     storeNumber,
     address: parseUsAddress(address),
+    isPediatric: !!pediatric,
   };
 }
 
@@ -267,20 +349,25 @@ function formatProducts(raw) {
 }
 
 function formatLocation(data, validAt, checkedAt) {
-  const { name, storeNumber, address } = parseNameAndAddress(data.address);
-  const brand = BRANDS.find((item) => item.pattern.test(name));
-  if (!brand) {
-    warn("Could not find a matching brand", { name });
+  const { name, storeNumber, storeBrand, address, isPediatric } =
+    parseNameAndAddress(data.address);
+  if (!storeBrand) {
     return null;
   }
 
   const external_ids = [
     ["albertsons", data.id],
-    [`albertsons_${brand.key}`, data.id],
+    [`albertsons_${storeBrand.key}`, data.id],
   ];
   if (storeNumber) {
-    external_ids.push([brand.key, storeNumber]);
+    external_ids.push([storeBrand.key, storeNumber]);
+    external_ids.push([
+      "albertsons_store_number",
+      `${storeBrand.key}:${storeNumber}`,
+    ]);
   }
+
+  const bookingType = isPediatric ? "pediatric" : "adult";
 
   return {
     name,
@@ -296,10 +383,11 @@ function formatLocation(data, validAt, checkedAt) {
       latitude: parseFloat(data.lat),
     },
 
-    info_url: brand.url,
+    info_url: storeBrand.url,
     booking_url: data.coach_url || undefined,
     meta: {
       albertsons_region: data.region,
+      [`booking_url_${bookingType}`]: data.coach_url || undefined,
     },
 
     availability: {
