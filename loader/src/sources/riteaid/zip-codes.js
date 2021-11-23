@@ -1,3 +1,4 @@
+// FIXME: fill in the zip codes for all these states!
 const zipCodesCovering100Miles = {
   CA: [],
   CO: [],
