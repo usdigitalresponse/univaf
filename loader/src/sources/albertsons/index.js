@@ -271,7 +271,7 @@ const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
  * Parse a location name and address from Albertsons (they're both part of
  * the same string).
  * @param {string} text
- * @returns {{name: string, storeNumber: string|undefined, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
+ * @returns {{name: string, storeBrand: string|undefined, storeNumber: string|undefined, isPediatric: boolean, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
  */
 function parseNameAndAddress(text) {
   // Some locations have separate pediatric and non-pediatric API locations.
@@ -295,8 +295,14 @@ function parseNameAndAddress(text) {
     name = `${numberMatch.groups.name} ${storeNumber}`;
   }
 
+  const storeBrand = BRANDS.find((item) => item.pattern.test(name));
+  if (!storeBrand) {
+    warn("Could not find a matching brand", { name });
+  }
+
   return {
     name: name.trim(),
+    storeBrand,
     storeNumber,
     address: parseUsAddress(address),
     isPediatric: !!pediatric,
@@ -329,24 +335,21 @@ function formatProducts(raw) {
 }
 
 function formatLocation(data, validAt, checkedAt) {
-  const { name, storeNumber, address, isPediatric } = parseNameAndAddress(
-    data.address
-  );
-  const brand = BRANDS.find((item) => item.pattern.test(name));
-  if (!brand) {
-    warn("Could not find a matching brand", { name });
+  const { name, storeNumber, storeBrand, address, isPediatric } =
+    parseNameAndAddress(data.address);
+  if (!storeBrand) {
     return null;
   }
 
   const external_ids = [
     ["albertsons", data.id],
-    [`albertsons_${brand.key}`, data.id],
+    [`albertsons_${storeBrand.key}`, data.id],
   ];
   if (storeNumber) {
-    external_ids.push([brand.key, storeNumber]);
+    external_ids.push([storeBrand.key, storeNumber]);
     external_ids.push([
       "albertsons_store_number",
-      `${brand.key}:${storeNumber}`,
+      `${storeBrand.key}:${storeNumber}`,
     ]);
   }
 
@@ -366,7 +369,7 @@ function formatLocation(data, validAt, checkedAt) {
       latitude: parseFloat(data.lat),
     },
 
-    info_url: brand.url,
+    info_url: storeBrand.url,
     booking_url: data.coach_url || undefined,
     meta: {
       albertsons_region: data.region,
