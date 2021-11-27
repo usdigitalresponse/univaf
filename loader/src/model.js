@@ -38,8 +38,18 @@ const VaccineProduct = {
   pfizerAge2_4: "pfizer_age_2_4",
 };
 
+/**
+ * `VaccineProduct` values that are for children.
+ * @readonly
+ */
+const PediatricVaccineProducts = new Set([
+  VaccineProduct.pfizerAge5_11,
+  VaccineProduct.pfizerAge2_4,
+]);
+
 module.exports = {
   Available,
   LocationType,
   VaccineProduct,
+  PediatricVaccineProducts,
 };

@@ -25,7 +25,12 @@ const {
   parseUsAddress,
   getUniqueExternalIds,
 } = require("../../utils");
-const { LocationType, VaccineProduct, Available } = require("../../model");
+const {
+  Available,
+  LocationType,
+  VaccineProduct,
+  PediatricVaccineProducts,
+} = require("../../model");
 const { ParseError } = require("../../exceptions");
 
 const API_URL =
@@ -272,9 +277,12 @@ async function getData(states) {
       result.external_ids = getUniqueExternalIds(
         group.flatMap((l) => l.external_ids)
       );
-      result.availability.products = [
-        ...new Set(group.flatMap((l) => l.availability.products)),
+      const products = [
+        ...new Set(
+          group.flatMap((l) => l.availability.products).filter(Boolean)
+        ),
       ];
+      result.availability.products = products.length ? products : undefined;
       result.availability.available = Available.unknown;
       if (group.some((l) => l.availability.available === Available.yes)) {
         result.availability.available = Available.yes;
@@ -348,7 +356,7 @@ function formatAvailability(raw) {
 function formatProducts(raw) {
   if (!raw) return undefined;
 
-  return raw
+  const products = raw
     .map((value) => {
       const formatted = PRODUCT_NAMES[value.toLowerCase()];
       if (!formatted) {
@@ -357,14 +365,25 @@ function formatProducts(raw) {
       return formatted;
     })
     .filter(Boolean);
+
+  return products.length ? products : undefined;
 }
 
 function formatLocation(data, validAt, checkedAt) {
-  const { name, storeNumber, storeBrand, address, isPediatric } =
+  let { name, storeNumber, storeBrand, address, isPediatric } =
     parseNameAndAddress(data.address);
   if (!storeBrand) {
     return null;
   }
+
+  // Pediatric-only locations usually say so in the name and also list only
+  // pediatric products. However, some only do one of those, so we need to
+  // handle them as well.
+  const products = formatProducts(data.drugName);
+  isPediatric =
+    isPediatric ||
+    (products?.length &&
+      products.every((p) => PediatricVaccineProducts.has(p)));
 
   const external_ids = [
     ["albertsons", data.id],
@@ -407,7 +426,7 @@ function formatLocation(data, validAt, checkedAt) {
       checked_at: checkedAt,
       is_public: true,
       available: formatAvailability(data.availability),
-      products: formatProducts(data.drugName),
+      products,
     },
   };
 }
