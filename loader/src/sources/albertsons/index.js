@@ -174,6 +174,16 @@ const BRANDS = [
     name: "ALB Corporate Office",
     pattern: /Corporate Office/i,
   },
+  // Albertsons is now operating some clinics outside its actual stores, and
+  // this is meant to cover those. The `pattern` may need updating over time to
+  // reflect the variety of location names we might see.
+  {
+    ...BASE_BRAND,
+    key: "community_clinic",
+    name: "Community Clinic",
+    locationType: LocationType.clinic,
+    pattern: /Recreation Center/i,
+  },
 ];
 
 function warn(message, context) {
@@ -225,6 +235,7 @@ async function getData(states) {
       });
       return formatted;
     })
+    .filter(Boolean)
     .filter((location) => states.includes(location.state));
 
   // Adult & Pediatric vaccines at the same locations get different listings in
@@ -373,7 +384,7 @@ function formatLocation(data, validAt, checkedAt) {
     name,
     external_ids,
     provider: "albertsons",
-    location_type: LocationType.pharmacy,
+    location_type: storeBrand.locationType || LocationType.pharmacy,
     address_lines: address.lines,
     city: address.city,
     state: address.state,

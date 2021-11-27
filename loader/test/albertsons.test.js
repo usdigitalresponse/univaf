@@ -289,6 +289,35 @@ describe("Albertsons", () => {
     ]);
   });
 
+
+  it("should handle community clinics", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(
+        200,
+        [
+          {
+            id: "1637101034326",
+            region: "Eastern_-_6",
+            address:
+              "Takoma Park Recreation Center  - 7315 New Hampshire Avenue, Takoma Park, MD, 20912",
+            lat: "38.98247194054162",
+            long: "-76.9879339600021",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
+            availability: "yes",
+            drugName: ["PfizerChild"],
+          },
+        ],
+        { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
+      );
+
+    const result = await checkAvailability(() => {}, { states: "MD" });
+    expect(result[0]).toMatchSchema(locationSchema);
+    expect(result[0]).toHaveProperty("name", "Takoma Park Recreation Center");
+    expect(result[0]).toHaveProperty("location_type", "CLINIC");
+  });
+
   it("should throw an error when HTTP requests fail", async () => {
     nock(API_URL_BASE).post(API_URL_PATH).reply(500, {
       errors: "Oh no!",
