@@ -289,6 +289,123 @@ describe("Albertsons", () => {
     ]);
   });
 
+  it("handles locations with pediatric names but no products", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(
+        200,
+        [
+          {
+            id: "1610138028763",
+            region: "SoCal_-_Pasadena",
+            address:
+              "Pfizer Child - Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+            lat: "34.2616858",
+            long: "-118.7968621",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+            availability: "no",
+            drugName: [],
+          },
+          {
+            id: "1600118533422",
+            region: "California_-_San_Diego_4",
+            address: "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+            lat: "34.2616858",
+            long: "-118.7968621",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1600118533422",
+            availability: "no",
+            drugName: [],
+          },
+        ],
+        { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
+      );
+    const result = await checkAvailability(() => {}, { states: "CA" });
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchSchema(locationSchema);
+    expect(result).toHaveProperty("0.meta", {
+      albertsons_region: "California_-_San_Diego_4",
+      booking_url_adult:
+        "https://kordinator.mhealthcoach.net/vcl/1600118533422",
+      booking_url_pediatric:
+        "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+    });
+  });
+
+  it("handles locations without pediatric names but that only have pediatric products", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(
+        200,
+        [
+          {
+            id: "1610138028763",
+            region: "SoCal_-_Pasadena",
+            address: "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+            lat: "34.2616858",
+            long: "-118.7968621",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+            availability: "no",
+            drugName: ["PfizerChild"],
+          },
+          {
+            id: "1600118533422",
+            region: "California_-_San_Diego_4",
+            address: "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+            lat: "34.2616858",
+            long: "-118.7968621",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1600118533422",
+            availability: "no",
+            drugName: [],
+          },
+        ],
+        { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
+      );
+    const result = await checkAvailability(() => {}, { states: "CA" });
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchSchema(locationSchema);
+    expect(result).toHaveProperty("0.meta", {
+      albertsons_region: "California_-_San_Diego_4",
+      booking_url_adult:
+        "https://kordinator.mhealthcoach.net/vcl/1600118533422",
+      booking_url_pediatric:
+        "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+    });
+  });
+
+  it("should handle community clinics", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(
+        200,
+        [
+          {
+            id: "1637101034326",
+            region: "Eastern_-_6",
+            address:
+              "Takoma Park Recreation Center  - 7315 New Hampshire Avenue, Takoma Park, MD, 20912",
+            lat: "38.98247194054162",
+            long: "-76.9879339600021",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
+            availability: "yes",
+            drugName: ["PfizerChild"],
+          },
+        ],
+        { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
+      );
+
+    const result = await checkAvailability(() => {}, { states: "MD" });
+    expect(result[0]).toMatchSchema(locationSchema);
+    expect(result[0]).toHaveProperty("name", "Takoma Park Recreation Center");
+    expect(result[0]).toHaveProperty("location_type", "CLINIC");
+    expect(result[0]).toHaveProperty(
+      "meta.booking_url_pediatric",
+      "https://kordinator.mhealthcoach.net/vcl/1637101034326"
+    );
+  });
+
   it("should throw an error when HTTP requests fail", async () => {
     nock(API_URL_BASE).post(API_URL_PATH).reply(500, {
       errors: "Oh no!",
