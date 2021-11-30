@@ -406,6 +406,32 @@ describe("Albertsons", () => {
     );
   });
 
+  it("does not output locations that don't match a known brand", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(
+        200,
+        [
+          {
+            id: "1637101034326",
+            region: "Eastern_-_6",
+            address:
+              "Some unknown store #8134 - 7315 Famous Ave., Nowhere, MD, 20912",
+            lat: "38.98247194054162",
+            long: "-76.9879339600021",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
+            availability: "yes",
+            drugName: ["PfizerChild"],
+          },
+        ],
+        { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
+      );
+
+    const result = await checkAvailability(() => {}, { states: "MD" });
+    expect(result).toHaveLength(0);
+  });
+
   it("should throw an error when HTTP requests fail", async () => {
     nock(API_URL_BASE).post(API_URL_PATH).reply(500, {
       errors: "Oh no!",
