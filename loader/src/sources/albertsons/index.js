@@ -187,7 +187,7 @@ const BRANDS = [
     key: "community_clinic",
     name: "Community Clinic",
     locationType: LocationType.clinic,
-    pattern: /Recreation Center/i,
+    pattern: /(Recreation Center|Vaccine Center)/i,
   },
 ];
 
