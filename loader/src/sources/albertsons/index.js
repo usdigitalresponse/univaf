@@ -180,14 +180,17 @@ const BRANDS = [
     pattern: /Corporate Office/i,
   },
   // Albertsons is now operating some clinics outside its actual stores, and
-  // this is meant to cover those. The `pattern` may need updating over time to
-  // reflect the variety of location names we might see.
+  // this is meant to cover those. The names don't follow any real pattern, so
+  // we do our best by matching anything that doesn't look like some words
+  // followed by a number (since that usually indicates a store of some sort).
   {
     ...BASE_BRAND,
     key: "community_clinic",
     name: "Community Clinic",
     locationType: LocationType.clinic,
-    pattern: /(Recreation Center|Vaccine Center)/i,
+    pattern: {
+      test: (name) => !/\w+\s+#?\d+$/.test(name),
+    },
   },
 ];
 
