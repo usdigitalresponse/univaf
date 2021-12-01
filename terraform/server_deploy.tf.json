@@ -5,7 +5,7 @@
     "api_release_version": {
       "description": "API Release Version",
       "default": "b7f270ff03eaf81d9169fc310c352f2dec1cb5a0"
-    }
+    },
     "loader_release_version": {
       "description": "Loader Release Version",
       "default": "b7f270ff03eaf81d9169fc310c352f2dec1cb5a0"
