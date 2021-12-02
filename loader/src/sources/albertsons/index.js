@@ -300,7 +300,7 @@ async function getData(states) {
     .filter(Boolean);
 }
 
-const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
+const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
 const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
 
 /**
