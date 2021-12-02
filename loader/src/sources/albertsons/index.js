@@ -316,7 +316,7 @@ function parseNameAndAddress(text) {
 
   const partMatch = body.match(addressFieldParts);
   if (!partMatch) {
-    throw new ParseError(`Could not separate name and address in "${address}"`);
+    throw new ParseError(`Could not separate name and address in "${body}"`);
   }
   let { name, address } = partMatch.groups;
 
@@ -452,5 +452,6 @@ async function checkAvailability(handler, options) {
 
 module.exports = {
   checkAvailability,
+  formatLocation,
   API_URL,
 };
