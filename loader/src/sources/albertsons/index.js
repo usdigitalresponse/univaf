@@ -24,6 +24,7 @@ const {
   httpClient,
   parseUsAddress,
   getUniqueExternalIds,
+  unpadNumber,
 } = require("../../utils");
 const {
   Available,
@@ -252,7 +253,7 @@ async function getData(states) {
     const storeId = location.external_ids.find(
       (id) => id[0] === "albertsons_store_number"
     );
-    return storeId ? storeId[1] : location.name;
+    return storeId ? unpadNumber(storeId[1]) : location.name;
   });
 
   return Object.values(groups)
