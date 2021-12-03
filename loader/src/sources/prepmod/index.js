@@ -191,10 +191,8 @@ const nonCovidProductName = /^influenza|flu|zoster/i;
  * @returns {{isCovid: boolean, hasNonCovidProducts: boolean, products: Set<string>, doses: Set<string>}}
  */
 function parseSchedule(schedule) {
-  let doses = new Set();
+  const doses = new Set();
   const data = {
-    // We only got here if the schedule claimed to be for COVID, but we may
-    // modify this if it turns out to have only non-covid prdoucts.
     isCovid: true,
     hasNonCovidProducts: false,
     products: new Set(),
