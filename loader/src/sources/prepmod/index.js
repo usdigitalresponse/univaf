@@ -168,6 +168,13 @@ function formatLocationBookingUrl(host, location) {
   return bookingUrlData.href;
 }
 
+// PrepMod is used lots of public health clinics that provide other, non-COVID
+// services. This pattern matches non-COVID-vaccines that we expect to find so
+// we know they aren't an error.
+// - Flu/Influenza vaccines
+// - Zoster (shingles) vaccines
+const nonCovidProductName = /^influenza|flu|zoster/i;
+
 function formatSlots(smartSlots) {
   let available = Available.no;
   const slots = smartSlots.map((smartSlot) => {
@@ -211,7 +218,7 @@ function formatSlots(smartSlots) {
           }
           if (product) {
             products.add(product);
-          } else if (!/^influenza|flu/i.test(extension.valueCoding.display)) {
+          } else if (!nonCovidProductName.test(extension.valueCoding.display)) {
             warn(`Unparseable product extension: ${JSON.stringify(extension)}`);
           }
         } else if (extension.url === EXTENSIONS.DOSE) {
