@@ -683,6 +683,32 @@ describe("PrepMod API", () => {
     ]);
   });
 
+  it("does not include shingles (zoster) vaccines", async () => {
+    const testLocation = createSmartLocation({
+      schedules: [
+        {
+          extension: [
+            {
+              url: EXTENSIONS.PRODUCT,
+              valueCoding: {
+                system: "http://hl7.org/fhir/sid/cvx",
+                code: null,
+                display: "Zoster, recombinant",
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toBeNull();
+  });
+
   it("hides locations not in the API response when --hide-missing-locations is set", async () => {
     const testLocation = createSmartLocation({ id: "abc123" });
     // A UNIVAF-formatted location that matches the above SMART SL data.
