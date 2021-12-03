@@ -47,9 +47,9 @@ async function getDataForHost(host) {
   const api = getApiForHost(host);
   const manifest = await api.getManifest();
   const smartLocations = await getLocations(api);
-  return Object.values(smartLocations).map((entry) =>
-    formatLocation(host, manifest.transactionTime, entry)
-  );
+  return Object.values(smartLocations)
+    .map((entry) => formatLocation(host, manifest.transactionTime, entry))
+    .filter(Boolean);
 }
 
 async function getKnownLocations(state) {
@@ -74,6 +74,16 @@ async function getKnownLocations(state) {
 }
 
 function formatLocation(host, validTime, locationInfo) {
+  // PrepMod pretty much lists all schedules as COVID schedules since their
+  // system for modeling vaccines is pretty loose. This helps us skip over
+  // locations that don't actually appear to be for COVID vaccines at all.
+  const isCovidLocation = locationInfo.schedules.some(
+    (schedule) => parseSchedule(schedule).isCovid
+  );
+  if (!isCovidLocation) {
+    return null;
+  }
+
   const smartLocation = locationInfo.location;
 
   const cleanHost = host.replace(/^https?:\/\//, "").toLowerCase();
@@ -175,83 +185,117 @@ function formatLocationBookingUrl(host, location) {
 // - Zoster (shingles) vaccines
 const nonCovidProductName = /^influenza|flu|zoster/i;
 
+/**
+ * Parse useful data about a schedule.
+ * @param {Object} schedule A SMART SL schedule object to parse
+ * @returns {{isCovid: boolean, hasNonCovidProducts: boolean, products: Set<string>, doses: Set<string>}}
+ */
+function parseSchedule(schedule) {
+  let doses = new Set();
+  const data = {
+    // We only got here if the schedule claimed to be for COVID, but we may
+    // modify this if it turns out to have only non-covid prdoucts.
+    isCovid: true,
+    hasNonCovidProducts: false,
+    products: new Set(),
+    dose: undefined,
+  };
+
+  if (!schedule) return data;
+
+  for (const extension of schedule.extension) {
+    if (extension.url === EXTENSIONS.PRODUCT) {
+      let product;
+      if (extension.valueCoding.code) {
+        product = PRODUCTS_BY_CVX_CODE[extension.valueCoding.code];
+      } else {
+        product = matchVaccineProduct(extension.valueCoding.display);
+      }
+
+      if (product) {
+        data.products.add(product);
+      } else if (nonCovidProductName.test(extension.valueCoding.display)) {
+        data.hasNonCovidProducts = true;
+      } else {
+        warn(`Unparseable product extension: ${JSON.stringify(extension)}`);
+      }
+    } else if (extension.url === EXTENSIONS.DOSE) {
+      if (extension.valueInteger >= 1 && extension.valueInteger <= 2) {
+        doses.add(extension.valueInteger);
+      } else {
+        warn(`Unparseable dose extension: ${JSON.stringify(extension)}`);
+      }
+    } else {
+      warn(`Unknown schedule extension url: ${JSON.stringify(extension)}`);
+    }
+  }
+
+  if (doses.size > 1) {
+    data.dose = "all_doses";
+  } else if (doses.has(1)) {
+    data.dose = "first_dose_only";
+  } else if (doses.has(2)) {
+    data.dose = "second_dose_only";
+  }
+
+  // The PrepMod API includes non-COVID products on COVID schedules. If a
+  // slot/schedule *only* has non-COVID products, then treat it as the non-COVID
+  // schedule it really is.
+  if (data.products.size === 0 && data.hasNonCovidProducts) {
+    data.isCovid = false;
+  }
+
+  return data;
+}
+
 function formatSlots(smartSlots) {
   let available = Available.no;
-  const slots = smartSlots.map((smartSlot) => {
-    const slotAvailable =
-      smartSlot.status === "free" ? Available.yes : Available.no;
-    if (available === Available.no) {
-      available = slotAvailable;
-    }
+  const slots = smartSlots
+    .map((smartSlot) => {
+      const { isCovid, products, dose } = parseSchedule(
+        smartSlot[scheduleReference]
+      );
+      if (!isCovid) {
+        return null;
+      }
 
-    let capacity = 1;
-    let booking_url;
-    for (const extension of smartSlot.extension) {
-      if (extension.url === EXTENSIONS.CAPACITY) {
-        // TODO: should have something that automatically parses by value type.
-        capacity = parseInt(extension.valueInteger);
-        if (isNaN(capacity)) {
-          warn(`Non-integer capacity: ${JSON.stringify(extension)}`, {
+      const slotAvailable =
+        smartSlot.status === "free" ? Available.yes : Available.no;
+      if (available === Available.no) {
+        available = slotAvailable;
+      }
+
+      let capacity = 1;
+      let booking_url;
+      for (const extension of smartSlot.extension) {
+        if (extension.url === EXTENSIONS.CAPACITY) {
+          // TODO: should have something that automatically parses by value type.
+          capacity = parseInt(extension.valueInteger);
+          if (isNaN(capacity)) {
+            warn(`Non-integer capacity: ${JSON.stringify(extension)}`, {
+              slotId: smartSlot.id,
+            });
+          }
+        } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
+          booking_url = extension.valueUrl;
+        } else {
+          warn(`Unknown slot extension url: ${JSON.stringify(extension)}`, {
             slotId: smartSlot.id,
           });
         }
-      } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
-        booking_url = extension.valueUrl;
-      } else {
-        warn(`Unknown slot extension url: ${JSON.stringify(extension)}`, {
-          slotId: smartSlot.id,
-        });
       }
-    }
 
-    const products = new Set();
-    const doses = new Set();
-    const schedule = smartSlot[scheduleReference];
-    if (schedule) {
-      for (const extension of schedule.extension) {
-        if (extension.url === EXTENSIONS.PRODUCT) {
-          let product;
-          if (extension.valueCoding.code) {
-            product = PRODUCTS_BY_CVX_CODE[extension.valueCoding.code];
-          } else {
-            product = matchVaccineProduct(extension.valueCoding.display);
-          }
-          if (product) {
-            products.add(product);
-          } else if (!nonCovidProductName.test(extension.valueCoding.display)) {
-            warn(`Unparseable product extension: ${JSON.stringify(extension)}`);
-          }
-        } else if (extension.url === EXTENSIONS.DOSE) {
-          if (extension.valueInteger >= 1 && extension.valueInteger <= 2) {
-            doses.add(extension.valueInteger);
-          } else {
-            warn(`Unparseable dose extension: ${JSON.stringify(extension)}`);
-          }
-        } else {
-          warn(`Unknown schedule extension url: ${JSON.stringify(extension)}`);
-        }
-      }
-    }
-
-    let dose;
-    if (doses.size > 1) {
-      dose = "all_doses";
-    } else if (doses.has(1)) {
-      dose = "first_dose_only";
-    } else if (doses.has(2)) {
-      dose = "second_dose_only";
-    }
-
-    return {
-      start: smartSlot.start,
-      end: smartSlot.end,
-      available: slotAvailable,
-      available_count: capacity > 1 ? capacity : undefined,
-      products: products.size > 0 ? Array.from(products) : undefined,
-      dose: dose,
-      booking_url,
-    };
-  });
+      return {
+        start: smartSlot.start,
+        end: smartSlot.end,
+        available: slotAvailable,
+        available_count: capacity > 1 ? capacity : undefined,
+        products: products.size > 0 ? Array.from(products) : undefined,
+        dose: dose,
+        booking_url,
+      };
+    })
+    .filter(Boolean);
 
   return { available, slots };
 }
