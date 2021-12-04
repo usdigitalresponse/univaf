@@ -193,6 +193,7 @@ The list is manually managed.
 | [💻](# "Code") [⚠️](# "Tests") | [Nelson Elhage](https://github.com/nelhage) |
 | [💼](# "Business") | Mike Flowers |
 | [💻](# "Code") [⚠️](# "Tests") [🚇](# "Infrastructure") [📖](# "Documentation") | [Calvin French-Owen](https://github.com/calvinfo) |
+| [🔬](# "Research") | [Tom MacWright](https://github.com/tmcw) |
 | [💻](# "Code") | [Chantel Miller](https://github.com/channiemills) |
 | [🤔](# "Ideas and Planning") | [Giuseppe Morgana](https://github.com/gamorgana) |
 | [💻](# "Code") [⚠️](# "Tests") [🚇](# "Infrastructure") [📖](# "Documentation") [💬](# "Answering Questions") [👀](# "Reviewer") | [Aston Motes](https://github.com/astonm) |

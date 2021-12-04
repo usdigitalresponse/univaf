@@ -92,8 +92,11 @@ async function* queryState(state, rateLimit = null) {
     if (rateLimit) await rateLimit.ready();
 
     const body = await queryZipCode(zipCode);
-    for (const item of body.data.stores) {
-      if (!seenStores.has(item.storeNumber)) {
+
+    // If there are no results, `body.data.stores` is `null`.
+    const stores = body.data.stores || [];
+    for (const item of stores) {
+      if (!seenStores.has(item.storeNumber) && item.state === state) {
         seenStores.add(item.storeNumber);
         yield item;
       }
