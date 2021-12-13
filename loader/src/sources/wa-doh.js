@@ -66,6 +66,14 @@ const LOCATIONS_QUERY = `
   }
 `;
 
+// Known bad locations in WA DoH's data. We skip over these when loading data.
+const INVALID_LOCATIONS = [
+  "2255",
+  "2755",
+  "riteaid-5288",
+  "prep-mod-3696ec0d-3869-4ff4-88ce-1030db1639ef",
+];
+
 function warn(message, context) {
   console.warn(`WA DoH: ${message}`, context);
   // Sentry does better fingerprinting with an actual exception object.
@@ -171,9 +179,6 @@ function toProduct(apiValue) {
  * @returns {Object}
  */
 function formatLocation(data) {
-  // Skip some seemingly bad location entries.
-  if (["2255", "2755", "riteaid-5288"].includes(data.locationId)) return;
-
   let provider = data.providerName;
   if (
     !provider &&
@@ -306,6 +311,9 @@ async function checkAvailability(handler, options) {
   for (const state of states) {
     for await (const page of queryState(state)) {
       for (const item of page) {
+        // Skip known bad location entries.
+        if (INVALID_LOCATIONS.includes(item.locationId)) return;
+
         // Skip non-Costco data from WA for now. (We will probably want to
         // turn this back on eventually.)
         // WA publishes fairly comprehensive data within the state, but at the
@@ -316,6 +324,11 @@ async function checkAvailability(handler, options) {
           item.rawDataSourceName !== "CostcoLocationsFn" &&
           item.rawDataSourceName !== "CostcoVaccineAvailabilityFn"
         ) {
+          continue;
+        }
+
+        // Skip PrepMod -- we get these ourselves directly from PrepMod.
+        if (item.rawDataSourceName === "PrepModVaccineAvailabilityFn") {
           continue;
         }
 
