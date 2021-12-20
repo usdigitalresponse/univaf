@@ -2,7 +2,7 @@ module "loader_task" {
   source = "../task"
 
   name    = var.name
-  image   = "${var.loader_image}"
+  image   = var.loader_image
   role    = var.role
   cpu     = 1024
   memory  = 2048
