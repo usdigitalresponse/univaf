@@ -24,6 +24,7 @@ const {
   httpClient,
   parseUsAddress,
   getUniqueExternalIds,
+  unpadNumber,
 } = require("../../utils");
 const {
   Available,
@@ -252,7 +253,7 @@ async function getData(states) {
     const storeId = location.external_ids.find(
       (id) => id[0] === "albertsons_store_number"
     );
-    return storeId ? storeId[1] : location.name;
+    return storeId ? unpadNumber(storeId[1]) : location.name;
   });
 
   return Object.values(groups)
@@ -300,7 +301,7 @@ async function getData(states) {
     .filter(Boolean);
 }
 
-const addressFieldParts = /^\s*(?<name>.+?)\s+-\s+(?<address>.+)$/;
+const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
 const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
 
 /**
@@ -316,7 +317,7 @@ function parseNameAndAddress(text) {
 
   const partMatch = body.match(addressFieldParts);
   if (!partMatch) {
-    throw new ParseError(`Could not separate name and address in "${address}"`);
+    throw new ParseError(`Could not separate name and address in "${body}"`);
   }
   let { name, address } = partMatch.groups;
 
@@ -452,5 +453,6 @@ async function checkAvailability(handler, options) {
 
 module.exports = {
   checkAvailability,
+  formatLocation,
   API_URL,
 };

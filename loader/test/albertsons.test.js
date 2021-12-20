@@ -1,8 +1,13 @@
 const nock = require("nock");
-const { API_URL, checkAvailability } = require("../src/sources/albertsons");
+const {
+  API_URL,
+  checkAvailability,
+  formatLocation,
+} = require("../src/sources/albertsons");
 const { Available } = require("../src/model");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
+const { ParseError } = require("../src/exceptions");
 
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
@@ -442,5 +447,20 @@ describe("Albertsons", () => {
       (error) => error
     );
     expect(error).toBeInstanceOf(Error);
+  });
+
+  it("errors when formatting locations with a name and address that can't be separated", () => {
+    expect(() => {
+      formatLocation({
+        id: "1637101034326",
+        region: "Eastern_-_6",
+        address: "Something 7315 Famous Ave., Nowhere, MD, 20912",
+        lat: "38.98247194054162",
+        long: "-76.9879339600021",
+        coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
+        availability: "yes",
+        drugName: ["PfizerChild"],
+      });
+    }).toThrow(ParseError);
   });
 });
