@@ -2,7 +2,7 @@ module "loader_task" {
   source = "../task"
 
   name    = var.name
-  image   = "681497372638.dkr.ecr.us-west-2.amazonaws.com/univaf-loader"
+  image   = var.loader_image
   role    = var.role
   cpu     = 1024
   memory  = 2048

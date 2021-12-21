@@ -1,3 +1,8 @@
+
+variable "loader_image" {
+  description = "The image for the loader to use"
+}
+
 variable "loader_source" {
   description = "The source to run (cvsScraper, cvsApi, etc)"
 }
