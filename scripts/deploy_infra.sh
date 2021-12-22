@@ -56,7 +56,7 @@ cat << EOF > "$SERVER_DEPLOY_TFJSON_PATH"
 EOF
 
 git add "$SERVER_DEPLOY_TFJSON_PATH"
-git commit -m "Deploy server version $NEXT_REV"
+git commit -m "Deploy version $NEXT_REV"
 
 echo -e "\nNew deploy commit created. Don't forget to push it to production and confirm the run on Terraform Cloud."
 
