@@ -48,7 +48,7 @@ cat << EOF > "$SERVER_DEPLOY_TFJSON_PATH"
       "default": "$NEXT_REV"
     },
     "loader_release_version": {
-      "description": "API Release Version",
+      "description": "Loader Release Version",
       "default": "$NEXT_REV"
     }
   }
