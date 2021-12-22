@@ -183,7 +183,10 @@ function formatLocationBookingUrl(host, location) {
 // we know they aren't an error.
 // - Flu/Influenza vaccines
 // - Zoster (shingles) vaccines
-const nonCovidProductName = /^influenza|flu|zoster/i;
+// - Adenovirus vaccines (This one has a narrower definition to make sure we
+//   are only matching vaccines against adenovirus, not ones that might be using
+//   modified adenovirus as a vaccine against COVID or other things.)
+const nonCovidProductName = /^influenza|flu|zoster|^\s*adenovirus\s*$/i;
 
 /**
  * Parse useful data about a schedule.
