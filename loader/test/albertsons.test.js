@@ -4,6 +4,7 @@ const {
   checkAvailability,
   formatLocation,
 } = require("../src/sources/albertsons");
+const { corrections } = require("../src/sources/albertsons/corrections");
 const { Available } = require("../src/model");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
@@ -12,8 +13,16 @@ const { ParseError } = require("../src/exceptions");
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
 describe("Albertsons", () => {
+  // Keep a copy of manual corrections so we can reset it if altered in tests.
+  const _corrections = { ...corrections };
+
   afterEach(() => {
     nock.cleanAll();
+
+    for (const key of Object.keys(corrections)) {
+      delete corrections[key];
+    }
+    Object.assign(corrections, _corrections);
   });
 
   it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
@@ -462,5 +471,39 @@ describe("Albertsons", () => {
         drugName: ["PfizerChild"],
       });
     }).toThrow(ParseError);
+  });
+
+  it("includes manual corrections to locations", () => {
+    // Should replace the provided address with this one.
+    corrections["123456789"] = {
+      address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
+    };
+
+    expect(
+      formatLocation({
+        id: "123456789",
+        region: "Alaska",
+        address: "Whoseywhatsit - some crazy address that's not valid",
+        lat: "64.8515679",
+        long: "-147.7024008",
+        coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+        availability: "no",
+        drugName: ["Moderna"],
+      })
+    ).toEqual(
+      expect.objectContaining({
+        name: "Safeway 3410",
+        external_ids: [
+          ["albertsons", "123456789"],
+          ["albertsons_safeway", "123456789"],
+          ["safeway", "3410"],
+          ["albertsons_store_number", "safeway:3410"],
+        ],
+        address_lines: ["30 College Rd"],
+        city: "Fairbanks",
+        state: "AK",
+        postal_code: "99701",
+      })
+    );
   });
 });
