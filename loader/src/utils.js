@@ -218,7 +218,15 @@ module.exports = {
    */
   parseUsAddress(address) {
     const match = address.match(ADDRESS_PATTERN);
-    if (!match) {
+
+    // Detect whether we have something formatted like an address, but with
+    // obviously incorrect street/city/zip data, e.g. "., ., CA 90210".
+    const invalidMatch =
+      !match ||
+      match[1].replace(PUNCTUATION_PATTERN, "") === "" ||
+      match[2].replace(PUNCTUATION_PATTERN, "") === "" ||
+      match[4].replace(PUNCTUATION_PATTERN, "") === "";
+    if (invalidMatch) {
       throw new ParseError(`Could not parse address: "${address}"`);
     }
 

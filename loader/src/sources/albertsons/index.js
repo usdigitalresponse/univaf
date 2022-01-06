@@ -33,6 +33,7 @@ const {
   PediatricVaccineProducts,
 } = require("../../model");
 const { ParseError } = require("../../exceptions");
+const { corrections } = require("./corrections");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
@@ -374,6 +375,11 @@ function formatProducts(raw) {
 }
 
 function formatLocation(data, validAt, checkedAt) {
+  // Apply corrections for known-bad source data.
+  if (data.id in corrections) {
+    Object.assign(data, corrections[data.id]);
+  }
+
   let { name, storeNumber, storeBrand, address, isPediatric } =
     parseNameAndAddress(data.address);
   if (!storeBrand) {
