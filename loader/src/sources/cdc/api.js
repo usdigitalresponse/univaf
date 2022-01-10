@@ -193,7 +193,7 @@ function getSimpleId(location) {
 // number. ¯\_(ツ)_/¯
 function getWalmartId(location) {
   if (location.loc_store_no.startsWith("10-")) {
-    return location.loc_store_no.slice(3);
+    return unpadNumber(location.loc_store_no.slice(3));
   }
 
   // When the number is not in loc_store_no, it is usually formatted as a normal
@@ -202,7 +202,7 @@ function getWalmartId(location) {
     /^(?:Walmart|Sam['\u2019]?s Club) .* #?(\d+)$/i
   );
   if (numberInName) {
-    return numberInName[1];
+    return unpadNumber(numberInName[1]);
   }
 
   warn("Unexpected Walmart/Sams ID format", {

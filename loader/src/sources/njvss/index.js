@@ -1,5 +1,5 @@
 const { Available, LocationType, VaccineProduct } = require("../../model");
-const { parseUsAddress } = require("../../utils");
+const { parseUsAddress, unpadNumber } = require("../../utils");
 const crypto = require("crypto");
 const csvParse = require("csv-parse/lib/sync");
 const getStream = require("get-stream");
@@ -466,15 +466,16 @@ async function checkAvailability(handler, _options) {
     const walmartMatch = location.name.match(walmartPattern);
     if (walmartMatch) {
       location_type = LocationType.pharmacy;
+      const storeNumber = unpadNumber(walmartMatch.groups.storeId);
 
       if (walmartMatch.groups.sams) {
-        external_ids.sams_club = walmartMatch.groups.storeId;
+        external_ids.sams_club = storeNumber;
         provider = PROVIDER.sams;
-        name = `Sam’s Club #${walmartMatch.groups.storeId}`;
+        name = `Sam’s Club #${storeNumber}`;
       } else {
-        external_ids.walmart = walmartMatch.groups.storeId;
+        external_ids.walmart = storeNumber;
         provider = PROVIDER.walmart;
-        name = `Walmart #${walmartMatch.groups.storeId}`;
+        name = `Walmart #${storeNumber}`;
       }
     }
 
