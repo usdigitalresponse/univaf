@@ -74,7 +74,7 @@ async function* queryState(state) {
   }
 }
 
-function formatStore(storeItems) {
+function formatStore(storeItems, checkedAt) {
   if (storeItems.length == 0) {
     return null;
   }
@@ -148,7 +148,7 @@ function formatStore(storeItems) {
 
       availability: {
         source: "cdc",
-        checked_at: new Date().toISOString(),
+        checked_at: checkedAt,
         valid_at: formatValidAt(productList),
         available: formatAvailable(productList),
         products: formatProductTypes(productList),
@@ -460,6 +460,7 @@ async function checkAvailability(handler, options) {
     return [];
   }
 
+  const checkedAt = new Date().toISOString();
   let results = [];
   for (const state of states) {
     const entriesByStoreId = {};
@@ -472,7 +473,7 @@ async function checkAvailability(handler, options) {
 
     const stores = Object.values(entriesByStoreId);
     const formatted = stores
-      .map(formatStore)
+      .map((store) => formatStore(store, checkedAt))
       .filter(Boolean)
       .map(markUnexpectedCvsIds);
 
