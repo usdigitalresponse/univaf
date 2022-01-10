@@ -194,6 +194,16 @@ function getWalmartId(location) {
   if (location.loc_store_no.startsWith("10-")) {
     return location.loc_store_no.slice(3);
   }
+
+  // When the number is not in loc_store_no, it is usually formatted as a normal
+  // store number in the name (i.e. "NNN" instead of "10-NNN").
+  const numberInName = location.loc_name.match(
+    /^(?:Walmart|Sam['\u2019]?s Club) .* #?(\d+)$/i
+  );
+  if (numberInName) {
+    return numberInName[1];
+  }
+
   warn("Unexpected Walmart/Sams ID format", {
     id: location.provider_location_guid,
     storeNumber: location.loc_store_no,
