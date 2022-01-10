@@ -549,7 +549,15 @@ export async function getCurrentAvailabilityByLocation(
 }
 
 /**
- * Updates a given location's availability based upon its id
+ * Updates a given location's availability. If either `checked_at` or `valid_at`
+ * are not the same or newer than an existing availibility record for the given
+ * location and source, this will throw `OutOfDateError`.
+ *
+ * Updates with the same `checked_at` but newer `valid_at` times will succeed
+ * (this accomodates sources that may surface multiple records for the same
+ * location, but with different valid times). Updates with newer `checked_at`
+ * but the same `valid_at` are OK. If *both* `checked_at` and `valid_at` are
+ * unchanged, the update will fail.
  * @param id
  * @param availability
  * @returns
@@ -563,7 +571,7 @@ export async function updateAvailability(
     source,
     available = Availability.UNKNOWN,
     checked_at,
-    valid_at = null,
+    valid_at,
     available_count = null,
     products = null,
     doses = null,
@@ -584,41 +592,64 @@ export async function updateAvailability(
   let result;
   let changed_at;
   if (existingAvailability) {
-    // If data was not new, don't log it all; it's a waste of space.
-    // `valid_at` may be a string, so make sure to parse before comparing.
-    if (existingAvailability.valid_at >= new Date(valid_at)) {
-      loggableUpdate = { source, checked_at };
-    } else if (
-      existingAvailability.available === available &&
-      existingAvailability.available_count == available_count &&
-      isDeepStrictEqual(existingAvailability.products, products) &&
-      isDeepStrictEqual(existingAvailability.doses, doses) &&
-      isDeepStrictEqual(existingAvailability.capacity, capacity) &&
-      isDeepStrictEqual(existingAvailability.slots, slots) &&
-      isDeepStrictEqual(existingAvailability.meta, meta)
-    ) {
-      loggableUpdate = { source, checked_at, valid_at };
-    } else {
-      changed_at = valid_at;
+    // The actual data we want to update varies based on how or if things have
+    // changed (new check time, new valid time, new actual data). The query also
+    // needs conditions to make sure a newer update hasn't come through while
+    // handling this update, and those conditions vary in the same way.
+    let updateQuery = db("availability").where("id", existingAvailability.id);
+    let updateData;
+
+    // If the new checked_at time is older than what's on record, don't update.
+    if (existingAvailability.checked_at > new Date(checked_at)) {
+      updateData = null;
+    }
+    // If `valid_at` isn't new, only update the checked_at time, and ensure
+    // that the `checked_at` time is new.
+    else if (existingAvailability.valid_at >= new Date(valid_at)) {
+      updateQuery = updateQuery.andWhere("checked_at", "<", checked_at);
+      updateData = { checked_at };
+    }
+    // Otherwise, `checked_at` only needs to be the same or newer, and only
+    // update the data if there are actual changes.
+    else {
+      updateQuery = updateQuery
+        .andWhere("checked_at", "<=", checked_at)
+        .andWhere("valid_at", "<", valid_at);
+
+      const isChange =
+        existingAvailability.available === available &&
+        existingAvailability.available_count == available_count &&
+        isDeepStrictEqual(existingAvailability.products, products) &&
+        isDeepStrictEqual(existingAvailability.doses, doses) &&
+        isDeepStrictEqual(existingAvailability.capacity, capacity) &&
+        isDeepStrictEqual(existingAvailability.slots, slots) &&
+        isDeepStrictEqual(existingAvailability.meta, meta);
+      if (isChange) {
+        updateData = { checked_at, valid_at };
+      } else {
+        changed_at = valid_at;
+        updateData = {
+          checked_at,
+          valid_at,
+          changed_at,
+          available,
+          available_count,
+          products,
+          doses,
+          // Knex typings can't handle a complex type for the array contents. :(
+          capacity: capacity as Array<any>,
+          slots: slots as Array<any>,
+          meta,
+          is_public,
+        };
+      }
     }
 
-    const rowCount = await db("availability")
-      .where("id", existingAvailability.id)
-      .andWhere("checked_at", "<", checked_at)
-      .update({
-        available,
-        available_count,
-        products,
-        doses,
-        // Knex typings can't handle a complex type for the array contents. :(
-        capacity: capacity as Array<any>,
-        slots: slots as Array<any>,
-        valid_at,
-        checked_at,
-        meta,
-        is_public,
-        changed_at,
-      });
+    let rowCount = 0;
+    if (updateData) {
+      loggableUpdate = { source, ...updateData };
+      rowCount = await updateQuery.update(updateData);
+    }
 
     if (rowCount === 0) {
       throw new OutOfDateError(
