@@ -171,7 +171,8 @@ function formatStore(storeItems, checkedAt) {
 }
 
 /**
- * Get a simplistic, numeric or VTrckS-style location external ID value.
+ * Get a simplistic, numeric location external ID value that should be a store
+ * number for whatever chain a location belongs to.
  */
 function getSimpleId(location) {
   // Handle numeric store numbers
