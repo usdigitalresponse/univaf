@@ -21,6 +21,7 @@ const Sentry = require("@sentry/node");
 const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
 const {
+  createWarningLogger,
   httpClient,
   parseUsAddress,
   getUniqueExternalIds,
@@ -196,15 +197,7 @@ const BRANDS = [
   },
 ];
 
-function warn(message, context) {
-  console.warn(`Albertsons: ${message}`, context || "");
-  // Sentry does better fingerprinting with an actual exception object.
-  if (message instanceof Error) {
-    Sentry.captureException(message, { level: Sentry.Severity.Info });
-  } else {
-    Sentry.captureMessage(message, Sentry.Severity.Info);
-  }
-}
+const warn = createWarningLogger("Albertsons");
 
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
