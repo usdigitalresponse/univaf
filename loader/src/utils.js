@@ -1,3 +1,4 @@
+const nodeUtil = require("util");
 const Sentry = require("@sentry/node");
 const got = require("got");
 const config = require("./config");
@@ -326,7 +327,10 @@ module.exports = {
 
   createWarningLogger(prefix) {
     return function warn(message, context) {
-      console.warn(`${prefix}: ${message}`, context);
+      console.warn(
+        `${prefix}: ${message}`,
+        context !== undefined ? nodeUtil.inspect(context, { depth: 8 }) : ""
+      );
       // Sentry does better fingerprinting with an actual exception object.
       if (message instanceof Error) {
         Sentry.captureException(message, { level: Sentry.Severity.Info });
