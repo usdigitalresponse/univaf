@@ -385,8 +385,7 @@ function formatLocation(data, validAt, checkedAt) {
   const products = formatProducts(data.drugName);
   isPediatric =
     isPediatric ||
-    (products?.length &&
-      products.every((p) => PediatricVaccineProducts.has(p)));
+    (products?.length && products.some((p) => PediatricVaccineProducts.has(p)));
 
   const external_ids = [
     ["albertsons", data.id],
