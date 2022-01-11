@@ -597,44 +597,52 @@ export async function updateAvailability(
   let changed_at;
   if (existingAvailability) {
     // The actual data we want to update varies based on how or if things have
-    // changed (new check time, new valid time, new actual data). The query also
-    // needs conditions to make sure a newer update hasn't come through while
-    // handling this update, and those conditions vary in the same way.
-    let updateQuery = db("availability").where("id", existingAvailability.id);
+    // changed (new check time, new valid time, new actual data).
     let updateData;
+    // Since we don't have a lock, it's also possible for a newer update to
+    // come through while handling this update. The query needs conditions on
+    // `checked_at` and optionally `valid_at` (depending what's in `updateData`)
+    // to ensure we don't overwrite an update that happened during this one.
+    let updateQuery = db("availability")
+      .where("id", existingAvailability.id)
+      .andWhere("checked_at", "<=", checked_at);
 
-    // If the new checked_at time is older than what's on record, don't update.
-    if (existingAvailability.checked_at > new Date(checked_at)) {
-      updateData = null;
-    }
-    // If `valid_at` isn't new, only update the checked_at time, and ensure
-    // that the `checked_at` time is new.
-    else if (existingAvailability.valid_at >= new Date(valid_at)) {
-      updateQuery = updateQuery.andWhere("checked_at", "<", checked_at);
+    // Convert to numeric timestamps to support equality comparisons.
+    const existingCheckedTime = existingAvailability.checked_at.getTime();
+    const existingValidTime = existingAvailability.valid_at.getTime();
+    const checkedTime = new Date(checked_at).getTime();
+    const validTime = new Date(valid_at).getTime();
+
+    if (
+      existingCheckedTime > checkedTime ||
+      existingValidTime > validTime ||
+      (existingCheckedTime === checkedTime && existingValidTime === validTime)
+    ) {
+      throw new OutOfDateError("Newer availability has already been recorded");
+    } else if (existingValidTime === validTime) {
       updateData = { checked_at };
-    }
-    // Otherwise, `checked_at` only needs to be the same or newer, and only
-    // update the data if there are actual changes.
-    else {
-      updateQuery = updateQuery
-        .andWhere("checked_at", "<=", checked_at)
-        .andWhere("valid_at", "<", valid_at);
+    } else {
+      // At this point, there's new data or at least valid_at is new, so we
+      // should only update if `valid_at` is newer than existing data.
+      updateQuery = updateQuery.andWhere("valid_at", "<", valid_at);
+      updateData = { checked_at, valid_at };
 
-      const isChange =
-        existingAvailability.available === available &&
-        existingAvailability.available_count == available_count &&
-        isDeepStrictEqual(existingAvailability.products, products) &&
-        isDeepStrictEqual(existingAvailability.doses, doses) &&
-        isDeepStrictEqual(existingAvailability.capacity, capacity) &&
-        isDeepStrictEqual(existingAvailability.slots, slots) &&
-        isDeepStrictEqual(existingAvailability.meta, meta);
-      if (isChange) {
-        updateData = { checked_at, valid_at };
-      } else {
+      const isChanged =
+        existingAvailability.available !== available ||
+        existingAvailability.available_count != available_count ||
+        !isDeepStrictEqual(existingAvailability.products, products) ||
+        !isDeepStrictEqual(existingAvailability.doses, doses) ||
+        !isDeepStrictEqual(existingAvailability.capacity, capacity) ||
+        !isDeepStrictEqual(existingAvailability.slots, slots) ||
+        !isDeepStrictEqual(existingAvailability.meta, meta);
+
+      // If there were changes, we need to set the changed_at time and save all
+      // the new data. Otherwise, be nice to the DB by only sending updated
+      // timestamps (full slot data can be as much as 500 kB!).
+      if (isChanged) {
         changed_at = valid_at;
         updateData = {
-          checked_at,
-          valid_at,
+          ...updateData,
           changed_at,
           available,
           available_count,
@@ -649,16 +657,13 @@ export async function updateAvailability(
       }
     }
 
-    let rowCount = 0;
-    if (updateData) {
-      loggableUpdate = { source, ...updateData };
-      rowCount = await updateQuery.update(updateData);
-    }
+    loggableUpdate = { source, ...updateData };
+    const rowCount = await updateQuery.update(updateData);
 
+    // It's possible the DB was updated between our original query and the
+    // update query, in which case we were ultimately out-of-date.
     if (rowCount === 0) {
-      throw new OutOfDateError(
-        "Newer availability data has already been recorded"
-      );
+      throw new OutOfDateError("Newer availability has already been recorded");
     }
 
     result = { locationId: id, action: "update" };
