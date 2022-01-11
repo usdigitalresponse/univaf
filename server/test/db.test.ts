@@ -2,6 +2,7 @@ import { installTestDatabaseHooks } from "./lib";
 import "./matchers";
 import {
   createLocation,
+  getAvailabilityForLocation,
   getCurrentAvailabilityByLocation,
   getLocationById,
   updateAvailability,
@@ -44,13 +45,14 @@ describe("db.updateAvailability", () => {
     }).rejects.toThrow(NotFoundError);
   });
 
-  it("should update a an existing record for the same location and source", async () => {
+  it("should update an existing record for the same location and source", async () => {
     const location = await createLocation(TestLocation);
     await updateAvailability(location.id, TestLocation.availability);
 
     const newData = {
       ...TestLocation.availability,
       checked_at: new Date(),
+      valid_at: new Date(),
     };
     const result = await updateAvailability(location.id, newData);
     expect(result).toEqual({ locationId: location.id, action: "update" });
@@ -62,6 +64,25 @@ describe("db.updateAvailability", () => {
     await expect(async () => {
       await updateAvailability(location.id, TestLocation.availability);
     }).rejects.toThrow(OutOfDateError);
+  });
+
+  it("should only update `checked_at` on records where valid_at is not newer", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      available: Availability.YES,
+    });
+
+    // No change to valid_at, but different actual data in this update.
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      checked_at: new Date(),
+      available: Availability.NO,
+    });
+
+    const current = await getAvailabilityForLocation(location.id);
+    // This should match the original update, not the second one.
+    expect(current).toHaveProperty("0.available", Availability.YES);
   });
 
   it("should fill in valid_at from checked_at", async () => {

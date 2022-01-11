@@ -74,7 +74,7 @@ async function* queryState(state) {
   }
 }
 
-function formatStore(storeItems) {
+function formatStore(storeItems, checkedAt) {
   if (storeItems.length == 0) {
     return null;
   }
@@ -148,7 +148,7 @@ function formatStore(storeItems) {
 
       availability: {
         source: "cdc",
-        checked_at: new Date().toISOString(),
+        checked_at: checkedAt,
         valid_at: formatValidAt(productList),
         available: formatAvailable(productList),
         products: formatProductTypes(productList),
@@ -171,7 +171,8 @@ function formatStore(storeItems) {
 }
 
 /**
- * Get a simplistic, numeric or VTrckS-style location external ID value.
+ * Get a simplistic, numeric location external ID value that should be a store
+ * number for whatever chain a location belongs to.
  */
 function getSimpleId(location) {
   // Handle numeric store numbers
@@ -192,8 +193,18 @@ function getSimpleId(location) {
 // number. ¯\_(ツ)_/¯
 function getWalmartId(location) {
   if (location.loc_store_no.startsWith("10-")) {
-    return location.loc_store_no.slice(3);
+    return unpadNumber(location.loc_store_no.slice(3));
   }
+
+  // When the number is not in loc_store_no, it is usually formatted as a normal
+  // store number in the name (i.e. "NNN" instead of "10-NNN").
+  const numberInName = location.loc_name.match(
+    /^(?:Walmart|Sam['\u2019]?s Club) .* #?(\d+)$/i
+  );
+  if (numberInName) {
+    return unpadNumber(numberInName[1]);
+  }
+
   warn("Unexpected Walmart/Sams ID format", {
     id: location.provider_location_guid,
     storeNumber: location.loc_store_no,
@@ -450,6 +461,7 @@ async function checkAvailability(handler, options) {
     return [];
   }
 
+  const checkedAt = new Date().toISOString();
   let results = [];
   for (const state of states) {
     const entriesByStoreId = {};
@@ -462,7 +474,7 @@ async function checkAvailability(handler, options) {
 
     const stores = Object.values(entriesByStoreId);
     const formatted = stores
-      .map(formatStore)
+      .map((store) => formatStore(store, checkedAt))
       .filter(Boolean)
       .map(markUnexpectedCvsIds);
 
@@ -516,4 +528,5 @@ module.exports = {
   API_PATH,
   checkAvailability,
   queryState,
+  formatStore,
 };

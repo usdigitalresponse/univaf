@@ -549,7 +549,19 @@ export async function getCurrentAvailabilityByLocation(
 }
 
 /**
- * Updates a given location's availability based upon its id
+ * Updates a given location's availability. If neither `checked_at` nor
+ * `valid_at` are newer than an existing availibility record for the given
+ * location and source, this will throw `OutOfDateError`.
+ *
+ * Specifically:
+ * - Updates with newer `checked_at` but the same `valid_at` are OK. This
+ *   indicates the source was checked, but it hadn't been updated since the last
+ *   check.
+ * - Updates with the same `checked_at` but newer `valid_at` times are also OK.
+ *   This accomodates sources that may surface multiple records for the same
+ *   location, but with different valid times.
+ * - If *both* `checked_at` and `valid_at` are unchanged or if they are older,
+ *   the update will fail.
  * @param id
  * @param availability
  * @returns
@@ -563,7 +575,7 @@ export async function updateAvailability(
     source,
     available = Availability.UNKNOWN,
     checked_at,
-    valid_at = null,
+    valid_at,
     available_count = null,
     products = null,
     doses = null,
@@ -584,46 +596,74 @@ export async function updateAvailability(
   let result;
   let changed_at;
   if (existingAvailability) {
-    // If data was not new, don't log it all; it's a waste of space.
-    // `valid_at` may be a string, so make sure to parse before comparing.
-    if (existingAvailability.valid_at >= new Date(valid_at)) {
-      loggableUpdate = { source, checked_at };
-    } else if (
-      existingAvailability.available === available &&
-      existingAvailability.available_count == available_count &&
-      isDeepStrictEqual(existingAvailability.products, products) &&
-      isDeepStrictEqual(existingAvailability.doses, doses) &&
-      isDeepStrictEqual(existingAvailability.capacity, capacity) &&
-      isDeepStrictEqual(existingAvailability.slots, slots) &&
-      isDeepStrictEqual(existingAvailability.meta, meta)
+    // The actual data we want to update varies based on how or if things have
+    // changed (new check time, new valid time, new actual data).
+    let updateData;
+    // Since we don't have a lock, it's also possible for a newer update to
+    // come through while handling this update. The query needs conditions on
+    // `checked_at` and optionally `valid_at` (depending what's in `updateData`)
+    // to ensure we don't overwrite an update that happened during this one.
+    let updateQuery = db("availability")
+      .where("id", existingAvailability.id)
+      .andWhere("checked_at", "<=", checked_at);
+
+    // Convert to numeric timestamps to support equality comparisons.
+    const existingCheckedTime = existingAvailability.checked_at.getTime();
+    const existingValidTime = existingAvailability.valid_at.getTime();
+    const checkedTime = new Date(checked_at).getTime();
+    const validTime = new Date(valid_at).getTime();
+
+    if (
+      existingCheckedTime > checkedTime ||
+      existingValidTime > validTime ||
+      (existingCheckedTime === checkedTime && existingValidTime === validTime)
     ) {
-      loggableUpdate = { source, checked_at, valid_at };
+      throw new OutOfDateError("Newer availability has already been recorded");
+    } else if (existingValidTime === validTime) {
+      updateData = { checked_at };
     } else {
-      changed_at = valid_at;
+      // At this point, there's new data or at least valid_at is new, so we
+      // should only update if `valid_at` is newer than existing data.
+      updateQuery = updateQuery.andWhere("valid_at", "<", valid_at);
+      updateData = { checked_at, valid_at };
+
+      const isChanged =
+        existingAvailability.available !== available ||
+        existingAvailability.available_count != available_count ||
+        !isDeepStrictEqual(existingAvailability.products, products) ||
+        !isDeepStrictEqual(existingAvailability.doses, doses) ||
+        !isDeepStrictEqual(existingAvailability.capacity, capacity) ||
+        !isDeepStrictEqual(existingAvailability.slots, slots) ||
+        !isDeepStrictEqual(existingAvailability.meta, meta);
+
+      // If there were changes, we need to set the changed_at time and save all
+      // the new data. Otherwise, be nice to the DB by only sending updated
+      // timestamps (full slot data can be as much as 500 kB!).
+      if (isChanged) {
+        changed_at = valid_at;
+        updateData = {
+          ...updateData,
+          changed_at,
+          available,
+          available_count,
+          products,
+          doses,
+          // Knex typings can't handle a complex type for the array contents. :(
+          capacity: capacity as Array<any>,
+          slots: slots as Array<any>,
+          meta,
+          is_public,
+        };
+      }
     }
 
-    const rowCount = await db("availability")
-      .where("id", existingAvailability.id)
-      .andWhere("checked_at", "<", checked_at)
-      .update({
-        available,
-        available_count,
-        products,
-        doses,
-        // Knex typings can't handle a complex type for the array contents. :(
-        capacity: capacity as Array<any>,
-        slots: slots as Array<any>,
-        valid_at,
-        checked_at,
-        meta,
-        is_public,
-        changed_at,
-      });
+    loggableUpdate = { source, ...updateData };
+    const rowCount = await updateQuery.update(updateData);
 
+    // It's possible the DB was updated between our original query and the
+    // update query, in which case we were ultimately out-of-date.
     if (rowCount === 0) {
-      throw new OutOfDateError(
-        "Newer availability data has already been recorded"
-      );
+      throw new OutOfDateError("Newer availability has already been recorded");
     }
 
     result = { locationId: id, action: "update" };
