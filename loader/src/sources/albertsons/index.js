@@ -254,7 +254,7 @@ async function getData(states) {
     const storeId = location.external_ids.find(
       (id) => id[0] === "albertsons_store_number"
     );
-    return storeId ? unpadNumber(storeId[1]) : location.name;
+    return storeId?.[1] ?? location.name;
   });
 
   return Object.values(groups)
@@ -329,7 +329,7 @@ function parseNameAndAddress(text) {
   );
   let storeNumber;
   if (numberMatch) {
-    storeNumber = numberMatch.groups.number;
+    storeNumber = unpadNumber(numberMatch.groups.number);
     name = `${numberMatch.groups.name} ${storeNumber}`;
   }
 
