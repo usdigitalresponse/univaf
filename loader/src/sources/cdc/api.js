@@ -528,4 +528,5 @@ module.exports = {
   API_PATH,
   checkAvailability,
   queryState,
+  formatStore,
 };
