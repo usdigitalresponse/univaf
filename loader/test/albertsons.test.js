@@ -263,12 +263,12 @@ describe("Albertsons", () => {
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
-        name: "Safeway 0005",
+        name: "Safeway 5",
         external_ids: [
           ["albertsons", "1635993536219"],
           ["albertsons_safeway", "1635993536219"],
-          ["safeway", "0005"],
-          ["albertsons_store_number", "safeway:0005"],
+          ["safeway", "5"],
+          ["albertsons_store_number", "safeway:5"],
           ["albertsons", "1600100807144"],
           ["albertsons_safeway", "1600100807144"],
         ],
