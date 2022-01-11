@@ -549,15 +549,19 @@ export async function getCurrentAvailabilityByLocation(
 }
 
 /**
- * Updates a given location's availability. If either `checked_at` or `valid_at`
- * are not the same or newer than an existing availibility record for the given
+ * Updates a given location's availability. If neither `checked_at` nor
+ * `valid_at` are newer than an existing availibility record for the given
  * location and source, this will throw `OutOfDateError`.
  *
- * Updates with the same `checked_at` but newer `valid_at` times will succeed
- * (this accomodates sources that may surface multiple records for the same
- * location, but with different valid times). Updates with newer `checked_at`
- * but the same `valid_at` are OK. If *both* `checked_at` and `valid_at` are
- * unchanged, the update will fail.
+ * Specifically:
+ * - Updates with newer `checked_at` but the same `valid_at` are OK. This
+ *   indicates the source was checked, but it hadn't been updated since the last
+ *   check.
+ * - Updates with the same `checked_at` but newer `valid_at` times are also OK.
+ *   This accomodates sources that may surface multiple records for the same
+ *   location, but with different valid times.
+ * - If *both* `checked_at` and `valid_at` are unchanged or if they are older,
+ *   the update will fail.
  * @param id
  * @param availability
  * @returns
