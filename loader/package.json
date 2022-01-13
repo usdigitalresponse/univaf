@@ -27,7 +27,7 @@
     "prettier": "^2.4.1"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.44.0",
+    "@aws-sdk/client-s3": "^3.46.0",
     "@sentry/node": "^6.16.1",
     "csv-parse": "^4.16.3",
     "get-stream": "^6.0.1",
@@ -35,7 +35,7 @@
     "lodash": "^4.17.21",
     "luxon": "^1.27.0",
     "queue": "^6.0.2",
-    "yargs": "^17.3.0"
+    "yargs": "^17.3.1"
   },
   "jest": {
     "setupFilesAfterEnv": [
