@@ -50,7 +50,7 @@ module "rite_aid_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(30 minutes)"
+  schedule      = "rate(10 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -60,21 +60,22 @@ module "rite_aid_loader" {
   }
 }
 
-module "rite_aid_scraper_loader" {
-  source = "./modules/loader"
+# FIXME: this is temporarily disabled because of a change in data formats
+# module "rite_aid_scraper_loader" {
+#   source = "./modules/loader"
 
-  name          = "riteAidScraper"
-  loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  loader_source = "riteAidScraper"
-  command       = ["--states", "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
-  api_url       = "http://${aws_alb.main.dns_name}"
-  api_key       = var.api_key
-  sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(10 minutes)"
-  cluster_arn   = aws_ecs_cluster.main.arn
-  role          = aws_iam_role.ecs_task_execution_role.arn
-  subnets       = aws_subnet.public.*.id
-}
+#   name          = "riteAidScraper"
+#   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
+#   loader_source = "riteAidScraper"
+#   command       = ["--states", "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
+#   api_url       = "http://${aws_alb.main.dns_name}"
+#   api_key       = var.api_key
+#   sentry_dsn    = var.loader_sentry_dsn
+#   schedule      = "rate(10 minutes)"
+#   cluster_arn   = aws_ecs_cluster.main.arn
+#   role          = aws_iam_role.ecs_task_execution_role.arn
+#   subnets       = aws_subnet.public.*.id
+# }
 
 module "walgreens_loader" {
   source = "./modules/loader"
