@@ -78,7 +78,7 @@ function formatStore(provider) {
     validTime = DateTime.fromFormat(
       provider.last_updated,
       "yyyy/MM/dd hh:mm:ss",
-      { zone: "America/New_York" }
+      { zone: "UTC" }
     );
   } else if (provider.last_updated) {
     validTime = DateTime.fromISO(provider.last_updated);
