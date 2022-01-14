@@ -130,15 +130,82 @@ async function* queryState(state, rateLimit = null, summaryOnly = false) {
   }
 }
 
+// API data for each location should look like this. The schema is fairly strict
+// since we are pulling on an unversioned API designed for the web UI, and want
+// the system to scream at us for any potentially impactful change.
+const riteAidLocationSchema = {
+  type: "object",
+  properties: {
+    storeNumber: { type: "integer", minimum: 1 },
+    address: { type: "string" },
+    city: { type: "string" },
+    state: { type: "string", pattern: "[A-Z]{2}" },
+    zipcode: { type: "string", pattern: "\\d{1,5}" },
+    timeZone: {
+      enum: ["EST", "EDT", "CST", "CDT", "MST", "MDT", "PST", "PDT"],
+    },
+    fullZipCode: { type: "string", pattern: "\\d{1,5}-\\d{1,4}" },
+    fullPhone: { type: "string", nullable: true },
+    locationDescription: { type: "string" },
+    storeType: { enum: ["CORE"] },
+    latitude: { type: "number" },
+    longitude: { type: "number" },
+    name: { type: "string" },
+    milesFromCenter: { type: "number", minimum: 0 },
+    totalSlotCount: { type: "integer", minimum: 0 },
+    totalAvailableSlots: { type: "integer", minimum: 0 },
+    firstAvailableSlot: { type: "string", format: "date", nullable: true },
+    specialServiceKeys: { type: "array", items: { type: "string" } },
+    availableSlots: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          date: { type: "string", format: "date" },
+          available_slots: { type: "integer", minimum: 1 },
+          slots: {
+            type: "object",
+            patternProperties: {
+              "\\d+": {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    appointmentId: { type: "string", pattern: "\\d+" },
+                    apptDateTime: { type: "string" },
+                  },
+                  required: ["appointmentId", "apptDateTime"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["date", "available_slots", "slots"],
+        additionalProperties: false,
+      },
+    },
+  },
+  additionalProperties: false,
+};
+riteAidLocationSchema.required = Object.keys(riteAidLocationSchema.properties);
+
+const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
+
+const ajv = new Ajv({ allErrors: true, verbose: true });
+addFormats(ajv);
+
 function formatLocation(apiData) {
-  if (
-    !Array.isArray(apiData.availableSlots) ||
-    typeof apiData.totalAvailableSlots !== "number" ||
-    typeof apiData.totalSlotCount !== "number" ||
-    !("firstAvailableSlot" in apiData)
-  ) {
-    const error = new ParseError("Raw data did not match expected format");
-    throw Object.assign(error, { data: apiData });
+  if (!ajv.validate(riteAidLocationSchema, apiData)) {
+    throw Object.assign(new ParseError("Data did not match expected format"), {
+      data: apiData,
+      schemaErrors: ajv.errors.map((error) => {
+        const value = JSON.stringify(error.data) || "undefined";
+        return `${error.instancePath} ${error.message} (value: \`${value}\`)`;
+      }),
+    });
   }
 
   // There's a complicated situation where we may be dealing with a summary
