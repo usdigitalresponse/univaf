@@ -268,7 +268,11 @@ async function getData(states) {
       const adult = group.find((l) => l.meta.booking_url_adult);
       const pediatric = group.find((l) => l.meta.booking_url_pediatric);
 
-      if (!adult || !pediatric) {
+      // If a location had no available vaccines and had no special naming
+      // prefix, we won't know whether it is adult or pediatric. We can't know
+      // whether this is a problem or not, so always allow it.
+      const unknown = group.find((l) => !l.availability.products);
+      if (!unknown && (!adult || !pediatric)) {
         warn(
           "Trying to merge locations other than an adult and pediatric!",
           group
@@ -279,8 +283,8 @@ async function getData(states) {
       const result = Object.assign({}, ...group);
       result.meta = {
         ...adult.meta,
-        booking_url_adult: adult.booking_url,
-        booking_url_pediatric: pediatric.booking_url,
+        booking_url_adult: adult?.booking_url,
+        booking_url_pediatric: pediatric?.booking_url,
       };
       result.booking_url = GENERIC_BOOKING_URL;
       result.external_ids = getUniqueExternalIds(
