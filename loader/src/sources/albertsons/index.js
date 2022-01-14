@@ -465,6 +465,9 @@ function formatLocation(data, validAt, checkedAt) {
       [`booking_url_${bookingType}`]: data.coach_url || undefined,
     },
 
+    // The raw data doesn't have a `description`, but some corrections add it.
+    description: data.description,
+
     availability: {
       source: "univaf-albertsons",
       valid_at: validAt,
