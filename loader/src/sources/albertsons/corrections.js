@@ -13,6 +13,82 @@ module.exports.corrections = {
   1641421349223: {
     address: "Jewel-Osco 3429 - 8730 W Dempster St, Niles, IL, 60714",
   },
+  1642014209365: {
+    address: "Jewel-Osco 4057 - 10203 W Grand Ave, Franklin Park, IL, 60131",
+    description:
+      "Ages 5-11 Instore Pediatric COVID Vaccination Event. This is held within Jewel-Osco.",
+  },
+  1641421916487: {
+    address:
+      "Jewel-Osco 3461 - 1860 S. Arlington Heights Rd., Arlington Heights, IL, 60005",
+    description:
+      "Ages 5-11 Instore Pediatric COVID Vaccination Event. This is held within Jewel-Osco.",
+  },
+  1636035919071: {
+    address: "Safeway #4002 - 5727 Burke Ctr, Burke, VA, 22015",
+  },
+  1636072576751: {
+    address: "Vons 2071 - 2250 Otay Lakes, Chula Vista, CA, 91915",
+  },
+  1636040926832: {
+    address:
+      "Pavilions 2233 - 7 Peninsula Center, Rolling Hills Estates, CA, 90274",
+  },
+  1640017202147: {
+    address:
+      "Covina Valley USD at The Hanes Center Field - 252 W Puente St 2nd Floor, Covina, CA, 91723",
+  },
+  1636072844592: {
+    address: "Albertsons 758 - 543 Sweetwater Rd, Spring Valley, CA, 91977",
+  },
+  1636040974661: {
+    address: "Albertsons 598 - 2000 E. 17th St., Santa Ana, CA, 92705",
+  },
+  1639432080601: {
+    address:
+      "Safeway 1466 - 1121 North Circle Dr., Colorado Springs, CO, 80909",
+  },
+  1635957678982: {
+    address: "Albertsons 168 - 405 South 8th, Payette, ID, 83661",
+  },
+  1636041009830: {
+    address:
+      "Pavilions 2217 - 22451 Antonio Parkway, Rancho S Margarita, CA, 92688",
+  },
+  1635549531160: {
+    address: "Pavilions 2206 - 16450 Beach Blvd, Westminster, CA, 92683",
+  },
+  1635549499002: {
+    address: "Vons 3519 - 4550 Atlantic Ave, Long Beach, CA, 90807",
+  },
+  1635549466460: {
+    address: "Albertsons 108 - 1735 Artesia Blvd., Gardena, CA, 90248",
+  },
+  1640969604226: {
+    address: "Vons 1638 - 4226 Woodruff Avenue, Lakewood, CA, 90713",
+  },
+  1635964207815: {
+    address: "Vons 2784 - 515 W Washington St, San Diego, CA, 92103",
+  },
+  1640025694701: {
+    address: "Albertsons 331 - 927 S. China Lake Blvd., Ridgecrest, CA, 93555",
+  },
+  1636075700051: {
+    address: "Vons 2724 - 3439 Via Montebello, Carlsbad, CA, 92009",
+  },
+  1639634436428: {
+    address: "Vons 1797 - 4627 Carmel Mountain Road, San Diego, CA, 92130",
+  },
+  1639635348134: {
+    address: "Vons 1797 - 4627 Carmel Mountain Road, San Diego, CA, 92130",
+  },
+  1639635038013: {
+    address: "Vons 1797 - 4627 Carmel Mountain Road, San Diego, CA, 92130",
+  },
+  1638995474243: {
+    address:
+      "Vibrant Minds Charter School - 412 W. Carl Karcher Way, Anaheim, CA, 92801",
+  },
 
   // Some Safeways have their pediatric vaccines listed as "Peds" instead of
   // "Safeway". Not sure it's safe to always assume Safeway is the right fix,

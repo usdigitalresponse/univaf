@@ -226,6 +226,28 @@ describe("Albertsons", () => {
     expect(result[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
 
+  it("skips over test locations", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(200, [
+        {
+          id: "1600116808972",
+          region: "Alaska",
+          address: "Public Test  - 1211 Test St, Testville, AK, 99201",
+          lat: "47.66007159999999",
+          long: "-117.4316272",
+          coach_url: "https://kordinator.mhealthcoach.net/vcl/1638566162684",
+          availability: "no",
+          drugName: ["PfizerChild"],
+          availabilityTimeframe: null,
+        },
+      ]);
+
+    const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toHaveLength(0);
+  });
+
   it("handles separate adult and pediatric entries for the same location", async () => {
     nock(API_URL_BASE)
       .get(API_URL_PATH)
@@ -467,6 +489,22 @@ describe("Albertsons", () => {
         lat: "38.98247194054162",
         long: "-76.9879339600021",
         coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
+        availability: "yes",
+        drugName: ["PfizerChild"],
+      });
+    }).toThrow(ParseError);
+  });
+
+  it("errors when formatting locations with a URL for a name", () => {
+    expect(() => {
+      formatLocation({
+        id: "1637101034326",
+        region: "Eastern_-_6",
+        address:
+          "https://kordinator.mhealthcoach.net/vcl/1636075700051 - Vons - 3439 Via Montebello, Carlsbad, CA, 92009",
+        lat: "38.98247194054162",
+        long: "-76.9879339600021",
+        coach_url: "https://kordinator.mhealthcoach.net/vcl/1636075700051",
         availability: "yes",
         drugName: ["PfizerChild"],
       });

@@ -45,6 +45,10 @@ const API_URL =
 // field, we use this generic URL instead in those cases.
 const GENERIC_BOOKING_URL = "https://www.mhealthappointments.com/covidappt";
 
+// There are test locations in the data; this pattern should match their names
+// so we know to skip over them.
+const TEST_NAME_PATTERN = /^public test$/i;
+
 // Maps Albertsons product names to our product names.
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
@@ -192,7 +196,14 @@ const BRANDS = [
     name: "Community Clinic",
     locationType: LocationType.clinic,
     pattern: {
-      test: (name) => !/\w+\s+#?\d+$/.test(name),
+      test: (name) => {
+        // Teamsters needs explicit support because it looks like "name followed
+        // by store number", which we explicitly disallow for community clinics
+        // in the first pattern.
+        return (
+          !/(\w+\s+#?\d+$)|^\d+\s/.test(name) || /^teamsters local/i.test(name)
+        );
+      },
     },
   },
 ];
@@ -257,7 +268,11 @@ async function getData(states) {
       const adult = group.find((l) => l.meta.booking_url_adult);
       const pediatric = group.find((l) => l.meta.booking_url_pediatric);
 
-      if (!adult || !pediatric) {
+      // If a location had no available vaccines and had no special naming
+      // prefix, we won't know whether it is adult or pediatric. We can't know
+      // whether this is a problem or not, so always allow it.
+      const unknown = group.find((l) => !l.availability.products);
+      if (!unknown && (!adult || !pediatric)) {
         warn(
           "Trying to merge locations other than an adult and pediatric!",
           group
@@ -268,8 +283,8 @@ async function getData(states) {
       const result = Object.assign({}, ...group);
       result.meta = {
         ...adult.meta,
-        booking_url_adult: adult.booking_url,
-        booking_url_pediatric: pediatric.booking_url,
+        booking_url_adult: adult?.booking_url,
+        booking_url_pediatric: pediatric?.booking_url,
       };
       result.booking_url = GENERIC_BOOKING_URL;
       result.external_ids = getUniqueExternalIds(
@@ -295,8 +310,13 @@ async function getData(states) {
     .filter(Boolean);
 }
 
+const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
 const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
-const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
+const pediatricPrefixes = [
+  /^Pfizer Child\s*-\s*(?<body>.*)$/i,
+  /^Ages 5\+ welcome\s*-\s*(?<body>.*)$/i,
+  /^All ages welcome 5\+\s+(?<body>.*)$/i,
+];
 
 /**
  * Parse a location name and address from Albertsons (they're both part of
@@ -305,9 +325,26 @@ const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
  * @returns {{name: string, storeBrand: string|undefined, storeNumber: string|undefined, isPediatric: boolean, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
  */
 function parseNameAndAddress(text) {
+  // Some locations have names like:
+  //   https://kordinator.mhealthcoach.net/vcl/1636075700051 - Vons - 3439 Via Montebello, Carlsbad, CA, 92009
+  // We've yet to see any that have enough info to be useful (e.g. no store # in
+  // the example above), so just throw as an error here.
+  if (urlPattern.test(text)) {
+    throw new ParseError(`Found a URL in the name "${text}"`);
+  }
+
   // Some locations have separate pediatric and non-pediatric API locations.
-  // The pediatric ones are prefixed with "Pfizer Child".
-  const { pediatric, body } = text.match(pediatricPrefixParts).groups;
+  // The pediatric ones oftne have prefixes like "Pfizer Child".
+  let pediatric = false;
+  let body = text;
+  for (const pattern of pediatricPrefixes) {
+    const match = text.match(pattern);
+    if (match) {
+      pediatric = true;
+      body = match.groups.body;
+      break;
+    }
+  }
 
   const partMatch = body.match(addressFieldParts);
   if (!partMatch) {
@@ -375,6 +412,12 @@ function formatLocation(data, validAt, checkedAt) {
 
   let { name, storeNumber, storeBrand, address, isPediatric } =
     parseNameAndAddress(data.address);
+
+  // There are test locations in the data, and we should skip them.
+  if (TEST_NAME_PATTERN.test(name)) {
+    return null;
+  }
+
   if (!storeBrand) {
     return null;
   }
@@ -421,6 +464,9 @@ function formatLocation(data, validAt, checkedAt) {
       albertsons_region: data.region,
       [`booking_url_${bookingType}`]: data.coach_url || undefined,
     },
+
+    // The raw data doesn't have a `description`, but some corrections add it.
+    description: data.description,
 
     availability: {
       source: "univaf-albertsons",
