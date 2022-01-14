@@ -162,7 +162,7 @@ const riteAidLocationSchema = {
         type: "object",
         properties: {
           date: { type: "string", format: "date" },
-          available_slots: { type: "integer", minimum: 1 },
+          available_slots: { type: "integer", minimum: 0 },
           slots: {
             type: "object",
             patternProperties: {
