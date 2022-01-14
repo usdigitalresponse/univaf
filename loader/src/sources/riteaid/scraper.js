@@ -11,7 +11,7 @@
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
-const { HttpApiError } = require("../../exceptions");
+const { HttpApiError, ParseError } = require("../../exceptions");
 const { Available, LocationType, VaccineProduct } = require("../../model");
 const {
   httpClient,
@@ -105,7 +105,35 @@ async function* queryState(state, rateLimit = null) {
 }
 
 function formatLocation(apiData) {
-  const slots = formatSlots(apiData);
+  if (
+    !Array.isArray(apiData.availableSlots) ||
+    typeof apiData.totalAvailableSlots !== "number" ||
+    typeof apiData.totalSlotCount !== "number" ||
+    !("firstAvailableSlot" in apiData)
+  ) {
+    const error = new ParseError("Raw data did not match expected format");
+    throw Object.assign(error, { data: apiData });
+  }
+
+  // There's a complicated situation where we may be dealing with a summary
+  // object or with an object that has full slot detail. They both have the
+  // same properties, but different values:
+  //                     | Summary     | Detail
+  //                     | ----------- | ------
+  // totalSlotCount      | Number      | 0
+  // totalAvailableSlots | 0           | Number
+  // firstAvailableSlot  | Time string | null
+  // availableSlots      | Empty array | Array with data in it
+  //
+  // Therefore, if we have slot data, we should use it. Otherwise look to see
+  // if `firstAvailableSlot` is filled in, in which case we know not to try and
+  // surface slots (if it's not filled in, surfacing an empty list of slots is
+  // ok, because it is in fact accurate!).
+  let slots;
+  if (apiData.availableSlots.length > 0 || !apiData.firstAvailableSlot) {
+    slots = formatSlots(apiData);
+  }
+  const isAvailable = slots?.length > 0 || apiData.firstAvailableSlot;
 
   return {
     name: `Rite Aid #${apiData.storeNumber}`,
@@ -134,7 +162,7 @@ function formatLocation(apiData) {
     availability: {
       source: "univaf-rite-aid-scraper",
       checked_at: DateTime.utc().toString(),
-      available: slots.length > 0 ? Available.yes : Available.no,
+      available: isAvailable ? Available.yes : Available.no,
       slots,
     },
   };
