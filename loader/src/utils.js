@@ -326,16 +326,22 @@ module.exports = {
   },
 
   createWarningLogger(prefix) {
-    return function warn(message, context) {
+    return function warn(message, context, sendContextToSentry = false) {
       console.warn(
         `${prefix}: ${message}`,
         context !== undefined ? nodeUtil.inspect(context, { depth: 8 }) : ""
       );
+
+      const sentryInfo = { level: Sentry.Severity.Info };
+      if (context && sendContextToSentry) {
+        sentryInfo.contexts = { context };
+      }
+
       // Sentry does better fingerprinting with an actual exception object.
       if (message instanceof Error) {
-        Sentry.captureException(message, { level: Sentry.Severity.Info });
+        Sentry.captureException(message, sentryInfo);
       } else {
-        Sentry.captureMessage(message, Sentry.Severity.Info);
+        Sentry.captureMessage(message, sentryInfo);
       }
     };
   },

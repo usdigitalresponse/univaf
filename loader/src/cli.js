@@ -176,7 +176,7 @@ function main() {
             type: "number",
             describe: oneLine`
               Only make this many HTTP requests per second. (Only applies to
-              the "riteAidScraper" source for now.)
+              the Rite Aid sources for now.)
             `,
           }),
       handler: run,
