@@ -473,6 +473,22 @@ describe("Albertsons", () => {
     }).toThrow(ParseError);
   });
 
+  it("errors when formatting locations with a URL for a name", () => {
+    expect(() => {
+      formatLocation({
+        id: "1637101034326",
+        region: "Eastern_-_6",
+        address:
+          "https://kordinator.mhealthcoach.net/vcl/1636075700051 - Vons - 3439 Via Montebello, Carlsbad, CA, 92009",
+        lat: "38.98247194054162",
+        long: "-76.9879339600021",
+        coach_url: "https://kordinator.mhealthcoach.net/vcl/1636075700051",
+        availability: "yes",
+        drugName: ["PfizerChild"],
+      });
+    }).toThrow(ParseError);
+  });
+
   it("includes manual corrections to locations", () => {
     // Should replace the provided address with this one.
     corrections["123456789"] = {

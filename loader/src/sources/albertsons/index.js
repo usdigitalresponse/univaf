@@ -295,6 +295,7 @@ async function getData(states) {
     .filter(Boolean);
 }
 
+const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
 const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
 const pediatricPrefixes = [
   /^Pfizer Child\s*-\s*(?<body>.*)$/i,
@@ -309,6 +310,14 @@ const pediatricPrefixes = [
  * @returns {{name: string, storeBrand: string|undefined, storeNumber: string|undefined, isPediatric: boolean, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
  */
 function parseNameAndAddress(text) {
+  // Some locations have names like:
+  //   https://kordinator.mhealthcoach.net/vcl/1636075700051 - Vons - 3439 Via Montebello, Carlsbad, CA, 92009
+  // We've yet to see any that have enough info to be useful (e.g. no store # in
+  // the example above), so just throw as an error here.
+  if (urlPattern.test(text)) {
+    throw new ParseError(`Found a URL in the name "${text}"`);
+  }
+
   // Some locations have separate pediatric and non-pediatric API locations.
   // The pediatric ones oftne have prefixes like "Pfizer Child".
   let pediatric = false;
