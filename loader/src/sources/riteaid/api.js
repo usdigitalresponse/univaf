@@ -3,11 +3,11 @@ const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
 // const { logger } = require("../logging");
 const { Available, LocationType } = require("../../model");
-const { httpClient } = require("../../utils");
+const { createWarningLogger, httpClient, RateLimit } = require("../../utils");
 
 // FIXME: need to implement proper logging
 // const log = logger.child({ source: "riteaidApi" });
-const log = console;
+const warn = createWarningLogger("Albertsons");
 
 // States in which Rite Aid has stores.
 const riteAidStates = new Set([
@@ -31,7 +31,7 @@ const riteAidStates = new Set([
   "WA",
 ]);
 
-async function queryState(state) {
+async function queryState(state, rateLimit = null) {
   const RITE_AID_URL = process.env["RITE_AID_URL"];
   const RITE_AID_KEY = process.env["RITE_AID_KEY"];
 
@@ -40,6 +40,8 @@ async function queryState(state) {
       "RITE_AID_URL and RITE_AID_KEY must be provided as environment variables"
     );
   }
+
+  if (rateLimit) await rateLimit.ready();
 
   const body = await httpClient({
     url: RITE_AID_URL,
@@ -64,7 +66,6 @@ function formatStore(provider) {
 
   let county = provider.location.county;
   if (!county) county = geocoding.guessCounty(address);
-  if (!county) log.warn(`No county for store ${provider.id}`);
 
   const address_lines = [provider.location.street];
   if (provider.location.street_line_2) {
@@ -161,9 +162,22 @@ async function checkAvailability(handler, options) {
     console.warn(`No states set for riteAidApi (supported: ${statesText})`);
   }
 
+  if (options.rateLimit != null && isNaN(options.rateLimit)) {
+    throw new Error("Invalid --rate-limit set.");
+  }
+
+  const rateLimit = new RateLimit(options.rateLimit || 1);
+
   let results = [];
   for (const state of states) {
-    const stores = await queryState(state);
+    let stores;
+    try {
+      stores = await queryState(state, rateLimit);
+    } catch (error) {
+      warn(error, { state, source: "Rite Aid API" }, true);
+      continue;
+    }
+
     stores.forEach((store) => handler(store));
     results = results.concat(stores);
   }
