@@ -296,7 +296,11 @@ async function getData(states) {
 }
 
 const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
-const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
+const pediatricPrefixes = [
+  /^Pfizer Child\s*-\s*(?<body>.*)$/i,
+  /^Ages 5\+ welcome\s*-\s*(?<body>.*)$/i,
+  /^All ages welcome 5\+\s+(?<body>.*)$/i,
+];
 
 /**
  * Parse a location name and address from Albertsons (they're both part of
@@ -306,8 +310,17 @@ const pediatricPrefixParts = /^(?<pediatric>Pfizer Child\s*-\s*)?(?<body>.*)$/i;
  */
 function parseNameAndAddress(text) {
   // Some locations have separate pediatric and non-pediatric API locations.
-  // The pediatric ones are prefixed with "Pfizer Child".
-  const { pediatric, body } = text.match(pediatricPrefixParts).groups;
+  // The pediatric ones oftne have prefixes like "Pfizer Child".
+  let pediatric = false;
+  let body = text;
+  for (const pattern of pediatricPrefixes) {
+    const match = text.match(pattern);
+    if (match) {
+      pediatric = true;
+      body = match.groups.body;
+      break;
+    }
+  }
 
   const partMatch = body.match(addressFieldParts);
   if (!partMatch) {
