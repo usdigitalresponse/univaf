@@ -11,8 +11,9 @@
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
-const { HttpApiError, ParseError } = require("../../exceptions");
+const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType, VaccineProduct } = require("../../model");
+const { assertSchema } = require("../../schema-validation");
 const {
   httpClient,
   RateLimit,
@@ -191,22 +192,8 @@ const riteAidLocationSchema = {
 };
 riteAidLocationSchema.required = Object.keys(riteAidLocationSchema.properties);
 
-const Ajv = require("ajv");
-const addFormats = require("ajv-formats");
-
-const ajv = new Ajv({ allErrors: true, verbose: true });
-addFormats(ajv);
-
 function formatLocation(apiData) {
-  if (!ajv.validate(riteAidLocationSchema, apiData)) {
-    throw Object.assign(new ParseError("Data did not match expected format"), {
-      data: apiData,
-      schemaErrors: ajv.errors.map((error) => {
-        const value = JSON.stringify(error.data) || "undefined";
-        return `${error.instancePath} ${error.message} (value: \`${value}\`)`;
-      }),
-    });
-  }
+  assertSchema(riteAidLocationSchema, apiData);
 
   // There's a complicated situation where we may be dealing with a summary
   // object or with an object that has full slot detail. They both have the
