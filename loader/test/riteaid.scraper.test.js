@@ -60,68 +60,82 @@ describe("Rite Aid Scraper", () => {
               firstAvailableSlot: "2021-11-23T17:00:00",
               totalAvailableSlots: 0,
               availableSlots: [],
-              // FIXME: we'll want these back when we fix getting full data.
-              // totalAvailableSlots: 5,
-              // availableSlots: [
-              //   {
-              //     date: "2021-11-23",
-              //     available_slots: 1,
-              //     slots: {
-              //       9: [
-              //         {
-              //           appointmentId: "64271018",
-              //           apptDateTime: "2021-11-23T17:00:00",
-              //         },
-              //       ],
-              //       11: [
-              //         {
-              //           appointmentId: "64271018",
-              //           apptDateTime: "2021-11-23T17:00:00",
-              //         },
-              //       ],
-              //       13: [],
-              //       47: [],
-              //     },
-              //   },
-              //   {
-              //     date: "2021-11-24",
-              //     available_slots: 4,
-              //     slots: {
-              //       9: [
-              //         {
-              //           appointmentId: "21189068",
-              //           apptDateTime: "2021-11-24T09:20:00",
-              //         },
-              //         {
-              //           appointmentId: "21189069",
-              //           apptDateTime: "2021-11-24T09:40:00",
-              //         },
-              //       ],
-              //       11: [
-              //         {
-              //           appointmentId: "21189068",
-              //           apptDateTime: "2021-11-24T09:20:00",
-              //         },
-              //         {
-              //           appointmentId: "21189070",
-              //           apptDateTime: "2021-11-24T10:00:00",
-              //         },
-              //       ],
-              //       13: [
-              //         {
-              //           appointmentId: "21189071",
-              //           apptDateTime: "2021-11-24T10:20:00",
-              //         },
-              //       ],
-              //       47: [
-              //         {
-              //           appointmentId: "21189071",
-              //           apptDateTime: "2021-11-24T10:20:00",
-              //         },
-              //       ],
-              //     },
-              //   },
-              // ],
+            },
+          ],
+        },
+      });
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query((query) => query.storeNumbers === `${basicLocation.storeNumber}`)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              totalSlotCount: 0,
+              firstAvailableSlot: null,
+              totalAvailableSlots: 5,
+              availableSlots: [
+                {
+                  date: "2021-11-23",
+                  available_slots: 1,
+                  slots: {
+                    9: [
+                      {
+                        appointmentId: "64271018",
+                        apptDateTime: "2021-11-23T17:00:00",
+                      },
+                    ],
+                    11: [
+                      {
+                        appointmentId: "64271018",
+                        apptDateTime: "2021-11-23T17:00:00",
+                      },
+                    ],
+                    13: [],
+                    47: [],
+                  },
+                },
+                {
+                  date: "2021-11-24",
+                  available_slots: 4,
+                  slots: {
+                    9: [
+                      {
+                        appointmentId: "21189068",
+                        apptDateTime: "2021-11-24T09:20:00",
+                      },
+                      {
+                        appointmentId: "21189069",
+                        apptDateTime: "2021-11-24T09:40:00",
+                      },
+                    ],
+                    11: [
+                      {
+                        appointmentId: "21189068",
+                        apptDateTime: "2021-11-24T09:20:00",
+                      },
+                      {
+                        appointmentId: "21189070",
+                        apptDateTime: "2021-11-24T10:00:00",
+                      },
+                    ],
+                    13: [
+                      {
+                        appointmentId: "21189071",
+                        apptDateTime: "2021-11-24T10:20:00",
+                      },
+                    ],
+                    47: [
+                      {
+                        appointmentId: "21189071",
+                        apptDateTime: "2021-11-24T10:20:00",
+                      },
+                    ],
+                  },
+                },
+              ],
             },
           ],
         },
@@ -152,33 +166,33 @@ describe("Rite Aid Scraper", () => {
           source: "univaf-rite-aid-scraper",
           available: "YES",
           checked_at: expectDatetimeString(),
-          // slots: [
-          //   {
-          //     start: "2021-11-23T17:00:00-05:00",
-          //     available: "YES",
-          //     products: ["moderna", "pfizer"],
-          //   },
-          //   {
-          //     start: "2021-11-24T09:20:00-05:00",
-          //     available: "YES",
-          //     products: ["moderna", "pfizer"],
-          //   },
-          //   {
-          //     start: "2021-11-24T09:40:00-05:00",
-          //     available: "YES",
-          //     products: ["moderna"],
-          //   },
-          //   {
-          //     start: "2021-11-24T10:00:00-05:00",
-          //     available: "YES",
-          //     products: ["pfizer"],
-          //   },
-          //   {
-          //     start: "2021-11-24T10:20:00-05:00",
-          //     available: "YES",
-          //     products: ["jj", "pfizer_age_5_11"],
-          //   },
-          // ],
+          slots: [
+            {
+              start: "2021-11-23T17:00:00-05:00",
+              available: "YES",
+              products: ["moderna", "pfizer"],
+            },
+            {
+              start: "2021-11-24T09:20:00-05:00",
+              available: "YES",
+              products: ["moderna", "pfizer"],
+            },
+            {
+              start: "2021-11-24T09:40:00-05:00",
+              available: "YES",
+              products: ["moderna"],
+            },
+            {
+              start: "2021-11-24T10:00:00-05:00",
+              available: "YES",
+              products: ["pfizer"],
+            },
+            {
+              start: "2021-11-24T10:20:00-05:00",
+              available: "YES",
+              products: ["jj", "pfizer_age_5_11"],
+            },
+          ],
         },
       },
     ]);
@@ -188,6 +202,23 @@ describe("Rite Aid Scraper", () => {
     nock(API_URL_BASE)
       .get(API_URL_PATH)
       .query(true)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              totalSlotCount: 50,
+              firstAvailableSlot: null,
+              totalAvailableSlots: 0,
+              availableSlots: [],
+            },
+          ],
+        },
+      });
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query((query) => query.storeNumbers === `${basicLocation.storeNumber}`)
       .reply(200, {
         Status: "SUCCESS",
         data: {
