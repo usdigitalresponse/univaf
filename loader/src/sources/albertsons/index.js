@@ -45,6 +45,10 @@ const API_URL =
 // field, we use this generic URL instead in those cases.
 const GENERIC_BOOKING_URL = "https://www.mhealthappointments.com/covidappt";
 
+// There are test locations in the data; this pattern should match their names
+// so we know to skip over them.
+const TEST_NAME_PATTERN = /^public test$/i;
+
 // Maps Albertsons product names to our product names.
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
@@ -397,6 +401,12 @@ function formatLocation(data, validAt, checkedAt) {
 
   let { name, storeNumber, storeBrand, address, isPediatric } =
     parseNameAndAddress(data.address);
+
+  // There are test locations in the data, and we should skip them.
+  if (TEST_NAME_PATTERN.test(name)) {
+    return null;
+  }
+
   if (!storeBrand) {
     return null;
   }

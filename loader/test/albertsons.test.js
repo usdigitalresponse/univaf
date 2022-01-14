@@ -226,6 +226,28 @@ describe("Albertsons", () => {
     expect(result[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
 
+  it("skips over test locations", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(200, [
+        {
+          id: "1600116808972",
+          region: "Alaska",
+          address: "Public Test  - 1211 Test St, Testville, AK, 99201",
+          lat: "47.66007159999999",
+          long: "-117.4316272",
+          coach_url: "https://kordinator.mhealthcoach.net/vcl/1638566162684",
+          availability: "no",
+          drugName: ["PfizerChild"],
+          availabilityTimeframe: null,
+        },
+      ]);
+
+    const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toHaveLength(0);
+  });
+
   it("handles separate adult and pediatric entries for the same location", async () => {
     nock(API_URL_BASE)
       .get(API_URL_PATH)
