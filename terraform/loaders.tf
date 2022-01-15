@@ -50,7 +50,7 @@ module "rite_aid_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(10 minutes)"
+  schedule      = "rate(30 minutes)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
@@ -70,8 +70,7 @@ module "rite_aid_scraper_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  # FIXME: this is temporarily disabled because of a change in data formats
-  schedule      = "cron(1 1 1 1 ? 1970)"
+  schedule      = "cron(*/10 * * * ? *)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
