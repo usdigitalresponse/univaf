@@ -13,6 +13,7 @@ const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
 const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType, VaccineProduct } = require("../../model");
+const { assertSchema } = require("../../schema-validation");
 const {
   httpClient,
   RateLimit,
@@ -20,6 +21,9 @@ const {
   createWarningLogger,
 } = require("../../utils");
 const { zipCodesCovering100Miles } = require("./zip-codes");
+
+// Load slot-level data in chunks of this many stores at a time.
+const SLOT_QUERY_CHUNK_SIZE = 25;
 
 const API_URL =
   "https://www.riteaid.com/content/riteaid-web/en.racloudgetavailablestores.json";
@@ -53,7 +57,7 @@ class RiteAidXhrError extends HttpApiError {
   }
 }
 
-async function queryZipCode(zip, radius = 100) {
+async function queryZipCode(zip, radius = 100, stores = null) {
   const response = await httpClient({
     url: API_URL,
     searchParams: {
@@ -67,6 +71,12 @@ async function queryZipCode(zip, radius = 100) {
       count: 1000,
       // Must be set.
       fetchMechanismVersion: 2,
+      // Optional: if a list of store numbers is set, the returned data will
+      // have slot-level detail filled in for those stores. Otherwise, it will
+      // only include the time of the first available slot for each store.
+      storeNumbers: stores ? stores.join(",") : undefined,
+      // Must be set along with `storeNumbers` to get slot data.
+      loadMoreFlag: true,
     },
     responseType: "json",
   });
@@ -78,7 +88,7 @@ async function queryZipCode(zip, radius = 100) {
   return response.body;
 }
 
-async function* queryState(state, rateLimit = null) {
+async function* queryState(state, rateLimit = null, summaryOnly = false) {
   const zipCodes = zipCodesCovering100Miles[state];
   if (!zipCodes) {
     throw new Error(`There are no known zip codes to query in "${state}"`);
@@ -95,17 +105,115 @@ async function* queryState(state, rateLimit = null) {
 
     // If there are no results, `body.data.stores` is `null`.
     const stores = body.data.stores || [];
+    const newStores = [];
     for (const item of stores) {
       if (!seenStores.has(item.storeNumber) && item.state === state) {
         seenStores.add(item.storeNumber);
+        newStores.push(item.storeNumber);
+      }
+    }
+
+    if (summaryOnly) {
+      yield* newStores;
+      continue;
+    }
+
+    // A query by zip code only returns a list of stores. You need to make the
+    // same query again but with a list of store numbers to get actual
+    // appointment slots.
+    for (let i = 0; i < newStores.length; i += SLOT_QUERY_CHUNK_SIZE) {
+      const chunk = newStores.slice(i, i + SLOT_QUERY_CHUNK_SIZE);
+      const fullData = await queryZipCode(zipCode, 100, chunk);
+      for (const item of fullData.data.stores || []) {
         yield item;
       }
     }
   }
 }
 
+// API data for each location should look like this. The schema is fairly strict
+// since we are pulling on an unversioned API designed for the web UI, and want
+// the system to scream at us for any potentially impactful change.
+const riteAidLocationSchema = {
+  type: "object",
+  properties: {
+    storeNumber: { type: "integer", minimum: 1 },
+    address: { type: "string" },
+    city: { type: "string" },
+    state: { type: "string", pattern: "[A-Z]{2}" },
+    zipcode: { type: "string", pattern: "\\d{1,5}" },
+    timeZone: {
+      enum: ["EST", "EDT", "CST", "CDT", "MST", "MDT", "PST", "PDT"],
+    },
+    fullZipCode: { type: "string", pattern: "\\d{1,5}-\\d{1,4}" },
+    fullPhone: { type: "string", nullable: true },
+    locationDescription: { type: "string" },
+    storeType: { enum: ["CORE"] },
+    latitude: { type: "number" },
+    longitude: { type: "number" },
+    name: { type: "string" },
+    milesFromCenter: { type: "number", minimum: 0 },
+    totalSlotCount: { type: "integer", minimum: 0 },
+    totalAvailableSlots: { type: "integer", minimum: 0 },
+    firstAvailableSlot: { type: "string", format: "date", nullable: true },
+    specialServiceKeys: { type: "array", items: { type: "string" } },
+    availableSlots: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          date: { type: "string", format: "date" },
+          available_slots: { type: "integer", minimum: 0 },
+          slots: {
+            type: "object",
+            patternProperties: {
+              "\\d+": {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    appointmentId: { type: "string", pattern: "\\d+" },
+                    apptDateTime: { type: "string" },
+                  },
+                  required: ["appointmentId", "apptDateTime"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["date", "available_slots", "slots"],
+        additionalProperties: false,
+      },
+    },
+  },
+  additionalProperties: false,
+};
+riteAidLocationSchema.required = Object.keys(riteAidLocationSchema.properties);
+
 function formatLocation(apiData) {
-  const slots = formatSlots(apiData);
+  assertSchema(riteAidLocationSchema, apiData);
+
+  // There's a complicated situation where we may be dealing with a summary
+  // object or with an object that has full slot detail. They both have the
+  // same properties, but different values:
+  //                     | Summary     | Detail
+  //                     | ----------- | ------
+  // totalSlotCount      | Number      | 0
+  // totalAvailableSlots | 0           | Number
+  // firstAvailableSlot  | Time string | null
+  // availableSlots      | Empty array | Array with data in it
+  //
+  // Therefore, if we have slot data, we should use it. Otherwise look to see
+  // if `firstAvailableSlot` is filled in, in which case we know not to try and
+  // surface slots (if it's not filled in, surfacing an empty list of slots is
+  // ok, because it is in fact accurate!).
+  let slots;
+  if (apiData.availableSlots.length > 0 || !apiData.firstAvailableSlot) {
+    slots = formatSlots(apiData);
+  }
+  const isAvailable = slots?.length > 0 || apiData.firstAvailableSlot;
 
   return {
     name: `Rite Aid #${apiData.storeNumber}`,
@@ -134,7 +242,7 @@ function formatLocation(apiData) {
     availability: {
       source: "univaf-rite-aid-scraper",
       checked_at: DateTime.utc().toString(),
-      available: slots.length > 0 ? Available.yes : Available.no,
+      available: isAvailable ? Available.yes : Available.no,
       slots,
     },
   };

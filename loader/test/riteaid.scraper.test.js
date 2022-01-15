@@ -56,6 +56,25 @@ describe("Rite Aid Scraper", () => {
           stores: [
             {
               ...basicLocation,
+              totalSlotCount: 50,
+              firstAvailableSlot: "2021-11-23T17:00:00",
+              totalAvailableSlots: 0,
+              availableSlots: [],
+            },
+          ],
+        },
+      });
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query((query) => query.storeNumbers === `${basicLocation.storeNumber}`)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              totalSlotCount: 0,
+              firstAvailableSlot: null,
               totalAvailableSlots: 5,
               availableSlots: [
                 {
@@ -189,6 +208,25 @@ describe("Rite Aid Scraper", () => {
           stores: [
             {
               ...basicLocation,
+              totalSlotCount: 50,
+              firstAvailableSlot: null,
+              totalAvailableSlots: 0,
+              availableSlots: [],
+            },
+          ],
+        },
+      });
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query((query) => query.storeNumbers === `${basicLocation.storeNumber}`)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              totalSlotCount: 50,
+              firstAvailableSlot: null,
               totalAvailableSlots: 0,
               availableSlots: [],
             },
