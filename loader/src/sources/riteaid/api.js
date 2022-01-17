@@ -1,13 +1,10 @@
 const { DateTime } = require("luxon");
-const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
-// const { logger } = require("../logging");
+const { ParseError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
 const { createWarningLogger, httpClient, RateLimit } = require("../../utils");
 
-// FIXME: need to implement proper logging
-// const log = logger.child({ source: "riteaidApi" });
-const warn = createWarningLogger("Albertsons");
+const warn = createWarningLogger("Rite Aid API");
 
 // States in which Rite Aid has stores.
 const riteAidStates = new Set([
@@ -61,6 +58,37 @@ async function queryState(state, rateLimit = null) {
   return body.Data.providerDetails.map(formatStore);
 }
 
+/**
+ * Parse Rite Aid-style datetimes (their format is entirely non-standard).
+ * @param {string} text
+ * @returns {DateTime}
+ */
+function parseUpdateTime(text) {
+  let validTime;
+  if (/^\d{4}\/\d\d\/\d\d \d\d:\d\d:\d\d$/.test(text)) {
+    validTime = DateTime.fromFormat(text, "yyyy/MM/dd HH:mm:ss", {
+      zone: "UTC",
+    });
+  } else if (text) {
+    validTime = DateTime.fromISO(text);
+  }
+
+  if (validTime.isValid) {
+    // Sanity-check that the date appears reasonable, in case the time zone
+    // changed or the format changed in another subtle way.
+    const offset = validTime.diffNow("hours").hours;
+    if (offset >= 0 || offset < -2) {
+      throw new ParseError(`Offset from now (${offset} hours) is too large`);
+    }
+
+    return validTime;
+  } else {
+    throw new ParseError(
+      `${validTime.invalidReason}: ${validTime.invalidExplanation}`
+    );
+  }
+}
+
 function formatStore(provider) {
   const address = formatAddress(provider.location);
 
@@ -74,23 +102,10 @@ function formatStore(provider) {
 
   const checked_at = DateTime.utc().toString();
   let valid_at;
-  let validTime;
-  if (/^\d{4}\/\d\d\/\d\d \d\d:\d\d:\d\d$/.test(provider.last_updated)) {
-    validTime = DateTime.fromFormat(
-      provider.last_updated,
-      "yyyy/MM/dd hh:mm:ss",
-      { zone: "UTC" }
-    );
-  } else if (provider.last_updated) {
-    validTime = DateTime.fromISO(provider.last_updated);
-  }
-
-  if (validTime.isValid) {
-    valid_at = validTime.toUTC().toString();
-  } else {
-    const message = `Error parsing "last_updated": ${validTime.invalidReason}: ${validTime.invalidExplanation}`;
-    console.error(message);
-    Sentry.captureMessage(message, Sentry.Severity.ERROR);
+  try {
+    valid_at = parseUpdateTime(provider.last_updated).toUTC().toString();
+  } catch (error) {
+    warn(error);
     valid_at = checked_at;
   }
 
