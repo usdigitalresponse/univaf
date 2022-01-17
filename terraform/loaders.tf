@@ -46,7 +46,8 @@ module "rite_aid_loader" {
   name          = "riteAidApi"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "riteAidApi"
-  command       = ["--states", "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
+  // Our API key does not permit queries in CO, so it is missing from this list.
+  command       = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
