@@ -1,3 +1,4 @@
+const { DateTime } = require("luxon");
 const nock = require("nock");
 const { checkAvailability, queryState } = require("../src/sources/riteaid/api");
 const { locationSchema } = require("./support/schemas");
@@ -30,6 +31,15 @@ describe("Rite Aid Source", () => {
 
   it("processes response correctly", async () => {
     const apiResponse = require("./fixtures/riteaid.api.test.json");
+
+    // Set last_updated to a current time, rounded to the second.
+    const timestamp = Math.floor(Date.now() / 1000);
+    const now = DateTime.fromSeconds(timestamp, { zone: "UTC" });
+    const riteAidTime = now.toFormat("yyyy/MM/dd HH:mm:ss");
+    for (const record of apiResponse.Data.providerDetails) {
+      record.last_updated = riteAidTime;
+    }
+
     nock(API_URL).get("?stateCode=NJ").reply(200, apiResponse);
 
     const locations = await queryState("NJ");
@@ -50,8 +60,10 @@ describe("Rite Aid Source", () => {
       booking_phone: "(856) 825-7742",
       booking_url: "https://www.riteaid.com/pharmacy/covid-qualifier",
       availability: {
-        available: "YES",
+        source: "univaf-rite-aid-api",
         checked_at: locations[0].availability.checked_at,
+        valid_at: now.toISO(),
+        available: "YES",
         capacity: [
           {
             available: "YES",
@@ -168,8 +180,6 @@ describe("Rite Aid Source", () => {
             unavailable_count: 187,
           },
         ],
-        source: "univaf-rite-aid-api",
-        valid_at: "2021-04-23T14:52:05.000Z",
       },
     });
 
