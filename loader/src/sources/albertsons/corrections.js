@@ -89,6 +89,13 @@ module.exports.corrections = {
     address:
       "Vibrant Minds Charter School - 412 W. Carl Karcher Way, Anaheim, CA, 92801",
   },
+  1617256794999: {
+    address: "Albertsons 4231 - 215 N Carrier Pkwy, Grand Prairie, TX, 75050",
+  },
+  1643078690834: {
+    address:
+      "Rocketship Public School - 4250 Massachusetts Ave SE, Washington, DC, 20019",
+  },
 
   // Some Safeways have their pediatric vaccines listed as "Peds" instead of
   // "Safeway". Not sure it's safe to always assume Safeway is the right fix,
