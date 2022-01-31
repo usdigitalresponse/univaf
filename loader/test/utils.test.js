@@ -125,9 +125,9 @@ describe("RateLimit", () => {
     callTimes.push(Date.now());
 
     // Allow for some jitter, but it should be the rate or slower.
-    expect(callTimes[1] - callTimes[0]).toBeGreaterThanOrEqual(1000);
+    expect(callTimes[1] - callTimes[0]).toBeGreaterThanOrEqual(995);
     expect(callTimes[1] - callTimes[0]).toBeLessThan(1050);
-    expect(callTimes[2] - callTimes[1]).toBeGreaterThanOrEqual(1000);
+    expect(callTimes[2] - callTimes[1]).toBeGreaterThanOrEqual(995);
     expect(callTimes[2] - callTimes[1]).toBeLessThan(1050);
   });
 });
