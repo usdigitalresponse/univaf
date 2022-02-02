@@ -327,7 +327,7 @@ async function checkAvailability(handler, options) {
   }
 
   if (!states.length) {
-    console.warn(`No states set for riteAidApi`);
+    warn(`No states set for riteAidApi`);
   }
 
   if (options.rateLimit != null && isNaN(options.rateLimit)) {

@@ -9,24 +9,8 @@ const {
 const { locationSchema } = require("./support/schemas");
 const responseFixture = require("./fixtures/riteaid.api.test.json");
 
-// Capture warnings. After this mock, you can call `utils.getWarningLogger()`
-// to get Jest mock you can make assertions on, e.g:
-//     expect(utils.getWarningLogger()).toHaveBeenCalledWith("Some string");
-jest.mock("../src/utils", () => {
-  const originalModule = jest.requireActual("../src/utils");
-
-  let warningLogger;
-  return {
-    ...originalModule,
-    createWarningLogger() {
-      warningLogger = jest.fn();
-      return warningLogger;
-    },
-    getWarningLogger() {
-      return warningLogger;
-    },
-  };
-});
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
 
 function createMockApiLocation() {
   return {
@@ -260,10 +244,8 @@ describe("Rite Aid Source", () => {
     };
 
     formatStore(badData);
-    expect(utils.getWarningLogger()).toBeCalledWith(
-      expect.stringContaining("slot count"),
-      expect.anything(),
-      expect.anything()
+    expect(utils.__getWarnings()).toContainEqual(
+      expect.stringContaining("slot count")
     );
   });
 });
