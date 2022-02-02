@@ -13,6 +13,7 @@ const {
   assertSchema,
   requireAllProperties,
 } = require("../../schema-validation");
+const { RiteAidApiError } = require("./common");
 
 const warn = createWarningLogger("Rite Aid API");
 
@@ -125,24 +126,24 @@ async function queryState(state, rateLimit = null) {
 
   if (rateLimit) await rateLimit.ready();
 
-  const body = await httpClient({
+  const response = await httpClient({
     url: RITE_AID_URL,
     headers: { "Proxy-Authorization": "ldap " + RITE_AID_KEY },
     searchParams: { stateCode: state },
-  }).json();
+    responseType: "json",
+  });
 
-  assertSchema(riteAidWrapperSchema, body, "Response did not match schema");
-
-  if (body.Status !== "SUCCESS") {
-    console.error(body.Status);
-    console.error(body.ErrCde);
-    console.error(body.ErrMsg);
-    console.error(body.ErrMsgDtl);
-
-    throw new Error("RiteAid API request failed");
+  if (response.body.Status !== "SUCCESS") {
+    throw new RiteAidApiError(response);
   }
 
-  return body.Data.providerDetails;
+  assertSchema(
+    riteAidWrapperSchema,
+    response.body,
+    "Response did not match schema"
+  );
+
+  return response.body.Data.providerDetails;
 }
 
 /**

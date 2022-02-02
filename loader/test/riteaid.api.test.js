@@ -51,14 +51,14 @@ describe("Rite Aid Source", () => {
   });
 
   it("throws on failing API response", async () => {
-    nock(API_URL).get("?stateCode=NJ").reply(500, {
+    nock(API_URL).get("?stateCode=NJ").reply(200, {
       Status: "ERROR",
       ErrCde: "1234",
       ErrMsg: "RiteAid API timed out",
       ErrMsgDtl: "Timed out because things are pretty crazy over here!",
     });
 
-    await expect(queryState("NJ")).rejects.toThrow();
+    await expect(queryState("NJ")).rejects.toThrow("API timed out");
   });
 
   it("processes response correctly", async () => {
