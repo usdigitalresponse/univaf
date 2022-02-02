@@ -55,7 +55,7 @@ async function queryState(state, rateLimit = null) {
     throw new Error("RiteAid API request failed");
   }
 
-  return body.Data.providerDetails.map(formatStore);
+  return body.Data.providerDetails;
 }
 
 /**
@@ -187,7 +187,8 @@ async function checkAvailability(handler, options) {
   for (const state of states) {
     let stores;
     try {
-      stores = await queryState(state, rateLimit);
+      const rawData = await queryState(state, rateLimit);
+      stores = rawData.map(formatStore);
     } catch (error) {
       warn(error, { state, source: "Rite Aid API" }, true);
       continue;

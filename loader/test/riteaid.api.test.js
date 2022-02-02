@@ -42,7 +42,7 @@ describe("Rite Aid Source", () => {
 
     nock(API_URL).get("?stateCode=NJ").reply(200, apiResponse);
 
-    const locations = await queryState("NJ");
+    const locations = await checkAvailability(() => {}, { states: "NJ" });
     expect(locations.length).toBe(108);
 
     expect(locations[0]).toStrictEqual({
