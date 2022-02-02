@@ -18,6 +18,7 @@ const {
   RateLimit,
   TIME_ZONE_OFFSET_STRINGS,
   createWarningLogger,
+  parseUsPhoneNumber,
 } = require("../../utils");
 const { RiteAidApiError } = require("./common");
 const { zipCodesCovering100Miles } = require("./zip-codes");
@@ -224,7 +225,7 @@ function formatLocation(apiData) {
     },
 
     booking_url: BOOKING_URL,
-    info_phone: apiData.fullPhone,
+    info_phone: apiData.fullPhone && parseUsPhoneNumber(apiData.fullPhone),
     description: apiData.locationDescription,
 
     meta: {
