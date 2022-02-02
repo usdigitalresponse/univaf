@@ -1,5 +1,4 @@
 "use strict";
-const { jest } = require("@jest/globals");
 const originalModule = jest.requireActual("../utils");
 
 const warningLoggers = {};
