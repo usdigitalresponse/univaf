@@ -1,10 +1,14 @@
 const { DateTime } = require("luxon");
+const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
 const { ParseError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
 const { createWarningLogger, httpClient, RateLimit } = require("../../utils");
 
 const warn = createWarningLogger("Rite Aid API");
+
+// Log a warning if a location has more than this many slots in a given day.
+const MAXIMUM_SLOT_COUNT = 500;
 
 // States in which Rite Aid has stores.
 const riteAidStates = new Set([
@@ -144,12 +148,30 @@ function formatAvailable(provider) {
 }
 
 function formatCapacity(provider) {
-  return provider.availability.map((apiData) => ({
-    date: apiData.date,
-    available: apiData.available_slots > 0 ? Available.yes : Available.no,
-    available_count: apiData.available_slots,
-    unavailable_count: apiData.total_slots - apiData.available_slots,
-  }));
+  let maxDailySlots = 0;
+  const result = provider.availability.map((apiData) => {
+    maxDailySlots = Math.max(maxDailySlots, apiData.total_slots);
+    if (apiData.available_slots > apiData.total_slots) {
+      throw new Error("More available slots than total slots at a Rite Aid");
+    }
+
+    return {
+      date: apiData.date,
+      available: apiData.available_slots > 0 ? Available.yes : Available.no,
+      available_count: apiData.available_slots,
+      unavailable_count: apiData.total_slots - apiData.available_slots,
+    };
+  });
+
+  if (maxDailySlots > MAXIMUM_SLOT_COUNT) {
+    warn(
+      "Unrealistic slot count at a Rite Aid",
+      { slots: maxDailySlots },
+      true
+    );
+  }
+
+  return result;
 }
 
 function formatAddress(location) {
@@ -185,12 +207,26 @@ async function checkAvailability(handler, options) {
 
   let results = [];
   for (const state of states) {
-    let stores;
+    // Sentry's withScope() doesn't work for async code, so we have to manually
+    // track the context data we want to add. :(
+    const errorContext = { state, source: "Rite Aid API" };
+
+    const stores = [];
     try {
       const rawData = await queryState(state, rateLimit);
-      stores = rawData.map(formatStore);
+      for (const rawLocation of rawData) {
+        Sentry.withScope((scope) => {
+          scope.setContext("context", errorContext);
+          scope.setContext("location", { id: rawLocation.id });
+          try {
+            stores.push(formatStore(rawLocation));
+          } catch (error) {
+            warn(error);
+          }
+        });
+      }
     } catch (error) {
-      warn(error, { state, source: "Rite Aid API" }, true);
+      warn(error, errorContext, true);
       continue;
     }
 
