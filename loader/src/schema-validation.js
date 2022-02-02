@@ -47,8 +47,32 @@ function assertSchema(schema, data, message) {
   }
 }
 
+/**
+ * Update an "object" schema to require every property listed in the
+ * `properties` object. Returns the schema so you can just wrap a schema
+ * definition with it.
+ * @param {any} schema The schema to require all properties on.
+ * @returns {any}
+ *
+ * @example
+ * var mySchema = requireAllProperties({
+ *   type: "object",
+ *   properties: {
+ *     a: { type: "number" },
+ *     b: { type: "string" }
+ *   }
+ * });
+ * // Throws an error:
+ * assertSchema(mySchema, { a: 5 });
+ */
+function requireAllProperties(schema) {
+  schema.required = Object.keys(schema.properties);
+  return schema;
+}
+
 module.exports = {
   SchemaError,
-  getValidator,
   assertSchema,
+  getValidator,
+  requireAllProperties,
 };

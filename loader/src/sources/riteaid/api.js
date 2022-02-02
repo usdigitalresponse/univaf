@@ -3,7 +3,16 @@ const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
 const { ParseError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
-const { createWarningLogger, httpClient, RateLimit } = require("../../utils");
+const {
+  createWarningLogger,
+  httpClient,
+  parseUsPhoneNumber,
+  RateLimit,
+} = require("../../utils");
+const {
+  assertSchema,
+  requireAllProperties,
+} = require("../../schema-validation");
 
 const warn = createWarningLogger("Rite Aid API");
 
@@ -32,6 +41,78 @@ const riteAidStates = new Set([
   "WA",
 ]);
 
+const riteAidWrapperSchema = requireAllProperties({
+  type: "object",
+  properties: {
+    Status: { type: "string" },
+    ErrCde: {},
+    ErrMsg: {},
+    ErrMsgDtl: {},
+    Data: requireAllProperties({
+      type: "object",
+      properties: {
+        providerDetails: { type: "array" },
+      },
+      additionalProperties: false,
+    }),
+  },
+});
+
+const riteAidLocationSchema = requireAllProperties({
+  type: "object",
+  properties: {
+    id: { type: "integer", minimum: 1 },
+    // parseUpdateTime() does fancy checking, so no need to check format here.
+    last_updated: { type: "string" },
+    name: { type: "string", pattern: "Rite Aid" },
+    location: requireAllProperties({
+      type: "object",
+      properties: {
+        resourceType: { type: "null" },
+        id: { type: "null" },
+        identifier: { type: "null" },
+        name: { type: "null" },
+        telecom: { type: "null" },
+        address: { type: "null" },
+        position: { type: "null" },
+        meta: { type: "null" },
+        description: { type: "null" },
+        street: { type: "string" },
+        street_line_2: { type: "string", nullable: true },
+        city: { type: "string" },
+        state: { type: "string", pattern: "[A-Z]{2}" },
+        zipcode: { type: "string", pattern: "\\d{1,5}(-\\d{4})?" },
+        county: { type: "null" },
+        identifiers: { type: "null" },
+      },
+      additionalProperties: false,
+    }),
+    contact: requireAllProperties({
+      type: "object",
+      properties: {
+        booking_phone: { type: "string", nullable: true },
+        booking_url: { type: "string", format: "uri" },
+        info_phone: { type: "string", nullable: true },
+        info_url: { type: "string", format: "uri" },
+      },
+      additionalProperties: false,
+    }),
+    availability: {
+      type: "array",
+      items: requireAllProperties({
+        type: "object",
+        properties: {
+          date: { type: "string", format: "date" },
+          total_slots: { type: "integer", minimum: 0 },
+          available_slots: { type: "integer", minimum: 0 },
+        },
+        additionalProperties: false,
+      }),
+    },
+  },
+  additionalProperties: false,
+});
+
 async function queryState(state, rateLimit = null) {
   const RITE_AID_URL = process.env["RITE_AID_URL"];
   const RITE_AID_KEY = process.env["RITE_AID_KEY"];
@@ -49,6 +130,8 @@ async function queryState(state, rateLimit = null) {
     headers: { "Proxy-Authorization": "ldap " + RITE_AID_KEY },
     searchParams: { stateCode: state },
   }).json();
+
+  assertSchema(riteAidWrapperSchema, body, "Response did not match schema");
 
   if (body.Status !== "SUCCESS") {
     console.error(body.Status);
@@ -94,6 +177,12 @@ function parseUpdateTime(text) {
 }
 
 function formatStore(provider) {
+  assertSchema(
+    riteAidLocationSchema,
+    provider,
+    "API location did not match schema"
+  );
+
   const address = formatAddress(provider.location);
 
   let county = provider.location.county;
@@ -125,9 +214,13 @@ function formatStore(provider) {
     state: provider.location.state,
     postal_code: provider.location.zipcode,
     county,
-    booking_phone: provider.contact.booking_phone,
+    booking_phone:
+      provider.contact.booking_phone &&
+      parseUsPhoneNumber(provider.contact.booking_phone),
     booking_url: provider.contact.booking_url,
-    info_phone: provider.contact.info_phone,
+    info_phone:
+      provider.contact.info_phone &&
+      parseUsPhoneNumber(provider.contact.info_phone),
     info_url: provider.contact.info_url,
 
     availability: {

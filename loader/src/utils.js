@@ -117,6 +117,23 @@ const TIME_ZONE_OFFSET_STRINGS = {
   PST: "-08:00",
 };
 
+const r = String.raw;
+
+// Possible separators between digits in a phone number.
+const PHONE_SEPARATOR = r`[\s.-]`;
+// Pattern for matching US-style phone numbers with area codes.
+// prettier-ignore
+const PHONE_NUMBER_PATTERN = new RegExp(
+  r`^`                           +
+  r`(?:\+?1${PHONE_SEPARATOR})?` + // May start with a country code
+  r`(\([2-9]\d\d\)|[2-9]\d\d)`   + // Area code, possibly in parentheses
+  PHONE_SEPARATOR                + // Separator
+  r`([2-9]\d\d)`                 + // Central Office number
+  PHONE_SEPARATOR                + // Separator
+  r`(\d{1,4})`                   + // Local number
+  r`$`
+);
+
 /**
  * Enforce rate limits on operations by awaiting the `ready()` method on
  * instances of this class.
@@ -243,6 +260,30 @@ module.exports = {
       state: match[3].toUpperCase(),
       zip,
     };
+  },
+
+  /**
+   * Parse and return a US-style phone number with an area code and, optionally,
+   * a country code. This handles some oddball situations like phone numbers
+   * where each component is a number and is missing leading zeroes.
+   *
+   * Returns a string in the format "(nnn) nnn-nnnn". Will throw `ParseError`
+   * if `text` cannot be parsed.
+   * @param {string} text The phone number to parse.
+   * @returns {string}
+   */
+  parseUsPhoneNumber(text) {
+    const match = text.trim().match(PHONE_NUMBER_PATTERN);
+    if (match) {
+      const parts = [
+        match[1].replace("(", "").replace(")", "").padStart(3, "0"),
+        match[2].padStart(3, "0"),
+        match[3].padStart(4, "0"),
+      ];
+      return `(${parts[0]}) ${parts[1]}-${parts[2]}`;
+    }
+
+    throw new ParseError(`Invalid U.S. phone number: "${text}"`);
   },
 
   /**

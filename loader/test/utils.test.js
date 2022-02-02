@@ -8,6 +8,7 @@ const {
   getUniqueExternalIds,
   parseUsAddress,
   RateLimit,
+  parseUsPhoneNumber,
 } = require("../src/utils");
 
 describe("splitOnce", () => {
@@ -153,5 +154,34 @@ describe("parseUsAddress", () => {
     expect(() => {
       parseUsAddress("., ., TX, 75244");
     }).toThrow(ParseError);
+  });
+});
+
+describe("parseUsPhoneNumber", () => {
+  it("Parses phone numbers", () => {
+    expect(parseUsPhoneNumber("(213) 456-7890")).toEqual("(213) 456-7890");
+  });
+
+  it("Handles country codes", () => {
+    expect(parseUsPhoneNumber("+1 (213) 456-7890")).toEqual("(213) 456-7890");
+    expect(parseUsPhoneNumber("1 (213) 456-7890")).toEqual("(213) 456-7890");
+  });
+
+  it("Works with or without parentheses for the area code", () => {
+    expect(parseUsPhoneNumber("213 456-7890")).toEqual("(213) 456-7890");
+  });
+
+  it("Handles different separators", () => {
+    expect(parseUsPhoneNumber("213.456.7890")).toEqual("(213) 456-7890");
+  });
+
+  it("Handles missing leading zeroes", () => {
+    expect(parseUsPhoneNumber("213.456.789")).toEqual("(213) 456-0789");
+  });
+
+  it("throws for invalid numbers", () => {
+    expect(() => parseUsPhoneNumber("123.456.7890")).toThrow(ParseError);
+    expect(() => parseUsPhoneNumber("213.456.78901")).toThrow(ParseError);
+    expect(() => parseUsPhoneNumber("Not a number")).toThrow(ParseError);
   });
 });
