@@ -2,11 +2,13 @@ const nock = require("nock");
 const { Available } = require("../src/model");
 const {
   API_URL,
-  RiteAidXhrError,
   checkAvailability,
 } = require("../src/sources/riteaid/scraper");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
+
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
 
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
@@ -239,7 +241,7 @@ describe("Rite Aid Scraper", () => {
     expect(result).toHaveProperty("0.availability.available", Available.no);
   });
 
-  it("raises RiteAidXhrError on API error responses", async () => {
+  it("raises RiteAidApiError on API error responses", async () => {
     nock(API_URL_BASE).get(API_URL_PATH).query(true).reply(200, {
       Data: null,
       Status: "ERROR",
@@ -248,8 +250,8 @@ describe("Rite Aid Scraper", () => {
       ErrMsgDtl: null,
     });
 
-    expect(async () => {
-      await checkAvailability(() => {}, { states: "NJ" });
-    }).rejects.toThrow(RiteAidXhrError);
+    await expect(checkAvailability(() => {}, { states: "NJ" })).rejects.toThrow(
+      "Something went wrong"
+    );
   });
 });

@@ -17,4 +17,13 @@ module.exports = {
     ],
     "prefer-const": ["error", { destructuring: "all" }],
   },
+
+  overrides: [
+    {
+      files: ["**/__mocks__/*.{js,ts}"],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };

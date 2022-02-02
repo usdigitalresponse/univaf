@@ -1,7 +1,23 @@
 const { DateTime } = require("luxon");
 const nock = require("nock");
-const { checkAvailability, queryState } = require("../src/sources/riteaid/api");
+const utils = require("../src/utils");
+const {
+  checkAvailability,
+  queryState,
+  formatStore,
+} = require("../src/sources/riteaid/api");
 const { locationSchema } = require("./support/schemas");
+const responseFixture = require("./fixtures/riteaid.api.test.json");
+
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
+function createMockApiLocation() {
+  return {
+    ...responseFixture.Data.providerDetails[0],
+    last_updated: DateTime.utc().toFormat("yyyy/MM/dd HH:mm:ss"),
+  };
+}
 
 describe("Rite Aid Source", () => {
   const API_URL = "https://api.riteaid.com/test";
@@ -19,30 +35,28 @@ describe("Rite Aid Source", () => {
   });
 
   it("throws on failing API response", async () => {
-    nock(API_URL).get("?stateCode=NJ").reply(500, {
+    nock(API_URL).get("?stateCode=NJ").reply(200, {
       Status: "ERROR",
       ErrCde: "1234",
       ErrMsg: "RiteAid API timed out",
       ErrMsgDtl: "Timed out because things are pretty crazy over here!",
     });
 
-    await expect(queryState("NJ")).rejects.toThrow();
+    await expect(queryState("NJ")).rejects.toThrow("API timed out");
   });
 
   it("processes response correctly", async () => {
-    const apiResponse = require("./fixtures/riteaid.api.test.json");
-
     // Set last_updated to a current time, rounded to the second.
     const timestamp = Math.floor(Date.now() / 1000);
     const now = DateTime.fromSeconds(timestamp, { zone: "UTC" });
     const riteAidTime = now.toFormat("yyyy/MM/dd HH:mm:ss");
-    for (const record of apiResponse.Data.providerDetails) {
+    for (const record of responseFixture.Data.providerDetails) {
       record.last_updated = riteAidTime;
     }
 
-    nock(API_URL).get("?stateCode=NJ").reply(200, apiResponse);
+    nock(API_URL).get("?stateCode=NJ").reply(200, responseFixture);
 
-    const locations = await queryState("NJ");
+    const locations = await checkAvailability(() => {}, { states: "NJ" });
     expect(locations.length).toBe(108);
 
     expect(locations[0]).toStrictEqual({
@@ -190,5 +204,48 @@ describe("Rite Aid Source", () => {
     nock(API_URL).get("?stateCode=AK").reply(403, "uhoh");
     const results = await checkAvailability(() => {}, { states: "AK" });
     expect(results).toHaveLength(0);
+  });
+
+  it("throws errors for inconsistent slot counts", async () => {
+    const badData = {
+      ...createMockApiLocation(),
+      availability: [
+        {
+          date: "2021-04-23",
+          total_slots: 200,
+          available_slots: 8,
+        },
+        {
+          date: "2021-04-24",
+          total_slots: 200,
+          available_slots: 201,
+        },
+      ],
+    };
+
+    expect(() => formatStore(badData)).toThrow(/slots/);
+  });
+
+  it("warns for unreasonable slot counts", async () => {
+    const badData = {
+      ...createMockApiLocation(),
+      availability: [
+        {
+          date: "2021-04-23",
+          total_slots: 200,
+          available_slots: 8,
+        },
+        {
+          date: "2021-04-24",
+          total_slots: 1000,
+          available_slots: 10,
+        },
+      ],
+    };
+
+    formatStore(badData);
+    expect(utils.__getWarnings()).toContainEqual(
+      expect.stringContaining("slot count")
+    );
   });
 });

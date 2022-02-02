@@ -11,7 +11,6 @@
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
-const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType, VaccineProduct } = require("../../model");
 const { assertSchema } = require("../../schema-validation");
 const {
@@ -19,7 +18,9 @@ const {
   RateLimit,
   TIME_ZONE_OFFSET_STRINGS,
   createWarningLogger,
+  parseUsPhoneNumber,
 } = require("../../utils");
+const { RiteAidApiError } = require("./common");
 const { zipCodesCovering100Miles } = require("./zip-codes");
 
 // Load slot-level data in chunks of this many stores at a time.
@@ -50,13 +51,6 @@ const VACCINE_IDS_SHORT = mapKeys(VACCINE_IDS, (_, key) => key.split("-")[0]);
 
 const warn = createWarningLogger("Rite Aid Scraper");
 
-class RiteAidXhrError extends HttpApiError {
-  parse(response) {
-    super.parse(response);
-    this.message = `${this.details.Status} ${this.details.ErrCde}: ${this.details.ErrMsg}`;
-  }
-}
-
 async function queryZipCode(zip, radius = 100, stores = null) {
   const response = await httpClient({
     url: API_URL,
@@ -82,7 +76,7 @@ async function queryZipCode(zip, radius = 100, stores = null) {
   });
 
   if (response.body.Status !== "SUCCESS") {
-    throw new RiteAidXhrError(response);
+    throw new RiteAidApiError(response);
   }
 
   return response.body;
@@ -231,7 +225,7 @@ function formatLocation(apiData) {
     },
 
     booking_url: BOOKING_URL,
-    info_phone: apiData.fullPhone,
+    info_phone: apiData.fullPhone && parseUsPhoneNumber(apiData.fullPhone),
     description: apiData.locationDescription,
 
     meta: {
@@ -334,7 +328,7 @@ async function checkAvailability(handler, options) {
   }
 
   if (!states.length) {
-    console.warn(`No states set for riteAidApi`);
+    warn(`No states set for riteAidApi`);
   }
 
   if (options.rateLimit != null && isNaN(options.rateLimit)) {
@@ -366,7 +360,6 @@ module.exports = {
   API_URL,
   VACCINE_IDS,
   VACCINE_IDS_SHORT,
-  RiteAidXhrError,
   checkAvailability,
   queryState,
   queryZipCode,
