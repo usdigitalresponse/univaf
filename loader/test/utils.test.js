@@ -180,8 +180,11 @@ describe("parseUsPhoneNumber", () => {
   });
 
   it("throws for invalid numbers", () => {
+    // US area codes cannot start with "1".
     expect(() => parseUsPhoneNumber("123.456.7890")).toThrow(ParseError);
+    // Too many numbers.
     expect(() => parseUsPhoneNumber("213.456.78901")).toThrow(ParseError);
+
     expect(() => parseUsPhoneNumber("Not a number")).toThrow(ParseError);
   });
 });

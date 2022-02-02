@@ -127,9 +127,9 @@ const PHONE_NUMBER_PATTERN = new RegExp(
   r`^`                           +
   r`(?:\+?1${PHONE_SEPARATOR})?` + // May start with a country code
   r`(\([2-9]\d\d\)|[2-9]\d\d)`   + // Area code, possibly in parentheses
-  PHONE_SEPARATOR                + // Separator
+  PHONE_SEPARATOR                +
   r`([2-9]\d\d)`                 + // Central Office number
-  PHONE_SEPARATOR                + // Separator
+  PHONE_SEPARATOR                +
   r`(\d{1,4})`                   + // Local number
   r`$`
 );
