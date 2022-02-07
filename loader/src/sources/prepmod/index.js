@@ -191,7 +191,7 @@ const nonCovidProductName = /^influenza|flu|zoster|^\s*adenovirus\s*$/i;
 /**
  * Parse useful data about a schedule.
  * @param {Object} schedule A SMART SL schedule object to parse
- * @returns {{isCovid: boolean, hasNonCovidProducts: boolean, products: Set<string>, doses: Set<string>}}
+ * @returns {{isCovid: boolean, hasNonCovidProducts: boolean, products: Set<string>, dose: string}}
  */
 function parseSchedule(schedule) {
   const doses = new Set();

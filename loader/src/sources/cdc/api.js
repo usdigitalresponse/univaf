@@ -390,6 +390,9 @@ const ndcLookup = {
   // and https://www2a.cdc.gov/vaccines/iis/iisstandards/vaccines.asp?rpt=ndc
   [normalizeNdc("00310-1222-10")]: VaccineProduct.astraZeneca, // use
   [normalizeNdc("00310-1222-15")]: VaccineProduct.astraZeneca, // sale
+
+  // Pfizer original & booster are the same product and use the same code, so
+  // they aren't distinguishable here (they are also the same dose).
   [normalizeNdc("59267-1000-01")]: VaccineProduct.pfizer, // use
   [normalizeNdc("59267-1000-02")]: VaccineProduct.pfizer, // sale
   [normalizeNdc("59267-1000-03")]: VaccineProduct.pfizer, // sale
@@ -397,19 +400,27 @@ const ndcLookup = {
   [normalizeNdc("59267-1025-02")]: VaccineProduct.pfizer, // sale
   [normalizeNdc("59267-1025-03")]: VaccineProduct.pfizer, // sale
   [normalizeNdc("59267-1025-04")]: VaccineProduct.pfizer, // sale
+  // 00069-1000 is the same as above, but used when branded as "Comirnaty".
   [normalizeNdc("00069-1000-01")]: VaccineProduct.pfizer, // use
   [normalizeNdc("00069-1000-02")]: VaccineProduct.pfizer, // sale
   [normalizeNdc("00069-1000-03")]: VaccineProduct.pfizer, // sale
+
   [normalizeNdc("59267-1055-01")]: VaccineProduct.pfizerAge5_11, // use
   [normalizeNdc("59267-1055-02")]: VaccineProduct.pfizerAge5_11, // sale
   [normalizeNdc("59267-1055-04")]: VaccineProduct.pfizerAge5_11, // sale
+
   [normalizeNdc("59267-0078-01")]: VaccineProduct.pfizerAge2_4, // use
   [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge2_4, // sale
   [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge2_4, // sale
+
   [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
   [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
+
   [normalizeNdc("80631-0100-01")]: VaccineProduct.novavax, // sale
   [normalizeNdc("80631-0100-10")]: VaccineProduct.novavax, // use
+
+  // Moderna original & booster are the same product and use the same code, so
+  // they aren't distinguishable here (booster is just a half doese).
   [normalizeNdc("80777-0273-10")]: VaccineProduct.moderna, // use
   [normalizeNdc("80777-0273-15")]: VaccineProduct.moderna, // use
   [normalizeNdc("80777-0273-98")]: VaccineProduct.moderna, // sale
