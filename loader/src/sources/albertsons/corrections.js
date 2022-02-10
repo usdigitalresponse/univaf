@@ -96,6 +96,9 @@ module.exports.corrections = {
     address:
       "Rocketship Public School - 4250 Massachusetts Ave SE, Washington, DC, 20019",
   },
+  1644444776878: {
+    address: "Jewel-Osco #58 - 2855 W 95th Street, Naperville, IL, 60564",
+  },
 
   // Some Safeways have their pediatric vaccines listed as "Peds" instead of
   // "Safeway". Not sure it's safe to always assume Safeway is the right fix,
