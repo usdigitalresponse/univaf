@@ -49,6 +49,12 @@ const GENERIC_BOOKING_URL = "https://www.mhealthappointments.com/covidappt";
 // so we know to skip over them.
 const TEST_NAME_PATTERN = /^public test$/i;
 
+// There are locations with addresses we should ignore, since these seem wrong
+// enough to be intentional, and even show up this way in their booking UI!
+// (The only instances of this we've seen are for "Dallas ISD"; our best guess
+// is that they are used to manage vaccinations across Dallas public schools.)
+const IGNORE_ADDRESS_PATTERN = / \., \., [A-Z]{2}, \d{5}/;
+
 // Maps Albertsons product names to our product names.
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
@@ -408,6 +414,10 @@ function formatLocation(data, validAt, checkedAt) {
   // Apply corrections for known-bad source data.
   if (data.id in corrections) {
     Object.assign(data, corrections[data.id]);
+  }
+
+  if (IGNORE_ADDRESS_PATTERN.test(data.address)) {
+    return null;
   }
 
   let { name, storeNumber, storeBrand, address, isPediatric } =
