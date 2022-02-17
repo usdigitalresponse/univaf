@@ -3,5 +3,5 @@ output "host" {
 }
 
 output "db_name" {
-  value = aws_db_instance.main.name
+  value = aws_db_instance.main.db_name
 }
