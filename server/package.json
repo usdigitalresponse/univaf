@@ -33,7 +33,7 @@
   "dependencies": {
     "@sentry/node": "^6.17.9",
     "@sentry/tracing": "^6.17.9",
-    "ajv": "^8.9.0",
+    "ajv": "^8.10.0",
     "ajv-formats": "^2.1.1",
     "ajv-keywords": "^5.1.0",
     "aws-sdk": "^2.1067.0",
