@@ -31,7 +31,7 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -84,7 +84,7 @@ jobs:
     name: Run linters
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -142,7 +142,7 @@ jobs:
   lint_workflows:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: cschleiden/actions-linter@v1
         with:
           workflows: '[".github/workflows/*.yaml", ".github/workflows/*.yml"]'
@@ -168,7 +168,7 @@ jobs:
       ECR_REPOSITORY: ${{ matrix.repository }}
       IMAGE_TAG: ${{ github.sha }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build ${{ matrix.repository }}
         run: |
