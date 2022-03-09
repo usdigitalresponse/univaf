@@ -269,10 +269,19 @@ function formatSlots(location) {
   }
 
   const slotsById = Object.create(null);
+  const handledDates = new Set();
   let expectedSlots = 0;
 
   for (const day of availableSlots) {
-    expectedSlots += day.available_slots;
+    // Some dates show up multiple times in the API, so don't double-count.
+    // (It's not clear why this is happening, but they appear to be duplicate
+    // entries with the same slot IDs. Only skip them for counting expected
+    // slots so we'll still fail and get a warn if one day we say a different
+    // set of slot IDs in two entries for the same day.)
+    if (!handledDates.has(day.date)) {
+      expectedSlots += day.available_slots;
+      handledDates.add(day.date);
+    }
 
     for (const [vaccineKey, slots] of Object.entries(day.slots)) {
       const product = VACCINE_IDS_SHORT[vaccineKey];
@@ -311,9 +320,14 @@ function formatSlots(location) {
 
   // Sanity-check
   if (allSlots.length !== expectedSlots) {
-    throw new Error(
+    const error = new Error(
       `Expected and actual slots did not match for store ${storeNumber}`
     );
+    error.data = {
+      expected: expectedSlots,
+      actual: allSlots.length,
+    };
+    throw error;
   }
 
   return allSlots;
