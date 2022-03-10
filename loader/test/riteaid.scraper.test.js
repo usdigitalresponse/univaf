@@ -200,6 +200,107 @@ describe("Rite Aid Scraper", () => {
     ]);
   });
 
+  it("handles duplicate dates in the data's slot lists", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              totalSlotCount: 2,
+              firstAvailableSlot: "2021-11-23T17:00:00",
+              totalAvailableSlots: 0,
+              availableSlots: [],
+            },
+          ],
+        },
+      });
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query((query) => query.storeNumbers === `${basicLocation.storeNumber}`)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              totalSlotCount: 0,
+              firstAvailableSlot: null,
+              totalAvailableSlots: 2,
+              availableSlots: [
+                {
+                  date: "2021-11-23",
+                  available_slots: 2,
+                  slots: {
+                    9: [
+                      {
+                        appointmentId: "64271018",
+                        apptDateTime: "2021-11-23T17:00:00",
+                      },
+                      {
+                        appointmentId: "64271019",
+                        apptDateTime: "2021-11-23T17:30:00",
+                      },
+                    ],
+                    11: [
+                      {
+                        appointmentId: "64271018",
+                        apptDateTime: "2021-11-23T17:00:00",
+                      },
+                    ],
+                    13: [],
+                    47: [],
+                  },
+                },
+                {
+                  date: "2021-11-23",
+                  available_slots: 2,
+                  slots: {
+                    9: [
+                      {
+                        appointmentId: "64271018",
+                        apptDateTime: "2021-11-23T17:00:00",
+                      },
+                      {
+                        appointmentId: "64271019",
+                        apptDateTime: "2021-11-23T17:30:00",
+                      },
+                    ],
+                    11: [
+                      {
+                        appointmentId: "64271018",
+                        apptDateTime: "2021-11-23T17:00:00",
+                      },
+                    ],
+                    13: [],
+                    47: [],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+    const result = await checkAvailability(() => {}, { states: "NJ" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
+    expect(result[0].availability.slots).toEqual([
+      {
+        start: "2021-11-23T17:00:00-05:00",
+        available: "YES",
+        products: ["moderna", "pfizer"],
+      },
+      {
+        start: "2021-11-23T17:30:00-05:00",
+        available: "YES",
+        products: ["moderna"],
+      },
+    ]);
+  });
+
   it("identifies locations with no slots as not available", async () => {
     nock(API_URL_BASE)
       .get(API_URL_PATH)

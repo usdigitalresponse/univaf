@@ -309,7 +309,9 @@ function formatSlots(location) {
             products: [],
           };
         }
-        actualSlot.products.push(product);
+        if (!actualSlot.products.includes(product)) {
+          actualSlot.products.push(product);
+        }
       }
     }
   }
