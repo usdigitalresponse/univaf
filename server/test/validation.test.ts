@@ -163,4 +163,10 @@ describe("validateState", () => {
   it("throws if no matching state is found", () => {
     expect(() => validateState("whatever")).toThrow(ValueError);
   });
+
+  it("can only look up by valid fields from state data", () => {
+    // Some values in the states.json file shouldn't be look-up-able.
+    expect(() => validateState("State")).toThrow(ValueError);
+    expect(() => validateState("")).toThrow(ValueError);
+  });
 });

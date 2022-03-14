@@ -328,9 +328,17 @@ let stateLookup: Map<Lowercase<string>, typeof states[number]>;
 export function validateState(input: string): string {
   if (!stateLookup) {
     stateLookup = new Map();
+    const references: Array<keyof typeof states[number]> = [
+      "name",
+      "iso",
+      "usps",
+      "gpo",
+      "ap",
+    ];
     for (const state of states) {
-      for (const reference of Object.values(state)) {
-        if (typeof reference === "string") {
+      for (const key of references) {
+        const reference = state[key] as string;
+        if (reference) {
           stateLookup.set(reference.toLowerCase(), state);
         }
       }
