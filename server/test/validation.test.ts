@@ -1,5 +1,5 @@
 import "./matchers";
-import { validateAvailabilityInput } from "../src/validation";
+import { validateAvailabilityInput, validateState } from "../src/validation";
 import { Availability } from "../src/interfaces";
 import { ValueError } from "../src/exceptions";
 
@@ -143,5 +143,24 @@ describe("validateAvailabilityInput", () => {
         },
       ],
     });
+  });
+});
+
+describe("validateState", () => {
+  it("gets the postal abbreviation given a state name", () => {
+    expect(validateState("Oklahoma")).toEqual("OK");
+  });
+
+  it("gets the postal abbreviation given a postal abbreviation", () => {
+    expect(validateState("AL")).toEqual("AL");
+  });
+
+  it("ignores case", () => {
+    expect(validateState("OkLaHoMa")).toEqual("OK");
+    expect(validateState("oK")).toEqual("OK");
+  });
+
+  it("throws if no matching state is found", () => {
+    expect(() => validateState("whatever")).toThrow(ValueError);
   });
 });

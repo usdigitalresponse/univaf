@@ -9,6 +9,7 @@ import {
   SlotRecord,
   CapacityRecord,
 } from "./interfaces";
+import states from "./states.json";
 
 const AVAILABLE_OPTIONS = new Set(Object.values(Availability));
 
@@ -315,4 +316,30 @@ export function validateAvailabilityInput(data: any): AvailabilityInput {
   if (data.is_public == null) data.is_public = true;
 
   return data;
+}
+
+let stateLookup: Map<Lowercase<string>, typeof states[number]>;
+
+/**
+ * Get the correct state abbreviation given the full name or some type of
+ * well-known abbreviation for the state. If no matching state can be found,
+ * this will throw `ValueError`.
+ */
+export function validateState(input: string): string {
+  if (!stateLookup) {
+    stateLookup = new Map();
+    for (const state of states) {
+      for (const reference of Object.values(state)) {
+        if (typeof reference === "string") {
+          stateLookup.set(reference.toLowerCase(), state);
+        }
+      }
+    }
+  }
+
+  const state = stateLookup.get(input.trim().toLowerCase());
+  if (state) {
+    return state.usps;
+  }
+  throw new ValueError(`Unknown state: "${input}"`);
 }
