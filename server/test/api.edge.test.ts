@@ -568,13 +568,11 @@ describe("POST /api/edge/update", () => {
     expect(response.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
-    expect(new Set(result.external_ids)).toEqual(
-      new Set([
-        ...TestLocation.external_ids,
-        ["testid", "this is a test"],
-        ["testid2", "another test"],
-      ])
-    );
+    expect(result.external_ids).toEqualUnordered([
+      ...TestLocation.external_ids,
+      ["testid", "this is a test"],
+      ["testid2", "another test"],
+    ]);
   });
 
   it("allows multiple values for a single external_id system", async () => {

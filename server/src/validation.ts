@@ -164,6 +164,61 @@ const CAPACITY_SCHEMA = {
   ],
 };
 
+const PROVIDER_LOCATION_SCHEMA = {
+  type: "object",
+  properties: {
+    // This should normally have `format: "uuid"`, but the server will accept
+    // old-style IDs (which were not UUIDs) and handle them specially.
+    id: { type: "string", nullable: true },
+    external_ids: {
+      type: "array",
+      nullable: true,
+      items: {
+        type: "array",
+        items: { type: "string", minLength: 1 },
+      },
+    },
+    provider: { type: "string" },
+    // We have an enum for location type, but because it's separate from the
+    // loader codebase, keep the validation loose. (Ideally we should have
+    // some real code sharing between the two.)
+    location_type: {
+      type: "string",
+      transform: ["toUpperCase"],
+      nullable: true,
+    },
+    name: { type: "string" },
+    address_lines: { type: "array", items: { type: "string" }, nullable: true },
+    city: { type: "string", nullable: true },
+    state: { type: "string" },
+    postal_code: { type: "string", nullable: true },
+    county: { type: "string", nullable: true },
+    position: {
+      type: "object",
+      nullable: true,
+      properties: {
+        longitude: { type: "number", format: "float" },
+        latitude: { type: "number", format: "float" },
+      },
+    },
+    info_phone: { type: "string", nullable: true },
+    info_url: { type: "string", format: "uri", nullable: true },
+    booking_phone: { type: "string", nullable: true },
+    booking_url: { type: "string", format: "uri", nullable: true },
+    description: { type: "string", nullable: true },
+    requires_waitlist: { type: "boolean", nullable: true },
+    meta: { type: "object", nullable: true },
+    is_public: { type: "boolean", nullable: true },
+    internal_notes: { type: "string", nullable: true },
+  },
+  additionalProperties: false,
+};
+
+const PROVIDER_LOCATION_SCHEMA_REQUIRED = {
+  ...PROVIDER_LOCATION_SCHEMA,
+  required: ["name", "provider", "state"],
+};
+
 export const validateSlots = makeValidator<SlotRecord[]>({
   type: "array",
   items: SLOT_SCHEMA,
@@ -173,6 +228,14 @@ export const validateCapacity = makeValidator<CapacityRecord[]>({
   type: "array",
   items: CAPACITY_SCHEMA,
 });
+
+// These two are not exported; validateLocationInput() should be used instead.
+const validateProviderLocation = makeValidator<ProviderLocationInput>(
+  PROVIDER_LOCATION_SCHEMA
+);
+const validateProviderLocationRequired = makeValidator<ProviderLocationInput>(
+  PROVIDER_LOCATION_SCHEMA_REQUIRED
+);
 
 function availableFromCount(
   count?: number,
@@ -381,16 +444,10 @@ export function validateLocationInput(
     result.state = validateState(data.state);
   }
 
-  // TODO: Validate rest of schema
   if (requiredFields) {
-    const missing = ["name", "provider", "state"].filter(
-      (field) => !result[field]
-    );
-    if (missing.length) {
-      throw new ValueError(
-        `The location is missing values for: ${missing.join(", ")}`
-      );
-    }
+    validateProviderLocationRequired(result);
+  } else {
+    validateProviderLocation(result);
   }
 
   return result;
