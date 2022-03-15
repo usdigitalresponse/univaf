@@ -11,6 +11,7 @@ import {
   ProviderLocationInput,
 } from "./interfaces";
 import states from "./states.json";
+import assert from "assert";
 
 const AVAILABLE_OPTIONS = new Set(Object.values(Availability));
 
@@ -329,7 +330,7 @@ let stateLookup: Map<Lowercase<string>, typeof states[number]>;
 export function validateState(input: string): string {
   if (!stateLookup) {
     stateLookup = new Map();
-    const references: Array<keyof typeof states[number]> = [
+    const referenceKeys: Array<keyof typeof states[number]> = [
       "name",
       "iso",
       "usps",
@@ -337,10 +338,24 @@ export function validateState(input: string): string {
       "ap",
     ];
     for (const state of states) {
-      for (const key of references) {
-        const reference = state[key] as string;
+      // Some records are for obsolete abbreviations; we want to support those
+      // obsolete names, but refer them to the "current" state record.
+      let canonicalState = state;
+      if (state.type.includes("Obsolete")) {
+        canonicalState = states.find((s) => s.name === state.name);
+        // Some "obsolete" records have no current record. ¯\_(ツ)_/¯
+        if (!canonicalState) continue;
+      }
+
+      for (const key of referenceKeys) {
+        const reference = (state[key] as string)?.toLowerCase();
         if (reference) {
-          stateLookup.set(reference.toLowerCase(), state);
+          const existing = stateLookup.get(reference);
+          assert.ok(
+            !existing || existing === canonicalState,
+            `Can't use the same name to refer to multiple states: "${reference}"`
+          );
+          stateLookup.set(reference, canonicalState);
         }
       }
     }
