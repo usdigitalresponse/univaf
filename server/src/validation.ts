@@ -8,6 +8,7 @@ import {
   AvailabilityInput,
   SlotRecord,
   CapacityRecord,
+  ProviderLocationInput,
 } from "./interfaces";
 import states from "./states.json";
 
@@ -350,4 +351,32 @@ export function validateState(input: string): string {
     return state.usps;
   }
   throw new ValueError(`Unknown state: "${input}"`);
+}
+
+export function validateLocationInput(
+  data: any,
+  requiredFields = false
+): ProviderLocationInput {
+  const result = { ...data };
+  delete result.availability;
+  delete result.created_at;
+  delete result.updated_at;
+
+  if (result.state) {
+    result.state = validateState(data.state);
+  }
+
+  // TODO: Validate rest of schema
+  if (requiredFields) {
+    const missing = ["name", "provider", "state"].filter(
+      (field) => !result[field]
+    );
+    if (missing.length) {
+      throw new ValueError(
+        `The location is missing values for: ${missing.join(", ")}`
+      );
+    }
+  }
+
+  return result;
 }
