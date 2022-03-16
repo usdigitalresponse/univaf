@@ -454,6 +454,8 @@ describe("POST /api/edge/update", () => {
           ["vtrcks", systemValue(TestLocation.external_ids, "vtrcks")],
         ],
         name: newName,
+        provider: TestLocation.provider,
+        state: TestLocation.state,
       },
     });
     expect(res.statusCode).toBe(201);
@@ -472,6 +474,8 @@ describe("POST /api/edge/update", () => {
       json: {
         external_ids: [["npi_usa", "test"]],
         name: newName,
+        provider: TestLocation.provider,
+        state: TestLocation.state,
       },
     });
     expect(res.statusCode).toBe(201);
@@ -564,7 +568,7 @@ describe("POST /api/edge/update", () => {
     expect(response.statusCode).toBe(200);
 
     const result = await getLocationById(location.id);
-    expect(result.external_ids).toEqual([
+    expect(result.external_ids).toEqualUnordered([
       ...TestLocation.external_ids,
       ["testid", "this is a test"],
       ["testid2", "another test"],

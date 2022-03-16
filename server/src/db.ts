@@ -10,7 +10,7 @@ import {
 } from "./interfaces";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
 import Knex from "knex";
-import { validateAvailabilityInput } from "./validation";
+import { validateAvailabilityInput, validateLocationInput } from "./validation";
 import { loadDbConfig } from "./config";
 import { UUID_PATTERN } from "./utils";
 import { logger, logStackTrace } from "./logger";
@@ -81,7 +81,7 @@ function selectSqlPoint(column: string): string {
  * @param data ProviderLocation-like object with data to insert
  */
 export async function createLocation(data: any): Promise<ProviderLocation> {
-  if (!data.name) throw new ValueError("Locations must have a `name`");
+  data = validateLocationInput(data, true);
 
   const now = new Date();
   const sqlData: { [index: string]: string } = {
@@ -159,6 +159,7 @@ export async function updateLocation(
   data: any,
   { mergeSubfields = true } = {}
 ): Promise<void> {
+  data = validateLocationInput(data);
   const sqlData: any = { updated_at: new Date() };
 
   for (let [key, value] of Object.entries(data)) {

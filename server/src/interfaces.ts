@@ -66,6 +66,10 @@ export interface ProviderLocation {
   availability?: any;
 }
 
+export type ProviderLocationInput = Partial<
+  Omit<ProviderLocation, "created_at" | "updated_at" | "availability">
+>;
+
 export interface LocationAvailability {
   id: number;
   location_id: string;

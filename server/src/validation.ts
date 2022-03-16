@@ -8,7 +8,10 @@ import {
   AvailabilityInput,
   SlotRecord,
   CapacityRecord,
+  ProviderLocationInput,
 } from "./interfaces";
+import states from "./states.json";
+import assert from "assert";
 
 const AVAILABLE_OPTIONS = new Set(Object.values(Availability));
 
@@ -161,6 +164,61 @@ const CAPACITY_SCHEMA = {
   ],
 };
 
+const PROVIDER_LOCATION_SCHEMA = {
+  type: "object",
+  properties: {
+    // This should normally have `format: "uuid"`, but the server will accept
+    // old-style IDs (which were not UUIDs) and handle them specially.
+    id: { type: "string", nullable: true },
+    external_ids: {
+      type: "array",
+      nullable: true,
+      items: {
+        type: "array",
+        items: { type: "string", minLength: 1 },
+      },
+    },
+    provider: { type: "string" },
+    // We have an enum for location type, but because it's separate from the
+    // loader codebase, keep the validation loose. (Ideally we should have
+    // some real code sharing between the two.)
+    location_type: {
+      type: "string",
+      transform: ["toUpperCase"],
+      nullable: true,
+    },
+    name: { type: "string" },
+    address_lines: { type: "array", items: { type: "string" }, nullable: true },
+    city: { type: "string", nullable: true },
+    state: { type: "string" },
+    postal_code: { type: "string", nullable: true },
+    county: { type: "string", nullable: true },
+    position: {
+      type: "object",
+      nullable: true,
+      properties: {
+        longitude: { type: "number", format: "float" },
+        latitude: { type: "number", format: "float" },
+      },
+    },
+    info_phone: { type: "string", nullable: true },
+    info_url: { type: "string", format: "uri", nullable: true },
+    booking_phone: { type: "string", nullable: true },
+    booking_url: { type: "string", format: "uri", nullable: true },
+    description: { type: "string", nullable: true },
+    requires_waitlist: { type: "boolean", nullable: true },
+    meta: { type: "object", nullable: true },
+    is_public: { type: "boolean", nullable: true },
+    internal_notes: { type: "string", nullable: true },
+  },
+  additionalProperties: false,
+};
+
+const PROVIDER_LOCATION_SCHEMA_REQUIRED = {
+  ...PROVIDER_LOCATION_SCHEMA,
+  required: ["name", "provider", "state"],
+};
+
 export const validateSlots = makeValidator<SlotRecord[]>({
   type: "array",
   items: SLOT_SCHEMA,
@@ -170,6 +228,14 @@ export const validateCapacity = makeValidator<CapacityRecord[]>({
   type: "array",
   items: CAPACITY_SCHEMA,
 });
+
+// These two are not exported; validateLocationInput() should be used instead.
+const validateProviderLocation = makeValidator<ProviderLocationInput>(
+  PROVIDER_LOCATION_SCHEMA
+);
+const validateProviderLocationRequired = makeValidator<ProviderLocationInput>(
+  PROVIDER_LOCATION_SCHEMA_REQUIRED
+);
 
 function availableFromCount(
   count?: number,
@@ -315,4 +381,74 @@ export function validateAvailabilityInput(data: any): AvailabilityInput {
   if (data.is_public == null) data.is_public = true;
 
   return data;
+}
+
+let stateLookup: Map<Lowercase<string>, typeof states[number]>;
+
+/**
+ * Get the correct state abbreviation given the full name or some type of
+ * well-known abbreviation for the state. If no matching state can be found,
+ * this will throw `ValueError`.
+ */
+export function validateState(input: string): string {
+  if (!stateLookup) {
+    stateLookup = new Map();
+    const referenceKeys: Array<keyof typeof states[number]> = [
+      "name",
+      "iso",
+      "usps",
+      "gpo",
+      "ap",
+    ];
+    for (const state of states) {
+      // Some records are for obsolete abbreviations; we want to support those
+      // obsolete names, but refer them to the "current" state record.
+      let canonicalState = state;
+      if (state.type.includes("Obsolete")) {
+        canonicalState = states.find((s) => s.name === state.name);
+        // Some "obsolete" records have no current record. ¯\_(ツ)_/¯
+        if (!canonicalState) continue;
+      }
+
+      for (const key of referenceKeys) {
+        const reference = (state[key] as string)?.toLowerCase();
+        if (reference) {
+          const existing = stateLookup.get(reference);
+          assert.ok(
+            !existing || existing === canonicalState,
+            `Can't use the same name to refer to multiple states: "${reference}"`
+          );
+          stateLookup.set(reference, canonicalState);
+        }
+      }
+    }
+  }
+
+  const state = stateLookup.get(input.trim().toLowerCase());
+  if (state) {
+    return state.usps;
+  }
+  throw new ValueError(`Unknown state: "${input}"`);
+}
+
+export function validateLocationInput(
+  data: any,
+  requiredFields = false
+): ProviderLocationInput {
+  const result = { ...data };
+  delete result.availability;
+  delete result.created_at;
+  delete result.updated_at;
+
+  if (result.state) {
+    result.state = validateState(data.state);
+  }
+
+  if (requiredFields) {
+    validateProviderLocationRequired(result);
+  } else {
+    validateProviderLocation(result);
+  }
+
+  return result;
 }

@@ -158,6 +158,8 @@ describe("POST /update", () => {
       json: {
         external_ids: [["vtrcks", vtrcksId]],
         name: newName,
+        provider: TestLocation.provider,
+        state: TestLocation.state,
       },
     });
     expect(res.statusCode).toBe(201);
