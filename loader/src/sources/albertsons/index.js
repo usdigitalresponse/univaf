@@ -158,6 +158,12 @@ const BRANDS = [
   },
   {
     ...BASE_BRAND,
+    key: "sav_on",
+    name: "Sav-On Pharmacy",
+    pattern: /Sav-?On/i,
+  },
+  {
+    ...BASE_BRAND,
     key: "shaws",
     name: "Shaw's",
     pattern: /Shaw/i,
