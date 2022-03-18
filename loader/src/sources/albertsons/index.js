@@ -158,6 +158,12 @@ const BRANDS = [
   },
   {
     ...BASE_BRAND,
+    key: "sav_on",
+    name: "Sav-On Pharmacy",
+    pattern: /Sav-?On/i,
+  },
+  {
+    ...BASE_BRAND,
     key: "shaws",
     name: "Shaw's",
     pattern: /Shaw/i,
@@ -361,7 +367,7 @@ function parseNameAndAddress(text) {
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
   const numberMatch = name.match(
-    /^(?<name>.*?)\s+(?<number>\d{3,6})(?:\s+\1)?/
+    /^(?<name>.*?)\s+#?(?<number>\d{3,6})(?:\s+\1)?/
   );
   let storeNumber;
   if (numberMatch) {

@@ -103,6 +103,18 @@ module.exports.corrections = {
     address: "Jewel-Osco #1190 - 13460 S. Route 59, Plainfield, IL, 60544",
   },
 
+  // These two are the adult and pediatric versions of a single location, but
+  // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
+  // other is "Sav-On Pharmacy #4706" (we've verified they are really the same.)
+  1646603430085: {
+    address:
+      "Sav-On Pharmacy #4706 - 30530 Rancho California Rd., Temecula, CA, 92591",
+  },
+  1600119436879: {
+    address:
+      "Sav-On Pharmacy #4706 - 30530 Rancho California Rd., Temecula, CA, 92591",
+  },
+
   // Some Safeways have their pediatric vaccines listed as "Peds" instead of
   // "Safeway". Not sure it's safe to always assume Safeway is the right fix,
   // though, so we are doing manual corrections for each one.
