@@ -14,6 +14,8 @@ const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
 const basicLocation = {
   storeNumber: 3455,
+  brand: "UNKNOWN",
+  customDisplayName: "UNKNOWN",
   address: "1426 Mt. Ephraim Avenue",
   city: "Camden",
   state: "NJ",
