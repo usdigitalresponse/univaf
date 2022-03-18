@@ -109,7 +109,7 @@ const locationSchema = {
         latitude: { type: "number", format: "float" },
       },
     },
-    info_phone: { type: "string" },
+    info_phone: { type: "string", nullable: true },
     info_url: { type: "string", format: "uri" },
     booking_phone: { type: "string" },
     booking_url: { type: "string", format: "uri" },
