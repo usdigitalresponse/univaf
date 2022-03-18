@@ -25,6 +25,7 @@ const {
   httpClient,
   parseUsAddress,
   getUniqueExternalIds,
+  groupDuplicateLocations,
   unpadNumber,
 } = require("../../utils");
 const {
@@ -270,60 +271,54 @@ async function getData(states) {
 
   // Adult & Pediatric vaccines at the same locations get different listings in
   // the Albertsons API, so we need to group and merge them.
-  const groups = groupBy(formatted, (location) => {
-    const storeId = location.external_ids.find(
-      (id) => id[0] === "albertsons_store_number"
-    );
-    return storeId?.[1] ?? location.name;
-  });
+  function mergeLocations(group) {
+    if (group.length === 1) return group[0];
 
-  return Object.values(groups)
-    .map((group) => {
-      if (group.length === 1) return group[0];
+    const adult = group.find((l) => l.meta.booking_url_adult);
+    const pediatric = group.find((l) => l.meta.booking_url_pediatric);
 
-      const adult = group.find((l) => l.meta.booking_url_adult);
-      const pediatric = group.find((l) => l.meta.booking_url_pediatric);
-
-      // If a location had no available vaccines and had no special naming
-      // prefix, we won't know whether it is adult or pediatric. We can't know
-      // whether this is a problem or not, so always allow it.
-      const unknown = group.find((l) => !l.availability.products);
-      if (!unknown && (!adult || !pediatric)) {
-        warn(
-          "Trying to merge locations other than an adult and pediatric!",
-          group
-        );
-        return null;
-      }
-
-      const result = Object.assign({}, ...group);
-      result.meta = {
-        ...adult.meta,
-        booking_url_adult: adult?.booking_url,
-        booking_url_pediatric: pediatric?.booking_url,
-      };
-      result.booking_url = GENERIC_BOOKING_URL;
-      result.external_ids = getUniqueExternalIds(
-        group.flatMap((l) => l.external_ids)
+    // If a location had no available vaccines and had no special naming
+    // prefix, we won't know whether it is adult or pediatric. We can't know
+    // whether this is a problem or not, so always allow it.
+    const unknown = group.find((l) => !l.availability.products);
+    if (!unknown && (!adult || !pediatric)) {
+      warn(
+        "Trying to merge locations other than an adult and pediatric!",
+        group
       );
-      const products = [
-        ...new Set(
-          group.flatMap((l) => l.availability.products).filter(Boolean)
-        ),
-      ];
-      result.availability.products = products.length ? products : undefined;
-      result.availability.available = Available.unknown;
-      if (group.some((l) => l.availability.available === Available.yes)) {
-        result.availability.available = Available.yes;
-      } else if (
-        group.every((l) => l.availability.available === Available.no)
-      ) {
-        result.availability.available = Available.no;
-      }
+      return null;
+    }
 
-      return result;
-    })
-    .filter(Boolean);
+    const result = Object.assign({}, ...group);
+    result.meta = {
+      ...adult.meta,
+      booking_url_adult: adult?.booking_url,
+      booking_url_pediatric: pediatric?.booking_url,
+    };
+    result.booking_url = GENERIC_BOOKING_URL;
+    result.external_ids = getUniqueExternalIds(
+      group.flatMap((l) => l.external_ids)
+    );
+    const products = [
+      ...new Set(group.flatMap((l) => l.availability.products).filter(Boolean)),
+    ];
+    result.availability.products = products.length ? products : undefined;
+    result.availability.available = Available.unknown;
+    if (group.some((l) => l.availability.available === Available.yes)) {
+      result.availability.available = Available.yes;
+    } else if (group.every((l) => l.availability.available === Available.no)) {
+      result.availability.available = Available.no;
+    }
+
+    return result;
+  }
+
+  const groups = groupDuplicateLocations(
+    formatted,
+    ["albertsons_store_number"],
+    true
+  );
+  return groups.map((group) => mergeLocations([...group])).filter(Boolean);
 }
 
 const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
