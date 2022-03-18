@@ -159,6 +159,10 @@ const BRANDS = [
   {
     ...BASE_BRAND,
     key: "sav_on",
+    // Sav-On pharmacies are sometimes referred to as Albertsons Pharmacies.
+    // If an adult listing is named one way and a pediatric location is named
+    // the other, they need both kinds of external IDs so we can merge them.
+    keys: ["albertsons", "sav_on"],
     name: "Sav-On Pharmacy",
     pattern: /Sav-?On/i,
   },
@@ -446,16 +450,19 @@ function formatLocation(data, validAt, checkedAt) {
     isPediatric ||
     (products?.length && products.some((p) => PediatricVaccineProducts.has(p)));
 
-  const external_ids = [
-    ["albertsons", data.id],
-    [`albertsons_${storeBrand.key}`, data.id],
-  ];
-  if (storeNumber) {
-    external_ids.push([storeBrand.key, storeNumber]);
-    external_ids.push([
-      "albertsons_store_number",
-      `${storeBrand.key}:${storeNumber}`,
-    ]);
+  // Some locations are listed under multiple brands (!), so we need to create
+  // external IDs for both brands to ensure they get merged.
+  const external_ids = [["albertsons", data.id]];
+  const brandKeys = storeBrand.keys || [storeBrand.key];
+  for (const brandKey of brandKeys) {
+    external_ids.push([`albertsons_${brandKey}`, data.id]);
+    if (storeNumber) {
+      external_ids.push([brandKey, storeNumber]);
+      external_ids.push([
+        "albertsons_store_number",
+        `${brandKey}:${storeNumber}`,
+      ]);
+    }
   }
 
   const bookingType = isPediatric ? "pediatric" : "adult";
