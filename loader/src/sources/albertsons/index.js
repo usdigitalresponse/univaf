@@ -18,7 +18,6 @@
  */
 
 const Sentry = require("@sentry/node");
-const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
 const {
   createWarningLogger,
