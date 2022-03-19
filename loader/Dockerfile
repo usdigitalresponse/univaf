@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16.14.2-slim
 # Name for the version/release of the software. (Optional)
 ARG RELEASE
 
@@ -23,4 +23,3 @@ ENV API_KEY=""
 
 # run our built server
 ENTRYPOINT ["node", "./bin/univaf-loader", "--send", "--compact"]
-

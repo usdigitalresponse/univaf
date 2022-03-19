@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16.14.2-slim
 
 # Upgrade to NPM 7
 RUN npm install -g npm
