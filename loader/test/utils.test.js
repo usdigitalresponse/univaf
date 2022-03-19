@@ -216,5 +216,8 @@ describe("cleanUrl", () => {
   it("throws for values that are not URL-like", () => {
     expect(() => cleanUrl("not a URL")).toThrow(ParseError);
     expect(() => cleanUrl("http://no-second-level-domain")).toThrow(ParseError);
+    expect(() =>
+      cleanUrl("http://example.com/path with some other text after the URL")
+    ).toThrow(ParseError);
   });
 });

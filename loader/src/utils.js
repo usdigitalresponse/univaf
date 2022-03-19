@@ -542,7 +542,7 @@ module.exports = {
     let result = text?.trim();
     if (!result) return undefined;
 
-    const urlPattern = /^(https?:\/\/)?[^/\s]+\.[^/\s]{2,}(?:\/.*)?$/i;
+    const urlPattern = /^(https?:\/\/)?[^/\s]+\.[^/\s]{2,}(?:\/[^\s]*)?$/i;
     const urlParts = result.match(urlPattern);
     if (urlParts) {
       if (!urlParts[1]) {
