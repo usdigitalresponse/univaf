@@ -9,6 +9,7 @@ const {
   parseUsAddress,
   RateLimit,
   parseUsPhoneNumber,
+  cleanUrl,
 } = require("../src/utils");
 
 describe("splitOnce", () => {
@@ -186,5 +187,34 @@ describe("parseUsPhoneNumber", () => {
     expect(() => parseUsPhoneNumber("213.456.78901")).toThrow(ParseError);
 
     expect(() => parseUsPhoneNumber("Not a number")).toThrow(ParseError);
+  });
+});
+
+describe("cleanUrl", () => {
+  it("returns valid URLs as-is", () => {
+    let url = "https://something.com/yeah";
+    expect(cleanUrl(url)).toBe(url);
+
+    url = "https://deep.deep.subdomain.something.com/yeah?ok=sure";
+    expect(cleanUrl(url)).toBe(url);
+  });
+
+  it("adds a scheme to URLs that are missing one", () => {
+    expect(cleanUrl("whatever.com")).toBe("http://whatever.com");
+  });
+
+  it("strips leading and trailing spaces", () => {
+    expect(cleanUrl("  http://whatever.com ")).toBe("http://whatever.com");
+  });
+
+  it("returns undefined for empty input values", () => {
+    expect(cleanUrl(null)).toBe(undefined);
+    expect(cleanUrl("")).toBe(undefined);
+    expect(cleanUrl("    ")).toBe(undefined);
+  });
+
+  it("throws for values that are not URL-like", () => {
+    expect(() => cleanUrl("not a URL")).toThrow(ParseError);
+    expect(() => cleanUrl("http://no-second-level-domain")).toThrow(ParseError);
   });
 });

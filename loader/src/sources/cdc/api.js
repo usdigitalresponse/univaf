@@ -27,7 +27,13 @@
 const Sentry = require("@sentry/node");
 
 const { Available, VaccineProduct } = require("../../model");
-const { httpClient, oneLine, titleCase, unpadNumber } = require("../../utils");
+const {
+  httpClient,
+  oneLine,
+  titleCase,
+  unpadNumber,
+  cleanUrl,
+} = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
@@ -143,7 +149,7 @@ function formatStore(storeItems, checkedAt) {
       state: base.loc_admin_state,
       postal_code: base.loc_admin_zip,
       info_phone: base.loc_phone,
-      info_url: base.web_address,
+      info_url: cleanUrl(base.web_address),
       meta,
 
       availability: {
