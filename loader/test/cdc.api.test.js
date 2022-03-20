@@ -127,4 +127,19 @@ describe("CDC Open Data API", () => {
       ["walmart", "148"],
     ]);
   });
+
+  it("cleans up not-quite-valid URLs", async () => {
+    const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
+    const formatted = formatStore(
+      [
+        {
+          ...baseEntry,
+          web_address: "www.cvs.com/covid/",
+        },
+      ],
+      new Date()
+    );
+
+    expect(formatted).toHaveProperty("info_url", "http://www.cvs.com/covid/");
+  });
 });

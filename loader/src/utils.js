@@ -523,4 +523,34 @@ module.exports = {
 
     return undefined;
   },
+
+  /**
+   * Ensure a string is a complete URL. If it is already a valid URL, the input
+   * string is returned as-is. If it's missing a scheme (e.g. "www.kroger.com"),
+   * the returned value will have a scheme added. If null, undefined, or an
+   * empty string are passed in, `undefined` will be returned.
+   *
+   * If the input doesn't look like it's really a URL (e.g. "Not a URL!"), this
+   * will throw a `ParseError`.
+   *
+   * This is meant for fairly simple scenarios; more we should use an external
+   * dependency if our needs get much more complex.
+   * @param {string} text Something that should be a URL.
+   * @returns {string|undefined}
+   */
+  cleanUrl(text) {
+    let result = text?.trim();
+    if (!result) return undefined;
+
+    const urlPattern = /^(https?:\/\/)?[^/\s]+\.[^/\s]{2,}(?:\/[^\s]*)?$/i;
+    const urlParts = result.match(urlPattern);
+    if (urlParts) {
+      if (!urlParts[1]) {
+        result = `http://${result}`;
+      }
+      return result;
+    }
+
+    throw new ParseError(`Text is not a URL: "${text}"`);
+  },
 };
