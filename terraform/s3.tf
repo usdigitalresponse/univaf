@@ -2,6 +2,10 @@
 
 resource "aws_s3_bucket" "data_snapshots" {
   bucket = "univaf-data-snapshots"
+}
+
+resource "aws_s3_bucket_acl" "data_snapshots_acl" {
+  bucket = aws_s3_bucket.data_snapshots.id
   acl    = "public-read"
 }
 

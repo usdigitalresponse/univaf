@@ -46,7 +46,7 @@ resource "aws_db_instance" "main" {
   username                     = coalesce(var.username, var.name)
   password                     = var.password
   multi_az                     = var.multi_az
-  name                         = coalesce(var.database, var.name)
+  db_name                      = coalesce(var.database, var.name)
   performance_insights_enabled = var.performance_insights_enabled
 
   # Backups / maintenance
