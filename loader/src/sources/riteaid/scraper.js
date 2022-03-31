@@ -132,7 +132,7 @@ const riteAidLocationSchema = {
   type: "object",
   properties: {
     storeNumber: { type: "integer", minimum: 1 },
-    brand: { enum: ["UNKNOWN", null] },
+    brand: { enum: ["RITEAID", "UNKNOWN", null] },
     customDisplayName: { enum: ["UNKNOWN", null] },
     address: { type: "string" },
     city: { type: "string" },
