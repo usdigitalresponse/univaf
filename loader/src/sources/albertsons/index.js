@@ -209,11 +209,13 @@ const BRANDS = [
     locationType: LocationType.clinic,
     pattern: {
       test: (name) => {
-        // Teamsters needs explicit support because it looks like "name followed
-        // by store number", which we explicitly disallow for community clinics
-        // in the first pattern.
+        // Some locations need explicit support because they look like "name
+        // followed by store number", which we explicitly disallow for community
+        // clinics in the first pattern.
         return (
-          !/(\w+\s+#?\d+$)|^\d+\s/.test(name) || /^teamsters local/i.test(name)
+          !/(\w+\s+#?\d+$)|^\d+\s/.test(name) ||
+          /^teamsters local/i.test(name) ||
+          /^chicago fire department/i.test(name)
         );
       },
     },
