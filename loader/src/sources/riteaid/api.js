@@ -84,7 +84,6 @@ const riteAidLocationSchema = requireAllProperties({
         state: { type: "string", pattern: "[A-Z]{2}" },
         zipcode: { type: "string", pattern: "\\d{1,5}(-\\d{4})?" },
         county: { type: "null" },
-        identifiers: { type: "null" },
       },
       additionalProperties: false,
     }),
