@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@sentry/node": "^6.19.1",
-    "@sentry/tracing": "^6.19.1",
+    "@sentry/tracing": "^6.19.2",
     "ajv": "^8.10.0",
     "ajv-formats": "^2.1.1",
     "ajv-keywords": "^5.1.0",
