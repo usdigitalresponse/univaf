@@ -31,8 +31,8 @@
     "lint": "eslint --ext .js,.ts ."
   },
   "dependencies": {
-    "@sentry/node": "^6.19.2",
-    "@sentry/tracing": "^6.19.2",
+    "@sentry/node": "^6.19.6",
+    "@sentry/tracing": "^6.19.6",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "ajv-keywords": "^5.1.0",
