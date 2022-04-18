@@ -2,6 +2,7 @@ const nock = require("nock");
 const path = require("path");
 
 const DEFAULT_NOCKBACK_PATH = path.join(__dirname, "..", "fixtures", "nock");
+const USER_NOCKBACK_MODE = process.env.NOCK_BACK_MODE;
 const JEST_TEST_FUNCTIONS = ["test", "it", "fit", "xit"];
 
 /**
@@ -70,9 +71,13 @@ function withNockBack(options, testFunction) {
     options = {};
   }
 
+  // Set the mode to "record" unless explicitly specified otherwise and reset
+  // it when the test is done. Having the user explicitly set the mode to
+  // "record" can cause other non-nock.back tests that use normal, non-recorded
+  // Nock mocks to behave incorrectly, so this is the next best thing.
   const originalMode = nock.back.currentMode;
   setupNockBack();
-  nock.back.setMode("record");
+  nock.back.setMode(USER_NOCKBACK_MODE || "record");
 
   return async () => {
     const name = expect.getState().currentTestName;

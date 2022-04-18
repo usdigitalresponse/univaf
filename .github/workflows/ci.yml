@@ -70,6 +70,8 @@ jobs:
           DB_PASSWORD: test-password
 
       - name: Run loader tests
+        env:
+          NOCK_BACK_MODE: lockdown
         run: |
           cd loader
           npm run test
