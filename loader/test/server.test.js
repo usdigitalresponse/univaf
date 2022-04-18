@@ -1,10 +1,18 @@
 const got = require("got");
+const nock = require("nock");
 const { runServer } = require("../src/server");
 
 describe("Server", () => {
   let server;
 
+  beforeEach(async () => {
+    nock.enableNetConnect("localhost");
+  });
+
   afterEach((done) => {
+    nock.cleanAll();
+    nock.enableNetConnect();
+
     if (server) server.close(done);
     else done();
   });
