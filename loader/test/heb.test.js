@@ -4,7 +4,7 @@ const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 describe("H-E-B", () => {
-  it("should output valid data", async () => {
+  it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
     const result = await checkAvailability(() => {}, { states: "TX" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
