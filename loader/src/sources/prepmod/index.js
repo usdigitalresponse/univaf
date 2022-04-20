@@ -186,7 +186,17 @@ function formatLocationBookingUrl(host, location) {
 // - Adenovirus vaccines (This one has a narrower definition to make sure we
 //   are only matching vaccines against adenovirus, not ones that might be using
 //   modified adenovirus as a vaccine against COVID or other things.)
-const nonCovidProductName = /^influenza|flu|zoster|^\s*adenovirus\s*$/i;
+const raw = String.raw;
+const nonCovidProductName = new RegExp(
+  [
+    raw`^influenza`,
+    raw`flu`,
+    raw`zoster`,
+    raw`^\s*adenovirus\s*$`,
+    raw`^child and adolescent immunization`,
+  ].join("|"),
+  "i"
+);
 
 /**
  * Parse useful data about a schedule.
