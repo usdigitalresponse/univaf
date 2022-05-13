@@ -248,4 +248,16 @@ describe("Rite Aid Source", () => {
       expect.stringContaining("slot count")
     );
   });
+
+  it("includes sub-brand IDs when appropriate", () => {
+    const rawData = {
+      ...createMockApiLocation(),
+      id: 6958,
+    };
+
+    expect(formatStore(rawData)).toHaveProperty("external_ids", [
+      ["rite_aid", "6958"],
+      ["bartell", "58"],
+    ]);
+  });
 });

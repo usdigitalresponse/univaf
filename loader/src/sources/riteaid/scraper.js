@@ -20,7 +20,7 @@ const {
   createWarningLogger,
   parseUsPhoneNumber,
 } = require("../../utils");
-const { RiteAidApiError } = require("./common");
+const { RiteAidApiError, getExternalIds } = require("./common");
 const { zipCodesCovering100Miles } = require("./zip-codes");
 
 // Load slot-level data in chunks of this many stores at a time.
@@ -132,8 +132,8 @@ const riteAidLocationSchema = {
   type: "object",
   properties: {
     storeNumber: { type: "integer", minimum: 1 },
-    brand: { enum: ["RITEAID", "UNKNOWN", null] },
-    customDisplayName: { enum: ["UNKNOWN", null] },
+    brand: { enum: ["RITEAID", "BARTELL", "UNKNOWN", null] },
+    customDisplayName: { type: "string", nullable: true },
     address: { type: "string" },
     city: { type: "string" },
     state: { type: "string", pattern: "[A-Z]{2}" },
@@ -212,8 +212,11 @@ function formatLocation(apiData) {
   const isAvailable = slots?.length > 0 || apiData.firstAvailableSlot;
 
   return {
+    // `customDisplayName` looks like something that might apply here, but in
+    // practice it doesn't quite seem useful. Values we've seen are:
+    // null, "UNKNOWN", and "Edmonds" (name of the city the store is in)
     name: `Rite Aid #${apiData.storeNumber}`,
-    external_ids: [["rite_aid", apiData.storeNumber.toString()]],
+    external_ids: getExternalIds(apiData.storeNumber),
     provider: "rite_aid",
     location_type: LocationType.pharmacy,
 
