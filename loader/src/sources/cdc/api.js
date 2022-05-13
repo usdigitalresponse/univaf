@@ -347,7 +347,7 @@ function getStoreExternalIds(location) {
           ? idValue
           : [[definition.system, idValue]];
       }
-      return [];
+      break;
     }
   }
 
