@@ -39,16 +39,20 @@ function getExternalIds(storeNumber) {
  * @returns {string}
  */
 function getLocationName(externalIds) {
-  let riteAidId;
+  let nonBrandName = "Rite Aid";
+
   for (const [system, value] of externalIds) {
-    if (system === "rite_aid") {
-      riteAidId = value;
-    } else if (system === "bartell") {
+    if (system === "bartell") {
       return `Bartell Drugs #${value}`;
+    } else if (system === "rite_aid") {
+      // External IDs can come in any order, and we want to prefer a sub-brand
+      // name over a "Rite Aid" name, so store this as a fallback rather than
+      // returning immediately.
+      nonBrandName = `Rite Aid #${value}`;
     }
   }
 
-  return `Rite Aid #${riteAidId}`;
+  return nonBrandName;
 }
 
 module.exports = { RiteAidApiError, getExternalIds, getLocationName };
