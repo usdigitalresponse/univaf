@@ -94,8 +94,8 @@ function formatStore(storeItems, checkedAt) {
       provider: "cdc",
     });
 
-    const storeExternalId = getStoreExternalId(base);
-    if (!storeExternalId) {
+    const storeExternalIds = getStoreExternalIds(base);
+    if (!storeExternalIds.length) {
       return null;
     }
 
@@ -140,10 +140,10 @@ function formatStore(storeItems, checkedAt) {
     result = {
       external_ids: [
         ["vaccines_gov", base.provider_location_guid],
-        storeExternalId,
+        ...storeExternalIds,
       ],
       name: titleCase(base.loc_name),
-      provider: storeExternalId[0],
+      provider: storeExternalIds[0][0],
       address_lines: addressLines,
       city: titleCase(base.loc_admin_city),
       state: base.loc_admin_state,
@@ -267,10 +267,16 @@ const locationSystems = [
     system: "bartell",
     pattern: /bartell drug/i,
     getId(location) {
-      // Bartell store numbers are prefixed with "69" and sometimes have
-      // additional 0-padding.
-      // Can dig up more details on Bartell stores at:
+      // Bartell was a small pharmacy chain later purchased by Rite Aid. Within
+      // Bartell's systems, stores are a 2 digit number. Within Rite Aid's
+      // systems, they are a 4 digit number where the first 2 digits are "69",
+      // sometimes with additional 0-padding.
+      //   e.g. Bartell #58  =  Rite Aid #06958
+      // CDC uses Rite Aid IDs, but we need to work with both systems.
+      //
+      // More details on Bartell stores at:
       //   https://www.bartelldrugs.com/wp-json/api/stores?per_page=100&orderby=title&order=ASC
+      //
       // Also worth noting: it appears that the WA DoH API only sometimes
       // surfaces store numbers, and also has addresses and store names mixed
       // up in a few cases. Makes one worry about the data accuracy :|
@@ -282,7 +288,10 @@ const locationSystems = [
           storeNumber: location.loc_store_no,
         });
       }
-      return id;
+      return [
+        ["bartell", id],
+        ["rite_aid", `69${id}`],
+      ];
     },
   },
   { system: "meijer", pattern: /^Meijer/i },
@@ -324,18 +333,25 @@ const mislabeledLocations = {
   "019de7c9-956f-40b5-8e3b-deb67c8a1b95": { system: "walmart", value: "6690" },
 };
 
-function getStoreExternalId(location) {
+function getStoreExternalIds(location) {
   const correction = mislabeledLocations[location.provider_location_guid];
   if (correction) {
-    return [correction.system, correction.value];
+    return [[correction.system, correction.value]];
   }
 
   for (const definition of locationSystems) {
     if (definition.pattern.test(location.loc_name)) {
       const idValue = (definition.getId || getSimpleId)(location);
-      return idValue ? [definition.system, idValue] : null;
+      if (idValue) {
+        return Array.isArray(idValue)
+          ? idValue
+          : [[definition.system, idValue]];
+      }
+      return [];
     }
   }
+
+  return [];
 }
 
 /**
