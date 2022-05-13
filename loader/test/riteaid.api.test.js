@@ -255,9 +255,11 @@ describe("Rite Aid Source", () => {
       id: 6958,
     };
 
-    expect(formatStore(rawData)).toHaveProperty("external_ids", [
+    const formatted = formatStore(rawData);
+    expect(formatted).toHaveProperty("external_ids", [
       ["rite_aid", "6958"],
       ["bartell", "58"],
     ]);
+    expect(formatted).toHaveProperty("name", "Bartell Drugs #58");
   });
 });

@@ -20,7 +20,11 @@ const {
   createWarningLogger,
   parseUsPhoneNumber,
 } = require("../../utils");
-const { RiteAidApiError, getExternalIds } = require("./common");
+const {
+  RiteAidApiError,
+  getExternalIds,
+  getLocationName,
+} = require("./common");
 const { zipCodesCovering100Miles } = require("./zip-codes");
 
 // Load slot-level data in chunks of this many stores at a time.
@@ -211,12 +215,14 @@ function formatLocation(apiData) {
   }
   const isAvailable = slots?.length > 0 || apiData.firstAvailableSlot;
 
+  const external_ids = getExternalIds(apiData.storeNumber);
+
   return {
     // `customDisplayName` looks like something that might apply here, but in
-    // practice it doesn't quite seem useful. Values we've seen are:
+    // practice it doesn't seem useful. Values we've seen are:
     // null, "UNKNOWN", and "Edmonds" (name of the city the store is in)
-    name: `Rite Aid #${apiData.storeNumber}`,
-    external_ids: getExternalIds(apiData.storeNumber),
+    name: getLocationName(external_ids),
+    external_ids,
     provider: "rite_aid",
     location_type: LocationType.pharmacy,
 

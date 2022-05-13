@@ -31,4 +31,24 @@ function getExternalIds(storeNumber) {
   return result;
 }
 
-module.exports = { RiteAidApiError, getExternalIds };
+/**
+ * Get a human-friendly name for a Rite Aid location. If the store is part of a
+ * known sub-brand, this uses the sub-brand's name instead of "Rite Aid".
+ *
+ * @param {[string, string][]} externalIds The store's external IDs
+ * @returns {string}
+ */
+function getLocationName(externalIds) {
+  let riteAidId;
+  for (const [system, value] of externalIds) {
+    if (system === "rite_aid") {
+      riteAidId = value;
+    } else if (system === "bartell") {
+      return `Bartell Drugs #${value}`;
+    }
+  }
+
+  return `Rite Aid #${riteAidId}`;
+}
+
+module.exports = { RiteAidApiError, getExternalIds, getLocationName };

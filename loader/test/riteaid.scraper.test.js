@@ -397,5 +397,6 @@ describe("Rite Aid Scraper", () => {
       ["rite_aid", "6958"],
       ["bartell", "58"],
     ]);
+    expect(result).toHaveProperty("0.name", "Bartell Drugs #58");
   });
 });
