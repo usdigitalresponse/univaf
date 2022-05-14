@@ -128,6 +128,38 @@ describe("CDC Open Data API", () => {
     ]);
   });
 
+  it("supports Bartell data with multiple external_id systems", () => {
+    const formatted = formatStore(
+      [
+        {
+          provider_location_guid: "fe474d63-41c6-4587-a80b-d8463b8973fa",
+          loc_store_no: "06958",
+          loc_phone: "713-461-2915",
+          loc_name: "The Bartell Drug Co #06958",
+          loc_admin_street1: "3855 Lamar Ave",
+          loc_admin_city: "Paris",
+          loc_admin_state: "TX",
+          loc_admin_zip: "75462",
+          ndc: "59267-1000-01",
+          med_name: "Pfizer-BioNTech, COVID-19 Vaccine, 30 mcg/0.3mL",
+          in_stock: false,
+          supply_level: "0",
+          quantity_last_updated: "2022-01-09",
+          latitude: "33.664697",
+          longitude: "-95.505641",
+          category: "covid",
+        },
+      ],
+      new Date()
+    );
+
+    expect(formatted).toHaveProperty("external_ids", [
+      ["vaccines_gov", "fe474d63-41c6-4587-a80b-d8463b8973fa"],
+      ["bartell", "58"],
+      ["rite_aid", "6958"],
+    ]);
+  });
+
   it("cleans up not-quite-valid URLs", async () => {
     const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
     const formatted = formatStore(
@@ -141,5 +173,33 @@ describe("CDC Open Data API", () => {
     );
 
     expect(formatted).toHaveProperty("info_url", "http://www.cvs.com/covid/");
+  });
+
+  it("skips rows for unsupported providers", () => {
+    const formatted = formatStore(
+      [
+        {
+          provider_location_guid: "fe474d63-41c6-4587-a80b-d8463b8973fa",
+          loc_store_no: "06958",
+          loc_phone: "713-461-2915",
+          loc_name: "Some random provider",
+          loc_admin_street1: "3855 Lamar Ave",
+          loc_admin_city: "Paris",
+          loc_admin_state: "TX",
+          loc_admin_zip: "75462",
+          ndc: "59267-1000-01",
+          med_name: "Pfizer-BioNTech, COVID-19 Vaccine, 30 mcg/0.3mL",
+          in_stock: false,
+          supply_level: "0",
+          quantity_last_updated: "2022-01-09",
+          latitude: "33.664697",
+          longitude: "-95.505641",
+          category: "covid",
+        },
+      ],
+      new Date()
+    );
+
+    expect(formatted).toBeFalsy();
   });
 });

@@ -357,4 +357,46 @@ describe("Rite Aid Scraper", () => {
       "Something went wrong"
     );
   });
+
+  it("includes sub-brand IDs when appropriate", async () => {
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query(true)
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              storeNumber: 6958,
+              totalSlotCount: 50,
+              firstAvailableSlot: null,
+            },
+          ],
+        },
+      });
+    nock(API_URL_BASE)
+      .get(API_URL_PATH)
+      .query((query) => query.storeNumbers === "6958")
+      .reply(200, {
+        Status: "SUCCESS",
+        data: {
+          stores: [
+            {
+              ...basicLocation,
+              storeNumber: 6958,
+              totalSlotCount: 50,
+              firstAvailableSlot: null,
+            },
+          ],
+        },
+      });
+
+    const result = await checkAvailability(() => {}, { states: "NJ" });
+    expect(result).toHaveProperty("0.external_ids", [
+      ["rite_aid", "6958"],
+      ["bartell", "58"],
+    ]);
+    expect(result).toHaveProperty("0.name", "Bartell Drugs #58");
+  });
 });

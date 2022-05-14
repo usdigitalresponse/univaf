@@ -13,7 +13,11 @@ const {
   assertSchema,
   requireAllProperties,
 } = require("../../schema-validation");
-const { RiteAidApiError } = require("./common");
+const {
+  RiteAidApiError,
+  getExternalIds,
+  getLocationName,
+} = require("./common");
 
 const warn = createWarningLogger("Rite Aid API");
 
@@ -202,10 +206,11 @@ function formatStore(provider) {
     valid_at = checked_at;
   }
 
+  const external_ids = getExternalIds(provider.id);
+
   return {
-    // All API locations are named "Rite Aid", so add the store number.
-    name: `Rite Aid #${provider.id}`,
-    external_ids: [["rite_aid", provider.id.toString()]],
+    name: getLocationName(external_ids),
+    external_ids,
     provider: "rite_aid",
     location_type: LocationType.pharmacy,
 
