@@ -1,9 +1,6 @@
-import { Request } from "express";
 import type { Knex } from "knex";
-import { getRequestHost } from "./utils";
 
 export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
-export const HOST_URL = process.env.HOST_URL;
 
 export function getApiKeys(): Array<string> {
   let keyList = process.env.API_KEYS;
@@ -20,16 +17,9 @@ export function getApiKeys(): Array<string> {
   return keyList.split(",").map((key) => key.trim());
 }
 
-export function getHostUrl(request?: Request): string {
-  let hostUrl = HOST_URL;
-  if (!hostUrl) {
-    if (!request) {
-      throw new Error("Cannot calculate host URL without a request");
-    } else {
-      hostUrl = `${request.protocol}://${getRequestHost(request)}`;
-    }
-  }
-  if (hostUrl.endsWith("/")) hostUrl = hostUrl.slice(0, -1);
+export function getPrimaryHostUrl(): string {
+  let hostUrl = process.env.HOST_URL;
+  if (hostUrl?.endsWith("/")) hostUrl = hostUrl.slice(0, -1);
 
   return hostUrl;
 }

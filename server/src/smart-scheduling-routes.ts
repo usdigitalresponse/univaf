@@ -9,7 +9,7 @@
 
 import { Request, Response } from "express";
 import { DateTime } from "luxon";
-import { getHostUrl } from "./config";
+import { getHostUrl } from "./utils";
 import * as db from "./db";
 import {
   Availability,

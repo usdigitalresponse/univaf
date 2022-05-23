@@ -1,5 +1,6 @@
 import { NextFunction, RequestHandler, Request, Response } from "express";
 import { URLSearchParams, format as urlFormat, parse as urlParse } from "url";
+import { getPrimaryHostUrl } from "./config";
 import { ValueError } from "./exceptions";
 
 export const UUID_PATTERN =
@@ -116,4 +117,21 @@ export function getRequestHost(request: Request): string {
   }
 
   return val || undefined;
+}
+
+/**
+ * Get the configured host URL (a.k.a. origin) for the server, or if none is
+ * set, the origin of a given request.
+ */
+export function getHostUrl(request?: Request): string {
+  let hostUrl = getPrimaryHostUrl();
+  if (!hostUrl) {
+    if (!request) {
+      throw new Error("Cannot calculate host URL without a request");
+    } else {
+      hostUrl = `${request.protocol}://${getRequestHost(request)}`;
+    }
+  }
+
+  return hostUrl;
 }

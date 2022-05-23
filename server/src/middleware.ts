@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { getApiKeys, getHostUrl, HOST_URL } from "./config";
+import { getApiKeys, getPrimaryHostUrl } from "./config";
 import { getRequestHost } from "./utils";
 
 export interface AppRequest extends Request {
@@ -51,8 +51,8 @@ export function redirectToPrimaryHost(
   response: Response,
   next: NextFunction
 ): void {
-  if (HOST_URL) {
-    const primaryOrigin = getHostUrl(request);
+  const primaryOrigin = getPrimaryHostUrl();
+  if (primaryOrigin) {
     const origin = `${request.protocol}://${getRequestHost(request)}`;
     if (origin !== primaryOrigin) {
       return response.redirect(`${primaryOrigin}${request.originalUrl}`);
