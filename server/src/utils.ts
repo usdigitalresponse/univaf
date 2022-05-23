@@ -95,3 +95,25 @@ export function urlDecodeSpecialPathChars(
   req.url = urlFormat(url);
   next();
 }
+
+/**
+ * Get the complete host for a request. This differs from `request.hostname`
+ * by including the port.
+ *
+ * The code here is mostly stolen from Express 5.x's `request.host`; in
+ * Express 4.x, this property is an alias for `hostname` and has no port.
+ */
+export function getRequestHost(request: Request): string {
+  const trust = request.app.get("trust proxy fn");
+  let val = request.get("X-Forwarded-Host");
+
+  if (!val || !trust(request.socket.remoteAddress, 0)) {
+    val = request.get("Host");
+  } else if (val.indexOf(",") !== -1) {
+    // Note: X-Forwarded-Host is normally only ever a
+    //       single value, but this is to be safe.
+    val = val.substring(0, val.indexOf(",")).trimEnd();
+  }
+
+  return val || undefined;
+}
