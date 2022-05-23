@@ -4,6 +4,7 @@ resource "aws_alb" "main" {
   name            = "api-load-balancer"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
+  drop_invalid_header_fields = true
 }
 
 resource "aws_alb_target_group" "api" {
@@ -199,7 +200,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = var.domain_name
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     max_ttl                = 3600
 
