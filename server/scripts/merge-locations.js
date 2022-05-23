@@ -142,7 +142,7 @@ function matchableAddress(text, line = null) {
 }
 
 function getAddressString(location) {
-  return `${location.address_lines.join(", ")}, ${location.city}, ${
+  return `${location.address_lines?.join(", ")}, ${location.city}, ${
     location.state
   } ${location.postal_code}`;
 }
