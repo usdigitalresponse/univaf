@@ -1,4 +1,4 @@
-FROM node:16.14.2-slim
+FROM node:16.15.0-slim
 # Name for the version/release of the software. (Optional)
 ARG RELEASE
 
