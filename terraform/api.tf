@@ -57,6 +57,14 @@ resource "aws_route53_record" "api_domain_record" {
   }
 }
 
+resource "aws_route53_record" "api_www_domain_record" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "www"
+  type    = "CNAME"
+  records = [var.domain_name]
+}
+
 module "api_task" {
   source = "./modules/task"
 
@@ -182,7 +190,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
   enabled     = true
   price_class = "PriceClass_100" # North America
-  aliases     = [var.domain_name]
+  aliases     = [var.domain_name, "www.${var.domain_name}"]
 
   origin {
     origin_id   = var.domain_name
