@@ -332,8 +332,28 @@ const pediatricPrefixes = [
   /^Pfizer Child\s*-\s*(?<body>.*)$/i,
   /^Ages 5\+ welcome\s*-\s*(?<body>.*)$/i,
   /^All ages welcome 5\+\s+(?<body>.*)$/i,
-  /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
+  // /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
 ];
+
+// Match info about one-off events that is embedded in the `address` field.
+// Listings for one-off events currently look like:
+//
+//   Osco Pharmacy Pediatric Booster Clinic - Aurora June 9  - 1157 Eola Road, Aurora, IL, 60502
+//
+// Where the event info is in the form `- <city> <month> <day> -`.
+const raw = String.raw;
+const addressEventPattern = new RegExp(
+  [
+    raw`\s*-\s*`,
+    raw`(?<city>[^-]+)`,
+    raw`\s`,
+    raw`(?<month>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*)`,
+    raw`\s+`,
+    raw`(?<day>\d{1,2})`,
+    raw`\s*-\s*`,
+  ].join(""),
+  "i"
+);
 
 /**
  * Parse a location name and address from Albertsons (they're both part of
@@ -350,8 +370,13 @@ function parseNameAndAddress(text) {
     throw new ParseError(`Found a URL in the name "${text}"`);
   }
 
+  // Some locations represent one-off events on a particular day, and the date
+  // is in the address.
+  // TODO: preserve this info to put in `availability.capacity`?
+  text = text.replace(addressEventPattern, " - ");
+
   // Some locations have separate pediatric and non-pediatric API locations.
-  // The pediatric ones oftne have prefixes like "Pfizer Child".
+  // The pediatric ones often have prefixes like "Pfizer Child".
   let pediatric = false;
   let body = text;
   for (const pattern of pediatricPrefixes) {
