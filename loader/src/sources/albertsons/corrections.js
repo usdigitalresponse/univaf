@@ -105,6 +105,10 @@ module.exports.corrections = {
   1653357862707: {
     address: "Safeway #1490 - 2300 16th Street, San Francisco, CA, 94103",
   },
+  1641598104920: {
+    address:
+      "Pediatric Clinic Albertsons #276 - 7350 South Rainbow Boulevard, Las Vegas, NV, 89139",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
