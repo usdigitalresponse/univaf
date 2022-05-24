@@ -102,6 +102,9 @@ module.exports.corrections = {
   1646340822687: {
     address: "Jewel-Osco #1190 - 13460 S. Route 59, Plainfield, IL, 60544",
   },
+  1653357862707: {
+    address: "Safeway #1490 - 2300 16th Street, San Francisco, CA, 94103",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
