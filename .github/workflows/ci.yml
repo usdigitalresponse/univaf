@@ -4,6 +4,7 @@ on:
     branches:
       - main
     paths-ignore:
+      - ".github/**"
       - "docs/**"
       - "terraform/**"
       - "docker/postgis/**"
@@ -200,3 +201,18 @@ jobs:
         run: |
           docker tag dev/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  deploy:
+    # FIXME: uncomment when we are sure the commit is created properly in actions
+    # if: github.ref == 'refs/heads/main'
+    needs:
+      - build_docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create + push deploy commit
+        run: |
+          ./scripts/deploy_infra.sh
+          # FIXME: uncomment this once we are certain the `if` blocked this from running on other branches!
+          # git push
