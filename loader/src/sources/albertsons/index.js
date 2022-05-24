@@ -296,7 +296,9 @@ async function getData(states) {
 
       const result = Object.assign({}, ...group);
       result.meta = {
-        ...adult.meta,
+        ...unknown?.meta,
+        ...pediatric?.meta,
+        ...adult?.meta,
         booking_url_adult: adult?.booking_url,
         booking_url_pediatric: pediatric?.booking_url,
       };
