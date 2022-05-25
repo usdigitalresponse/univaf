@@ -203,8 +203,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   deploy:
-    # FIXME: uncomment when we are sure the commit is created properly in actions
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs:
       - build_docker
     runs-on: ubuntu-latest
