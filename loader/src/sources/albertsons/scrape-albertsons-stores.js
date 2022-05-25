@@ -160,6 +160,7 @@ async function* crawlListingPage(page, pageUrl, depth = 0, startIndexes = []) {
  * @returns {Promise<any>}
  */
 async function getLocationDataFromPage(page) {
+  // eslint-disable-next-line no-undef
   return await page.evaluate(() => window.Yext?.Profile);
 }
 
