@@ -149,6 +149,62 @@ module.exports.corrections = {
   1653423185831: {
     address: "Jewel-Osco #3051 - 9350 W 159th St, Orland Park, IL, 60462",
   },
+  1636000939006: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1815 - 337 East Ridgeville Blvd, Mount Airy, MD, 21771",
+  },
+  1636001615787: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #2713  - 12410 Fairwood Parkway, Bowie, MD, 20720",
+  },
+  1644040946467: {
+    address:
+      "Pediatric COVID clinic at Safeway #1751 - 1525 West Main St., Molalla, OR, 97038",
+  },
+  1636403331143: {
+    address:
+      "CHILD PFIZER AGE 5-11 Albertsons #733 - 3450 Marron Rd Oceanside CA 92056  - 3450 Marron Road, Oceanside, CA, 92056",
+  },
+  1635989701651: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1880 - 8858 Waltham Woods Road, Carney, MD, 21234",
+  },
+  1653430453208: {
+    address:
+      "Pediatric covid clinic Safeway #2623 - 1140 N Springbrook Rd, Newberg, OR, 97132",
+  },
+  1635989961784: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1565 - 15411 NEW HAMPSHIRE AVENUE, Silver Spring, MD, 20905",
+  },
+  1636046538843: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #4007 - 3713 Lee Highway, Arlington, VA, 22207",
+  },
+  1636044418372: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1920 - 1688 Anderson Rd, Mclean, VA, 22102",
+  },
+  1636045193669: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #3250 - 3526 King St, Alexandria, VA, 22302",
+  },
+  1635996860651: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1431 - 12200 Fairfax Towne Ctr, Fairfax, VA, 22033",
+  },
+  1637601747981: {
+    address:
+      "Pediatric covid clinic at Albertsons #536 - 25691 SE Stark, Troutdale, OR, 97060",
+  },
+  1636000044140: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1715 - 403 Redland Blvd, Rockville, MD, 20850",
+  },
+  1635989386379: {
+    address:
+      "Pediatric COVID-19 Boosters Safeway #3217 - 415 14TH ST. SE, Washington, DC, 20003",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
