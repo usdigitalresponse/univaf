@@ -346,7 +346,7 @@ const pediatricPrefixes = [
   /^Pfizer Child\s*-\s*(?<body>.*)$/i,
   /^Ages 5\+ welcome\s*-\s*(?<body>.*)$/i,
   /^All ages welcome 5\+\s+(?<body>.*)$/i,
-  // /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
+  /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
 ];
 
 // Match info about one-off events that is embedded in the `address` field.
