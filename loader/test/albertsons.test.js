@@ -553,4 +553,24 @@ describe("Albertsons", () => {
       })
     );
   });
+
+  it("removes one-off event dates from location names", () => {
+    const formatted = formatLocation({
+      id: "123456789",
+      region: "California",
+      address:
+        "Albertsons 0393 - Simi Valley Jun 3 - 1268 Madera Rd, Simi Valley, CA, 93065",
+      lat: "64.8515679",
+      long: "-147.7024008",
+      coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+      availability: "yes",
+      drugName: ["Moderna"],
+    });
+
+    expect(formatted).toHaveProperty("name", "Albertsons 393");
+    expect(formatted).toHaveProperty("address_lines", ["1268 Madera Rd"]);
+    expect(formatted).toHaveProperty("city", "Simi Valley");
+    expect(formatted).toHaveProperty("state", "CA");
+    expect(formatted).toHaveProperty("postal_code", "93065");
+  });
 });
