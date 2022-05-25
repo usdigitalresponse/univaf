@@ -268,11 +268,25 @@ async function getData(states) {
 
   // Adult & Pediatric vaccines at the same locations get different listings in
   // the Albertsons API, so we need to group and merge them.
+  const findId = (location, system) =>
+    location.external_ids.find((id) => id[0] === system);
   const groups = groupBy(formatted, (location) => {
-    const storeId = location.external_ids.find(
-      (id) => id[0] === "albertsons_store_number"
-    );
-    return storeId?.[1] ?? location.name;
+    const storeId = findId(location, "albertsons_store_number");
+    const communityClinicId = findId(location, "albertsons_community_clinic");
+    const mHealthId = findId(location, "albertsons");
+
+    if (storeId) {
+      return storeId[1];
+    } else if (communityClinicId) {
+      // Community clinics don't have any real identifiers, so use the name.
+      return location.name;
+    } else if (mHealthId) {
+      return mHealthId[1];
+    } else {
+      // This should never happen! Every location should have an mHealthId.
+      warn(new Error("Albertsons location has no ID", location));
+      return Math.random().toString();
+    }
   });
 
   return Object.values(groups)
