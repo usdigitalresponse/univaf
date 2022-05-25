@@ -109,6 +109,46 @@ module.exports.corrections = {
     address:
       "Pediatric Clinic Albertsons #276 - 7350 South Rainbow Boulevard, Las Vegas, NV, 89139",
   },
+  1653359216202: {
+    address: "Jewel-Osco #3441 - 2940 N Ashland Ave, Chicago, IL, 60657",
+  },
+  1653423455380: {
+    address: "Jewel-Osco #4500 - 1340 S Canal St, Chicago, IL, 60607",
+  },
+  1653421850654: {
+    address: "Jewel-Osco #3484 - 5667 W Touhy Ave, Niles, IL, 60714",
+  },
+  1653422639979: {
+    address: "Jewel-Osco #3429 - 8730 W Dempster St, Niles, IL, 60714",
+  },
+  1653417306983: {
+    address:
+      "Jewel-Osco #3461 - 1860 S Arlington Heights Rd, Arlington Heights, IL, 60005",
+  },
+  1653422961940: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #58 - Naperville June 10  - 2855 W 95th Street, Naperville, IL, 60564",
+  },
+  1653421810197: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #3097 - Downers Grove June 6  - 1148 Ogden Ave, Downers Grove, IL, 60515",
+  },
+  1653423379113: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #3240 - Aurora June 9  - 1157 Eola Road, Aurora, IL, 60502",
+  },
+  1653084403277: {
+    address: "Jewel-Osco #4308  - 1151 S Roselle Rd, Schaumburg, IL, 60193",
+  },
+  1653327310175: {
+    address: "Jewel-Osco #3776  - 2021 E Laraway Rd, New Lenox, IL, 60451",
+  },
+  1653422367010: {
+    address: "Jewel-Osco #3294  - 140 W Lake St Addison, Addison, IL, 60101",
+  },
+  1653423185831: {
+    address: "Jewel-Osco #3051 - 9350 W 159th St, Orland Park, IL, 60462",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
