@@ -87,7 +87,7 @@ const BRANDS = [
     ...BASE_BRAND,
     key: "albertsons",
     name: "Albertsons",
-    pattern: /Albertsons/i,
+    pattern: /Albertsons|\bABS\s/i,
   },
   {
     ...BASE_BRAND,
