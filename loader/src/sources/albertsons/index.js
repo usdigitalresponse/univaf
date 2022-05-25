@@ -507,6 +507,7 @@ function formatLocation(data, validAt, checkedAt) {
     info_url: storeBrand.url,
     booking_url: data.coach_url || undefined,
     meta: {
+      mhealth_address: data.address,
       albertsons_region: data.region,
       [`booking_url_${bookingType}`]: data.coach_url || undefined,
     },
