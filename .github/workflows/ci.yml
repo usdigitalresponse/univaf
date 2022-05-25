@@ -216,5 +216,4 @@ jobs:
           git config --global user.email "actions-bot@usdigitalresponse.org"
 
           ./scripts/deploy_infra.sh
-          # FIXME: uncomment this once we are certain the `if` blocked this from running on other branches!
-          # git push
+          git push
