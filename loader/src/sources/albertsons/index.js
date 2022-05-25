@@ -268,11 +268,25 @@ async function getData(states) {
 
   // Adult & Pediatric vaccines at the same locations get different listings in
   // the Albertsons API, so we need to group and merge them.
+  const findId = (location, system) =>
+    location.external_ids.find((id) => id[0] === system);
   const groups = groupBy(formatted, (location) => {
-    const storeId = location.external_ids.find(
-      (id) => id[0] === "albertsons_store_number"
-    );
-    return storeId?.[1] ?? location.name;
+    const storeId = findId(location, "albertsons_store_number");
+    const communityClinicId = findId(location, "albertsons_community_clinic");
+    const mHealthId = findId(location, "albertsons");
+
+    if (storeId) {
+      return storeId[1];
+    } else if (communityClinicId) {
+      // Community clinics don't have any real identifiers, so use the name.
+      return location.name;
+    } else if (mHealthId) {
+      return mHealthId[1];
+    } else {
+      // This should never happen! Every location should have an mHealthId.
+      warn(new Error("Albertsons location has no ID", location));
+      return Math.random().toString();
+    }
   });
 
   return Object.values(groups)
@@ -335,6 +349,26 @@ const pediatricPrefixes = [
   /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
 ];
 
+// Match info about one-off events that is embedded in the `address` field.
+// Listings for one-off events currently look like:
+//
+//   Osco Pharmacy Pediatric Booster Clinic - Aurora June 9  - 1157 Eola Road, Aurora, IL, 60502
+//
+// Where the event info is in the form `- <city> <month> <day> -`.
+const raw = String.raw;
+const addressEventPattern = new RegExp(
+  [
+    raw`\s*-\s*`,
+    raw`(?<city>[^-]+)`,
+    raw`\s`,
+    raw`(?<month>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*)`,
+    raw`\s+`,
+    raw`(?<day>\d{1,2})`,
+    raw`\s*-\s*`,
+  ].join(""),
+  "i"
+);
+
 /**
  * Parse a location name and address from Albertsons (they're both part of
  * the same string).
@@ -350,8 +384,13 @@ function parseNameAndAddress(text) {
     throw new ParseError(`Found a URL in the name "${text}"`);
   }
 
+  // Some locations represent one-off events on a particular day, and the date
+  // is in the address.
+  // TODO: preserve this info to put in `availability.capacity`?
+  text = text.replace(addressEventPattern, " - ");
+
   // Some locations have separate pediatric and non-pediatric API locations.
-  // The pediatric ones oftne have prefixes like "Pfizer Child".
+  // The pediatric ones often have prefixes like "Pfizer Child".
   let pediatric = false;
   let body = text;
   for (const pattern of pediatricPrefixes) {
@@ -372,7 +411,7 @@ function parseNameAndAddress(text) {
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
   const numberMatch = name.match(
-    /^(?<name>.*?)\s+#?(?<number>\d{3,6})(?:\s+\1)?/
+    /^(?<name>.*?)\s+#?(?<number>\d{2,6})(?:\s+\1)?/
   );
   let storeNumber;
   if (numberMatch) {
@@ -482,6 +521,7 @@ function formatLocation(data, validAt, checkedAt) {
     info_url: storeBrand.url,
     booking_url: data.coach_url || undefined,
     meta: {
+      mhealth_address: data.address,
       albertsons_region: data.region,
       [`booking_url_${bookingType}`]: data.coach_url || undefined,
     },

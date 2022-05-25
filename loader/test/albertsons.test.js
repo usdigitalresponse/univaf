@@ -96,6 +96,7 @@ describe("Albertsons", () => {
           albertsons_region: "Alaska",
           booking_url_adult:
             "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+          mhealth_address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
         },
       },
       {
@@ -130,6 +131,8 @@ describe("Albertsons", () => {
           albertsons_region: "Alaska",
           booking_url_adult:
             "https://kordinator.mhealthcoach.net/vcl/1600114849843",
+          mhealth_address:
+            "Carrs 1813 - 1501 Huffman Road, Anchorage, AK, 99515",
         },
       },
     ]);
@@ -320,6 +323,8 @@ describe("Albertsons", () => {
             "https://kordinator.mhealthcoach.net/vcl/1600100807144",
           booking_url_pediatric:
             "https://kordinator.mhealthcoach.net/vcl/1635993536219",
+          mhealth_address:
+            "Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
         },
       },
     ]);
@@ -365,6 +370,8 @@ describe("Albertsons", () => {
         "https://kordinator.mhealthcoach.net/vcl/1600118533422",
       booking_url_pediatric:
         "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+      mhealth_address:
+        "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
     });
   });
 
@@ -407,6 +414,8 @@ describe("Albertsons", () => {
         "https://kordinator.mhealthcoach.net/vcl/1600118533422",
       booking_url_pediatric:
         "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+      mhealth_address:
+        "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
     });
   });
 
@@ -543,5 +552,25 @@ describe("Albertsons", () => {
         postal_code: "99701",
       })
     );
+  });
+
+  it("removes one-off event dates from location names", () => {
+    const formatted = formatLocation({
+      id: "123456789",
+      region: "California",
+      address:
+        "Albertsons 0393 - Simi Valley Jun 3 - 1268 Madera Rd, Simi Valley, CA, 93065",
+      lat: "64.8515679",
+      long: "-147.7024008",
+      coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+      availability: "yes",
+      drugName: ["Moderna"],
+    });
+
+    expect(formatted).toHaveProperty("name", "Albertsons 393");
+    expect(formatted).toHaveProperty("address_lines", ["1268 Madera Rd"]);
+    expect(formatted).toHaveProperty("city", "Simi Valley");
+    expect(formatted).toHaveProperty("state", "CA");
+    expect(formatted).toHaveProperty("postal_code", "93065");
   });
 });

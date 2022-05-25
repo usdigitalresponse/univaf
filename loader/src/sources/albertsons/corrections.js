@@ -109,6 +109,102 @@ module.exports.corrections = {
     address:
       "Pediatric Clinic Albertsons #276 - 7350 South Rainbow Boulevard, Las Vegas, NV, 89139",
   },
+  1653359216202: {
+    address: "Jewel-Osco #3441 - 2940 N Ashland Ave, Chicago, IL, 60657",
+  },
+  1653423455380: {
+    address: "Jewel-Osco #4500 - 1340 S Canal St, Chicago, IL, 60607",
+  },
+  1653421850654: {
+    address: "Jewel-Osco #3484 - 5667 W Touhy Ave, Niles, IL, 60714",
+  },
+  1653422639979: {
+    address: "Jewel-Osco #3429 - 8730 W Dempster St, Niles, IL, 60714",
+  },
+  1653417306983: {
+    address:
+      "Jewel-Osco #3461 - 1860 S Arlington Heights Rd, Arlington Heights, IL, 60005",
+  },
+  1653422961940: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #58 - Naperville June 10  - 2855 W 95th Street, Naperville, IL, 60564",
+  },
+  1653421810197: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #3097 - Downers Grove June 6  - 1148 Ogden Ave, Downers Grove, IL, 60515",
+  },
+  1653423379113: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #3240 - Aurora June 9  - 1157 Eola Road, Aurora, IL, 60502",
+  },
+  1653084403277: {
+    address: "Jewel-Osco #4308  - 1151 S Roselle Rd, Schaumburg, IL, 60193",
+  },
+  1653327310175: {
+    address: "Jewel-Osco #3776  - 2021 E Laraway Rd, New Lenox, IL, 60451",
+  },
+  1653422367010: {
+    address: "Jewel-Osco #3294  - 140 W Lake St Addison, Addison, IL, 60101",
+  },
+  1653423185831: {
+    address: "Jewel-Osco #3051 - 9350 W 159th St, Orland Park, IL, 60462",
+  },
+  1636000939006: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1815 - 337 East Ridgeville Blvd, Mount Airy, MD, 21771",
+  },
+  1636001615787: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #2713  - 12410 Fairwood Parkway, Bowie, MD, 20720",
+  },
+  1644040946467: {
+    address:
+      "Pediatric COVID clinic at Safeway #1751 - 1525 West Main St., Molalla, OR, 97038",
+  },
+  1636403331143: {
+    address:
+      "CHILD PFIZER AGE 5-11 Albertsons #733 - 3450 Marron Rd Oceanside CA 92056  - 3450 Marron Road, Oceanside, CA, 92056",
+  },
+  1635989701651: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1880 - 8858 Waltham Woods Road, Carney, MD, 21234",
+  },
+  1653430453208: {
+    address:
+      "Pediatric covid clinic Safeway #2623 - 1140 N Springbrook Rd, Newberg, OR, 97132",
+  },
+  1635989961784: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1565 - 15411 NEW HAMPSHIRE AVENUE, Silver Spring, MD, 20905",
+  },
+  1636046538843: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #4007 - 3713 Lee Highway, Arlington, VA, 22207",
+  },
+  1636044418372: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1920 - 1688 Anderson Rd, Mclean, VA, 22102",
+  },
+  1636045193669: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #3250 - 3526 King St, Alexandria, VA, 22302",
+  },
+  1635996860651: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1431 - 12200 Fairfax Towne Ctr, Fairfax, VA, 22033",
+  },
+  1637601747981: {
+    address:
+      "Pediatric covid clinic at Albertsons #536 - 25691 SE Stark, Troutdale, OR, 97060",
+  },
+  1636000044140: {
+    address:
+      "Pediatric COVID Vaccine at Safeway #1715 - 403 Redland Blvd, Rockville, MD, 20850",
+  },
+  1635989386379: {
+    address:
+      "Pediatric COVID-19 Boosters Safeway #3217 - 415 14TH ST. SE, Washington, DC, 20003",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
