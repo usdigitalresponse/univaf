@@ -20,6 +20,59 @@
  * object on the page (looks to be intended for Yext indexing).
  *
  * This script outputs that JS object as JSON for each location.
+ *
+ * Notes on output data:
+ * - At the time of writing (2022-05-26), we are minimizing this down to a few
+ *   useful fields via this jq command:
+ *
+ *     jq -c '[.[] | {
+ *         address,
+ *         c_associatedPharmacyStoreID,
+ *         c_metaInformation,
+ *         c_pagesURL,
+ *         c_parentEntityID,
+ *         c_pharmacyBrand,
+ *         geocodedCoordinate,
+ *         name,
+ *         timezone,
+ *         covid19InformationUrl,
+ *         covidVaccineAppointmentRequired,
+ *         covidVaccineSiteInstructions,
+ *         description,
+ *        }]' raw-output.json > albertsons-pharmacies.json
+ *
+ * - c_parentEntityID seems to be what we usually think of as the "store number"
+ * - c_associatedPharmacyStoreID is always `${c_parentEntityID}-P`
+ * - c_groceryID is duplicated across a lot of pharmacies, and not in ways that
+ *   make obvious sense. Hard to know how to utilize correctly.
+ * - c_metaInformation has
+ *   - A long, descriptive title that is always basically:
+ *     `Pharmacy Near Me in ${city} - ${services}`
+ *   - A description field that is super useful. See below
+ * - There are 3 description fields:
+ *   - c_metaInformation.description: Semi-standard format with a few spots that
+ *     are customized by location and are *sometimes* usefully unique.
+ *   - covidVaccineSiteInstructions is very COVID-specific, but 100% generic and
+ *     never unique. It is occasionally null.
+ *   - description is very generic and doesn't have much COVID-related info.
+ * - Two kinds of URLs:
+ *   - c_pagesURL is a web page about the store,
+ *     e.g. https://local.pharmacy.acmemarkets.com/de/bear/146-fox-hunt-dr.html
+ *   - covid19InformationUrl is a web page about COVID stuff that is generic at
+ *     the brand level, e.g. https://www.acmemarkets.com/pharmacy/covid-19.html
+ * - name is a human-readable name for the store, but usually is just the brand
+ *   name without a store number, e.g. "ACME Markets Pharmacy"
+ * - c_pharmacyBrand is a human-readable name of the brand, and in all but 4
+ *   cases. Maybe safe to treat this and name as being basically the same.
+ * - timezone is the timezone name, e.g. "America/Los_Angeles"
+ * - covidVaccineAppointmentRequired is a boolean, but sometimes is null
+ * - Geo coordinates:
+ *   - cityCoordinate is always present, and appears to be the center of the
+ *     city (?) the store is in.
+ *   - geocodedCoordinate is null in 1 case, but appears to be the actual
+ *     location of the store. These all get different geohashes down to a
+ *     precision of 7 (~153 m square) (and only 3 overlaps at precision 6,
+ *     ~1.22 km x 0.61 km).
  */
 
 const assert = require("node:assert/strict");
