@@ -31,6 +31,7 @@
  *         c_metaInformation,
  *         c_pagesURL,
  *         c_parentEntityID,
+ *         c_groceryID,
  *         c_pharmacyBrand,
  *         geocodedCoordinate,
  *         name,
