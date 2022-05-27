@@ -84,7 +84,8 @@ const ADDRESS_EXPANSIONS = [
   [/ est(ate)? /g, " estates "],
   [/ vlg /g, " "],
   [/ village /g, " "],
-  [/ (ste|suite|unit|apt|apartment) #?(\d+) /g, " $1 "],
+  [/ (ste|suite|unit|apt|apartment) #?(\d+) /g, " $2 "],
+  [/ (bld|bldg) #?(\d+) /g, " $2 "],
   [/ #?(\d+) /g, " $1 "],
   [/ (&|and) /g, " "],
 ];
