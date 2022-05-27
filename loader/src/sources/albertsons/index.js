@@ -26,6 +26,7 @@ const {
   parseUsAddress,
   getUniqueExternalIds,
   unpadNumber,
+  matchableAddress,
 } = require("../../utils");
 const {
   Available,
@@ -226,6 +227,161 @@ const BRANDS = [
 
 const warn = createWarningLogger("Albertsons");
 
+const turfDistance = require("@turf/distance").default;
+const ngeohash = require("ngeohash");
+const geohashPrecision = 8;
+let pharmacyData;
+function findPharmacyData(coordinate, address, storeBrand, storeNumber) {
+  if (!pharmacyData) {
+    const rawData = require("./albertsons-pharmacies.json");
+    pharmacyData = {
+      all: rawData,
+      byGeohash: rawData.reduce((index, l) => {
+        if (l.geocodedCoordinate) {
+          const key = ngeohash.encode(
+            l.geocodedCoordinate.lat,
+            l.geocodedCoordinate.long,
+            geohashPrecision
+          );
+          index[key] = l;
+        }
+        return index;
+      }, Object.create(null)),
+      byAddress: rawData.reduce((index, l) => {
+        const key = matchableAddress(
+          `${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`
+        );
+        index[key] = l;
+        return index;
+      }, Object.create(null)),
+    };
+  }
+
+  if (coordinate) {
+    // const data =
+    //   pharmacyData.byGeohash[
+    //     ngeohash.encode(coordinate.lat, coordinate.long, geohashPrecision)
+    //   ];
+    // if (data) return { method: "geo", data };
+
+    // const nearby = pharmacyData.all.filter((l) => {
+    //   if (l.geocodedCoordinate) {
+    //     const distance = turfDistance(
+    //       [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
+    //       [coordinate.long, coordinate.lat]
+    //     );
+    //     return distance < 0.3;
+    //   }
+    //   return false;
+    // });
+    // if (nearby.length > 1) {
+    //   console.warn(`${nearby.length} nearby ${address}`);
+    // }
+    // if (nearby[0]) return { method: "geo", data: nearby[0] };
+
+    let closestDistance = Infinity;
+    let closestData = null;
+    const maxDistance = 0.3;
+    const matchDistance = 0.05;
+    for (const l of pharmacyData.all) {
+      if (!l.geocodedCoordinate) continue;
+
+      const distance = turfDistance(
+        [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
+        [coordinate.long, coordinate.lat]
+      );
+      if (distance < matchDistance) {
+        closestData = l;
+        break;
+      } else if (distance < closestDistance && distance < maxDistance) {
+        closestDistance = distance;
+        closestData = l;
+      }
+    }
+    if (closestData) return { method: "geo", data: closestData };
+    // const nearby = pharmacyData.all
+    //   .map((l) => {
+    //     if (l.geocodedCoordinate) {
+    //       const distance = turfDistance(
+    //         [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
+    //         [coordinate.long, coordinate.lat]
+    //       );
+    //       return { distance, data: l };
+    //     }
+    //     return { distance: Infinity, data: null };
+    //   })
+    //   .filter((x) => x.distance < 0.3);
+    // if (nearby.length > 1) {
+    //   console.warn(`${nearby.length} nearby ${address}:`);
+    //   for (const item of nearby) {
+    //     const l = item.data;
+    //     console.warn(
+    //       `  ${item.distance} km: ${l.name} #${
+    //         l.c_parentEntityID
+    //       }, ${`${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`}`
+    //     );
+    //   }
+    // }
+    // if (nearby[0]) return { method: "geo", data: nearby[0].data };
+  }
+  if (address) {
+    const data = pharmacyData.byAddress[matchableAddress(address)];
+    if (data) return { method: "address", data };
+  }
+  if (storeNumber) {
+    const toMatch = unpadNumber(storeNumber);
+    const matches = pharmacyData.all
+      .filter(
+        (l) =>
+          unpadNumber(l.c_parentEntityID) === toMatch ||
+          unpadNumber(l.c_oldStoreID || "") === toMatch
+      )
+      .map((l) => {
+        // XXX: should probably bump the score if both new and old IDs match.
+        let score = 0;
+        let distance = Infinity;
+        if (coordinate && l.geocodedCoordinate) {
+          distance = turfDistance(
+            [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
+            [coordinate.long, coordinate.lat]
+          );
+          if (distance > 100) {
+            return null;
+          } else {
+            score = 1 / Math.max(distance, 5);
+          }
+        }
+        if (storeBrand?.pattern?.test(l.name)) {
+          score += 1;
+        }
+        return { score, distance, data: l };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.score - b.score);
+
+    // if (matches.length > 1) {
+    //   console.warn(`${matches.length} number matches for ${address}:`);
+    //   for (const item of matches) {
+    //     const l = item.data;
+    //     console.warn(
+    //       `  Score: ${item.score} / Distance: ${item.distance} / ${l.name} #${
+    //         l.c_parentEntityID
+    //       }, ${`${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`}`
+    //     );
+    //   }
+    // }
+
+    if (matches.length) {
+      // const match = matches[0].data;
+      // console.error(`MATCHED BY NUMBER:
+      // Appointment address: ${storeBrand?.name} #${storeNumber}, ${address}
+      // Match address:       ${match.name} #${match.c_parentEntityID} (old: ${match.c_oldStoreID}), ${match.address.line1}, ${match.address.city}, ${match.address.region} ${match.address.postalCode}`);
+      return { method: "number", data: matches[0].data };
+    }
+  }
+  return null;
+}
+
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
     // Bust caches with a random querystring.
@@ -261,6 +417,7 @@ async function getData(states) {
           formatted = formatLocation(entry, validAt, checkedAt);
         } catch (error) {
           warn(error);
+          console.error(error.stack);
         }
       });
       return formatted;
@@ -423,7 +580,7 @@ function parseNameAndAddress(text) {
 
   const storeBrand = BRANDS.find((item) => item.pattern.test(name));
   if (!storeBrand) {
-    warn("Could not find a matching brand", { name });
+    warn("Could not find a matching brand", { name, address });
   }
 
   return {
@@ -462,6 +619,7 @@ function formatProducts(raw) {
   return products.length ? products : undefined;
 }
 
+let pharmacyMatches = { address: 0, geo: 0, number: 0, _: 0 };
 function formatLocation(data, validAt, checkedAt) {
   // Apply corrections for known-bad source data.
   if (data.id in corrections) {
@@ -479,6 +637,121 @@ function formatLocation(data, validAt, checkedAt) {
   if (TEST_NAME_PATTERN.test(name)) {
     return null;
   }
+
+  const pharmacyMatch = findPharmacyData(
+    { lat: data.lat, long: data.long },
+    `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`,
+    storeBrand,
+    storeNumber
+  );
+
+  if (pharmacyMatch) {
+    pharmacyMatches[pharmacyMatch.method]++;
+    if (!storeBrand) {
+      const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
+      console.error(`MATCHED WITHOUT BRAND!
+      Appointment: ${data.address}
+      Match:       ${pharmacyMatch.data.name} #${pharmacyMatch.data.c_parentEntityID} (c_oldStoreID: ${pharmacyMatch.data.c_oldStoreID})  /  ${matAddress}`);
+    }
+
+    // // console.error("Listing address:", data.address);
+    // // console.error("Match address:  ", pharmacyMatch.data.address);
+    // console.error(
+    //   "Listing address:",
+    //   `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`
+    // );
+    // console.error(
+    //   "Match address:  ",
+    //   `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`
+    // );
+    // console.error("------------");
+
+    // if (storeBrand?.key === "albertsons_corporate") {
+    //   console.error(`MATCHED on corporate office!`);
+    // } else if (storeBrand?.key === "community_clinic") {
+    //   console.error(`MATCHED on community clinic: "${data.address}"`);
+    //   const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
+    //   console.error(
+    //     `  ${pharmacyMatch.data.name} #${pharmacyMatch.data.c_parentEntityID}  /  ${matAddress}`
+    //   );
+    // }
+
+    // if (storeNumber) {
+    //   const findByNumber = pharmacyData.all.find(
+    //     (x) => unpadNumber(x.c_parentEntityID) === unpadNumber(storeNumber)
+    //   );
+    //   if (findByNumber && findByNumber !== pharmacyMatch.data) {
+    //     const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
+    //     const fbnAddress = `${findByNumber?.address?.line1}, ${findByNumber?.address?.city}, ${findByNumber?.address?.region} ${findByNumber?.address?.postalCode}`;
+    //     const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
+    //     console.error(
+    //       `Found by number: ${!!findByNumber} (Same as match? ${
+    //         findByNumber === pharmacyMatch.data
+    //       })
+    //     Appointments: ${storeBrand.name} #${storeNumber}  /  ${
+    //         data.address
+    //       }  /  ${appAddress}
+    //     FindByNumber: ${findByNumber?.name} #${
+    //         findByNumber.c_parentEntityID
+    //       }  /  ${fbnAddress}
+    //     Match: ${pharmacyMatch.data.name} #${
+    //         pharmacyMatch.data.c_parentEntityID
+    //       } (c_oldStoreID: ${
+    //         pharmacyMatch.data.c_oldStoreID
+    //       })  /  ${matAddress}`
+    //     );
+    //   }
+    // }
+  } else if (
+    !["albertsons_corporate", "community_clinic"].includes(storeBrand?.key)
+  ) {
+    pharmacyMatches._++;
+    console.error("NO MATCH:", data.address);
+    const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
+    console.error(
+      `  Parsed: ${storeBrand?.name} #${storeNumber}, ${appAddress}`
+    );
+    if (storeNumber) {
+      const findByNewNumber = pharmacyData.all.find(
+        (x) => unpadNumber(x.c_parentEntityID) === unpadNumber(storeNumber)
+      );
+      const findByOldNumber = pharmacyData.all.find(
+        (x) =>
+          x.c_oldStoreID &&
+          unpadNumber(x.c_oldStoreID) === unpadNumber(storeNumber)
+      );
+      const findByNumber = findByNewNumber || findByOldNumber;
+      if (findByNumber) {
+        const fbnAddress = `${findByNumber.address?.line1}, ${findByNumber.address?.city}, ${findByNumber.address?.region} ${findByNumber.address?.postalCode}`;
+        console.error(
+          `  Found by number: ${!!findByNewNumber} / found by old number: ${!!findByOldNumber}
+        Appointments: ${storeBrand.name} #${storeNumber}  /  ${
+            data.address
+          }  /  ${appAddress}
+        FindByNumber: ${findByNumber.name} #${
+            findByNumber.c_parentEntityID
+          } (c_oldStoreID: ${findByNumber.c_oldStoreID})  /  ${fbnAddress}
+        Distance: ${
+          findByNumber.geocodedCoordinate
+            ? turfDistance(
+                [data.long, data.lat],
+                [
+                  findByNumber.geocodedCoordinate.long,
+                  findByNumber.geocodedCoordinate.lat,
+                ]
+              )
+            : "???"
+        } km`
+        );
+      } else {
+        console.error(`  not found by number`);
+      }
+    } else {
+      console.error(`  no number to match`);
+    }
+    console.error("------------");
+  }
+  // console.error("MATCHES:", pharmacyMatches);
 
   if (!storeBrand) {
     return null;

@@ -27,13 +27,17 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.92.0",
     "@sentry/node": "^6.19.7",
+    "@turf/distance": "^6.5.0",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "csv-parse": "^4.16.3",
     "get-stream": "^6.0.1",
     "got": "^11.8.3",
+    "install": "^0.13.0",
     "lodash": "^4.17.21",
     "luxon": "^1.27.0",
+    "ngeohash": "^0.6.3",
+    "npm": "^8.11.0",
     "queue": "^6.0.2",
     "yargs": "^17.5.1"
   },
