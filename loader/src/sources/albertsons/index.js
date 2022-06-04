@@ -257,6 +257,10 @@ function findPharmacyData(coordinate, address, storeBrand, storeNumber) {
     };
   }
 
+  if (address) {
+    const data = pharmacyData.byAddress[matchableAddress(address)];
+    if (data) return { method: "address", data };
+  }
   if (coordinate) {
     // const data =
     //   pharmacyData.byGeohash[
@@ -323,10 +327,6 @@ function findPharmacyData(coordinate, address, storeBrand, storeNumber) {
     //   }
     // }
     // if (nearby[0]) return { method: "geo", data: nearby[0].data };
-  }
-  if (address) {
-    const data = pharmacyData.byAddress[matchableAddress(address)];
-    if (data) return { method: "address", data };
   }
   if (storeNumber) {
     const toMatch = unpadNumber(storeNumber);
