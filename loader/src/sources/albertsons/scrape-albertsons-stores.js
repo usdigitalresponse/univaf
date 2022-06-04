@@ -85,7 +85,7 @@ const timers = require("node:timers/promises");
 const puppeteer = require("puppeteer");
 
 // Time to wait between page loads (milliseconds).
-const navigationInterval = 500;
+const navigationInterval = 250;
 
 // Time to wait between crawling each brand (milliseconds).
 const brandInterval = 30_000;
@@ -137,6 +137,53 @@ async function navigate(page, url, options) {
   lastNavigation = Date.now();
 }
 
+let currentBrowser = null;
+let currentPage = null;
+async function withPage(options, callback) {
+  if (!callback && typeof options === "function") {
+    callback = options;
+    options = undefined;
+  }
+
+  let triesLeft = (options?.retries ?? 0) + 1;
+  while (triesLeft > 0) {
+    triesLeft--;
+
+    if (!currentBrowser) {
+      currentBrowser = await puppeteer.launch({
+        headless: !process.env.DEBUG,
+        args: ["--no-sandbox"],
+        ...options?.browser,
+      });
+    }
+    if (!currentPage) {
+      currentPage = await currentBrowser.newPage();
+    }
+
+    try {
+      return await callback(currentPage);
+    } catch (error) {
+      let retry = false;
+      if (error?.message?.toLowerCase()?.includes("target closed")) {
+        console.error("Browser crashed");
+        currentBrowser = null;
+        currentPage = null;
+        retry = triesLeft > 0;
+      }
+      if (!retry) {
+        throw error;
+      }
+    }
+  }
+}
+
+async function closeBrowser() {
+  if (currentBrowser) await currentBrowser.close();
+
+  currentBrowser = null;
+  currentPage = null;
+}
+
 /**
  * Select a single element from the page, and assert that the given selector
  * ONLY matches one element.
@@ -158,12 +205,11 @@ async function selectOnly(page, selector) {
  * @param {number[]} [startIndexes]
  * @yields {any}
  */
-async function* crawlBrand(browser, brandHost, startIndexes = []) {
+async function* crawlBrand(brandHost, startIndexes = []) {
   console.error(`Crawling ${brandHost}...`);
 
-  const page = await browser.newPage();
   const statesListUrl = `https://local.pharmacy.${brandHost}`;
-  yield* crawlListingPage(page, statesListUrl, 0, startIndexes);
+  yield* crawlListingPage(statesListUrl, 0, startIndexes);
 }
 
 /**
@@ -176,39 +222,44 @@ async function* crawlBrand(browser, brandHost, startIndexes = []) {
  *        page and its sub-pages.
  * @yields {any}
  */
-async function* crawlListingPage(page, pageUrl, depth = 0, startIndexes = []) {
+async function* crawlListingPage(pageUrl, depth = 0, startIndexes = []) {
   if (depth > 4) throw new Error(`Too many listing pages deep: "${pageUrl}"`);
 
-  await navigate(page, pageUrl);
+  let urls = await withPage({ retries: 1 }, async (page) => {
+    await navigate(page, pageUrl);
 
-  // If the state only has one store, this will actually be a store page.
-  const locationData = await getLocationDataFromPage(page);
-  if (locationData) {
-    yield locationData;
+    // If the state only has one store, this will actually be a store page.
+    const locationData = await getLocationDataFromStorePage(page);
+    if (locationData) {
+      return locationData;
+    }
+
+    let urls = [];
+    if (await page.$(".Directory-listLinks")) {
+      const list = await selectOnly(page, ".Directory-listLinks");
+      urls = await list.$$eval("a.Directory-listLink", (nodes) =>
+        nodes.map((n) => n.href)
+      );
+    } else if (await page.$(".Directory-listTeasers")) {
+      const list = await selectOnly(page, ".Directory-listTeasers");
+      urls = await list.$$eval(".Teaser a.Teaser-titleLink", (nodes) =>
+        nodes.map((n) => n.href)
+      );
+    } else {
+      throw new Error(`Unkown type of listing page: ${pageUrl}`);
+    }
+    return urls;
+  });
+  if (!Array.isArray(urls)) {
+    yield urls;
     return;
   }
 
-  let urls = [];
-  if (await page.$(".Directory-listLinks")) {
-    const list = await selectOnly(page, ".Directory-listLinks");
-    urls = await list.$$eval("a.Directory-listLink", (nodes) =>
-      nodes.map((n) => n.href)
-    );
-  } else if (await page.$(".Directory-listTeasers")) {
-    const list = await selectOnly(page, ".Directory-listTeasers");
-    urls = await list.$$eval(".Teaser a.Teaser-titleLink", (nodes) =>
-      nodes.map((n) => n.href)
-    );
-  } else {
-    throw new Error(`Unkown type of listing page: ${pageUrl}`);
-  }
-  // console.error(urls);
   const startIndex = startIndexes[0] || 0;
   if (startIndex > 0) urls = urls.slice(startIndex);
 
   for (const url of urls) {
-    // results.push(...await crawlCity(page, url));
-    yield* crawlListingPage(page, url, depth + 1, startIndexes.slice(1));
+    yield* crawlListingPage(url, depth + 1, startIndexes.slice(1));
   }
 }
 
@@ -235,20 +286,15 @@ async function main(args) {
       await timers.setTimeout(brandInterval);
     }
 
-    const browser = await puppeteer.launch({
-      headless: !process.env.DEBUG,
-      args: ["--no-sandbox"],
-    });
-
     let brandCount = 0;
-    for await (const location of crawlBrand(browser, brandUrl)) {
+    for await (const location of crawlBrand(brandUrl)) {
       console.log(JSON.stringify(location));
       brandCount++;
       count++;
     }
     console.error(`Crawled ${brandCount} locations from ${brandUrl}`);
 
-    browser.close();
+    await closeBrowser();
   }
   console.error(
     `Crawled ${count} total locations from ${JSON.stringify(brands)}`
