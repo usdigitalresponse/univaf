@@ -205,6 +205,14 @@ module.exports.corrections = {
     address:
       "Pediatric COVID-19 Boosters Safeway #3217 - 415 14TH ST. SE, Washington, DC, 20003",
   },
+  1653666973214: {
+    address:
+      "Pediatric Booster Clinic at Jewel-Osco #3003 - 303 Holmes Ave, Clarendon Hills, IL, 60514",
+  },
+  1653522297821: {
+    address:
+      "Pediatric Pfizer Booster Clinic at Jewel-Osco #3262 - June 4th 9a-1p Chicago  - 4660 W. Irving Park Rd, Chicago, IL, 60641",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
