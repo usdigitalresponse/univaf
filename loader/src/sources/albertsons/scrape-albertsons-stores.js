@@ -28,6 +28,7 @@
  *     jq -c '[.[] | {
  *         address,
  *         c_associatedPharmacyStoreID,
+ *         c_geomodifier
  *         c_metaInformation,
  *         c_pagesURL,
  *         c_parentEntityID,
@@ -74,6 +75,9 @@
  *     location of the store. These all get different geohashes down to a
  *     precision of 7 (~153 m square) (and only 3 overlaps at precision 6,
  *     ~1.22 km x 0.61 km).
+ * - c_geomodifier appears to be used in the place name. For example, "Carrs
+ *   Pharmacy #1813" has `c_geomodifier="Huffman Rd"` and on most pages is named
+ *   "Carrs Pharmacy Huffman Rd"
  */
 
 const assert = require("node:assert/strict");
