@@ -184,7 +184,9 @@ const BRANDS = [
     ...BASE_BRAND,
     key: "united",
     name: "United Supermarkets",
-    pattern: /United/i,
+    // "United" is really common in other names, so we need to a more complex
+    // pattern than most other stores.
+    pattern: /United (#?\d|\w+market)/i,
   },
   {
     ...BASE_BRAND,
