@@ -20,13 +20,13 @@
 const Sentry = require("@sentry/node");
 const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
+const turfDistance = require("@turf/distance").default;
 const {
   createWarningLogger,
   httpClient,
   parseUsAddress,
   getUniqueExternalIds,
   unpadNumber,
-  matchableAddress,
 } = require("../../utils");
 const {
   Available,
@@ -36,6 +36,7 @@ const {
 } = require("../../model");
 const { ParseError } = require("../../exceptions");
 const { corrections } = require("./corrections");
+const { findKnownAlbertsons, getAllKnownAlbertsons } = require("./locations");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
@@ -199,6 +200,7 @@ const BRANDS = [
     ...BASE_BRAND,
     key: "albertsons_corporate",
     name: "ALB Corporate Office",
+    isNotAStore: true,
     pattern: /Corporate Office/i,
   },
   // Albertsons is now operating some clinics outside its actual stores, and
@@ -210,6 +212,7 @@ const BRANDS = [
     key: "community_clinic",
     name: "Community Clinic",
     locationType: LocationType.clinic,
+    isNotAStore: true,
     pattern: {
       test: (name) => {
         // Some locations need explicit support because they look like "name
@@ -226,161 +229,6 @@ const BRANDS = [
 ];
 
 const warn = createWarningLogger("Albertsons");
-
-const turfDistance = require("@turf/distance").default;
-const ngeohash = require("ngeohash");
-const geohashPrecision = 8;
-let pharmacyData;
-function findPharmacyData(coordinate, address, storeBrand, storeNumber) {
-  if (!pharmacyData) {
-    const rawData = require("./albertsons-pharmacies.json");
-    pharmacyData = {
-      all: rawData,
-      byGeohash: rawData.reduce((index, l) => {
-        if (l.geocodedCoordinate) {
-          const key = ngeohash.encode(
-            l.geocodedCoordinate.lat,
-            l.geocodedCoordinate.long,
-            geohashPrecision
-          );
-          index[key] = l;
-        }
-        return index;
-      }, Object.create(null)),
-      byAddress: rawData.reduce((index, l) => {
-        const key = matchableAddress(
-          `${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`
-        );
-        index[key] = l;
-        return index;
-      }, Object.create(null)),
-    };
-  }
-
-  if (address) {
-    const data = pharmacyData.byAddress[matchableAddress(address)];
-    if (data) return { method: "address", data };
-  }
-  if (coordinate) {
-    // const data =
-    //   pharmacyData.byGeohash[
-    //     ngeohash.encode(coordinate.lat, coordinate.long, geohashPrecision)
-    //   ];
-    // if (data) return { method: "geo", data };
-
-    // const nearby = pharmacyData.all.filter((l) => {
-    //   if (l.geocodedCoordinate) {
-    //     const distance = turfDistance(
-    //       [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
-    //       [coordinate.long, coordinate.lat]
-    //     );
-    //     return distance < 0.3;
-    //   }
-    //   return false;
-    // });
-    // if (nearby.length > 1) {
-    //   console.warn(`${nearby.length} nearby ${address}`);
-    // }
-    // if (nearby[0]) return { method: "geo", data: nearby[0] };
-
-    let closestDistance = Infinity;
-    let closestData = null;
-    const maxDistance = 0.3;
-    const matchDistance = 0.05;
-    for (const l of pharmacyData.all) {
-      if (!l.geocodedCoordinate) continue;
-
-      const distance = turfDistance(
-        [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
-        [coordinate.long, coordinate.lat]
-      );
-      if (distance < matchDistance) {
-        closestData = l;
-        break;
-      } else if (distance < closestDistance && distance < maxDistance) {
-        closestDistance = distance;
-        closestData = l;
-      }
-    }
-    if (closestData) return { method: "geo", data: closestData };
-    // const nearby = pharmacyData.all
-    //   .map((l) => {
-    //     if (l.geocodedCoordinate) {
-    //       const distance = turfDistance(
-    //         [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
-    //         [coordinate.long, coordinate.lat]
-    //       );
-    //       return { distance, data: l };
-    //     }
-    //     return { distance: Infinity, data: null };
-    //   })
-    //   .filter((x) => x.distance < 0.3);
-    // if (nearby.length > 1) {
-    //   console.warn(`${nearby.length} nearby ${address}:`);
-    //   for (const item of nearby) {
-    //     const l = item.data;
-    //     console.warn(
-    //       `  ${item.distance} km: ${l.name} #${
-    //         l.c_parentEntityID
-    //       }, ${`${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`}`
-    //     );
-    //   }
-    // }
-    // if (nearby[0]) return { method: "geo", data: nearby[0].data };
-  }
-  if (storeNumber) {
-    const toMatch = unpadNumber(storeNumber);
-    const matches = pharmacyData.all
-      .filter(
-        (l) =>
-          unpadNumber(l.c_parentEntityID) === toMatch ||
-          unpadNumber(l.c_oldStoreID || "") === toMatch
-      )
-      .map((l) => {
-        // XXX: should probably bump the score if both new and old IDs match.
-        let score = 0;
-        let distance = Infinity;
-        if (coordinate && l.geocodedCoordinate) {
-          distance = turfDistance(
-            [l.geocodedCoordinate.long, l.geocodedCoordinate.lat],
-            [coordinate.long, coordinate.lat]
-          );
-          if (distance > 100) {
-            return null;
-          } else {
-            score = 1 / Math.max(distance, 5);
-          }
-        }
-        if (storeBrand?.pattern?.test(l.name)) {
-          score += 1;
-        }
-        return { score, distance, data: l };
-      })
-      .filter(Boolean)
-      .sort((a, b) => a.score - b.score);
-
-    // if (matches.length > 1) {
-    //   console.warn(`${matches.length} number matches for ${address}:`);
-    //   for (const item of matches) {
-    //     const l = item.data;
-    //     console.warn(
-    //       `  Score: ${item.score} / Distance: ${item.distance} / ${l.name} #${
-    //         l.c_parentEntityID
-    //       }, ${`${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`}`
-    //     );
-    //   }
-    // }
-
-    if (matches.length) {
-      // const match = matches[0].data;
-      // console.error(`MATCHED BY NUMBER:
-      // Appointment address: ${storeBrand?.name} #${storeNumber}, ${address}
-      // Match address:       ${match.name} #${match.c_parentEntityID} (old: ${match.c_oldStoreID}), ${match.address.line1}, ${match.address.city}, ${match.address.region} ${match.address.postalCode}`);
-      return { method: "number", data: matches[0].data };
-    }
-  }
-  return null;
-}
 
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
@@ -619,7 +467,7 @@ function formatProducts(raw) {
   return products.length ? products : undefined;
 }
 
-let pharmacyMatches = { address: 0, geo: 0, number: 0, _: 0 };
+let pharmacyMatches = { address: 0, geo: 0, number: 0, fuzzy: 0, _: 0 };
 function formatLocation(data, validAt, checkedAt) {
   // Apply corrections for known-bad source data.
   if (data.id in corrections) {
@@ -638,7 +486,7 @@ function formatLocation(data, validAt, checkedAt) {
     return null;
   }
 
-  const pharmacyMatch = findPharmacyData(
+  const pharmacyMatch = findKnownAlbertsons(
     { lat: data.lat, long: data.long },
     `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`,
     storeBrand,
@@ -677,7 +525,7 @@ function formatLocation(data, validAt, checkedAt) {
     // }
 
     // if (storeNumber) {
-    //   const findByNumber = pharmacyData.all.find(
+    //   const findByNumber = getAllKnownAlbertsons().find(
     //     (x) => unpadNumber(x.c_parentEntityID) === unpadNumber(storeNumber)
     //   );
     //   if (findByNumber && findByNumber !== pharmacyMatch.data) {
@@ -702,6 +550,43 @@ function formatLocation(data, validAt, checkedAt) {
     //     );
     //   }
     // }
+
+    // if (pharmacyMatch.method === "fuzzy") {
+    //   // if (pharmacyMatch.score < 0.2 || pharmacyMatch.score >= 0.6)
+    //   if (pharmacyMatch.score >= 0.25)
+    //     console.error(pharmacyMatch.score, pharmacyMatch.factors);
+    // }
+    if (
+      // pharmacyMatch.method === "fuzzy" &&
+      // pharmacyMatch.score >= 0.5 &&
+      // pharmacyMatch.score < 5.5 &&
+      pharmacyMatch.data.c_parentEntityID !== storeNumber
+    ) {
+      const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
+      const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
+      console.error(
+        "Method:",
+        pharmacyMatch.method,
+        " / Score:",
+        pharmacyMatch.score || "-",
+        " / Factors:",
+        pharmacyMatch.factors || "-"
+      );
+      const found = pharmacyMatch.data;
+      console.error(
+        "Appointments:",
+        // `${storeBrand.name} #${storeNumber}                      /  ${appAddress}  /  ${data.address}`
+        `${storeBrand.name} #${storeNumber}`.padEnd(40),
+        `/  ${appAddress}  /  ${data.address}`
+      );
+      console.error(
+        "Match:       ",
+        `${found.name} #${found.c_parentEntityID}`.padEnd(40),
+        `/  ${matAddress}`,
+        `\n              (c_oldStoreID: ${found.c_oldStoreID})`
+      );
+      console.error("------------");
+    }
   } else if (
     !["albertsons_corporate", "community_clinic"].includes(storeBrand?.key)
   ) {
@@ -712,10 +597,10 @@ function formatLocation(data, validAt, checkedAt) {
       `  Parsed: ${storeBrand?.name} #${storeNumber}, ${appAddress}`
     );
     if (storeNumber) {
-      const findByNewNumber = pharmacyData.all.find(
+      const findByNewNumber = getAllKnownAlbertsons().find(
         (x) => unpadNumber(x.c_parentEntityID) === unpadNumber(storeNumber)
       );
-      const findByOldNumber = pharmacyData.all.find(
+      const findByOldNumber = getAllKnownAlbertsons().find(
         (x) =>
           x.c_oldStoreID &&
           unpadNumber(x.c_oldStoreID) === unpadNumber(storeNumber)
