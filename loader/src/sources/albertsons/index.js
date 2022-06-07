@@ -132,7 +132,7 @@ const BRANDS = [
     ...BASE_BRAND,
     key: "pak_n_save",
     name: "Pak 'n Save",
-    pattern: /Pak N Save/i,
+    pattern: /Pak '?N Save/i,
   },
   {
     key: "pavilions",
@@ -537,6 +537,31 @@ function formatLocation(data, validAt, checkedAt) {
       );
       console.error("------------");
     }
+  }
+
+  if (pharmacyMatch && pharmacyMatch.score > 0.2) {
+    // TODO: fill in other data from known stores, like info URL, phone,
+    // timezone, geo coordinate.
+    storeNumber = pharmacyMatch.data.c_parentEntityID;
+    // TODO: consider using c_geomodifier for the name. (We'd still need to
+    // create a string with the store number for matching the brand, though.)
+    name = `${pharmacyMatch.data.name} #${storeNumber}`;
+    storeBrand = BRANDS.find((item) => item.pattern.test(name));
+    if (!storeBrand || storeBrand.key === "community_clinic") {
+      // Unlike appointment data, we should *never* fail to match a brand to
+      // data from our scraped, saved list of known pharmacy locations.
+      throw new Error(`Failed to match a brand to known location "${name}"`);
+    }
+    address = {
+      lines: [
+        pharmacyMatch.data.address.line1,
+        pharmacyMatch.data.address.line2,
+        pharmacyMatch.data.address.line3,
+      ].filter(Boolean),
+      city: pharmacyMatch.data.address.city,
+      state: pharmacyMatch.data.address.region,
+      zip: pharmacyMatch.data.address.postalCode,
+    };
   }
 
   if (!storeBrand) {
