@@ -151,10 +151,6 @@ function findKnownAlbertsons(coordinate, address, storeBrand, storeNumber) {
   // }
 
   if (matches.length) {
-    // const match = matches[0].data;
-    // console.error(`MATCHED BY NUMBER:
-    // Appointment address: ${storeBrand?.name} #${storeNumber}, ${address}
-    // Match address:       ${match.name} #${match.c_parentEntityID} (old: ${match.c_oldStoreID}), ${match.address.line1}, ${match.address.city}, ${match.address.region} ${match.address.postalCode}`);
     return { method: "fuzzy", ...matches[0] };
   }
 
