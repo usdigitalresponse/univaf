@@ -28,13 +28,14 @@
  *     jq -c '[.[] | {
  *         address,
  *         c_associatedPharmacyStoreID,
- *         c_geomodifier
+ *         c_geomodifier,
  *         c_metaInformation,
  *         c_pagesURL,
  *         c_parentEntityID,
  *         c_groceryID,
  *         c_pharmacyBrand,
  *         geocodedCoordinate,
+ *         mainPhone,
  *         name,
  *         timezone,
  *         covid19InformationUrl,
