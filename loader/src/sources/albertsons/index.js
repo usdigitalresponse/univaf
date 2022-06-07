@@ -489,8 +489,8 @@ function formatLocation(data, validAt, checkedAt) {
   }
 
   const pharmacyMatch = findKnownAlbertsons(
-    { lat: data.lat, long: data.long },
     `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`,
+    { lat: data.lat, long: data.long },
     storeBrand,
     storeNumber
   );

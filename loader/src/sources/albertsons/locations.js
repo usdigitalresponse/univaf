@@ -30,23 +30,42 @@ function getAllKnownAlbertsons() {
 }
 
 /**
+ * @typedef {Object} LocationMatch
+ * @property {"address"|"fuzzy"} method How the match was found.
+ * @property {number} score A number between 0 and 1 indicating how likely
+ *           the match is to be correct. 1 is exact.
+ * @property {any} data The actual location data.
+ * @property {string[]} [factors] For fuzzy matches, what factors contributed
+ *           to the match, e.g. brand, number, geo.
+ */
+
+/**
  * Find known information about an Albertsons store from saved data files.
  * This accepts a variety of ways to search, and attempts to return the best
  * match, or null if no match is reasonable.
  *
+ * The goal is to find the best possible match given the input data, so matches
+ * are not always exact. For example, you might pass in both a store number
+ * and an address, and get back a store with a different number because it's
+ * a better match to the requested address, or because the store number was an
+ * "old" store number from a previous identifier system.
+ *
+ * This returns a special {@link LocationMatch} object. The `data` property is
+ * the actual found store data.
+ *
  * The data comes primarily from scraping Albertsons sub-brand websites. See
  * ./scrape-albertsons-stores for how this is done and an idea of the data
  * format.
+ * @param {string} address Address of the location to find.
  * @param {{ lat: number, long: number }} coordinate Geographic coordinate
- *        of location to find.
- * @param {string} address Address of location to find.
+ *        of the location to find.
  * @param {{ test: (x: string) => boolean }} storeBrand Store brand object from
  *        the main albertsons module to check matches against.
- * @param {string} storeNumber A store number to find.
- * @returns {any}
+ * @param {string} storeNumber A store number for the location to find.
+ * @returns {LocationMatch}
  */
-function findKnownAlbertsons(coordinate, address, storeBrand, storeNumber) {
-  // Load and index pharmacy data lazily; it's big!
+function findKnownAlbertsons(address, coordinate, storeBrand, storeNumber) {
+  // Load and index saved location data lazily; it's big!
   loadData();
 
   if (address) {
