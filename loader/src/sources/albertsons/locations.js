@@ -136,20 +136,6 @@ function findKnownAlbertsons(coordinate, address, storeBrand, storeNumber) {
     .filter((x) => x?.score)
     .sort((a, b) => b.score - a.score);
 
-  // if (address.includes("729 North H")) {
-  //   console.warn(`${matches.length} number matches for ${address}:`);
-  //   for (const item of matches) {
-  //     const l = item.data;
-  //     console.warn(
-  //       `  Score: ${item.score} / Distance: ${item.distance} / ${
-  //         item.factors
-  //       } / ${l.name} #${
-  //         l.c_parentEntityID
-  //       }, ${`${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`}`
-  //     );
-  //   }
-  // }
-
   if (matches.length) {
     return { method: "fuzzy", ...matches[0] };
   }

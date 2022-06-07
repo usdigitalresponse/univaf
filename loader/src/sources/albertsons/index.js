@@ -467,7 +467,9 @@ function formatProducts(raw) {
   return products.length ? products : undefined;
 }
 
-let pharmacyMatches = { address: 0, geo: 0, number: 0, fuzzy: 0, _: 0 };
+// For debugging: Track how many entries matched known locations by what method.
+const knownLocationMatches = {};
+
 function formatLocation(data, validAt, checkedAt) {
   // Apply corrections for known-bad source data.
   if (data.id in corrections) {
@@ -493,150 +495,49 @@ function formatLocation(data, validAt, checkedAt) {
     storeNumber
   );
 
-  if (pharmacyMatch) {
-    pharmacyMatches[pharmacyMatch.method]++;
-    if (!storeBrand) {
-      const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
-      console.error(`MATCHED WITHOUT BRAND!
-      Appointment: ${data.address}
-      Match:       ${pharmacyMatch.data.name} #${pharmacyMatch.data.c_parentEntityID} (c_oldStoreID: ${pharmacyMatch.data.c_oldStoreID})  /  ${matAddress}`);
-    }
+  if (process.env.DEBUG) {
+    const matchType = pharmacyMatch?.method ?? "no_match";
+    knownLocationMatches[matchType] =
+      (knownLocationMatches[matchType] || 0) + 1;
 
-    // // console.error("Listing address:", data.address);
-    // // console.error("Match address:  ", pharmacyMatch.data.address);
-    // console.error(
-    //   "Listing address:",
-    //   `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`
-    // );
-    // console.error(
-    //   "Match address:  ",
-    //   `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`
-    // );
-    // console.error("------------");
-
-    // if (storeBrand?.key === "albertsons_corporate") {
-    //   console.error(`MATCHED on corporate office!`);
-    // } else if (storeBrand?.key === "community_clinic") {
-    //   console.error(`MATCHED on community clinic: "${data.address}"`);
-    //   const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
-    //   console.error(
-    //     `  ${pharmacyMatch.data.name} #${pharmacyMatch.data.c_parentEntityID}  /  ${matAddress}`
-    //   );
-    // }
-
-    // if (storeNumber) {
-    //   const findByNumber = getAllKnownAlbertsons().find(
-    //     (x) => unpadNumber(x.c_parentEntityID) === unpadNumber(storeNumber)
-    //   );
-    //   if (findByNumber && findByNumber !== pharmacyMatch.data) {
-    //     const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
-    //     const fbnAddress = `${findByNumber?.address?.line1}, ${findByNumber?.address?.city}, ${findByNumber?.address?.region} ${findByNumber?.address?.postalCode}`;
-    //     const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
-    //     console.error(
-    //       `Found by number: ${!!findByNumber} (Same as match? ${
-    //         findByNumber === pharmacyMatch.data
-    //       })
-    //     Appointments: ${storeBrand.name} #${storeNumber}  /  ${
-    //         data.address
-    //       }  /  ${appAddress}
-    //     FindByNumber: ${findByNumber?.name} #${
-    //         findByNumber.c_parentEntityID
-    //       }  /  ${fbnAddress}
-    //     Match: ${pharmacyMatch.data.name} #${
-    //         pharmacyMatch.data.c_parentEntityID
-    //       } (c_oldStoreID: ${
-    //         pharmacyMatch.data.c_oldStoreID
-    //       })  /  ${matAddress}`
-    //     );
-    //   }
-    // }
-
-    // if (pharmacyMatch.method === "fuzzy") {
-    //   // if (pharmacyMatch.score < 0.2 || pharmacyMatch.score >= 0.6)
-    //   if (pharmacyMatch.score >= 0.25)
-    //     console.error(pharmacyMatch.score, pharmacyMatch.factors);
-    // }
-    if (
-      // pharmacyMatch.method === "fuzzy" &&
-      // pharmacyMatch.score >= 0.5 &&
-      // pharmacyMatch.score < 5.5 &&
-      pharmacyMatch.data.c_parentEntityID !== storeNumber
+    if (pharmacyMatch) {
+      if (pharmacyMatch.data.c_parentEntityID !== storeNumber) {
+        const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
+        const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
+        console.error(
+          "Method:",
+          pharmacyMatch.method,
+          " / Score:",
+          pharmacyMatch.score || "-",
+          " / Factors:",
+          pharmacyMatch.factors || "-"
+        );
+        const found = pharmacyMatch.data;
+        console.error(
+          "Appointments:",
+          // `${storeBrand.name} #${storeNumber}                      /  ${appAddress}  /  ${data.address}`
+          `${storeBrand.name} #${storeNumber}`.padEnd(40),
+          `/  ${appAddress}  /  ${data.address}`
+        );
+        console.error(
+          "Match:       ",
+          `${found.name} #${found.c_parentEntityID}`.padEnd(40),
+          `/  ${matAddress}`,
+          `\n              (c_oldStoreID: ${found.c_oldStoreID})`
+        );
+        console.error("------------");
+      }
+    } else if (
+      !["albertsons_corporate", "community_clinic"].includes(storeBrand?.key)
     ) {
+      console.error("NO MATCH:", data.address);
       const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
-      const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
       console.error(
-        "Method:",
-        pharmacyMatch.method,
-        " / Score:",
-        pharmacyMatch.score || "-",
-        " / Factors:",
-        pharmacyMatch.factors || "-"
-      );
-      const found = pharmacyMatch.data;
-      console.error(
-        "Appointments:",
-        // `${storeBrand.name} #${storeNumber}                      /  ${appAddress}  /  ${data.address}`
-        `${storeBrand.name} #${storeNumber}`.padEnd(40),
-        `/  ${appAddress}  /  ${data.address}`
-      );
-      console.error(
-        "Match:       ",
-        `${found.name} #${found.c_parentEntityID}`.padEnd(40),
-        `/  ${matAddress}`,
-        `\n              (c_oldStoreID: ${found.c_oldStoreID})`
+        `  Parsed: ${storeBrand?.name} #${storeNumber}, ${appAddress}`
       );
       console.error("------------");
     }
-  } else if (
-    !["albertsons_corporate", "community_clinic"].includes(storeBrand?.key)
-  ) {
-    pharmacyMatches._++;
-    console.error("NO MATCH:", data.address);
-    const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
-    console.error(
-      `  Parsed: ${storeBrand?.name} #${storeNumber}, ${appAddress}`
-    );
-    if (storeNumber) {
-      const findByNewNumber = getAllKnownAlbertsons().find(
-        (x) => unpadNumber(x.c_parentEntityID) === unpadNumber(storeNumber)
-      );
-      const findByOldNumber = getAllKnownAlbertsons().find(
-        (x) =>
-          x.c_oldStoreID &&
-          unpadNumber(x.c_oldStoreID) === unpadNumber(storeNumber)
-      );
-      const findByNumber = findByNewNumber || findByOldNumber;
-      if (findByNumber) {
-        const fbnAddress = `${findByNumber.address?.line1}, ${findByNumber.address?.city}, ${findByNumber.address?.region} ${findByNumber.address?.postalCode}`;
-        console.error(
-          `  Found by number: ${!!findByNewNumber} / found by old number: ${!!findByOldNumber}
-        Appointments: ${storeBrand.name} #${storeNumber}  /  ${
-            data.address
-          }  /  ${appAddress}
-        FindByNumber: ${findByNumber.name} #${
-            findByNumber.c_parentEntityID
-          } (c_oldStoreID: ${findByNumber.c_oldStoreID})  /  ${fbnAddress}
-        Distance: ${
-          findByNumber.geocodedCoordinate
-            ? turfDistance(
-                [data.long, data.lat],
-                [
-                  findByNumber.geocodedCoordinate.long,
-                  findByNumber.geocodedCoordinate.lat,
-                ]
-              )
-            : "???"
-        } km`
-        );
-      } else {
-        console.error(`  not found by number`);
-      }
-    } else {
-      console.error(`  no number to match`);
-    }
-    console.error("------------");
   }
-  // console.error("MATCHES:", pharmacyMatches);
 
   if (!storeBrand) {
     return null;
@@ -713,6 +614,9 @@ async function checkAvailability(handler, options) {
 
   const stores = await getData(states);
   stores.forEach((store) => handler(store));
+  if (process.env.DEBUG) {
+    console.error("Matches to known locations:", knownLocationMatches);
+  }
   return stores;
 }
 
