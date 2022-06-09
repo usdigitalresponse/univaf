@@ -427,9 +427,6 @@ function parseNameAndAddress(text) {
   }
 
   const storeBrand = BRANDS.find((item) => item.pattern.test(name));
-  if (!storeBrand) {
-    warn("Could not find a matching brand", { name, address });
-  }
 
   return {
     name: name.trim(),
@@ -564,7 +561,13 @@ function formatLocation(data, validAt, checkedAt) {
     };
   }
 
+  // If we couldn't match this to some expected brand, don't attempt to output
+  // a location since we could wind up with bad or mis-parsed data.
   if (!storeBrand) {
+    warn("Could not find a matching brand", {
+      mhealth_id: data.id,
+      address: data.address,
+    });
     return null;
   }
 
