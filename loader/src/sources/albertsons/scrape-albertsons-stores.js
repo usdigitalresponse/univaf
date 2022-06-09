@@ -25,11 +25,12 @@
  * - At the time of writing (2022-05-26), we are minimizing this down to a few
  *   useful fields via this jq command:
  *
- *     jq -c '[.[] | {
+ *     jq --slurp -c 'map(.pharmacy | select(. != null) | {
  *         address,
  *         c_associatedPharmacyStoreID,
  *         c_geomodifier,
  *         c_metaInformation,
+ *         c_oldStoreID,
  *         c_pagesURL,
  *         c_parentEntityID,
  *         c_groceryID,
@@ -42,7 +43,7 @@
  *         covidVaccineAppointmentRequired,
  *         covidVaccineSiteInstructions,
  *         description,
- *        }]' raw-output.json > albertsons-pharmacies.json
+ *       })' raw-output.json > albertsons-pharmacies.json
  *
  * - c_parentEntityID seems to be what we usually think of as the "store number"
  * - c_associatedPharmacyStoreID is always `${c_parentEntityID}-P`
@@ -110,11 +111,17 @@ const brandUrls = [
   "unitedsupermarkets.com",
   "vons.com",
 
-  // No pharmacy pages for these stores.
-  // "andronicos.com",
-  // "balduccis.com",
+  // These stores don't have explicit pharmacy pages, but sometimes still show
+  // up in vaccination appointment listings.
+  "andronicos.com",
+  "balduccis.com",
+  "kingsfoodmarkets.com",
+
+  // Haggen has a totally different website layout and needs to be scraped
+  // differently. I can't figure out how to find the Albertsons-wide store
+  // numbers from the Haggens site either. For now, we've hand-built a data
+  // file for Haggen that matches the schema of the scraped data from this code.
   // "haggen.com",
-  // "kingsfoodmarkets.com",
 ];
 
 let lastNavigation = 0;
@@ -209,7 +216,7 @@ async function selectOnly(page, selector) {
 async function* crawlBrand(brandHost, startIndexes = []) {
   console.error(`Crawling ${brandHost}...`);
 
-  const statesListUrl = `https://local.pharmacy.${brandHost}`;
+  const statesListUrl = `https://local.${brandHost}`;
   yield* crawlListingPage(statesListUrl, 0, startIndexes);
 }
 
@@ -262,6 +269,36 @@ async function* crawlListingPage(pageUrl, depth = 0, startIndexes = []) {
   for (const url of urls) {
     yield* crawlListingPage(url, depth + 1, startIndexes.slice(1));
   }
+}
+
+/**
+ * Get the pharmacy data from the page, if present.
+ * @param {puppeteer.Page} page
+ * @returns {Promise<any>}
+ */
+async function getLocationDataFromStorePage(page) {
+  const data = await getLocationDataFromPage(page);
+
+  if (data) {
+    // Look for links to pharmacy-specific pages
+    const pharmacyLinks = await page.$$eval(
+      ".Main-container a.Navbar-link",
+      (nodes) =>
+        nodes
+          .map((n) => (n.textContent.includes("Pharmacy") ? n.href : null))
+          .filter(Boolean)
+    );
+    if (pharmacyLinks.length) {
+      await navigate(page, pharmacyLinks[0]);
+      const pharmacyData = await getLocationDataFromPage(page);
+      // Sometimes there's a link, but it doesn't go to an actual store page.
+      if (pharmacyData) {
+        data.pharmacy = pharmacyData;
+      }
+    }
+  }
+
+  return data;
 }
 
 /**
