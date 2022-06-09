@@ -516,7 +516,7 @@ function formatLocation(data, validAt, checkedAt) {
         console.error(
           "Appointments:",
           // `${storeBrand.name} #${storeNumber}                      /  ${appAddress}  /  ${data.address}`
-          `${storeBrand.name} #${storeNumber}`.padEnd(40),
+          `${storeBrand?.name ?? "[no brand]"} #${storeNumber}`.padEnd(40),
           `/  ${appAddress}  /  ${data.address}`
         );
         console.error(

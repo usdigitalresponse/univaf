@@ -10,8 +10,8 @@ let addressIndex;
 
 function loadData(force = false) {
   if (force || !allLocations) {
-    const scrapedData = require("./albertsons-pharmacies.json");
-    const haggenData = require("./haggen-stores.json");
+    const scrapedData = require("./stores-scraped.json");
+    const haggenData = require("./stores-haggen.json");
     allLocations = scrapedData.concat(haggenData);
 
     addressIndex = allLocations.reduce((index, l) => {
