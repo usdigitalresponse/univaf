@@ -466,6 +466,44 @@ function formatProducts(raw) {
 // For debugging: Track how many entries matched known locations by what method.
 const knownLocationMatches = {};
 
+function logMatchDebugInfo(match, rawData, address, storeBrand, storeNumber) {
+  if (!process.env.DEBUG) return;
+
+  const matchType = match?.method ?? "no_match";
+  knownLocationMatches[matchType] = (knownLocationMatches[matchType] || 0) + 1;
+
+  if (match) {
+    if (match.data.c_parentEntityID !== storeNumber) {
+      const matchAddress = `${match.data.address.line1}, ${match.data.address.city}, ${match.data.address.region} ${match.data.address.postalCode}`;
+      console.error(
+        "Method:",
+        match.method,
+        " / Score:",
+        match.score || "-",
+        " / Factors:",
+        match.factors || "-"
+      );
+      const found = match.data;
+      console.error(
+        "Appointments:",
+        `${storeBrand?.name ?? "[no brand]"} #${storeNumber}`.padEnd(40),
+        `/  ${address}  /  ${rawData.address}`
+      );
+      console.error(
+        "Match:       ",
+        `${found.name} #${found.c_parentEntityID}`.padEnd(40),
+        `/  ${matchAddress}`,
+        `\n              (c_oldStoreID: ${found.c_oldStoreID})`
+      );
+      console.error("------------");
+    }
+  } else if (!storeBrand || !storeBrand.isNotAStore) {
+    console.error("NO MATCH:", rawData.address);
+    console.error(`  Parsed: ${storeBrand?.name} #${storeNumber}, ${address}`);
+    console.error("------------");
+  }
+}
+
 function formatLocation(data, validAt, checkedAt) {
   // Apply corrections for known-bad source data.
   if (data.id in corrections) {
@@ -484,56 +522,14 @@ function formatLocation(data, validAt, checkedAt) {
     return null;
   }
 
+  const matchAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
   const pharmacyMatch = findKnownAlbertsons(
-    `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`,
+    matchAddress,
     { lat: data.lat, long: data.long },
     storeBrand,
     storeNumber
   );
-
-  if (process.env.DEBUG) {
-    const matchType = pharmacyMatch?.method ?? "no_match";
-    knownLocationMatches[matchType] =
-      (knownLocationMatches[matchType] || 0) + 1;
-
-    if (pharmacyMatch) {
-      if (pharmacyMatch.data.c_parentEntityID !== storeNumber) {
-        const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
-        const matAddress = `${pharmacyMatch.data.address.line1}, ${pharmacyMatch.data.address.city}, ${pharmacyMatch.data.address.region} ${pharmacyMatch.data.address.postalCode}`;
-        console.error(
-          "Method:",
-          pharmacyMatch.method,
-          " / Score:",
-          pharmacyMatch.score || "-",
-          " / Factors:",
-          pharmacyMatch.factors || "-"
-        );
-        const found = pharmacyMatch.data;
-        console.error(
-          "Appointments:",
-          // `${storeBrand.name} #${storeNumber}                      /  ${appAddress}  /  ${data.address}`
-          `${storeBrand?.name ?? "[no brand]"} #${storeNumber}`.padEnd(40),
-          `/  ${appAddress}  /  ${data.address}`
-        );
-        console.error(
-          "Match:       ",
-          `${found.name} #${found.c_parentEntityID}`.padEnd(40),
-          `/  ${matAddress}`,
-          `\n              (c_oldStoreID: ${found.c_oldStoreID})`
-        );
-        console.error("------------");
-      }
-    } else if (
-      !["albertsons_corporate", "community_clinic"].includes(storeBrand?.key)
-    ) {
-      console.error("NO MATCH:", data.address);
-      const appAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
-      console.error(
-        `  Parsed: ${storeBrand?.name} #${storeNumber}, ${appAddress}`
-      );
-      console.error("------------");
-    }
-  }
+  logMatchDebugInfo(pharmacyMatch, data, matchAddress, storeBrand, storeNumber);
 
   if (pharmacyMatch && pharmacyMatch.score > 0.2) {
     // TODO: fill in other data from known stores, like info URL, phone,
