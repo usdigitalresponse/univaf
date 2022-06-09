@@ -20,6 +20,7 @@
 const Sentry = require("@sentry/node");
 const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
+const config = require("../../config");
 const {
   createWarningLogger,
   httpClient,
@@ -467,7 +468,7 @@ function formatProducts(raw) {
 const knownLocationMatches = {};
 
 function logMatchDebugInfo(match, rawData, address, storeBrand, storeNumber) {
-  if (!process.env.DEBUG) return;
+  if (!config.debug) return;
 
   const matchType = match?.method ?? "no_match";
   knownLocationMatches[matchType] = (knownLocationMatches[matchType] || 0) + 1;
