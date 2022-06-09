@@ -11,8 +11,9 @@ let addressIndex;
 function loadData(force = false) {
   if (force || !allLocations) {
     const scrapedData = require("./stores-scraped.json");
-    const haggenData = require("./stores-haggen.json");
-    allLocations = scrapedData.concat(haggenData);
+    const haggenData = require("./stores-haggen.js");
+    const unlistedData = require("./stores-unlisted.js");
+    allLocations = [...scrapedData, ...haggenData, ...unlistedData];
 
     addressIndex = allLocations.reduce((index, l) => {
       const key = matchableAddress(
