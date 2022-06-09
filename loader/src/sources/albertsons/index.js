@@ -20,7 +20,6 @@
 const Sentry = require("@sentry/node");
 const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
-const turfDistance = require("@turf/distance").default;
 const {
   createWarningLogger,
   httpClient,
@@ -36,7 +35,7 @@ const {
 } = require("../../model");
 const { ParseError } = require("../../exceptions");
 const { corrections } = require("./corrections");
-const { findKnownAlbertsons, getAllKnownAlbertsons } = require("./locations");
+const { findKnownAlbertsons } = require("./locations");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
