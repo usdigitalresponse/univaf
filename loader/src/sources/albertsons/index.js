@@ -638,7 +638,7 @@ async function checkAvailability(handler, options) {
 
   const stores = await getData(states);
   stores.forEach((store) => handler(store));
-  if (process.env.DEBUG) {
+  if (config.debug) {
     console.error("Matches to known locations:", knownLocationMatches);
   }
   return stores;
