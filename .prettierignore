@@ -9,3 +9,4 @@ scratch.*
 **/fixtures/**/*.json
 **/__fixtures__/**/*.json
 **/src/sources/cvs/known-stores.js
+**/src/sources/albertsons/stores-scraped.json

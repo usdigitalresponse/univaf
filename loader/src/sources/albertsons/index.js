@@ -20,6 +20,7 @@
 const Sentry = require("@sentry/node");
 const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
+const config = require("../../config");
 const {
   createWarningLogger,
   httpClient,
@@ -35,6 +36,7 @@ const {
 } = require("../../model");
 const { ParseError } = require("../../exceptions");
 const { corrections } = require("./corrections");
+const { findKnownAlbertsons } = require("./locations");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
@@ -130,7 +132,7 @@ const BRANDS = [
     ...BASE_BRAND,
     key: "pak_n_save",
     name: "Pak 'n Save",
-    pattern: /Pak N Save/i,
+    pattern: /Pak '?N Save/i,
   },
   {
     key: "pavilions",
@@ -198,6 +200,7 @@ const BRANDS = [
     ...BASE_BRAND,
     key: "albertsons_corporate",
     name: "ALB Corporate Office",
+    isNotAStore: true,
     pattern: /Corporate Office/i,
   },
   // Albertsons is now operating some clinics outside its actual stores, and
@@ -209,6 +212,7 @@ const BRANDS = [
     key: "community_clinic",
     name: "Community Clinic",
     locationType: LocationType.clinic,
+    isNotAStore: true,
     pattern: {
       test: (name) => {
         // Some locations need explicit support because they look like "name
@@ -261,6 +265,7 @@ async function getData(states) {
           formatted = formatLocation(entry, validAt, checkedAt);
         } catch (error) {
           warn(error);
+          console.error(error.stack);
         }
       });
       return formatted;
@@ -422,9 +427,6 @@ function parseNameAndAddress(text) {
   }
 
   const storeBrand = BRANDS.find((item) => item.pattern.test(name));
-  if (!storeBrand) {
-    warn("Could not find a matching brand", { name });
-  }
 
   return {
     name: name.trim(),
@@ -462,6 +464,47 @@ function formatProducts(raw) {
   return products.length ? products : undefined;
 }
 
+// For debugging: Track how many entries matched known locations by what method.
+const knownLocationMatches = {};
+
+function logMatchDebugInfo(match, rawData, address, storeBrand, storeNumber) {
+  if (!config.debug) return;
+
+  const matchType = match?.method ?? "no_match";
+  knownLocationMatches[matchType] = (knownLocationMatches[matchType] || 0) + 1;
+
+  if (match) {
+    if (match.data.c_parentEntityID !== storeNumber) {
+      const matchAddress = `${match.data.address.line1}, ${match.data.address.city}, ${match.data.address.region} ${match.data.address.postalCode}`;
+      console.error(
+        "Method:",
+        match.method,
+        " / Score:",
+        match.score || "-",
+        " / Factors:",
+        match.factors || "-"
+      );
+      const found = match.data;
+      console.error(
+        "Appointments:",
+        `${storeBrand?.name ?? "[no brand]"} #${storeNumber}`.padEnd(40),
+        `/  ${address}  /  ${rawData.address}`
+      );
+      console.error(
+        "Match:       ",
+        `${found.name} #${found.c_parentEntityID}`.padEnd(40),
+        `/  ${matchAddress}`,
+        `\n              (c_oldStoreID: ${found.c_oldStoreID})`
+      );
+      console.error("------------");
+    }
+  } else if (!storeBrand || !storeBrand.isNotAStore) {
+    console.error("NO MATCH:", rawData.address);
+    console.error(`  Parsed: ${storeBrand?.name} #${storeNumber}, ${address}`);
+    console.error("------------");
+  }
+}
+
 function formatLocation(data, validAt, checkedAt) {
   // Apply corrections for known-bad source data.
   if (data.id in corrections) {
@@ -480,7 +523,47 @@ function formatLocation(data, validAt, checkedAt) {
     return null;
   }
 
+  const matchAddress = `${address.lines[0]}, ${address.city}, ${address.state} ${address.zip}`;
+  const pharmacyMatch = findKnownAlbertsons(
+    matchAddress,
+    { lat: data.lat, long: data.long },
+    storeBrand,
+    storeNumber
+  );
+  logMatchDebugInfo(pharmacyMatch, data, matchAddress, storeBrand, storeNumber);
+
+  if (pharmacyMatch && pharmacyMatch.score > 0.2) {
+    // TODO: fill in other data from known stores, like info URL, phone,
+    // timezone, geo coordinate.
+    storeNumber = pharmacyMatch.data.c_parentEntityID;
+    // TODO: consider using c_geomodifier for the name. (We'd still need to
+    // create a string with the store number for matching the brand, though.)
+    name = `${pharmacyMatch.data.name} #${storeNumber}`;
+    storeBrand = BRANDS.find((item) => item.pattern.test(name));
+    if (!storeBrand || storeBrand.key === "community_clinic") {
+      // Unlike appointment data, we should *never* fail to match a brand to
+      // data from our scraped, saved list of known pharmacy locations.
+      throw new Error(`Failed to match a brand to known location "${name}"`);
+    }
+    address = {
+      lines: [
+        pharmacyMatch.data.address.line1,
+        pharmacyMatch.data.address.line2,
+        pharmacyMatch.data.address.line3,
+      ].filter(Boolean),
+      city: pharmacyMatch.data.address.city,
+      state: pharmacyMatch.data.address.region,
+      zip: pharmacyMatch.data.address.postalCode,
+    };
+  }
+
+  // If we couldn't match this to some expected brand, don't attempt to output
+  // a location since we could wind up with bad or mis-parsed data.
   if (!storeBrand) {
+    warn("Could not find a matching brand", {
+      mhealth_id: data.id,
+      address: data.address,
+    });
     return null;
   }
 
@@ -555,6 +638,9 @@ async function checkAvailability(handler, options) {
 
   const stores = await getData(states);
   stores.forEach((store) => handler(store));
+  if (config.debug) {
+    console.error("Matches to known locations:", knownLocationMatches);
+  }
   return stores;
 }
 

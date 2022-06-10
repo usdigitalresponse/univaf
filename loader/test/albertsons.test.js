@@ -65,7 +65,7 @@ describe("Albertsons", () => {
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
-        name: "Safeway 3410",
+        name: "Safeway Pharmacy #3410",
         external_ids: [
           ["albertsons", "1600116808972"],
           ["albertsons_safeway", "1600116808972"],
@@ -100,7 +100,7 @@ describe("Albertsons", () => {
         },
       },
       {
-        name: "Carrs 1813",
+        name: "Carrs Pharmacy #1813",
         external_ids: [
           ["albertsons", "1600114849843"],
           ["albertsons_carrs", "1600114849843"],
@@ -109,7 +109,7 @@ describe("Albertsons", () => {
         ],
         location_type: "PHARMACY",
         provider: "albertsons",
-        address_lines: ["1501 Huffman Road"],
+        address_lines: ["1501 Huffman Rd"],
         city: "Anchorage",
         state: "AK",
         postal_code: "99515",
@@ -156,7 +156,7 @@ describe("Albertsons", () => {
       ]);
 
     const result = await checkAvailability(() => {}, { states: "AK" });
-    expect(result[0]).toHaveProperty("name", "Safeway 3410");
+    expect(result[0]).toHaveProperty("name", "Safeway Pharmacy #3410");
     expect(result[0]).toHaveProperty("address_lines", ["30 College Rd"]);
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
@@ -288,7 +288,7 @@ describe("Albertsons", () => {
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
-        name: "Safeway 5",
+        name: "Safeway Pharmacy #5",
         external_ids: [
           ["albertsons", "1635993536219"],
           ["albertsons_safeway", "1635993536219"],
@@ -299,7 +299,7 @@ describe("Albertsons", () => {
         ],
         location_type: "PHARMACY",
         provider: "albertsons",
-        address_lines: ["11120 South Lakes Drive"],
+        address_lines: ["11120 S Lakes Dr"],
         city: "Reston",
         state: "VA",
         postal_code: "20191",
@@ -539,7 +539,7 @@ describe("Albertsons", () => {
       })
     ).toEqual(
       expect.objectContaining({
-        name: "Safeway 3410",
+        name: "Safeway Pharmacy #3410",
         external_ids: [
           ["albertsons", "123456789"],
           ["albertsons_safeway", "123456789"],
@@ -567,7 +567,7 @@ describe("Albertsons", () => {
       drugName: ["Moderna"],
     });
 
-    expect(formatted).toHaveProperty("name", "Albertsons 393");
+    expect(formatted).toHaveProperty("name", "Albertsons Pharmacy #393");
     expect(formatted).toHaveProperty("address_lines", ["1268 Madera Rd"]);
     expect(formatted).toHaveProperty("city", "Simi Valley");
     expect(formatted).toHaveProperty("state", "CA");
