@@ -166,7 +166,7 @@ function formatStore(storeItems, checkedAt) {
         longitude: Number(base.longitude),
         latitude: Number(base.latitude),
       };
-      if (isNaN(position.longitude) || isNaN(position.longitude)) {
+      if (isNaN(position.longitude) || isNaN(position.latitude)) {
         error("longitude and latitude are not numbers");
       } else {
         result.position = position;
@@ -202,10 +202,10 @@ function getWalmartId(location) {
     return unpadNumber(location.loc_store_no.slice(3));
   }
 
-  // When the number is not in loc_store_no, it is usually formatted as a normal
-  // store number in the name (i.e. "NNN" instead of "10-NNN").
+  // When the number is not in loc_store_no, it may be formatted like above
+  // (10-NNN) or without the "10-" prefix.
   const numberInName = location.loc_name.match(
-    /^(?:Walmart|Sam['\u2019]?s Club) .* #?(\d+)$/i
+    /^(?:Walmart|Sam['\u2019]?s Club) [^#\d]*#?(?:10-)?(\d+)$/i
   );
   if (numberInName) {
     return unpadNumber(numberInName[1]);
@@ -214,6 +214,7 @@ function getWalmartId(location) {
   warn("Unexpected Walmart/Sams ID format", {
     id: location.provider_location_guid,
     storeNumber: location.loc_store_no,
+    storeName: location.loc_name,
   });
   return null;
 }
