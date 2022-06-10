@@ -218,9 +218,10 @@ module.exports.corrections = {
       "Pediatric Booster Clinic at Jewel Osco #2444 - 944 S York Rd, Elmhurst, IL 60126",
   },
   1643755181825: {
-    address: "Jewel Osco #3098 Peds Booster - 12003 S Crawford Ave, Alsip, IL, 60803",
+    address:
+      "Jewel Osco #3098 Peds Booster - 12003 S Crawford Ave, Alsip, IL, 60803",
     lat: "41.6121506",
-    long: "-87.718918"
+    long: "-87.718918",
   },
 
   // These two are the adult and pediatric versions of a single location, but
