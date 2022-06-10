@@ -166,7 +166,7 @@ function formatStore(storeItems, checkedAt) {
         longitude: Number(base.longitude),
         latitude: Number(base.latitude),
       };
-      if (isNaN(position.longitude) || isNaN(position.longitude)) {
+      if (isNaN(position.longitude) || isNaN(position.latitude)) {
         error("longitude and latitude are not numbers");
       } else {
         result.position = position;
