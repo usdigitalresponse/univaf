@@ -427,6 +427,13 @@ const ndcLookup = {
   [normalizeNdc("00069-1000-01")]: VaccineProduct.pfizer, // use
   [normalizeNdc("00069-1000-02")]: VaccineProduct.pfizer, // sale
   [normalizeNdc("00069-1000-03")]: VaccineProduct.pfizer, // sale
+  // 00069-2025 *appears* to have replaced the 00069-1000 codes for "Comirnaty"
+  // branding. (We never saw the old ones used in practice. They are still
+  // listed on the CDC's COVID-19 codes page, but not on CDC's complete
+  // crosswalk of all vaccine codes, where these new ones are listed.)
+  [normalizeNdc("00069-2025-01")]: VaccineProduct.pfizer, // use
+  [normalizeNdc("00069-2025-10")]: VaccineProduct.pfizer, // sale
+  [normalizeNdc("00069-2025-25")]: VaccineProduct.pfizer, // sale
 
   [normalizeNdc("59267-1055-01")]: VaccineProduct.pfizerAge5_11, // use
   [normalizeNdc("59267-1055-02")]: VaccineProduct.pfizerAge5_11, // sale
