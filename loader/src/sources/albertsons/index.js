@@ -409,11 +409,12 @@ function parseNameAndAddress(text) {
     }
   }
 
-  const partMatch = body.match(addressFieldParts);
-  if (!partMatch) {
+  const splitPosition = body.lastIndexOf(" - ");
+  if (splitPosition === -1) {
     throw new ParseError(`Could not separate name and address in "${body}"`);
   }
-  let { name, address } = partMatch.groups;
+  let name = body.slice(0, splitPosition).trim();
+  const address = body.slice(splitPosition + 3).trim();
 
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
