@@ -63,6 +63,7 @@ resource "aws_route53_record" "api_www_domain_record" {
   name    = "www"
   type    = "CNAME"
   records = [var.domain_name]
+  ttl     = 300
 }
 
 module "api_task" {
