@@ -9,7 +9,7 @@
 
 import { Request, Response } from "express";
 import { DateTime } from "luxon";
-import { getPrimaryHostUrl } from "./config";
+import { getPrimaryHost } from "./config";
 import { getRequestHost } from "./utils";
 import * as db from "./db";
 import {
@@ -118,9 +118,8 @@ export function fhirNotImplemented(_req: Request, res: Response): void {
 const statesList = states.filter((state: any) => state.type === "State");
 
 export function manifest(req: Request, res: Response): void {
-  const baseOrigin =
-    getPrimaryHostUrl() || `${req.protocol}://${getRequestHost(req)}`;
-  const baseUrl = `${baseOrigin}${req.baseUrl}`;
+  const host = getPrimaryHost() || getRequestHost(req);
+  const baseUrl = `${req.protocol}://${host}${req.baseUrl}`;
   res.json({
     // TODO: consider making this the latest updated availability timestamp.
     transactionTime: new Date().toISOString(),

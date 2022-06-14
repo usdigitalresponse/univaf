@@ -17,11 +17,20 @@ export function getApiKeys(): Array<string> {
   return keyList.split(",").map((key) => key.trim());
 }
 
-export function getPrimaryHostUrl(): string {
-  let hostUrl = process.env.HOST_URL;
-  if (hostUrl?.endsWith("/")) hostUrl = hostUrl.slice(0, -1);
-
-  return hostUrl;
+/**
+ * Get the configured host (e.g. `getmyvax.org`) for the app from the
+ * PRIMARY_HOST environment variable.
+ * Note this is a host, not a host *name*, so it may include a port.
+ * @returns {string}
+ */
+export function getPrimaryHost(): string {
+  const host = process.env.PRIMARY_HOST;
+  if (host && !/^[a-zA-Z][a-zA-Z0-9.]*[a-zA-Z0-9](:\d+)?$/.test(host)) {
+    throw new TypeError(
+      `The PRIMARY_HOST environment variable ("${host}") is not a valid host`
+    );
+  }
+  return host;
 }
 
 export function loadDbConfig(): Knex.Config {
