@@ -1,4 +1,3 @@
-import { Request } from "express";
 import type { Knex } from "knex";
 
 export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
@@ -18,18 +17,20 @@ export function getApiKeys(): Array<string> {
   return keyList.split(",").map((key) => key.trim());
 }
 
-export function getHostUrl(request?: Request): string {
-  let hostUrl = process.env.HOST_URL;
-  if (!hostUrl) {
-    if (!request) {
-      throw new Error("Cannot calculate host URL without a request");
-    } else {
-      hostUrl = `${request.protocol}://${request.headers.host}`;
-    }
+/**
+ * Get the configured host (e.g. `getmyvax.org`) for the app from the
+ * PRIMARY_HOST environment variable.
+ * Note this is a host, not a host *name*, so it may include a port.
+ * @returns {string?}
+ */
+export function getPrimaryHost(): string {
+  const host = process.env.PRIMARY_HOST;
+  if (host && !/^[a-zA-Z][a-zA-Z0-9.-]*[a-zA-Z0-9](:\d+)?$/.test(host)) {
+    throw new TypeError(
+      `The PRIMARY_HOST environment variable ("${host}") is not a valid host`
+    );
   }
-  if (hostUrl.endsWith("/")) hostUrl = hostUrl.slice(0, -1);
-
-  return hostUrl;
+  return host || null;
 }
 
 export function loadDbConfig(): Knex.Config {

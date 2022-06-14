@@ -57,6 +57,14 @@ resource "aws_route53_record" "api_domain_record" {
   }
 }
 
+resource "aws_route53_record" "api_www_domain_record" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "www"
+  type    = "CNAME"
+  records = [var.domain_name]
+}
+
 module "api_task" {
   source = "./modules/task"
 
@@ -72,15 +80,15 @@ module "api_task" {
   datadog_api_key = var.datadog_api_key
 
   env_vars = {
-    RELEASE     = var.api_release_version
-    DB_HOST     = module.db.host
-    DB_NAME     = module.db.db_name
-    DB_USERNAME = var.db_user
-    DB_PASSWORD = var.db_password
-    API_KEYS    = var.api_key
-    SENTRY_DSN  = var.api_sentry_dsn
-    HOST_URL    = format("https://%s", var.domain_name)
-    ENV         = "production"
+    RELEASE      = var.api_release_version
+    DB_HOST      = module.db.host
+    DB_NAME      = module.db.db_name
+    DB_USERNAME  = var.db_user
+    DB_PASSWORD  = var.db_password
+    API_KEYS     = var.api_key
+    SENTRY_DSN   = var.api_sentry_dsn
+    PRIMARY_HOST = var.domain_name
+    ENV          = "production"
   }
 
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
@@ -182,7 +190,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
   enabled     = true
   price_class = "PriceClass_100" # North America
-  aliases     = [var.domain_name]
+  aliases     = [var.domain_name, "www.${var.domain_name}"]
 
   origin {
     origin_id   = var.domain_name

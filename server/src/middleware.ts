@@ -1,5 +1,6 @@
 import { Response, Request, NextFunction } from "express";
-import { getApiKeys } from "./config";
+import { getApiKeys, getPrimaryHost } from "./config";
+import { getRequestHost } from "./utils";
 
 export interface AppRequest extends Request {
   authorization?: string;
@@ -38,4 +39,25 @@ export function versionedMiddleware(
 ): void {
   req.versioned = new VersionedMethods(req);
   next();
+}
+
+/**
+ * If the app has a configured host, redirect any request at another host
+ * to the configured host.
+ *
+ * For example, if `PRIMARY_HOST == "getmyvax.org"`, this will redirect
+ * "www.getmyvax.org/x/y/z" to "getmyvax.org/x/y/z".
+ */
+export function redirectToPrimaryHost(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
+  const primaryHost = getPrimaryHost();
+  if (primaryHost && primaryHost !== getRequestHost(request)) {
+    return response.redirect(
+      `${request.protocol}://${primaryHost}${request.originalUrl}`
+    );
+  }
+  return next();
 }

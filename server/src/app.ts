@@ -3,7 +3,11 @@ import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
-import { authorizeRequest, versionedMiddleware } from "./middleware";
+import {
+  authorizeRequest,
+  redirectToPrimaryHost,
+  versionedMiddleware,
+} from "./middleware";
 import { datadogMiddleware } from "./datadog";
 import { logger, logStackTrace } from "./logger";
 import * as apiEdge from "./api/edge";
@@ -47,6 +51,7 @@ app.disable("x-powered-by");
 // Middleware
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
+app.use(redirectToPrimaryHost);
 app.use(compression());
 app.use(bodyParser.json({ limit: "1mb" }));
 app.use(cors());
