@@ -90,7 +90,6 @@ module "api_task" {
     SENTRY_DSN   = var.api_sentry_dsn
     PRIMARY_HOST = var.domain_name
     ENV          = "production"
-    SOMETHING    = "just-a-test"
   }
 
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
