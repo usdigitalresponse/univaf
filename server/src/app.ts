@@ -51,19 +51,15 @@ app.disable("x-powered-by");
 // Middleware
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
-app.use(redirectToPrimaryHost);
+app.use(datadogMiddleware);
 app.use(compression());
 app.use(bodyParser.json({ limit: "1mb" }));
 app.use(cors());
 app.use(authorizeRequest);
-app.use(datadogMiddleware);
 app.use(urlDecodeSpecialPathChars);
 
-/**
- * Primary app routes.
- */
+// Check/Test Routes ---------------------------------------------
 
-app.get("/", (_req: Request, res: Response) => res.redirect("/docs/"));
 app.get("/health", (req: Request, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
   res.status(200).send("OK!");
@@ -74,6 +70,14 @@ if (app.get("env") !== "production") {
     throw new Error("This is an error from a route handler");
   });
 }
+
+// Primary app routes --------------------------------------------
+
+// NOTE: this must come after the above routes, since a redirect on a healtheck
+// will read as a failed healthcheck.
+app.use(redirectToPrimaryHost);
+
+app.get("/", (_req: Request, res: Response) => res.redirect("/docs/"));
 
 // Caching -------------------------------------------------------
 const shortCacheTime = 10;
