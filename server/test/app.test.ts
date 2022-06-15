@@ -7,7 +7,7 @@ afterEach(() => {
   process.env = { ...originalEnv };
 });
 
-describe("server application", () => {
+describe.skip("server application", () => {
   const context = useServerForTests(app);
 
   it("redirects requests to PRIMARY_HOST", async () => {
