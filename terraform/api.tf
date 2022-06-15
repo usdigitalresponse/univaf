@@ -214,6 +214,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
     max_ttl                = 3600
 
     forwarded_values {
+      headers = ["Host", "Origin"]
       query_string = true
 
       cookies {
