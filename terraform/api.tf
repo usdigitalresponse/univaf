@@ -37,6 +37,25 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
+resource "aws_alb_listener_rule" "redirect_www" {
+  listener_arn = aws_alb_listener.front_end.arn
+
+  condition {
+    host_header {
+      values = ["www.${var.domain_name}"]
+    }
+  }
+
+  action {
+    type = "redirect"
+
+    redirect {
+      host        = var.domain_name
+      status_code = "HTTP_301"
+    }
+  }
+}
+
 # Add DNS (optional)
 data "aws_route53_zone" "domain_zone" {
   count = var.domain_name != "" ? 1 : 0
