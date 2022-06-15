@@ -58,7 +58,7 @@ app.use(cors());
 app.use(authorizeRequest);
 app.use(urlDecodeSpecialPathChars);
 
-// Check/Test Routes ---------------------------------------------
+// Diagnostic Routes ---------------------------------------------
 
 app.get("/health", (req: Request, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
