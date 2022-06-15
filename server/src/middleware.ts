@@ -1,7 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { getApiKeys, getPrimaryHost } from "./config";
-import { logger } from "./logger";
-import { getRequestHost } from "./utils";
+import { getApiKeys } from "./config";
 
 export interface AppRequest extends Request {
   authorization?: string;
