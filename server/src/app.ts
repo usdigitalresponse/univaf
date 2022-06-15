@@ -33,10 +33,9 @@ function cacheControlMaxAge(seconds: number) {
   };
 }
 
-// Create Express server
-const app = express();
+// Express configuration -----------------------------------------
 
-// Express configuration
+const app = express();
 app.set("port", process.env.PORT || 3000);
 // We are behind AWS ELBs which set reverse-proxy related headers.
 app.enable("trust proxy");
@@ -44,7 +43,8 @@ app.enable("trust proxy");
 // servers with exploitable vulnerabilities.
 app.disable("x-powered-by");
 
-// Middleware
+// Middleware ----------------------------------------------------
+
 app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
 app.use(datadogMiddleware);
