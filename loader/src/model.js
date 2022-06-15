@@ -32,10 +32,13 @@ const VaccineProduct = {
   astraZeneca: "astra_zeneca",
   janssen: "jj",
   moderna: "moderna",
+  modernaAge6_11: "moderna_age_6_11",
+  modernaAge0_5: "moderna_age_0_5",
   novavax: "novavax",
   pfizer: "pfizer",
   pfizerAge5_11: "pfizer_age_5_11",
   pfizerAge2_4: "pfizer_age_2_4",
+  sanofi: "sanofi",
 };
 
 /**
@@ -45,6 +48,8 @@ const VaccineProduct = {
 const PediatricVaccineProducts = new Set([
   VaccineProduct.pfizerAge5_11,
   VaccineProduct.pfizerAge2_4,
+  VaccineProduct.modernaAge6_11,
+  VaccineProduct.modernaAge0_5,
 ]);
 
 module.exports = {

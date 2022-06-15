@@ -49,20 +49,26 @@ const CVX_CODES: { [index: string]: number } = {
   astra_zeneca: 210,
   jj: 212,
   moderna: 207,
+  moderna_age_6_11: 227,
+  moderna_age_0_5: 228,
   novavax: 211,
   pfizer: 208,
   pfizer_age_5_11: 218,
   pfizer_age_2_4: 219,
+  sanofi: 225,
 };
 
 const PRODUCT_NAMES: { [index: string]: string } = {
   astra_zeneca: "AstraZeneca",
   jj: "Johnson & Johnson",
   moderna: "Moderna",
+  moderna_age_6_11: "Moderna Pediatric (Ages 6-11)",
+  moderna_age_0_5: "Moderna Pediatric (Ages 0-5)",
   novavax: "NovaVax",
   pfizer: "Pfizer",
   pfizer_age_5_11: "Pfizer Pediatric (Ages 5-11)",
-  pfizer_age_2_4: "Pfizer Pediatric (Ages 2-4)",
+  pfizer_age_2_4: "Pfizer Pediatric (Ages 0-4)",
+  sanofi: "Sanofi Pasteur",
 };
 
 const DOSE_NUMBERS: { [index: string]: number[] } = {
