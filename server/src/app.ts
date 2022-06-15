@@ -3,11 +3,7 @@ import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
-import {
-  authorizeRequest,
-  redirectToPrimaryHost,
-  versionedMiddleware,
-} from "./middleware";
+import { authorizeRequest, versionedMiddleware } from "./middleware";
 import { datadogMiddleware } from "./datadog";
 import { logger, logStackTrace } from "./logger";
 import * as apiEdge from "./api/edge";
@@ -64,6 +60,7 @@ app.get("/health", (req: Request, res: Response) => {
   // TODO: include the db status before declaring ourselves "up"
   res.status(200).send("OK!");
 });
+
 if (app.get("env") !== "production") {
   // Use this route to test error handlers.
   app.get("/debugme", (_req: Request, _res: Response) => {
@@ -72,10 +69,6 @@ if (app.get("env") !== "production") {
 }
 
 // Primary app routes --------------------------------------------
-
-// NOTE: this must come after the above routes, since a redirect on a healtheck
-// will read as a failed healthcheck.
-app.use(redirectToPrimaryHost);
 
 app.get("/", (_req: Request, res: Response) => res.redirect("/docs/"));
 
