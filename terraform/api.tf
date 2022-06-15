@@ -51,6 +51,8 @@ resource "aws_alb_listener_rule" "redirect_www" {
 
     redirect {
       host        = var.domain_name
+      port        = "443"
+      protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
   }
