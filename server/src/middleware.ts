@@ -1,5 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import { getApiKeys, getPrimaryHost } from "./config";
+import { logger } from "./logger";
 import { getRequestHost } from "./utils";
 
 export interface AppRequest extends Request {
@@ -54,10 +55,27 @@ export function redirectToPrimaryHost(
   next: NextFunction
 ): void {
   const primaryHost = getPrimaryHost();
+  // FIXME: testing this redirect madness in production, sigh.
   if (primaryHost && primaryHost !== getRequestHost(request)) {
-    return response.redirect(
-      `${request.protocol}://${primaryHost}${request.originalUrl}`
+    const trustProxyFunction = request.app.get("trust proxy fn");
+    logger.info(
+      `
+      DEBUG HOST for ${request.method} ${request.url}
+      primaryHost: "${getPrimaryHost()}"
+      getRequestHost: "${getRequestHost(request)}"
+      Host header: "${request.get("Host")}"
+      X-Forwarded-Host header: "${request.get("X-Forwarded-Host")}"
+      request.socket.remoteAddress: "${request.socket.remoteAddress}"
+      trust: ${
+        trustProxyFunction
+          ? trustProxyFunction(request.socket.remoteAddress, 0)
+          : "[no trust function]"
+      }
+    `.trim()
     );
+    // return response.redirect(
+    //   `${request.protocol}://${primaryHost}${request.originalUrl}`
+    // );
   }
   return next();
 }
