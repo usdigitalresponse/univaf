@@ -12,15 +12,15 @@ describe("server application", () => {
 
   it("redirects requests to PRIMARY_HOST", async () => {
     process.env.PRIMARY_HOST = "test.primary.host";
-    const response = await context.client.get<any>("health", {
+    const response = await context.client.get<any>("docs/", {
       followRedirect: false,
       responseType: "text",
     } as any);
-    expect(response.headers.location).toBe("http://test.primary.host/health");
+    expect(response.headers.location).toBe("http://test.primary.host/docs/");
   });
 
   it("does not redirect requests if PRIMARY_HOST is not set", async () => {
-    const response = await context.client.get<any>("health", {
+    const response = await context.client.get<any>("docs/", {
       followRedirect: false,
       responseType: "text",
     } as any);
