@@ -409,12 +409,91 @@ function parseNameAndAddress(text) {
     }
   }
 
-  const splitPosition = body.lastIndexOf(" - ");
-  if (splitPosition === -1) {
+  // The main goal here is to prevent age ranges (e.g. "5 - 11 years old") from
+  // getting split up in the next step. But this also puts in an en-dash for
+  // better typography. ;)
+  const cleanText = body.replace(/(\d+) - (\d+ year)/g, "$1\u2013$2");
+
+  // The address field is freeform, and often has a whole mess of metadata
+  // stuffed into it (actual address, location name, whether it's pediatric
+  // only, etc.). Generally, different pieces of information are separated by
+  // " - " and the actual address always comes last. Our goal here is to
+  // separate the address and other bits.
+  const sections = cleanText.split(/\s*-\s+/g).map((s) => s.trim());
+  let newAddress = sections.pop();
+  let maybeAddressPart;
+  while ((maybeAddressPart = sections.pop())) {
+    if (/^\d+$/.test(maybeAddressPart)) {
+      // If it's just a number, it's probably the building number with a dash
+      // separating it from the street name (we've seen this sometimes when
+      // streets are numberic, e.g. "1600 - 16th Street").
+      newAddress = `${maybeAddressPart} ${newAddress}`;
+    } else if (/^\d+\s+\w+$/.test(maybeAddressPart)) {
+      // A number followed by a single word is probably the first part of a
+      // street name that had a dash in it, e.g. "1600 Berlin - Cross Rd".
+      // (Usually there aren't spaces around the dash, but we've seen some.)
+      newAddress = `${maybeAddressPart}-${newAddress}`;
+    } else {
+      sections.push(maybeAddressPart);
+      break;
+    }
+  }
+  // Sometimes we have just a brand name separated from the rest, even though
+  // the brand name is elsewhere in the name. In these cases, drop it.
+  // e.g. "Safeway 149 - Safeway - 1610 West Lincoln, Yakima, WA, 98902"
+  const withoutRedundantSections = sections
+    .map((section) => {
+      if (!/\s/.test(section)) {
+        for (const otherSection of sections) {
+          if (otherSection !== section && otherSection.includes(section)) {
+            return null;
+          }
+        }
+      }
+      return section;
+    })
+    .filter(Boolean);
+
+  const newName = withoutRedundantSections.join(" - ");
+
+  const partMatch = body.match(addressFieldParts);
+  if (!partMatch) {
     throw new ParseError(`Could not separate name and address in "${body}"`);
   }
-  let name = body.slice(0, splitPosition).trim();
-  const address = body.slice(splitPosition + 3).trim();
+  const { name: oldName, address: oldAddress } = partMatch.groups;
+
+  // const splits = body.split(/\s+-\s+/g);
+  // const splitSingles = splits.filter((x) => !/\s/.test(x));
+  // const splitNumberText = splits.filter((x) => /^\s*\d+\s+\w+$/.test(x));
+  // if (splitSingles.length || splitNumberText.length) {
+  //   console.error("Address:", body);
+  //   console.error(`SINGLES:`, splitSingles);
+  //   console.error(`Number Text:`, splitNumberText);
+  //   console.error(`----------------------------------------`);
+  // }
+
+  // const splitPosition = body.lastIndexOf(" - ");
+  // if (splitPosition === -1) {
+  //   throw new ParseError(`Could not separate name and address in "${body}"`);
+  // }
+  // let name = body.slice(0, splitPosition).trim();
+  // const address = body.slice(splitPosition + 3).trim();
+
+  if (newName !== oldName || newAddress !== oldAddress) {
+    // const nameSize = Math.max(name?.length ?? 0, oldName?.length ?? 0) + 2;
+    const nameSize = 40;
+    console.error(
+      `
+New name/address: ${`"${newName}"`.padEnd(nameSize)} / "${newAddress}"
+             Old: ${`"${oldName}"`.padEnd(nameSize)} / "${oldAddress}"
+        Original: "${text}"
+----------------------------------------
+        `.trim()
+    );
+  }
+
+  let name = newName;
+  const address = newAddress;
 
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
