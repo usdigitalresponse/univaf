@@ -480,27 +480,6 @@ function parseNameAndAddress(text) {
   // The pediatric ones often have text in the name identifying them as such.
   const pediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
 
-  if (/child|ped|age/i.test(name)) {
-    console.error(
-      `
-Is pediatric? ${pediatric}
-        name: "${name}"
- raw address: "${text}"
-----------------------------------------
-    `.trim()
-    );
-  } else if (pediatric) {
-    console.error(
-      `
-!!!!!!!!!!!!!
-Is pediatric? ${pediatric}
-        name: "${name}"
- raw address: "${text}"
-----------------------------------------
-    `.trim()
-    );
-  }
-
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
   const numberMatch = name.match(
