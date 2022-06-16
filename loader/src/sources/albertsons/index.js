@@ -404,7 +404,7 @@ function parseNameAndAddress(text) {
     const match = text.match(pattern);
     if (match) {
       pediatric = true;
-      body = match.groups.body;
+      // body = match.groups.body;
       break;
     }
   }
@@ -479,21 +479,42 @@ function parseNameAndAddress(text) {
   // let name = body.slice(0, splitPosition).trim();
   // const address = body.slice(splitPosition + 3).trim();
 
-  if (newName !== oldName || newAddress !== oldAddress) {
-    // const nameSize = Math.max(name?.length ?? 0, oldName?.length ?? 0) + 2;
-    const nameSize = 40;
-    console.error(
-      `
-New name/address: ${`"${newName}"`.padEnd(nameSize)} / "${newAddress}"
-             Old: ${`"${oldName}"`.padEnd(nameSize)} / "${oldAddress}"
-        Original: "${text}"
-----------------------------------------
-        `.trim()
-    );
-  }
+  //   if (newName !== oldName || newAddress !== oldAddress) {
+  //     // const nameSize = Math.max(name?.length ?? 0, oldName?.length ?? 0) + 2;
+  //     const nameSize = 40;
+  //     console.error(
+  //       `
+  // New name/address: ${`"${newName}"`.padEnd(nameSize)} / "${newAddress}"
+  //              Old: ${`"${oldName}"`.padEnd(nameSize)} / "${oldAddress}"
+  //         Original: "${text}"
+  // ----------------------------------------
+  //         `.trim()
+  //     );
+  //   }
 
   let name = newName;
   const address = newAddress;
+
+  if (/child|ped|age/i.test(name)) {
+    console.error(
+      `
+Is pediatric? ${pediatric}
+        name: "${name}"
+ raw address: "${text}"
+----------------------------------------
+    `.trim()
+    );
+  } else if (pediatric) {
+    console.error(
+      `
+!!!!!!!!!!!!!
+Is pediatric? ${pediatric}
+        name: "${name}"
+ raw address: "${text}"
+----------------------------------------
+    `.trim()
+    );
+  }
 
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
