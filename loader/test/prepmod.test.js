@@ -627,7 +627,7 @@ describe("PrepMod API", () => {
     ]);
   });
 
-  it("identifies Pfizer for 2-4 year olds", async () => {
+  it.skip("identifies Pfizer for 2-4 year olds", async () => {
     const testLocation = createSmartLocation({
       schedules: [
         {

@@ -518,14 +518,28 @@ module.exports = {
     if (/astra\s*zeneca/.test(text)) {
       return VaccineProduct.astraZeneca;
     } else if (text.includes("moderna")) {
-      return VaccineProduct.moderna;
+      if (/ages?\s+18( and up|\s*\+)/i.test(text)) {
+        return VaccineProduct.moderna;
+      } else if (/ped|child|age/i.test(text)) {
+        // FIXME: remove once we start to get a clear idea of what names for
+        // Moderna's "6 months to < 6 years" vaccine look like. This attempts to
+        // match other pediatric things and return nothing to trigger warnings.
+        return undefined;
+      } else {
+        return VaccineProduct.moderna;
+      }
     } else if (/nova\s*vax/.test(text)) {
       return VaccineProduct.novavax;
     } else if (text.includes("pfizer")) {
-      if (/ages?\s+2/i.test(text)) {
-        return VaccineProduct.pfizerAge0_4;
-      } else if (/pediatric|children|ages?\s+5/i.test(text)) {
+      if (/ages?\s+12( and up|\s*\+)/i.test(text)) {
+        return VaccineProduct.pfizer;
+      } else if (/ages?\s+5/i.test(text)) {
         return VaccineProduct.pfizerAge5_11;
+      } else if (/ped|child|age/i.test(text)) {
+        // FIXME: remove once we start to get a clear idea of what names for
+        // Pfizer's "6 months to < 5 years" vaccine look like. This attempts to
+        // match other pediatric things and return nothing to trigger warnings.
+        return undefined;
       } else {
         return VaccineProduct.pfizer;
       }
