@@ -532,9 +532,15 @@ function formatLocation(data, validAt, checkedAt) {
   );
   logMatchDebugInfo(pharmacyMatch, data, matchAddress, storeBrand, storeNumber);
 
+  let timezone;
+  let info_phone;
+  let info_url = storeBrand?.url;
+  let description = data.description;
+  let position = {
+    longitude: parseFloat(data.long),
+    latitude: parseFloat(data.lat),
+  };
   if (pharmacyMatch && pharmacyMatch.score > 0.2) {
-    // TODO: fill in other data from known stores, like info URL, phone,
-    // timezone, geo coordinate.
     storeNumber = pharmacyMatch.data.c_parentEntityID;
     // TODO: consider using c_geomodifier for the name. (We'd still need to
     // create a string with the store number for matching the brand, though.)
@@ -545,6 +551,7 @@ function formatLocation(data, validAt, checkedAt) {
       // data from our scraped, saved list of known pharmacy locations.
       throw new Error(`Failed to match a brand to known location "${name}"`);
     }
+
     address = {
       lines: [
         pharmacyMatch.data.address.line1,
@@ -555,6 +562,20 @@ function formatLocation(data, validAt, checkedAt) {
       state: pharmacyMatch.data.address.region,
       zip: pharmacyMatch.data.address.postalCode,
     };
+    timezone = pharmacyMatch.data.timezone;
+    info_url = pharmacyMatch.data.c_pagesURL || storeBrand.url;
+    info_phone = pharmacyMatch.data.mainPhone?.display;
+    description =
+      description ||
+      pharmacyMatch.data.c_metaInformation?.description ||
+      pharmacyMatch.data.covidVaccineSiteInstructions ||
+      pharmacyMatch.data.description;
+    if (pharmacyMatch.data.geocodedCoordinate) {
+      position = {
+        longitude: parseFloat(pharmacyMatch.data.geocodedCoordinate.long),
+        latitude: parseFloat(pharmacyMatch.data.geocodedCoordinate.lat),
+      };
+    }
   }
 
   // If we couldn't match this to some expected brand, don't attempt to output
@@ -598,21 +619,18 @@ function formatLocation(data, validAt, checkedAt) {
     city: address.city,
     state: address.state,
     postal_code: address.zip,
-    position: {
-      longitude: parseFloat(data.long),
-      latitude: parseFloat(data.lat),
-    },
+    position,
 
-    info_url: storeBrand.url,
+    info_phone,
+    info_url,
     booking_url: data.coach_url || undefined,
     meta: {
       mhealth_address: data.address,
       albertsons_region: data.region,
       [`booking_url_${bookingType}`]: data.coach_url || undefined,
+      timezone,
     },
-
-    // The raw data doesn't have a `description`, but some corrections add it.
-    description: data.description,
+    description,
 
     availability: {
       source: "univaf-albertsons",
@@ -637,7 +655,7 @@ async function checkAvailability(handler, options) {
   }
 
   const stores = await getData(states);
-  stores.forEach((store) => handler(store));
+  stores.forEach((store) => handler(store, { update_location: true }));
   if (config.debug) {
     console.error("Matches to known locations:", knownLocationMatches);
   }
