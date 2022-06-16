@@ -348,7 +348,6 @@ async function getData(states) {
 }
 
 const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
-const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
 
 /**
  * Parse a location name and address from Albertsons (they're both part of
@@ -376,19 +375,19 @@ function parseNameAndAddress(text) {
   // " - " and the actual address always comes last. Our goal here is to
   // separate the address and other bits.
   const sections = cleanText.split(/\s*-\s+/g).map((s) => s.trim());
-  let newAddress = sections.pop();
+  let address = sections.pop();
   let maybeAddressPart;
   while ((maybeAddressPart = sections.pop())) {
     if (/^\d+$/.test(maybeAddressPart)) {
       // If it's just a number, it's probably the building number with a dash
       // separating it from the street name (we've seen this sometimes when
       // streets are numberic, e.g. "1600 - 16th Street").
-      newAddress = `${maybeAddressPart} ${newAddress}`;
+      address = `${maybeAddressPart} ${address}`;
     } else if (/^\d+\s+\w+$/.test(maybeAddressPart)) {
       // A number followed by a single word is probably the first part of a
       // street name that had a dash in it, e.g. "1600 Berlin - Cross Rd".
       // (Usually there aren't spaces around the dash, but we've seen some.)
-      newAddress = `${maybeAddressPart}-${newAddress}`;
+      address = `${maybeAddressPart}-${address}`;
     } else {
       sections.push(maybeAddressPart);
       break;
@@ -410,50 +409,11 @@ function parseNameAndAddress(text) {
     })
     .filter(Boolean);
 
-  const newName = withoutRedundantSections.join(" - ");
-
-  const partMatch = text.match(addressFieldParts);
-  if (!partMatch) {
-    throw new ParseError(`Could not separate name and address in "${text}"`);
-  }
-  const { name: oldName, address: oldAddress } = partMatch.groups;
-
-  // const splits = body.split(/\s+-\s+/g);
-  // const splitSingles = splits.filter((x) => !/\s/.test(x));
-  // const splitNumberText = splits.filter((x) => /^\s*\d+\s+\w+$/.test(x));
-  // if (splitSingles.length || splitNumberText.length) {
-  //   console.error("Address:", body);
-  //   console.error(`SINGLES:`, splitSingles);
-  //   console.error(`Number Text:`, splitNumberText);
-  //   console.error(`----------------------------------------`);
-  // }
-
-  // const splitPosition = body.lastIndexOf(" - ");
-  // if (splitPosition === -1) {
-  //   throw new ParseError(`Could not separate name and address in "${body}"`);
-  // }
-  // let name = body.slice(0, splitPosition).trim();
-  // const address = body.slice(splitPosition + 3).trim();
-
-  //   if (newName !== oldName || newAddress !== oldAddress) {
-  //     // const nameSize = Math.max(name?.length ?? 0, oldName?.length ?? 0) + 2;
-  //     const nameSize = 40;
-  //     console.error(
-  //       `
-  // New name/address: ${`"${newName}"`.padEnd(nameSize)} / "${newAddress}"
-  //              Old: ${`"${oldName}"`.padEnd(nameSize)} / "${oldAddress}"
-  //         Original: "${text}"
-  // ----------------------------------------
-  //         `.trim()
-  //     );
-  //   }
-
-  let name = newName;
-  const address = newAddress;
+  let name = withoutRedundantSections.join(" - ");
 
   // Some locations have separate pediatric and non-pediatric API locations.
   // The pediatric ones often have text in the name identifying them as such.
-  const pediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
+  const isPediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
 
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
@@ -473,7 +433,7 @@ function parseNameAndAddress(text) {
     storeBrand,
     storeNumber,
     address: parseUsAddress(address),
-    isPediatric: !!pediatric,
+    isPediatric,
   };
 }
 
