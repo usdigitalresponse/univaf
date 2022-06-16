@@ -15,7 +15,7 @@
  */
 
 const Sentry = require("@sentry/node");
-const { httpClient, matchVaccineProduct } = require("../../utils");
+const { httpClient } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
