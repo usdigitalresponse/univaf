@@ -518,14 +518,30 @@ module.exports = {
     if (/astra\s*zeneca/.test(text)) {
       return VaccineProduct.astraZeneca;
     } else if (text.includes("moderna")) {
-      return VaccineProduct.moderna;
+      if (/ages?\s+18( and up|\s*\+)/i.test(text)) {
+        return VaccineProduct.moderna;
+      } else if (/ages?\s+6 months/i.test(text)) {
+        return VaccineProduct.modernaAge0_5;
+      } else if (/ped|child|age/i.test(text)) {
+        // Possibly a pediatric variation we haven't seen, so return nothing to
+        // trigger warnings so we can address it.
+        return undefined;
+      } else {
+        return VaccineProduct.moderna;
+      }
     } else if (/nova\s*vax/.test(text)) {
       return VaccineProduct.novavax;
     } else if (text.includes("pfizer")) {
-      if (/ages?\s+2/i.test(text)) {
-        return VaccineProduct.pfizerAge2_4;
-      } else if (/pediatric|children|ages?\s+5/i.test(text)) {
+      if (/ages?\s+12( and up|\s*\+)/i.test(text)) {
+        return VaccineProduct.pfizer;
+      } else if (/ages?\s+5|\b5\s?-\s?11\b/i.test(text)) {
         return VaccineProduct.pfizerAge5_11;
+      } else if (/ages?\s+6 months/i.test(text)) {
+        return VaccineProduct.pfizerAge0_4;
+      } else if (/ped|child|age/i.test(text)) {
+        // Possibly a pediatric variation we haven't seen, so return nothing to
+        // trigger warnings so we can address it.
+        return undefined;
       } else {
         return VaccineProduct.pfizer;
       }

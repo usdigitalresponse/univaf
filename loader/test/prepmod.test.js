@@ -627,7 +627,7 @@ describe("PrepMod API", () => {
     ]);
   });
 
-  it("identifies Pfizer for 2-4 year olds", async () => {
+  it("identifies Pfizer for 0-4 year olds", async () => {
     const testLocation = createSmartLocation({
       schedules: [
         {
@@ -637,7 +637,8 @@ describe("PrepMod API", () => {
               valueCoding: {
                 system: "http://hl7.org/fhir/sid/cvx",
                 code: null,
-                display: "Pfizer Pediatric COVID-19 Vaccine (Ages 2-4)",
+                display:
+                  "Pfizer-BioNTech Pediatric COVID-19 Vaccine (Ages 6 months - 4 years)",
               },
             },
           ],
@@ -651,7 +652,7 @@ describe("PrepMod API", () => {
       testLocation
     );
     expect(result).toHaveProperty("availability.slots.0.products", [
-      VaccineProduct.pfizerAge2_4,
+      VaccineProduct.pfizerAge0_4,
     ]);
   });
 
@@ -680,6 +681,35 @@ describe("PrepMod API", () => {
     );
     expect(result).toHaveProperty("availability.slots.0.products", [
       VaccineProduct.pfizer,
+    ]);
+  });
+
+  it("identifies Moderna for 0-5 year olds", async () => {
+    const testLocation = createSmartLocation({
+      schedules: [
+        {
+          extension: [
+            {
+              url: EXTENSIONS.PRODUCT,
+              valueCoding: {
+                system: "http://hl7.org/fhir/sid/cvx",
+                code: null,
+                display:
+                  "Moderna Pediatric COVID-19 Vaccine (Ages 6 months - 5 years)",
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toHaveProperty("availability.slots.0.products", [
+      VaccineProduct.modernaAge0_5,
     ]);
   });
 

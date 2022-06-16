@@ -38,11 +38,16 @@ const EXTENSIONS = Object.freeze({
 const PRODUCTS_BY_CVX_CODE = {
   210: "astra_zeneca",
   207: "moderna",
+  221: "moderna",
   211: "novavax",
   208: "pfizer",
+  217: "pfizer",
   218: "pfizer_age_5_11",
-  219: "pfizer_age_2_4",
+  219: "pfizer_age_0_4",
   212: "jj",
+  225: "sanofi",
+  227: "moderna_age_6_11",
+  228: "moderna_age_0_5",
 };
 
 // Use symbols to link slots -> schedules -> locations to avoid circular

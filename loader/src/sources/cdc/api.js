@@ -439,9 +439,9 @@ const ndcLookup = {
   [normalizeNdc("59267-1055-02")]: VaccineProduct.pfizerAge5_11, // sale
   [normalizeNdc("59267-1055-04")]: VaccineProduct.pfizerAge5_11, // sale
 
-  [normalizeNdc("59267-0078-01")]: VaccineProduct.pfizerAge2_4, // use
-  [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge2_4, // sale
-  [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge2_4, // sale
+  [normalizeNdc("59267-0078-01")]: VaccineProduct.pfizerAge0_4, // use
+  [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge0_4, // sale
+  [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge0_4, // sale
 
   [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
   [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
@@ -455,6 +455,15 @@ const ndcLookup = {
   [normalizeNdc("80777-0273-15")]: VaccineProduct.moderna, // use
   [normalizeNdc("80777-0273-98")]: VaccineProduct.moderna, // sale
   [normalizeNdc("80777-0273-99")]: VaccineProduct.moderna, // sale
+
+  [normalizeNdc("80777-0277-05")]: VaccineProduct.modernaAge6_11, // use
+  [normalizeNdc("80777-0277-99")]: VaccineProduct.modernaAge6_11, // sale
+
+  [normalizeNdc("80777-0279-05")]: VaccineProduct.modernaAge0_5, // use
+  [normalizeNdc("80777-0279-99")]: VaccineProduct.modernaAge0_5, // sale
+
+  [normalizeNdc("49281-0618-78")]: VaccineProduct.sanofi, // use
+  [normalizeNdc("49281-0618-20")]: VaccineProduct.sanofi, // sale
 };
 
 function normalizeNdc(ndcCode) {

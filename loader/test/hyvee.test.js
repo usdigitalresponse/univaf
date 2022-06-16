@@ -43,7 +43,7 @@ const RawLocation = {
       },
       {
         covidVaccineManufacturerId: "dd8e390a-10c9-466f-85b9-18b8348a813d",
-        manufacturerName: "Pediatric-Pfizer",
+        manufacturerName: "Pediatric-Pfizer (5-11)",
         isSingleDose: false,
         isBooster: false,
         __typename: "CovidVaccineManufacturer",
