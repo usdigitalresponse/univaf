@@ -240,7 +240,7 @@ describe("matchVaccineProduct", () => {
     [v.pfizer, "Pfizer-BioNTech"],
     [v.pfizer, "Pfizer-BioNTech COVID-19 Vaccine (Ages 12+)"],
     [v.pfizer, "Pfizer-BioNTech COVID-19 Vaccine/Booster (Ages 12+)"],
-    [v.pfizer, "Pediatric-Pfizer (5-11)"],
+    [v.pfizerAge5_11, "Pediatric-Pfizer (5-11)"],
     [v.pfizerAge5_11, "Pfizer COVID-19 Vaccine (Ages 5-11)"],
     [v.pfizerAge5_11, "Pfizer-BioNTech Pediatric COVID-19 Vaccine/Booster (Ages 5 - 11)"],
     [v.pfizerAge0_4, "Pfizer-BioNTech Pediatric COVID-19 Vaccine (Ages 6 months - 4 years)"],

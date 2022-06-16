@@ -534,7 +534,7 @@ module.exports = {
     } else if (text.includes("pfizer")) {
       if (/ages?\s+12( and up|\s*\+)/i.test(text)) {
         return VaccineProduct.pfizer;
-      } else if (/ages?\s+5/i.test(text)) {
+      } else if (/ages?\s+5|5-11/i.test(text)) {
         return VaccineProduct.pfizerAge5_11;
       } else if (/ages?\s+6 months/i.test(text)) {
         return VaccineProduct.pfizerAge0_4;
