@@ -232,18 +232,29 @@ describe("matchVaccineProduct", () => {
     [v.janssen, "Janssen COVID-19 Vaccine"],
     [v.janssen, "Janssen (J&J) COVID-19 Vaccine/Booster (Ages 18+)"],
     [v.janssen, "Janssen"],
+
     [v.moderna, "Moderna"],
     [v.moderna, "Moderna COVID-19 Vaccine"],
     [v.moderna, "Moderna Booster COVID-19 Vaccine"],
     [v.moderna, "Moderna COVID-19 Vaccine/Booster (Ages 18+)"],
+
     [v.modernaAge0_5, "Moderna Pediatric COVID-19 Vaccine (Ages 6 months - 5 years)"],
+
     [v.pfizer, "Pfizer-BioNTech"],
     [v.pfizer, "Pfizer-BioNTech COVID-19 Vaccine (Ages 12+)"],
     [v.pfizer, "Pfizer-BioNTech COVID-19 Vaccine/Booster (Ages 12+)"],
+
     [v.pfizerAge5_11, "Pediatric-Pfizer (5-11)"],
     [v.pfizerAge5_11, "Pfizer COVID-19 Vaccine (Ages 5-11)"],
     [v.pfizerAge5_11, "Pfizer-BioNTech Pediatric COVID-19 Vaccine/Booster (Ages 5 - 11)"],
+
     [v.pfizerAge0_4, "Pfizer-BioNTech Pediatric COVID-19 Vaccine (Ages 6 months - 4 years)"],
+
+    // Unpredicted pediatric types for Moderna/Pfizer
+    [undefined, "Moderna Pediatric COVID Ages 3 - 9"],
+    [undefined, "Pfizer Pediatric COVID Ages 3 - 9"],
+
+    // Not COVID Vaccines
     [undefined, "Varicella (chickenpox)"],
     [undefined, "Influenza (Flu)"],
   ])('matches %s: "%s"', (expected, text) => {
