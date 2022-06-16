@@ -349,12 +349,6 @@ async function getData(states) {
 
 const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
 const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
-const pediatricPrefixes = [
-  /^Pfizer Child\s*-\s*(?<body>.*)$/i,
-  /^Ages 5\+ welcome\s*-\s*(?<body>.*)$/i,
-  /^All ages welcome 5\+\s+(?<body>.*)$/i,
-  /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
-];
 
 // Match info about one-off events that is embedded in the `address` field.
 // Listings for one-off events currently look like:
@@ -396,23 +390,10 @@ function parseNameAndAddress(text) {
   // TODO: preserve this info to put in `availability.capacity`?
   text = text.replace(addressEventPattern, " - ");
 
-  // Some locations have separate pediatric and non-pediatric API locations.
-  // The pediatric ones often have prefixes like "Pfizer Child".
-  let pediatric = false;
-  let body = text;
-  for (const pattern of pediatricPrefixes) {
-    const match = text.match(pattern);
-    if (match) {
-      pediatric = true;
-      // body = match.groups.body;
-      break;
-    }
-  }
-
   // The main goal here is to prevent age ranges (e.g. "5 - 11 years old") from
   // getting split up in the next step. But this also puts in an en-dash for
   // better typography. ;)
-  const cleanText = body.replace(/(\d+) - (\d+ year)/g, "$1\u2013$2");
+  const cleanText = text.replace(/(\d+) - (\d+ year)/g, "$1\u2013$2");
 
   // The address field is freeform, and often has a whole mess of metadata
   // stuffed into it (actual address, location name, whether it's pediatric
@@ -456,9 +437,9 @@ function parseNameAndAddress(text) {
 
   const newName = withoutRedundantSections.join(" - ");
 
-  const partMatch = body.match(addressFieldParts);
+  const partMatch = text.match(addressFieldParts);
   if (!partMatch) {
-    throw new ParseError(`Could not separate name and address in "${body}"`);
+    throw new ParseError(`Could not separate name and address in "${text}"`);
   }
   const { name: oldName, address: oldAddress } = partMatch.groups;
 
@@ -494,6 +475,10 @@ function parseNameAndAddress(text) {
 
   let name = newName;
   const address = newAddress;
+
+  // Some locations have separate pediatric and non-pediatric API locations.
+  // The pediatric ones often have text in the name identifying them as such.
+  const pediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
 
   if (/child|ped|age/i.test(name)) {
     console.error(
