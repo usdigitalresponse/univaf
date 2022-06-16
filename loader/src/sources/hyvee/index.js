@@ -16,12 +16,18 @@
 
 const Sentry = require("@sentry/node");
 const { httpClient, matchVaccineProduct } = require("../../utils");
-const { LocationType, Available } = require("../../model");
+const { LocationType, Available, VaccineProduct } = require("../../model");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
 const BOOKING_URL = "https://www.hy-vee.com/my-pharmacy/covid-vaccine-consent";
 const SOURCE_NAME = "univaf-hyvee";
 const PROVIDER_NAME = "hyvee";
+const VACCINE_NAMES = {
+  Moderna: VaccineProduct.moderna,
+  "Pfizer-BioNTech": VaccineProduct.pfizer,
+  "Pediatric-Pfizer (5-11)": VaccineProduct.pfizerAge5_11,
+  Janssen: VaccineProduct.janssen,
+};
 
 function warn(message, context) {
   console.warn(`HyVee: ${message}`, context);
@@ -157,7 +163,7 @@ function formatProducts(vaccineData) {
   const products = vaccineData.availableCovidVaccineManufacturers
     .filter((product) => product.manufacturerName !== "Flu Vaccine")
     .map((product) => {
-      const result = matchVaccineProduct(product.manufacturerName);
+      const result = VACCINE_NAMES[product.manufacturerName];
       if (!result) {
         warn(`Unknown product type "${product.manufacturerName}"`);
       }
