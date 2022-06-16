@@ -43,7 +43,7 @@ const PRODUCTS_BY_CVX_CODE = {
   208: "pfizer",
   217: "pfizer",
   218: "pfizer_age_5_11",
-  219: "pfizer_age_2_4",
+  219: "pfizer_age_0_4",
   212: "jj",
   225: "sanofi",
   227: "moderna_age_6_11",

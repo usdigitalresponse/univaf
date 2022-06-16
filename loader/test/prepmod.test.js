@@ -651,7 +651,7 @@ describe("PrepMod API", () => {
       testLocation
     );
     expect(result).toHaveProperty("availability.slots.0.products", [
-      VaccineProduct.pfizerAge2_4,
+      VaccineProduct.pfizerAge0_4,
     ]);
   });
 

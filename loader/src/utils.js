@@ -523,7 +523,7 @@ module.exports = {
       return VaccineProduct.novavax;
     } else if (text.includes("pfizer")) {
       if (/ages?\s+2/i.test(text)) {
-        return VaccineProduct.pfizerAge2_4;
+        return VaccineProduct.pfizerAge0_4;
       } else if (/pediatric|children|ages?\s+5/i.test(text)) {
         return VaccineProduct.pfizerAge5_11;
       } else {

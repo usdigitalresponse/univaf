@@ -54,7 +54,7 @@ const CVX_CODES: { [index: string]: number } = {
   novavax: 211,
   pfizer: 208,
   pfizer_age_5_11: 218,
-  pfizer_age_2_4: 219,
+  pfizer_age_0_4: 219,
   sanofi: 225,
 };
 
@@ -67,7 +67,7 @@ const PRODUCT_NAMES: { [index: string]: string } = {
   novavax: "NovaVax",
   pfizer: "Pfizer",
   pfizer_age_5_11: "Pfizer Pediatric (Ages 5-11)",
-  pfizer_age_2_4: "Pfizer Pediatric (Ages 0-4)",
+  pfizer_age_0_4: "Pfizer Pediatric (Ages 0-4)",
   sanofi: "Sanofi Pasteur",
 };
 

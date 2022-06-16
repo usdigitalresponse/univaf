@@ -439,9 +439,9 @@ const ndcLookup = {
   [normalizeNdc("59267-1055-02")]: VaccineProduct.pfizerAge5_11, // sale
   [normalizeNdc("59267-1055-04")]: VaccineProduct.pfizerAge5_11, // sale
 
-  [normalizeNdc("59267-0078-01")]: VaccineProduct.pfizerAge2_4, // use
-  [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge2_4, // sale
-  [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge2_4, // sale
+  [normalizeNdc("59267-0078-01")]: VaccineProduct.pfizerAge0_4, // use
+  [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge0_4, // sale
+  [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge0_4, // sale
 
   [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
   [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
