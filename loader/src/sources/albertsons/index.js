@@ -410,6 +410,9 @@ function parseNameAndAddress(text) {
     .filter(Boolean);
 
   let name = withoutRedundantSections.join(" - ");
+  if (!name) {
+    throw new ParseError(`Could not separate name and address in "${text}"`);
+  }
 
   // Some locations have separate pediatric and non-pediatric API locations.
   // The pediatric ones often have text in the name identifying them as such.

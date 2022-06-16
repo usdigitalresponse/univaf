@@ -79,10 +79,12 @@ describe("Albertsons", () => {
         state: "AK",
         postal_code: "99701",
         position: {
-          longitude: -147.7024008,
-          latitude: 64.8515679,
+          longitude: -147.7005749,
+          latitude: 64.8517344,
         },
-        info_url: "https://www.safeway.com/pharmacy/covid-19.html",
+        info_phone: "(907) 374-4160",
+        info_url:
+          "https://local.pharmacy.safeway.com/ak/fairbanks/30-college-rd.html",
         booking_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
         availability: {
           source: "univaf-albertsons",
@@ -97,7 +99,10 @@ describe("Albertsons", () => {
           booking_url_adult:
             "https://kordinator.mhealthcoach.net/vcl/1600116808972",
           mhealth_address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
+          timezone: "America/Anchorage",
         },
+        description:
+          "Looking for a pharmacy near you in Fairbanks, AK? Our on-site pharmacy can administer Covid vaccinations, Pfizer, Moderna, and J&J Covid second booster shot and flu shots at no additional cost. Fill, refill or transfer prescriptions with us. We welcome scheduled or walk-in immunizations. Back to school vaccine immunizations and covid-19 PCR NAAT walk in test now available. We are located at 30 College Rd.",
       },
       {
         name: "Carrs Pharmacy #1813",
@@ -114,10 +119,12 @@ describe("Albertsons", () => {
         state: "AK",
         postal_code: "99515",
         position: {
-          longitude: -149.8559918,
-          latitude: 61.1096597,
+          longitude: -149.854128,
+          latitude: 61.1096739,
         },
-        info_url: "https://www.albertsons.com/pharmacy/covid-19.html",
+        info_phone: "(907) 339-1360",
+        info_url:
+          "https://local.pharmacy.carrsqc.com/ak/anchorage/1501-huffman-rd.html",
         booking_url: "https://kordinator.mhealthcoach.net/vcl/1600114849843",
         availability: {
           source: "univaf-albertsons",
@@ -133,7 +140,10 @@ describe("Albertsons", () => {
             "https://kordinator.mhealthcoach.net/vcl/1600114849843",
           mhealth_address:
             "Carrs 1813 - 1501 Huffman Road, Anchorage, AK, 99515",
+          timezone: "America/Anchorage",
         },
+        description:
+          "Looking for a pharmacy near you in Anchorage, AK? Our on-site pharmacy can administer Covid vaccinations, Pfizer, Moderna, and J&J Covid second booster shot and flu shots at no additional cost. Fill, refill or transfer prescriptions with us. We welcome scheduled or walk-in immunizations. Back to school vaccine immunizations and covid-19 PCR NAAT walk in test now available. We are located at 1501 Huffman Rd.",
       },
     ]);
   });
@@ -304,10 +314,12 @@ describe("Albertsons", () => {
         state: "VA",
         postal_code: "20191",
         position: {
-          longitude: -77.332298,
-          latitude: 38.939784,
+          longitude: -77.3301191,
+          latitude: 38.939619,
         },
-        info_url: "https://www.safeway.com/pharmacy/covid-19.html",
+        info_phone: "(703) 620-2444",
+        info_url:
+          "https://local.pharmacy.safeway.com/va/reston/11120-s-lakes-dr.html",
         booking_url: "https://www.mhealthappointments.com/covidappt",
         availability: {
           source: "univaf-albertsons",
@@ -325,7 +337,10 @@ describe("Albertsons", () => {
             "https://kordinator.mhealthcoach.net/vcl/1635993536219",
           mhealth_address:
             "Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
+          timezone: "America/New_York",
         },
+        description:
+          "Looking for a pharmacy near you in Reston, VA? Our on-site pharmacy can administer Covid vaccinations, Pfizer, Moderna, and J&J Covid second booster shot and flu shots at no additional cost. Fill, refill or transfer prescriptions with us. We welcome scheduled or walk-in immunizations. Back to school vaccine immunizations and covid-19 PCR NAAT walk in test now available. We are located at 11120 S Lakes Dr.",
       },
     ]);
   });
@@ -372,6 +387,7 @@ describe("Albertsons", () => {
         "https://kordinator.mhealthcoach.net/vcl/1610138028763",
       mhealth_address:
         "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+      timezone: "America/Los_Angeles",
     });
   });
 
@@ -416,6 +432,7 @@ describe("Albertsons", () => {
         "https://kordinator.mhealthcoach.net/vcl/1610138028763",
       mhealth_address:
         "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+      timezone: "America/Los_Angeles",
     });
   });
 
