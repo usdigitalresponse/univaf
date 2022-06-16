@@ -520,10 +520,11 @@ module.exports = {
     } else if (text.includes("moderna")) {
       if (/ages?\s+18( and up|\s*\+)/i.test(text)) {
         return VaccineProduct.moderna;
+      } else if (/ages?\s+6 months/i.test(text)) {
+        return VaccineProduct.modernaAge0_5;
       } else if (/ped|child|age/i.test(text)) {
-        // FIXME: remove once we start to get a clear idea of what names for
-        // Moderna's "6 months to < 6 years" vaccine look like. This attempts to
-        // match other pediatric things and return nothing to trigger warnings.
+        // Possibly a pediatric variation we haven't seen, so return nothing to
+        // trigger warnings so we can address it.
         return undefined;
       } else {
         return VaccineProduct.moderna;
@@ -535,10 +536,11 @@ module.exports = {
         return VaccineProduct.pfizer;
       } else if (/ages?\s+5/i.test(text)) {
         return VaccineProduct.pfizerAge5_11;
+      } else if (/ages?\s+6 months/i.test(text)) {
+        return VaccineProduct.pfizerAge0_4;
       } else if (/ped|child|age/i.test(text)) {
-        // FIXME: remove once we start to get a clear idea of what names for
-        // Pfizer's "6 months to < 5 years" vaccine look like. This attempts to
-        // match other pediatric things and return nothing to trigger warnings.
+        // Possibly a pediatric variation we haven't seen, so return nothing to
+        // trigger warnings so we can address it.
         return undefined;
       } else {
         return VaccineProduct.pfizer;
