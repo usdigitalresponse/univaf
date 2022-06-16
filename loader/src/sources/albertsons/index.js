@@ -350,26 +350,6 @@ async function getData(states) {
 const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
 const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
 
-// Match info about one-off events that is embedded in the `address` field.
-// Listings for one-off events currently look like:
-//
-//   Osco Pharmacy Pediatric Booster Clinic - Aurora June 9  - 1157 Eola Road, Aurora, IL, 60502
-//
-// Where the event info is in the form `- <city> <month> <day> -`.
-const raw = String.raw;
-const addressEventPattern = new RegExp(
-  [
-    raw`\s*-\s*`,
-    raw`(?<city>[^-]+)`,
-    raw`\s`,
-    raw`(?<month>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*)`,
-    raw`\s+`,
-    raw`(?<day>\d{1,2})`,
-    raw`\s*-\s*`,
-  ].join(""),
-  "i"
-);
-
 /**
  * Parse a location name and address from Albertsons (they're both part of
  * the same string).
@@ -384,11 +364,6 @@ function parseNameAndAddress(text) {
   if (urlPattern.test(text)) {
     throw new ParseError(`Found a URL in the name "${text}"`);
   }
-
-  // Some locations represent one-off events on a particular day, and the date
-  // is in the address.
-  // TODO: preserve this info to put in `availability.capacity`?
-  text = text.replace(addressEventPattern, " - ");
 
   // The main goal here is to prevent age ranges (e.g. "5 - 11 years old") from
   // getting split up in the next step. But this also puts in an en-dash for
