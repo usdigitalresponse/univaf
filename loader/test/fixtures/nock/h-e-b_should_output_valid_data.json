@@ -2,7 +2,7 @@
     {
         "scope": "https://heb-ecom-covid-vaccine.hebdigital-prd.com:443",
         "method": "GET",
-        "path": "/vaccine_locations.json?v=417656911761.3762",
+        "path": "/vaccine_locations.json?v=869017758056.0217",
         "body": "",
         "status": 200,
         "response": {
@@ -16,25 +16,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 68,
-                            "openAppointmentSlots": 68,
+                            "openTimeslots": 59,
+                            "openAppointmentSlots": 59,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 103,
-                            "openAppointmentSlots": 103,
+                            "openTimeslots": 93,
+                            "openAppointmentSlots": 93,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 88,
-                            "openAppointmentSlots": 88,
+                            "openTimeslots": 79,
+                            "openAppointmentSlots": 79,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 259,
+                    "openTimeslots": 231,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 259,
+                    "openAppointmentSlots": 231,
                     "name": "Round Rock H-E-B plus!",
                     "longitude": -97.65978,
                     "latitude": 30.5177,
@@ -50,25 +50,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 100,
-                            "openAppointmentSlots": 100,
+                            "openTimeslots": 95,
+                            "openAppointmentSlots": 95,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 58,
-                            "openAppointmentSlots": 58,
+                            "openTimeslots": 52,
+                            "openAppointmentSlots": 52,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 50,
-                            "openAppointmentSlots": 50,
+                            "openTimeslots": 45,
+                            "openAppointmentSlots": 45,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 208,
+                    "openTimeslots": 192,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 208,
+                    "openAppointmentSlots": 192,
                     "name": "Taylor H-E-B",
                     "longitude": -97.4167,
                     "latitude": 30.6007,
@@ -102,20 +102,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 124,
-                            "openAppointmentSlots": 124,
+                            "openTimeslots": 110,
+                            "openAppointmentSlots": 110,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 56,
-                            "openAppointmentSlots": 56,
+                            "openTimeslots": 50,
+                            "openAppointmentSlots": 50,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 180,
+                    "openTimeslots": 160,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 180,
+                    "openAppointmentSlots": 160,
                     "name": "Wells Branch H-E-B",
                     "longitude": -97.66419,
                     "latitude": 30.44263,
@@ -131,20 +131,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 23,
-                            "openAppointmentSlots": 23,
+                            "openTimeslots": 16,
+                            "openAppointmentSlots": 16,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 19,
-                            "openAppointmentSlots": 19,
+                            "openTimeslots": 11,
+                            "openAppointmentSlots": 11,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 42,
+                    "openTimeslots": 27,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 42,
+                    "openAppointmentSlots": 27,
                     "name": "Louis Henna Blvd H-E-B",
                     "longitude": -97.65938,
                     "latitude": 30.48179,
@@ -160,20 +160,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 115,
-                            "openAppointmentSlots": 115,
+                            "openTimeslots": 104,
+                            "openAppointmentSlots": 104,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 87,
-                            "openAppointmentSlots": 87,
+                            "openTimeslots": 75,
+                            "openAppointmentSlots": 75,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 202,
+                    "openTimeslots": 179,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 202,
+                    "openAppointmentSlots": 179,
                     "name": "H-E-B at Ronald Reagan Blvd",
                     "longitude": -97.82446,
                     "latitude": 30.63307,
@@ -194,8 +194,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 105,
-                            "openAppointmentSlots": 105,
+                            "openTimeslots": 104,
+                            "openAppointmentSlots": 104,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -204,10 +204,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 315,
+                    "openTimeslots": 314,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 315,
+                    "openAppointmentSlots": 314,
                     "name": "El Dorado H-E-B",
                     "longitude": -95.14874,
                     "latitude": 29.55117,
@@ -322,13 +322,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 12,
-                            "openAppointmentSlots": 12,
+                            "openTimeslots": 11,
+                            "openAppointmentSlots": 11,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 17,
+                            "openAppointmentSlots": 17,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -337,10 +337,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 34,
+                    "openTimeslots": 32,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 34,
+                    "openAppointmentSlots": 32,
                     "name": "Guadalupe and Stone H-E-B",
                     "longitude": -99.48344,
                     "latitude": 27.50656,
@@ -410,20 +410,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 171,
-                            "openAppointmentSlots": 171,
+                            "openTimeslots": 168,
+                            "openAppointmentSlots": 168,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 172,
-                            "openAppointmentSlots": 172,
+                            "openTimeslots": 148,
+                            "openAppointmentSlots": 148,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 343,
+                    "openTimeslots": 316,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 343,
+                    "openAppointmentSlots": 316,
                     "name": "Parmer and Mopac H-E-B",
                     "longitude": -97.70326,
                     "latitude": 30.41883,
@@ -439,25 +439,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 95,
-                            "openAppointmentSlots": 95,
+                            "openTimeslots": 88,
+                            "openAppointmentSlots": 88,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 89,
-                            "openAppointmentSlots": 89,
+                            "openTimeslots": 78,
+                            "openAppointmentSlots": 78,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 90,
-                            "openAppointmentSlots": 90,
+                            "openTimeslots": 80,
+                            "openAppointmentSlots": 80,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 274,
+                    "openTimeslots": 246,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 274,
+                    "openAppointmentSlots": 246,
                     "name": "Pleasanton H-E-B",
                     "longitude": -98.48567,
                     "latitude": 28.95696,
@@ -473,15 +473,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 159,
-                            "openAppointmentSlots": 159,
+                            "openTimeslots": 146,
+                            "openAppointmentSlots": 146,
                             "manufacturer": "Moderna"
                         }
                     ],
-                    "openTimeslots": 159,
+                    "openTimeslots": 146,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 159,
+                    "openAppointmentSlots": 146,
                     "name": "Beeville H-E-B",
                     "longitude": -97.74667,
                     "latitude": 28.40071,
@@ -490,32 +490,16 @@
                 },
                 {
                     "zip": "78404-2505",
-                    "url": "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000Guc0QAC",
+                    "url": null,
                     "type": "store",
                     "street": "3133 S. ALAMEDA",
                     "storeNumber": 413,
                     "state": "TX",
-                    "slotDetails": [
-                        {
-                            "openTimeslots": 8,
-                            "openAppointmentSlots": 8,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 2,
-                            "openAppointmentSlots": 2,
-                            "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 8,
-                            "openAppointmentSlots": 8,
-                            "manufacturer": "Pediatric_Pfizer"
-                        }
-                    ],
-                    "openTimeslots": 18,
+                    "slotDetails": [],
+                    "openTimeslots": 0,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 18,
+                    "openAppointmentSlots": 0,
                     "name": "Alameda / Texan Trail (Medical District)",
                     "longitude": -97.3912,
                     "latitude": 27.75745,
@@ -531,13 +515,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 195,
-                            "openAppointmentSlots": 195,
+                            "openTimeslots": 185,
+                            "openAppointmentSlots": 185,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 129,
-                            "openAppointmentSlots": 129,
+                            "openTimeslots": 124,
+                            "openAppointmentSlots": 124,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -546,10 +530,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 453,
+                    "openTimeslots": 438,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 453,
+                    "openAppointmentSlots": 438,
                     "name": "Brenham H-E-B",
                     "longitude": -96.39591,
                     "latitude": 30.14381,
@@ -723,13 +707,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 167,
-                            "openAppointmentSlots": 167,
+                            "openTimeslots": 163,
+                            "openAppointmentSlots": 163,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 166,
-                            "openAppointmentSlots": 166,
+                            "openTimeslots": 164,
+                            "openAppointmentSlots": 164,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -738,10 +722,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 391,
+                    "openTimeslots": 385,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 391,
+                    "openAppointmentSlots": 385,
                     "name": "Hancock Center H-E-B",
                     "longitude": -97.71973,
                     "latitude": 30.30057,
@@ -789,32 +773,16 @@
                 },
                 {
                     "zip": "78221-1642",
-                    "url": "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000GucBQAS",
+                    "url": null,
                     "type": "store",
                     "street": "735 SW MILITARY",
                     "storeNumber": 427,
                     "state": "TX",
-                    "slotDetails": [
-                        {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 4,
-                            "openAppointmentSlots": 4,
-                            "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 8,
-                            "openAppointmentSlots": 8,
-                            "manufacturer": "Pediatric_Pfizer"
-                        }
-                    ],
-                    "openTimeslots": 28,
+                    "slotDetails": [],
+                    "openTimeslots": 0,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 28,
+                    "openAppointmentSlots": 0,
                     "name": "Military and Pleasanton H-E-B",
                     "longitude": -98.50277,
                     "latitude": 29.35666,
@@ -830,20 +798,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 145,
-                            "openAppointmentSlots": 145,
+                            "openTimeslots": 133,
+                            "openAppointmentSlots": 133,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 148,
-                            "openAppointmentSlots": 148,
+                            "openTimeslots": 136,
+                            "openAppointmentSlots": 136,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 293,
+                    "openTimeslots": 269,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 293,
+                    "openAppointmentSlots": 269,
                     "name": "Blanco and West Ave H-E-B",
                     "longitude": -98.51025,
                     "latitude": 29.54526,
@@ -859,8 +827,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 181,
-                            "openAppointmentSlots": 181,
+                            "openTimeslots": 182,
+                            "openAppointmentSlots": 182,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -874,10 +842,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 545,
+                    "openTimeslots": 546,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 545,
+                    "openAppointmentSlots": 546,
                     "name": "Pflugerville H-E-B",
                     "longitude": -97.6133,
                     "latitude": 30.4373,
@@ -981,25 +949,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 201,
+                            "openAppointmentSlots": 201,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 20,
-                            "openAppointmentSlots": 20,
+                            "openTimeslots": 199,
+                            "openAppointmentSlots": 199,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 201,
+                            "openAppointmentSlots": 201,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 62,
+                    "openTimeslots": 601,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 62,
+                    "openAppointmentSlots": 601,
                     "name": "Valley Hi H-E-B",
                     "longitude": -98.64021,
                     "latitude": 29.38099,
@@ -1038,8 +1006,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 99,
-                            "openAppointmentSlots": 99,
+                            "openTimeslots": 91,
+                            "openAppointmentSlots": 91,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -1048,10 +1016,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 228,
+                    "openTimeslots": 220,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 228,
+                    "openAppointmentSlots": 220,
                     "name": "Creekside Park H-E-B",
                     "longitude": -95.55072,
                     "latitude": 30.14362,
@@ -1067,20 +1035,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 100,
-                            "openAppointmentSlots": 100,
+                            "openTimeslots": 98,
+                            "openAppointmentSlots": 98,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 82,
-                            "openAppointmentSlots": 82,
+                            "openTimeslots": 78,
+                            "openAppointmentSlots": 78,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 182,
+                    "openTimeslots": 176,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 182,
+                    "openAppointmentSlots": 176,
                     "name": "San Felipe H-E-B",
                     "longitude": -95.48512,
                     "latitude": 29.74797,
@@ -1096,20 +1064,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 53,
-                            "openAppointmentSlots": 53,
+                            "openTimeslots": 47,
+                            "openAppointmentSlots": 47,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 87,
-                            "openAppointmentSlots": 87,
+                            "openTimeslots": 78,
+                            "openAppointmentSlots": 78,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 140,
+                    "openTimeslots": 125,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 140,
+                    "openAppointmentSlots": 125,
                     "name": "Alice H-E-B",
                     "longitude": -98.06425,
                     "latitude": 27.75141,
@@ -1125,13 +1093,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 198,
-                            "openAppointmentSlots": 198,
+                            "openTimeslots": 185,
+                            "openAppointmentSlots": 185,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 208,
-                            "openAppointmentSlots": 208,
+                            "openTimeslots": 196,
+                            "openAppointmentSlots": 196,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -1140,10 +1108,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 456,
+                    "openTimeslots": 431,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 456,
+                    "openAppointmentSlots": 431,
                     "name": "Bandera and Guilbeau H-E-B",
                     "longitude": -98.64364,
                     "latitude": 29.51985,
@@ -1164,8 +1132,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 34,
-                            "openAppointmentSlots": 34,
+                            "openTimeslots": 36,
+                            "openAppointmentSlots": 36,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -1174,10 +1142,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 68,
+                    "openTimeslots": 70,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 68,
+                    "openAppointmentSlots": 70,
                     "name": "Oak Hill H-E-B",
                     "longitude": -97.88755,
                     "latitude": 30.22696,
@@ -1193,15 +1161,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 622,
-                            "openAppointmentSlots": 622,
+                            "openTimeslots": 626,
+                            "openAppointmentSlots": 626,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 622,
+                    "openTimeslots": 626,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 622,
+                    "openAppointmentSlots": 626,
                     "name": "Burnet H-E-B",
                     "longitude": -98.22452,
                     "latitude": 30.7588,
@@ -1287,20 +1255,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 130,
-                            "openAppointmentSlots": 130,
+                            "openTimeslots": 120,
+                            "openAppointmentSlots": 120,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 130,
-                            "openAppointmentSlots": 130,
+                            "openTimeslots": 120,
+                            "openAppointmentSlots": 120,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 260,
+                    "openTimeslots": 240,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 260,
+                    "openAppointmentSlots": 240,
                     "name": "Lockhart H-E-B",
                     "longitude": -97.66994,
                     "latitude": 29.88213,
@@ -1388,25 +1356,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
+                            "openTimeslots": 7,
+                            "openAppointmentSlots": 7,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 9,
+                            "openAppointmentSlots": 9,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 19,
-                            "openAppointmentSlots": 19,
+                            "openTimeslots": 9,
+                            "openAppointmentSlots": 9,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 53,
+                    "openTimeslots": 25,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 53,
+                    "openAppointmentSlots": 25,
                     "name": "Fry Rd and I10 H-E-B",
                     "longitude": -95.7189,
                     "latitude": 29.7898,
@@ -1427,25 +1395,25 @@
                             "manufacturer": "Janssen"
                         },
                         {
-                            "openTimeslots": 249,
-                            "openAppointmentSlots": 249,
+                            "openTimeslots": 241,
+                            "openAppointmentSlots": 241,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 649,
-                            "openAppointmentSlots": 649,
+                            "openTimeslots": 626,
+                            "openAppointmentSlots": 626,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 188,
-                            "openAppointmentSlots": 188,
+                            "openTimeslots": 173,
+                            "openAppointmentSlots": 173,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 1147,
+                    "openTimeslots": 1101,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 1147,
+                    "openAppointmentSlots": 1101,
                     "name": "Culebra and 1604 H-E-B",
                     "longitude": -98.70445,
                     "latitude": 29.49292,
@@ -1461,8 +1429,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 37,
-                            "openAppointmentSlots": 37,
+                            "openTimeslots": 33,
+                            "openAppointmentSlots": 33,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -1476,15 +1444,15 @@
                             "manufacturer": "Pediatric_Pfizer"
                         },
                         {
-                            "openTimeslots": 36,
-                            "openAppointmentSlots": 36,
+                            "openTimeslots": 18,
+                            "openAppointmentSlots": 18,
                             "manufacturer": "Other"
                         }
                     ],
-                    "openTimeslots": 107,
-                    "openFluTimeslots": 36,
-                    "openFluAppointmentSlots": 36,
-                    "openAppointmentSlots": 107,
+                    "openTimeslots": 103,
+                    "openFluTimeslots": 18,
+                    "openFluAppointmentSlots": 18,
+                    "openAppointmentSlots": 103,
                     "name": "Beaumont 6 H-E-B",
                     "longitude": -94.12834,
                     "latitude": 30.06853,
@@ -1547,25 +1515,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 274,
-                            "openAppointmentSlots": 274,
+                            "openTimeslots": 245,
+                            "openAppointmentSlots": 245,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 269,
-                            "openAppointmentSlots": 269,
+                            "openTimeslots": 235,
+                            "openAppointmentSlots": 235,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 152,
-                            "openAppointmentSlots": 152,
+                            "openTimeslots": 131,
+                            "openAppointmentSlots": 131,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 695,
+                    "openTimeslots": 611,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 695,
+                    "openAppointmentSlots": 611,
                     "name": "Hutto 130 and Gattis School H-E-B plus!",
                     "longitude": -97.58284,
                     "latitude": 30.50112,
@@ -1581,8 +1549,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 206,
-                            "openAppointmentSlots": 206,
+                            "openTimeslots": 203,
+                            "openAppointmentSlots": 203,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -1596,10 +1564,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 449,
+                    "openTimeslots": 446,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 449,
+                    "openAppointmentSlots": 446,
                     "name": "League City H-E-B",
                     "longitude": -95.04131,
                     "latitude": 29.50588,
@@ -1625,20 +1593,20 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 69,
-                            "openAppointmentSlots": 69,
+                            "openTimeslots": 58,
+                            "openAppointmentSlots": 58,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 26,
-                            "openAppointmentSlots": 26,
+                            "openTimeslots": 16,
+                            "openAppointmentSlots": 16,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 165,
+                    "openTimeslots": 144,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 165,
+                    "openAppointmentSlots": 144,
                     "name": "Odessa H-E-B University Blvd",
                     "longitude": -102.41008,
                     "latitude": 31.86213,
@@ -1672,25 +1640,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 37,
-                            "openAppointmentSlots": 37,
+                            "openTimeslots": 19,
+                            "openAppointmentSlots": 19,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 19,
-                            "openAppointmentSlots": 19,
+                            "openTimeslots": 12,
+                            "openAppointmentSlots": 12,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 20,
-                            "openAppointmentSlots": 20,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 76,
+                    "openTimeslots": 41,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 76,
+                    "openAppointmentSlots": 41,
                     "name": "Clear Lake Marketplace H-E-B",
                     "longitude": -95.12473,
                     "latitude": 29.60563,
@@ -1789,20 +1757,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 30,
-                            "openAppointmentSlots": 30,
+                            "openTimeslots": 22,
+                            "openAppointmentSlots": 22,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 23,
-                            "openAppointmentSlots": 23,
+                            "openTimeslots": 16,
+                            "openAppointmentSlots": 16,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 53,
+                    "openTimeslots": 38,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 53,
+                    "openAppointmentSlots": 38,
                     "name": "Tomball Pkwy and Graham H-E-B",
                     "longitude": -95.63218,
                     "latitude": 30.08868,
@@ -1818,15 +1786,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 27,
-                            "openAppointmentSlots": 27,
+                            "openTimeslots": 28,
+                            "openAppointmentSlots": 28,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 27,
+                    "openTimeslots": 28,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 27,
+                    "openAppointmentSlots": 28,
                     "name": "Louetta and Stuebner H-E-B",
                     "longitude": -95.5243,
                     "latitude": 30.0209,
@@ -1904,8 +1872,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 296,
-                            "openAppointmentSlots": 296,
+                            "openTimeslots": 294,
+                            "openAppointmentSlots": 294,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -1914,10 +1882,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 517,
+                    "openTimeslots": 515,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 517,
+                    "openAppointmentSlots": 515,
                     "name": "Parmer and Whitestone H-E-B",
                     "longitude": -97.78545,
                     "latitude": 30.5328,
@@ -1933,25 +1901,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 25,
-                            "openAppointmentSlots": 25,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 73,
+                    "openTimeslots": 30,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 73,
+                    "openAppointmentSlots": 30,
                     "name": "Stephenville H-E-B",
                     "longitude": -98.22569,
                     "latitude": 32.20975,
@@ -1967,25 +1935,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 101,
-                            "openAppointmentSlots": 101,
+                            "openTimeslots": 86,
+                            "openAppointmentSlots": 86,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 54,
-                            "openAppointmentSlots": 54,
+                            "openTimeslots": 41,
+                            "openAppointmentSlots": 41,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 34,
-                            "openAppointmentSlots": 34,
+                            "openTimeslots": 26,
+                            "openAppointmentSlots": 26,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 189,
+                    "openTimeslots": 153,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 189,
+                    "openAppointmentSlots": 153,
                     "name": "Slaughter and Manchaca H-E-B",
                     "longitude": -97.82509,
                     "latitude": 30.17524,
@@ -2035,13 +2003,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 12,
+                            "openAppointmentSlots": 12,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 608,
-                            "openAppointmentSlots": 608,
+                            "openTimeslots": 590,
+                            "openAppointmentSlots": 590,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -2050,10 +2018,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 681,
+                    "openTimeslots": 651,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 681,
+                    "openAppointmentSlots": 651,
                     "name": "Nacogdoches and O'Connor H-E-B",
                     "longitude": -98.3856,
                     "latitude": 29.56937,
@@ -2128,15 +2096,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 51,
-                            "openAppointmentSlots": 51,
+                            "openTimeslots": 46,
+                            "openAppointmentSlots": 46,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 101,
+                    "openTimeslots": 96,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 101,
+                    "openAppointmentSlots": 96,
                     "name": "Atascocita H-E-B",
                     "longitude": -95.1642,
                     "latitude": 29.9983,
@@ -2152,25 +2120,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 36,
-                            "openAppointmentSlots": 36,
+                            "openTimeslots": 24,
+                            "openAppointmentSlots": 24,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 84,
-                            "openAppointmentSlots": 84,
+                            "openTimeslots": 72,
+                            "openAppointmentSlots": 72,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 55,
-                            "openAppointmentSlots": 55,
+                            "openTimeslots": 48,
+                            "openAppointmentSlots": 48,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 175,
+                    "openTimeslots": 144,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 175,
+                    "openAppointmentSlots": 144,
                     "name": "Gulfgate H-E-B",
                     "longitude": -95.2968,
                     "latitude": 29.6994,
@@ -2179,27 +2147,16 @@
                 },
                 {
                     "zip": "77072-5000",
-                    "url": "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000GuckQAC",
+                    "url": null,
                     "type": "store",
                     "street": "10100 BEECHNUT",
                     "storeNumber": 541,
                     "state": "TX",
-                    "slotDetails": [
-                        {
-                            "openTimeslots": 21,
-                            "openAppointmentSlots": 21,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
-                            "manufacturer": "Pediatric_Pfizer"
-                        }
-                    ],
-                    "openTimeslots": 31,
+                    "slotDetails": [],
+                    "openTimeslots": 0,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 31,
+                    "openAppointmentSlots": 0,
                     "name": "Beechnut H-E-B",
                     "longitude": -95.5604,
                     "latitude": 29.6896,
@@ -2220,15 +2177,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 76,
-                            "openAppointmentSlots": 76,
+                            "openTimeslots": 63,
+                            "openAppointmentSlots": 63,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 150,
+                    "openTimeslots": 137,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 150,
+                    "openAppointmentSlots": 137,
                     "name": "Texas Avenue H-E-B",
                     "longitude": -96.3165,
                     "latitude": 30.6131,
@@ -2244,20 +2201,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
-                            "manufacturer": "Pfizer"
-                        },
-                        {
                             "openTimeslots": 11,
                             "openAppointmentSlots": 11,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 27,
+                    "openTimeslots": 11,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 27,
+                    "openAppointmentSlots": 11,
                     "name": "Grant and Spring Cypress H-E-B",
                     "longitude": -95.63698,
                     "latitude": 30.00365,
@@ -2273,25 +2225,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 429,
-                            "openAppointmentSlots": 429,
+                            "openTimeslots": 409,
+                            "openAppointmentSlots": 409,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 430,
-                            "openAppointmentSlots": 430,
+                            "openTimeslots": 409,
+                            "openAppointmentSlots": 409,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 430,
-                            "openAppointmentSlots": 430,
+                            "openTimeslots": 409,
+                            "openAppointmentSlots": 409,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 1289,
+                    "openTimeslots": 1227,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 1289,
+                    "openAppointmentSlots": 1227,
                     "name": "Nogalitos H-E-B",
                     "longitude": -98.51485,
                     "latitude": 29.39799,
@@ -2451,13 +2403,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 11,
-                            "openAppointmentSlots": 11,
+                            "openTimeslots": 7,
+                            "openAppointmentSlots": 7,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 13,
-                            "openAppointmentSlots": 13,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -2466,10 +2418,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 36,
+                    "openTimeslots": 29,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 36,
+                    "openAppointmentSlots": 29,
                     "name": "Magnolia Market H-E-B",
                     "longitude": -95.5837,
                     "latitude": 30.2217,
@@ -2485,25 +2437,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 29,
-                            "openAppointmentSlots": 29,
+                            "openTimeslots": 28,
+                            "openAppointmentSlots": 28,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 131,
-                            "openAppointmentSlots": 131,
+                            "openTimeslots": 121,
+                            "openAppointmentSlots": 121,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 20,
-                            "openAppointmentSlots": 20,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 180,
+                    "openTimeslots": 159,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 180,
+                    "openAppointmentSlots": 159,
                     "name": "Aliana Market H-E-B",
                     "longitude": -95.7137,
                     "latitude": 29.6597,
@@ -2537,13 +2489,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 52,
-                            "openAppointmentSlots": 52,
+                            "openTimeslots": 46,
+                            "openAppointmentSlots": 46,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 58,
-                            "openAppointmentSlots": 58,
+                            "openTimeslots": 57,
+                            "openAppointmentSlots": 57,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -2552,10 +2504,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 120,
+                    "openTimeslots": 113,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 120,
+                    "openAppointmentSlots": 113,
                     "name": "Four Points H-E-B",
                     "longitude": -97.85202,
                     "latitude": 30.40458,
@@ -2589,20 +2541,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 23,
+                            "openAppointmentSlots": 23,
                             "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 11,
-                            "openAppointmentSlots": 11,
-                            "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 35,
+                    "openTimeslots": 23,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 35,
+                    "openAppointmentSlots": 23,
                     "name": "S Port and Tarlton H-E-B",
                     "longitude": -97.42137,
                     "latitude": 27.76687,
@@ -2618,25 +2565,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 493,
-                            "openAppointmentSlots": 493,
+                            "openTimeslots": 468,
+                            "openAppointmentSlots": 468,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 631,
-                            "openAppointmentSlots": 631,
+                            "openTimeslots": 600,
+                            "openAppointmentSlots": 600,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 485,
-                            "openAppointmentSlots": 485,
+                            "openTimeslots": 464,
+                            "openAppointmentSlots": 464,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 1609,
+                    "openTimeslots": 1532,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 1609,
+                    "openAppointmentSlots": 1532,
                     "name": "Loop 1604 and Blanco Rd H-E-B plus!",
                     "longitude": -98.50968,
                     "latitude": 29.60792,
@@ -2652,15 +2599,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 201,
-                            "openAppointmentSlots": 201,
+                            "openTimeslots": 175,
+                            "openAppointmentSlots": 175,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 201,
+                    "openTimeslots": 175,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 201,
+                    "openAppointmentSlots": 175,
                     "name": "7th Street H-E-B",
                     "longitude": -97.71143,
                     "latitude": 30.26046,
@@ -2687,27 +2634,16 @@
                 },
                 {
                     "zip": "76667-2445",
-                    "url": "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000GucSQAS",
+                    "url": null,
                     "type": "store",
                     "street": "701 E. MILAM STREET",
                     "storeNumber": 467,
                     "state": "TX",
-                    "slotDetails": [
-                        {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 7,
-                            "openAppointmentSlots": 7,
-                            "manufacturer": "Pfizer"
-                        }
-                    ],
-                    "openTimeslots": 17,
+                    "slotDetails": [],
+                    "openTimeslots": 0,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 17,
+                    "openAppointmentSlots": 0,
                     "name": "Mexia H-E-B",
                     "longitude": -96.47858,
                     "latitude": 31.68434,
@@ -2723,8 +2659,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 154,
-                            "openAppointmentSlots": 154,
+                            "openTimeslots": 168,
+                            "openAppointmentSlots": 168,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -2733,15 +2669,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 132,
-                            "openAppointmentSlots": 132,
+                            "openTimeslots": 143,
+                            "openAppointmentSlots": 143,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 482,
+                    "openTimeslots": 507,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 482,
+                    "openAppointmentSlots": 507,
                     "name": "Fairmont Pkwy H-E-B",
                     "longitude": -95.14512,
                     "latitude": 29.6497,
@@ -2796,15 +2732,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 15,
-                            "openAppointmentSlots": 15,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 155,
+                    "openTimeslots": 150,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 155,
+                    "openAppointmentSlots": 150,
                     "name": "Elgin H-E-B",
                     "longitude": -97.38258,
                     "latitude": 30.34701,
@@ -2862,25 +2798,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 114,
-                            "openAppointmentSlots": 114,
+                            "openTimeslots": 104,
+                            "openAppointmentSlots": 104,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 118,
-                            "openAppointmentSlots": 118,
+                            "openTimeslots": 108,
+                            "openAppointmentSlots": 108,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 117,
-                            "openAppointmentSlots": 117,
+                            "openTimeslots": 108,
+                            "openAppointmentSlots": 108,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 349,
+                    "openTimeslots": 320,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 349,
+                    "openAppointmentSlots": 320,
                     "name": "Grissom and Tezel H-E-B",
                     "longitude": -98.66574,
                     "latitude": 29.48432,
@@ -2937,8 +2873,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 60,
-                            "openAppointmentSlots": 60,
+                            "openTimeslots": 59,
+                            "openAppointmentSlots": 59,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -2947,10 +2883,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 90,
+                    "openTimeslots": 89,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 90,
+                    "openAppointmentSlots": 89,
                     "name": "East Hopkins H-E-B",
                     "longitude": -97.93132,
                     "latitude": 29.88489,
@@ -2995,25 +2931,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 191,
-                            "openAppointmentSlots": 191,
+                            "openTimeslots": 176,
+                            "openAppointmentSlots": 176,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 220,
-                            "openAppointmentSlots": 220,
+                            "openTimeslots": 201,
+                            "openAppointmentSlots": 201,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 54,
-                            "openAppointmentSlots": 54,
+                            "openTimeslots": 47,
+                            "openAppointmentSlots": 47,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 465,
+                    "openTimeslots": 424,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 465,
+                    "openAppointmentSlots": 424,
                     "name": "Tejas Center H-E-B",
                     "longitude": -96.3513,
                     "latitude": 30.64506,
@@ -3029,20 +2965,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 56,
-                            "openAppointmentSlots": 56,
+                            "openTimeslots": 49,
+                            "openAppointmentSlots": 49,
                             "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 8,
-                            "openAppointmentSlots": 8,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 64,
+                    "openTimeslots": 49,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 64,
+                    "openAppointmentSlots": 49,
                     "name": "Westheimer and Kirkwood H-E-B",
                     "longitude": -95.587,
                     "latitude": 29.7363,
@@ -3063,20 +2994,20 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 71,
-                            "openAppointmentSlots": 71,
+                            "openTimeslots": 54,
+                            "openAppointmentSlots": 54,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 35,
-                            "openAppointmentSlots": 35,
+                            "openTimeslots": 30,
+                            "openAppointmentSlots": 30,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 151,
+                    "openTimeslots": 129,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 151,
+                    "openAppointmentSlots": 129,
                     "name": "Bear Creek H-E-B",
                     "longitude": -95.6457,
                     "latitude": 29.8487,
@@ -3128,15 +3059,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 111,
-                            "openAppointmentSlots": 111,
+                            "openTimeslots": 104,
+                            "openAppointmentSlots": 104,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 111,
+                    "openTimeslots": 104,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 111,
+                    "openAppointmentSlots": 104,
                     "name": "Deco District H-E-B",
                     "longitude": -98.5261,
                     "latitude": 29.4646,
@@ -3170,20 +3101,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 483,
-                            "openAppointmentSlots": 483,
+                            "openTimeslots": 485,
+                            "openAppointmentSlots": 485,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 489,
-                            "openAppointmentSlots": 489,
+                            "openTimeslots": 490,
+                            "openAppointmentSlots": 490,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 972,
+                    "openTimeslots": 975,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 972,
+                    "openAppointmentSlots": 975,
                     "name": "Friendswood H-E-B",
                     "longitude": -95.1912,
                     "latitude": 29.5066,
@@ -3199,25 +3130,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 136,
-                            "openAppointmentSlots": 136,
+                            "openTimeslots": 126,
+                            "openAppointmentSlots": 126,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 134,
-                            "openAppointmentSlots": 134,
+                            "openTimeslots": 124,
+                            "openAppointmentSlots": 124,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 67,
-                            "openAppointmentSlots": 67,
+                            "openTimeslots": 57,
+                            "openAppointmentSlots": 57,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 337,
+                    "openTimeslots": 307,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 337,
+                    "openAppointmentSlots": 307,
                     "name": "Lake Jackson H-E-B",
                     "longitude": -95.44554,
                     "latitude": 29.04151,
@@ -3233,20 +3164,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 35,
-                            "openAppointmentSlots": 35,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 53,
+                    "openTimeslots": 10,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 53,
+                    "openAppointmentSlots": 10,
                     "name": "Wimberley H-E-B",
                     "longitude": -98.10174,
                     "latitude": 30.00144,
@@ -3262,8 +3188,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 159,
-                            "openAppointmentSlots": 159,
+                            "openTimeslots": 165,
+                            "openAppointmentSlots": 165,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -3272,10 +3198,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 274,
+                    "openTimeslots": 280,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 274,
+                    "openAppointmentSlots": 280,
                     "name": "H-E-B Market at Tuckerton",
                     "longitude": -95.72501,
                     "latitude": 29.92737,
@@ -3320,8 +3246,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 18,
+                            "openAppointmentSlots": 18,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -3330,15 +3256,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 83,
-                            "openAppointmentSlots": 83,
+                            "openTimeslots": 75,
+                            "openAppointmentSlots": 75,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 175,
+                    "openTimeslots": 161,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 175,
+                    "openAppointmentSlots": 161,
                     "name": "Richmond Market H-E-B",
                     "longitude": -95.74781,
                     "latitude": 29.55142,
@@ -3354,20 +3280,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 11,
-                            "openAppointmentSlots": 11,
+                            "openTimeslots": 4,
+                            "openAppointmentSlots": 4,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 15,
-                            "openAppointmentSlots": 15,
+                            "openTimeslots": 8,
+                            "openAppointmentSlots": 8,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 26,
+                    "openTimeslots": 12,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 26,
+                    "openAppointmentSlots": 12,
                     "name": "Huntsville H-E-B",
                     "longitude": -95.56075,
                     "latitude": 30.72274,
@@ -3383,25 +3309,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 243,
-                            "openAppointmentSlots": 243,
+                            "openTimeslots": 247,
+                            "openAppointmentSlots": 247,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 322,
-                            "openAppointmentSlots": 322,
+                            "openTimeslots": 329,
+                            "openAppointmentSlots": 329,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 249,
-                            "openAppointmentSlots": 249,
+                            "openTimeslots": 250,
+                            "openAppointmentSlots": 250,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 814,
+                    "openTimeslots": 826,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 814,
+                    "openAppointmentSlots": 826,
                     "name": "Bulverde and 1604 H-E-B",
                     "longitude": -98.41746,
                     "latitude": 29.59497,
@@ -3459,8 +3385,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 62,
-                            "openAppointmentSlots": 62,
+                            "openTimeslots": 55,
+                            "openAppointmentSlots": 55,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -3469,15 +3395,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 47,
-                            "openAppointmentSlots": 47,
+                            "openTimeslots": 40,
+                            "openAppointmentSlots": 40,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 159,
+                    "openTimeslots": 145,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 159,
+                    "openAppointmentSlots": 145,
                     "name": "Central Blvd H-E-B",
                     "longitude": -97.51093,
                     "latitude": 25.92849,
@@ -3498,8 +3424,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 79,
-                            "openAppointmentSlots": 79,
+                            "openTimeslots": 73,
+                            "openAppointmentSlots": 73,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -3508,10 +3434,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 187,
+                    "openTimeslots": 181,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 187,
+                    "openAppointmentSlots": 181,
                     "name": "Hwy 183 and Whitestone Blvd H-E-B",
                     "longitude": -97.82911,
                     "latitude": 30.5225,
@@ -3527,20 +3453,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 8,
-                            "openAppointmentSlots": 8,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 5,
-                            "openAppointmentSlots": 5,
+                            "openTimeslots": 4,
+                            "openAppointmentSlots": 4,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 13,
+                    "openTimeslots": 4,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 13,
+                    "openAppointmentSlots": 4,
                     "name": "North Hills H-E-B",
                     "longitude": -97.74832,
                     "latitude": 30.39868,
@@ -3561,15 +3482,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 47,
-                            "openAppointmentSlots": 47,
+                            "openTimeslots": 49,
+                            "openAppointmentSlots": 49,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 53,
+                    "openTimeslots": 55,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 53,
+                    "openAppointmentSlots": 55,
                     "name": "Moore Plaza H-E-B",
                     "longitude": -97.37238,
                     "latitude": 27.70605,
@@ -3632,25 +3553,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 20,
-                            "openAppointmentSlots": 20,
-                            "manufacturer": "Moderna"
-                        },
-                        {
                             "openTimeslots": 12,
                             "openAppointmentSlots": 12,
                             "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 4,
-                            "openAppointmentSlots": 4,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 36,
+                    "openTimeslots": 12,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 36,
+                    "openAppointmentSlots": 12,
                     "name": "Riverpark H-E-B",
                     "longitude": -95.6815,
                     "latitude": 29.5636,
@@ -3684,13 +3595,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 162,
-                            "openAppointmentSlots": 162,
+                            "openTimeslots": 166,
+                            "openAppointmentSlots": 166,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 149,
-                            "openAppointmentSlots": 149,
+                            "openTimeslots": 157,
+                            "openAppointmentSlots": 157,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -3699,10 +3610,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 321,
+                    "openTimeslots": 333,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 321,
+                    "openAppointmentSlots": 333,
                     "name": "Leon Springs H-E-B",
                     "longitude": -98.63218,
                     "latitude": 29.6659,
@@ -3736,15 +3647,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 344,
-                            "openAppointmentSlots": 344,
+                            "openTimeslots": 322,
+                            "openAppointmentSlots": 322,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 344,
+                    "openTimeslots": 322,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 344,
+                    "openAppointmentSlots": 322,
                     "name": "Perrin Beitel and Thousand Oaks H-E-B",
                     "longitude": -98.4082,
                     "latitude": 29.5491,
@@ -3796,25 +3707,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 4,
-                            "openAppointmentSlots": 4,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 44,
-                            "openAppointmentSlots": 44,
+                            "openTimeslots": 42,
+                            "openAppointmentSlots": 42,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 44,
-                            "openAppointmentSlots": 44,
+                            "openTimeslots": 42,
+                            "openAppointmentSlots": 42,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 92,
+                    "openTimeslots": 84,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 92,
+                    "openAppointmentSlots": 84,
                     "name": "Bay City H-E-B",
                     "longitude": -95.95804,
                     "latitude": 28.98306,
@@ -3830,13 +3736,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 31,
-                            "openAppointmentSlots": 31,
+                            "openTimeslots": 27,
+                            "openAppointmentSlots": 27,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 31,
-                            "openAppointmentSlots": 31,
+                            "openTimeslots": 27,
+                            "openAppointmentSlots": 27,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -3845,10 +3751,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 82,
+                    "openTimeslots": 74,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 82,
+                    "openAppointmentSlots": 74,
                     "name": "Foster Rd H-E-B",
                     "longitude": -98.3591,
                     "latitude": 29.48109,
@@ -3900,8 +3806,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 34,
-                            "openAppointmentSlots": 34,
+                            "openTimeslots": 33,
+                            "openAppointmentSlots": 33,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -3915,10 +3821,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 57,
+                    "openTimeslots": 56,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 57,
+                    "openAppointmentSlots": 56,
                     "name": "Pecan and Ware H-E-B",
                     "longitude": -98.25799,
                     "latitude": 26.21925,
@@ -3939,8 +3845,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 58,
-                            "openAppointmentSlots": 58,
+                            "openTimeslots": 53,
+                            "openAppointmentSlots": 53,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -3949,10 +3855,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 107,
+                    "openTimeslots": 102,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 107,
+                    "openAppointmentSlots": 102,
                     "name": "Kyle H-E-B plus!",
                     "longitude": -97.86258,
                     "latitude": 30.01533,
@@ -3968,15 +3874,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 31,
-                            "openAppointmentSlots": 31,
+                            "openTimeslots": 24,
+                            "openAppointmentSlots": 24,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 31,
+                    "openTimeslots": 24,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 31,
+                    "openAppointmentSlots": 24,
                     "name": "Burleson H-E-B plus!",
                     "longitude": -97.34901,
                     "latitude": 32.52083,
@@ -3992,25 +3898,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 135,
-                            "openAppointmentSlots": 135,
+                            "openTimeslots": 126,
+                            "openAppointmentSlots": 126,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 109,
-                            "openAppointmentSlots": 109,
+                            "openTimeslots": 102,
+                            "openAppointmentSlots": 102,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 133,
-                            "openAppointmentSlots": 133,
+                            "openTimeslots": 124,
+                            "openAppointmentSlots": 124,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 377,
+                    "openTimeslots": 352,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 377,
+                    "openAppointmentSlots": 352,
                     "name": "Lytle H-E-B plus!",
                     "longitude": -98.78924,
                     "latitude": 29.23224,
@@ -4026,25 +3932,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 40,
-                            "openAppointmentSlots": 40,
+                            "openTimeslots": 31,
+                            "openAppointmentSlots": 31,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 32,
-                            "openAppointmentSlots": 32,
+                            "openTimeslots": 24,
+                            "openAppointmentSlots": 24,
                             "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 6,
-                            "openAppointmentSlots": 6,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 78,
+                    "openTimeslots": 55,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 78,
+                    "openAppointmentSlots": 55,
                     "name": "Cypress Market H-E-B",
                     "longitude": -95.6765,
                     "latitude": 29.95569,
@@ -4065,20 +3966,20 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 34,
-                            "openAppointmentSlots": 34,
+                            "openTimeslots": 33,
+                            "openAppointmentSlots": 33,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 80,
-                            "openAppointmentSlots": 80,
+                            "openTimeslots": 74,
+                            "openAppointmentSlots": 74,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 130,
+                    "openTimeslots": 123,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 130,
+                    "openAppointmentSlots": 123,
                     "name": "Anderson Mill H-E-B plus!",
                     "longitude": -97.82626,
                     "latitude": 30.45495,
@@ -4094,13 +3995,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 178,
-                            "openAppointmentSlots": 178,
+                            "openTimeslots": 169,
+                            "openAppointmentSlots": 169,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 168,
-                            "openAppointmentSlots": 168,
+                            "openTimeslots": 163,
+                            "openAppointmentSlots": 163,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -4109,10 +4010,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 396,
+                    "openTimeslots": 382,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 396,
+                    "openAppointmentSlots": 382,
                     "name": "Trimmier H-E-B plus!",
                     "longitude": -97.7338,
                     "latitude": 31.0909,
@@ -4211,8 +4112,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 15,
-                            "openAppointmentSlots": 15,
+                            "openTimeslots": 14,
+                            "openAppointmentSlots": 14,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -4221,15 +4122,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
+                            "openTimeslots": 15,
+                            "openAppointmentSlots": 15,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 41,
+                    "openTimeslots": 39,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 41,
+                    "openAppointmentSlots": 39,
                     "name": "Zapata Highway H-E-B",
                     "longitude": -99.47479,
                     "latitude": 27.47673,
@@ -4245,8 +4146,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 22,
-                            "openAppointmentSlots": 22,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -4255,10 +4156,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 143,
+                    "openTimeslots": 131,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 143,
+                    "openAppointmentSlots": 131,
                     "name": "Alamo Ranch H-E-B",
                     "longitude": -98.73294,
                     "latitude": 29.48572,
@@ -4297,8 +4198,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 32,
-                            "openAppointmentSlots": 32,
+                            "openTimeslots": 30,
+                            "openAppointmentSlots": 30,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -4307,10 +4208,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 95,
+                    "openTimeslots": 93,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 95,
+                    "openAppointmentSlots": 93,
                     "name": "Cross Creek Ranch H-E-B",
                     "longitude": -95.84788,
                     "latitude": 29.71936,
@@ -4326,20 +4227,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 129,
-                            "openAppointmentSlots": 129,
+                            "openTimeslots": 116,
+                            "openAppointmentSlots": 116,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 180,
-                            "openAppointmentSlots": 180,
+                            "openTimeslots": 168,
+                            "openAppointmentSlots": 168,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 309,
+                    "openTimeslots": 284,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 309,
+                    "openAppointmentSlots": 284,
                     "name": "The Heights H-E-B",
                     "longitude": -95.40865,
                     "latitude": 29.80735,
@@ -4394,15 +4295,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 28,
-                            "openAppointmentSlots": 28,
+                            "openTimeslots": 20,
+                            "openAppointmentSlots": 20,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 88,
+                    "openTimeslots": 80,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 88,
+                    "openAppointmentSlots": 80,
                     "name": "Mont Belvieu H-E-B",
                     "longitude": -94.84973,
                     "latitude": 29.82755,
@@ -4441,8 +4342,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 319,
-                            "openAppointmentSlots": 319,
+                            "openTimeslots": 304,
+                            "openAppointmentSlots": 304,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -4451,10 +4352,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 657,
+                    "openTimeslots": 642,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 657,
+                    "openAppointmentSlots": 642,
                     "name": "McCreless Market H-E-B plus!",
                     "longitude": -98.46115,
                     "latitude": 29.37828,
@@ -4470,20 +4371,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 69,
-                            "openAppointmentSlots": 69,
+                            "openTimeslots": 61,
+                            "openAppointmentSlots": 61,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 69,
-                            "openAppointmentSlots": 69,
+                            "openTimeslots": 60,
+                            "openAppointmentSlots": 60,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 138,
+                    "openTimeslots": 121,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 138,
+                    "openAppointmentSlots": 121,
                     "name": "Bay Colony H-E-B",
                     "longitude": -95.0926,
                     "latitude": 29.4677,
@@ -4567,20 +4468,20 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 237,
-                            "openAppointmentSlots": 237,
+                            "openTimeslots": 220,
+                            "openAppointmentSlots": 220,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 47,
-                            "openAppointmentSlots": 47,
+                            "openTimeslots": 39,
+                            "openAppointmentSlots": 39,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 559,
+                    "openTimeslots": 534,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 559,
+                    "openAppointmentSlots": 534,
                     "name": "Red Bud Lane and Gattis School H-E-B",
                     "longitude": -97.61475,
                     "latitude": 30.49721,
@@ -4596,8 +4497,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 34,
-                            "openAppointmentSlots": 34,
+                            "openTimeslots": 25,
+                            "openAppointmentSlots": 25,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -4606,15 +4507,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 34,
-                            "openAppointmentSlots": 34,
+                            "openTimeslots": 24,
+                            "openAppointmentSlots": 24,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 98,
+                    "openTimeslots": 79,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 98,
+                    "openAppointmentSlots": 79,
                     "name": "Edna H-E-B",
                     "longitude": -96.64731,
                     "latitude": 28.97947,
@@ -4630,25 +4531,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 169,
-                            "openAppointmentSlots": 169,
+                            "openTimeslots": 154,
+                            "openAppointmentSlots": 154,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 152,
-                            "openAppointmentSlots": 152,
+                            "openTimeslots": 140,
+                            "openAppointmentSlots": 140,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 89,
-                            "openAppointmentSlots": 89,
+                            "openTimeslots": 79,
+                            "openAppointmentSlots": 79,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 410,
+                    "openTimeslots": 373,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 410,
+                    "openAppointmentSlots": 373,
                     "name": "Oak Park H-E-B",
                     "longitude": -98.45759,
                     "latitude": 29.50774,
@@ -4664,25 +4565,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 1272,
-                            "openAppointmentSlots": 1272,
+                            "openTimeslots": 1106,
+                            "openAppointmentSlots": 1106,
                             "manufacturer": "Janssen"
                         },
                         {
-                            "openTimeslots": 1236,
-                            "openAppointmentSlots": 1236,
+                            "openTimeslots": 1067,
+                            "openAppointmentSlots": 1067,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 316,
-                            "openAppointmentSlots": 316,
+                            "openTimeslots": 149,
+                            "openAppointmentSlots": 149,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 2824,
+                    "openTimeslots": 2322,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 2824,
+                    "openAppointmentSlots": 2322,
                     "name": "620 and O'Connor H-E-B",
                     "longitude": -97.72218,
                     "latitude": 30.50028,
@@ -4698,13 +4599,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 25,
-                            "openAppointmentSlots": 25,
+                            "openTimeslots": 24,
+                            "openAppointmentSlots": 24,
                             "manufacturer": "Janssen"
                         },
                         {
-                            "openTimeslots": 30,
-                            "openAppointmentSlots": 30,
+                            "openTimeslots": 28,
+                            "openAppointmentSlots": 28,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -4718,10 +4619,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 136,
+                    "openTimeslots": 133,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 136,
+                    "openAppointmentSlots": 133,
                     "name": "New Braunfels H-E-B at Walnut",
                     "longitude": -98.12631,
                     "latitude": 29.68903,
@@ -4737,15 +4638,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 20,
-                            "openAppointmentSlots": 20,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 20,
+                    "openTimeslots": 10,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 20,
+                    "openAppointmentSlots": 10,
                     "name": "Harker Heights H-E-B",
                     "longitude": -97.65511,
                     "latitude": 31.07905,
@@ -4761,8 +4662,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 87,
-                            "openAppointmentSlots": 87,
+                            "openTimeslots": 77,
+                            "openAppointmentSlots": 77,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -4776,10 +4677,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 227,
+                    "openTimeslots": 217,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 227,
+                    "openAppointmentSlots": 217,
                     "name": "West Wadley H-E-B",
                     "longitude": -102.12562,
                     "latitude": 32.01955,
@@ -4795,13 +4696,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 222,
-                            "openAppointmentSlots": 222,
+                            "openTimeslots": 224,
+                            "openAppointmentSlots": 224,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 279,
-                            "openAppointmentSlots": 279,
+                            "openTimeslots": 282,
+                            "openAppointmentSlots": 282,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -4810,10 +4711,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 641,
+                    "openTimeslots": 646,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 641,
+                    "openAppointmentSlots": 646,
                     "name": "Montgomery at Walzem",
                     "longitude": -98.37092,
                     "latitude": 29.5105,
@@ -4837,17 +4738,12 @@
                             "openTimeslots": 163,
                             "openAppointmentSlots": 163,
                             "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 9,
-                            "openAppointmentSlots": 9,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 225,
+                    "openTimeslots": 216,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 225,
+                    "openAppointmentSlots": 216,
                     "name": "Olmos Park H-E-B",
                     "longitude": -98.497,
                     "latitude": 29.4707,
@@ -4874,22 +4770,16 @@
                 },
                 {
                     "zip": "78727-3901",
-                    "url": "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000GubqQAC",
+                    "url": null,
                     "type": "store",
                     "street": "6001 WEST PARMER LANE",
                     "storeNumber": 388,
                     "state": "TX",
-                    "slotDetails": [
-                        {
-                            "openTimeslots": 9,
-                            "openAppointmentSlots": 9,
-                            "manufacturer": "Pfizer"
-                        }
-                    ],
-                    "openTimeslots": 9,
+                    "slotDetails": [],
+                    "openTimeslots": 0,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 9,
+                    "openAppointmentSlots": 0,
                     "name": "Parmer and McNeil H-E-B",
                     "longitude": -97.74278,
                     "latitude": 30.44181,
@@ -4905,15 +4795,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 78,
-                            "openAppointmentSlots": 78,
+                            "openTimeslots": 72,
+                            "openAppointmentSlots": 72,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 78,
+                    "openTimeslots": 72,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 78,
+                    "openAppointmentSlots": 72,
                     "name": "Mid County H-E-B",
                     "longitude": -93.9758,
                     "latitude": 29.966,
@@ -4947,13 +4837,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 46,
-                            "openAppointmentSlots": 46,
+                            "openTimeslots": 45,
+                            "openAppointmentSlots": 45,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 45,
-                            "openAppointmentSlots": 45,
+                            "openTimeslots": 44,
+                            "openAppointmentSlots": 44,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -4962,10 +4852,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 100,
+                    "openTimeslots": 98,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 100,
+                    "openAppointmentSlots": 98,
                     "name": "Leander H-E-B plus!",
                     "longitude": -97.8582,
                     "latitude": 30.58369,
@@ -4981,25 +4871,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 50,
-                            "openAppointmentSlots": 50,
+                            "openTimeslots": 45,
+                            "openAppointmentSlots": 45,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 49,
-                            "openAppointmentSlots": 49,
+                            "openTimeslots": 45,
+                            "openAppointmentSlots": 45,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 50,
-                            "openAppointmentSlots": 50,
+                            "openTimeslots": 45,
+                            "openAppointmentSlots": 45,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 149,
+                    "openTimeslots": 135,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 149,
+                    "openAppointmentSlots": 135,
                     "name": "Baytown H-E-B",
                     "longitude": -94.9788,
                     "latitude": 29.79503,
@@ -5049,25 +4939,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
+                            "openTimeslots": 8,
+                            "openAppointmentSlots": 8,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 5,
-                            "openAppointmentSlots": 5,
+                            "openTimeslots": 3,
+                            "openAppointmentSlots": 3,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 20,
-                            "openAppointmentSlots": 20,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 41,
+                    "openTimeslots": 21,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 41,
+                    "openAppointmentSlots": 21,
                     "name": "Meyerland Market H-E-B",
                     "longitude": -95.46406,
                     "latitude": 29.68854,
@@ -5083,15 +4973,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 14,
-                            "openAppointmentSlots": 14,
+                            "openTimeslots": 6,
+                            "openAppointmentSlots": 6,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 14,
+                    "openTimeslots": 6,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 14,
+                    "openAppointmentSlots": 6,
                     "name": "Jones Crossing H-E-B",
                     "longitude": -96.32324,
                     "latitude": 30.58444,
@@ -5143,15 +5033,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 214,
-                            "openAppointmentSlots": 214,
+                            "openTimeslots": 197,
+                            "openAppointmentSlots": 197,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 214,
+                    "openTimeslots": 197,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 214,
+                    "openAppointmentSlots": 197,
                     "name": "South Congress H-E-B",
                     "longitude": -97.7516,
                     "latitude": 30.23963,
@@ -5167,20 +5057,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 233,
-                            "openAppointmentSlots": 233,
+                            "openTimeslots": 216,
+                            "openAppointmentSlots": 216,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 96,
-                            "openAppointmentSlots": 96,
+                            "openTimeslots": 84,
+                            "openAppointmentSlots": 84,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 329,
+                    "openTimeslots": 300,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 329,
+                    "openAppointmentSlots": 300,
                     "name": "Beaumont H-E-B plus!",
                     "longitude": -94.1685,
                     "latitude": 30.10501,
@@ -5189,16 +5079,27 @@
                 },
                 {
                     "zip": "78213-2714",
-                    "url": null,
+                    "url": "https://heb.secure.force.com/FlexibleScheduler/FSAppointment?event_ID=a8h4P000000GubrQAC",
                     "type": "store",
                     "street": "6000 WEST AVENUE",
                     "storeNumber": 389,
                     "state": "TX",
-                    "slotDetails": [],
-                    "openTimeslots": 0,
+                    "slotDetails": [
+                        {
+                            "openTimeslots": 174,
+                            "openAppointmentSlots": 174,
+                            "manufacturer": "Moderna"
+                        },
+                        {
+                            "openTimeslots": 194,
+                            "openAppointmentSlots": 194,
+                            "manufacturer": "Pfizer"
+                        }
+                    ],
+                    "openTimeslots": 368,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 0,
+                    "openAppointmentSlots": 368,
                     "name": "West Ave and Jackson Keller H-E-B",
                     "longitude": -98.52574,
                     "latitude": 29.51639,
@@ -5224,15 +5125,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 60,
-                            "openAppointmentSlots": 60,
+                            "openTimeslots": 50,
+                            "openAppointmentSlots": 50,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 90,
+                    "openTimeslots": 80,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 90,
+                    "openAppointmentSlots": 80,
                     "name": "De Zavala H-E-B",
                     "longitude": -98.5889,
                     "latitude": 29.56222,
@@ -5248,20 +5149,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 6,
-                            "openAppointmentSlots": 6,
+                            "openTimeslots": 3,
+                            "openAppointmentSlots": 3,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 158,
-                            "openAppointmentSlots": 158,
+                            "openTimeslots": 154,
+                            "openAppointmentSlots": 154,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 164,
+                    "openTimeslots": 157,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 164,
+                    "openAppointmentSlots": 157,
                     "name": "281 and 1604 H-E-B",
                     "longitude": -98.46828,
                     "latitude": 29.60772,
@@ -5316,8 +5217,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 100,
-                            "openAppointmentSlots": 100,
+                            "openTimeslots": 99,
+                            "openAppointmentSlots": 99,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -5326,10 +5227,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 311,
+                    "openTimeslots": 310,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 311,
+                    "openAppointmentSlots": 310,
                     "name": "Kingsville H-E-B",
                     "longitude": -97.86453,
                     "latitude": 27.51658,
@@ -5368,15 +5269,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 501,
-                            "openAppointmentSlots": 501,
+                            "openTimeslots": 503,
+                            "openAppointmentSlots": 503,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 1005,
+                    "openTimeslots": 1007,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 1005,
+                    "openAppointmentSlots": 1007,
                     "name": "N Frazier At Loop 336 H-E-B",
                     "longitude": -95.46548,
                     "latitude": 30.33593,
@@ -5392,25 +5293,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 48,
-                            "openAppointmentSlots": 48,
+                            "openTimeslots": 40,
+                            "openAppointmentSlots": 40,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 46,
-                            "openAppointmentSlots": 46,
+                            "openTimeslots": 35,
+                            "openAppointmentSlots": 35,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 96,
-                            "openAppointmentSlots": 96,
+                            "openTimeslots": 80,
+                            "openAppointmentSlots": 80,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 190,
+                    "openTimeslots": 155,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 190,
+                    "openAppointmentSlots": 155,
                     "name": "Grand Parkway H-E-B plus!",
                     "longitude": -95.7739,
                     "latitude": 29.7144,
@@ -5444,20 +5345,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 14,
-                            "openAppointmentSlots": 14,
-                            "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 25,
-                            "openAppointmentSlots": 25,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 39,
+                    "openTimeslots": 10,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 39,
+                    "openAppointmentSlots": 10,
                     "name": "Spring Market H-E-B",
                     "longitude": -95.44894,
                     "latitude": 30.07042,
@@ -5473,13 +5369,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 55,
-                            "openAppointmentSlots": 55,
+                            "openTimeslots": 47,
+                            "openAppointmentSlots": 47,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 56,
-                            "openAppointmentSlots": 56,
+                            "openTimeslots": 47,
+                            "openAppointmentSlots": 47,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -5488,10 +5384,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 132,
+                    "openTimeslots": 115,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 132,
+                    "openAppointmentSlots": 115,
                     "name": "Dripping Springs H-E-B",
                     "longitude": -98.08146,
                     "latitude": 30.18968,
@@ -5561,20 +5457,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 933,
-                            "openAppointmentSlots": 933,
+                            "openTimeslots": 862,
+                            "openAppointmentSlots": 862,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 934,
-                            "openAppointmentSlots": 934,
+                            "openTimeslots": 864,
+                            "openAppointmentSlots": 864,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 1867,
+                    "openTimeslots": 1726,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 1867,
+                    "openAppointmentSlots": 1726,
                     "name": "Hudson Oaks H-E-B",
                     "longitude": -97.69733,
                     "latitude": 32.75831,
@@ -5590,20 +5486,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 23,
-                            "openAppointmentSlots": 23,
+                            "openTimeslots": 11,
+                            "openAppointmentSlots": 11,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 9,
+                            "openAppointmentSlots": 9,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 41,
+                    "openTimeslots": 20,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 41,
+                    "openAppointmentSlots": 20,
                     "name": "MacGregor Market H-E-B",
                     "longitude": -95.37644,
                     "latitude": 29.71432,
@@ -5619,20 +5515,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 120,
-                            "openAppointmentSlots": 120,
+                            "openTimeslots": 105,
+                            "openAppointmentSlots": 105,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 160,
-                            "openAppointmentSlots": 160,
+                            "openTimeslots": 140,
+                            "openAppointmentSlots": 140,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 280,
+                    "openTimeslots": 245,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 280,
+                    "openAppointmentSlots": 245,
                     "name": "Harper's Trace H-E-B",
                     "longitude": -95.42563,
                     "latitude": 30.20692,
@@ -5648,25 +5544,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 45,
-                            "openAppointmentSlots": 45,
+                            "openTimeslots": 39,
+                            "openAppointmentSlots": 39,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 40,
-                            "openAppointmentSlots": 40,
+                            "openTimeslots": 34,
+                            "openAppointmentSlots": 34,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 23,
-                            "openAppointmentSlots": 23,
+                            "openTimeslots": 18,
+                            "openAppointmentSlots": 18,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 108,
+                    "openTimeslots": 91,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 108,
+                    "openAppointmentSlots": 91,
                     "name": "H-E-B Market at Northpark",
                     "longitude": -95.25033,
                     "latitude": 30.06864,
@@ -5687,15 +5583,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 157,
-                            "openAppointmentSlots": 157,
+                            "openTimeslots": 154,
+                            "openAppointmentSlots": 154,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 315,
+                    "openTimeslots": 312,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 315,
+                    "openAppointmentSlots": 312,
                     "name": "211 and Potranco H-E-B",
                     "longitude": -98.77966,
                     "latitude": 29.42367,
@@ -5711,25 +5607,30 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 37,
-                            "openAppointmentSlots": 37,
+                            "openTimeslots": 2,
+                            "openAppointmentSlots": 2,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 170,
-                            "openAppointmentSlots": 170,
+                            "openTimeslots": 100,
+                            "openAppointmentSlots": 100,
+                            "manufacturer": "Pediatric_Moderna"
+                        },
+                        {
+                            "openTimeslots": 2,
+                            "openAppointmentSlots": 2,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 89,
-                            "openAppointmentSlots": 89,
+                            "openTimeslots": 1,
+                            "openAppointmentSlots": 1,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 296,
+                    "openTimeslots": 105,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 296,
+                    "openAppointmentSlots": 105,
                     "name": "Lubbock H-E-B",
                     "longitude": -101.90638,
                     "latitude": 33.48958,
@@ -5745,20 +5646,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
+                            "openTimeslots": 5,
+                            "openAppointmentSlots": 5,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
+                            "openTimeslots": 5,
+                            "openAppointmentSlots": 5,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 20,
+                    "openTimeslots": 10,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 20,
+                    "openAppointmentSlots": 10,
                     "name": "Big Spring H-E-B",
                     "longitude": -101.47211,
                     "latitude": 32.23493,
@@ -5774,25 +5675,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 118,
-                            "openAppointmentSlots": 118,
+                            "openTimeslots": 106,
+                            "openAppointmentSlots": 106,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 120,
-                            "openAppointmentSlots": 120,
+                            "openTimeslots": 110,
+                            "openAppointmentSlots": 110,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 120,
-                            "openAppointmentSlots": 120,
+                            "openTimeslots": 110,
+                            "openAppointmentSlots": 110,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 358,
+                    "openTimeslots": 326,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 358,
+                    "openAppointmentSlots": 326,
                     "name": "Sherwood Avenue N H-E-B",
                     "longitude": -100.47977,
                     "latitude": 31.44511,
@@ -5808,25 +5709,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 21,
-                            "openAppointmentSlots": 21,
+                            "openTimeslots": 9,
+                            "openAppointmentSlots": 9,
                             "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 55,
+                    "openTimeslots": 19,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 55,
+                    "openAppointmentSlots": 19,
                     "name": "Blackhawk H-E-B",
                     "longitude": -95.24868,
                     "latitude": 29.60234,
@@ -5842,20 +5738,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 5,
-                            "openAppointmentSlots": 5,
-                            "manufacturer": "Moderna"
-                        },
-                        {
                             "openTimeslots": 21,
                             "openAppointmentSlots": 21,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 26,
+                    "openTimeslots": 21,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 26,
+                    "openAppointmentSlots": 21,
                     "name": "Flour Bluff H-E-B plus!",
                     "longitude": -97.28288,
                     "latitude": 27.66767,
@@ -5871,13 +5762,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 484,
-                            "openAppointmentSlots": 484,
+                            "openTimeslots": 477,
+                            "openAppointmentSlots": 477,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 489,
-                            "openAppointmentSlots": 489,
+                            "openTimeslots": 482,
+                            "openAppointmentSlots": 482,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -5886,10 +5777,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 1285,
+                    "openTimeslots": 1271,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 1285,
+                    "openAppointmentSlots": 1271,
                     "name": "Pearland H-E-B plus!",
                     "longitude": -95.39002,
                     "latitude": 29.55932,
@@ -5910,8 +5801,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 31,
-                            "openAppointmentSlots": 31,
+                            "openTimeslots": 23,
+                            "openAppointmentSlots": 23,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -5920,10 +5811,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 76,
+                    "openTimeslots": 68,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 76,
+                    "openAppointmentSlots": 68,
                     "name": "19th and Meridian H-E-B",
                     "longitude": -97.17255,
                     "latitude": 31.5804,
@@ -5939,20 +5830,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 60,
-                            "openAppointmentSlots": 60,
+                            "openTimeslots": 65,
+                            "openAppointmentSlots": 65,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 48,
-                            "openAppointmentSlots": 48,
+                            "openTimeslots": 52,
+                            "openAppointmentSlots": 52,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 108,
+                    "openTimeslots": 117,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 108,
+                    "openAppointmentSlots": 117,
                     "name": "Slaughter and Escarpment H-E-B",
                     "longitude": -97.87642,
                     "latitude": 30.20247,
@@ -6004,25 +5895,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 36,
-                            "openAppointmentSlots": 36,
+                            "openTimeslots": 30,
+                            "openAppointmentSlots": 30,
                             "manufacturer": "Moderna"
                         },
                         {
                             "openTimeslots": 12,
                             "openAppointmentSlots": 12,
                             "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 7,
-                            "openAppointmentSlots": 7,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 55,
+                    "openTimeslots": 42,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 55,
+                    "openAppointmentSlots": 42,
                     "name": "Bee Cave H-E-B",
                     "longitude": -97.93238,
                     "latitude": 30.30489,
@@ -6038,25 +5924,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 9,
-                            "openAppointmentSlots": 9,
+                            "openTimeslots": 60,
+                            "openAppointmentSlots": 60,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
+                            "openTimeslots": 80,
+                            "openAppointmentSlots": 80,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 19,
-                            "openAppointmentSlots": 19,
+                            "openTimeslots": 80,
+                            "openAppointmentSlots": 80,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 44,
+                    "openTimeslots": 220,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 44,
+                    "openAppointmentSlots": 220,
                     "name": "Marbach and 410 H-E-B plus!",
                     "longitude": -98.65227,
                     "latitude": 29.41837,
@@ -6090,25 +5976,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 29,
-                            "openAppointmentSlots": 29,
+                            "openTimeslots": 14,
+                            "openAppointmentSlots": 14,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 30,
-                            "openAppointmentSlots": 30,
+                            "openTimeslots": 15,
+                            "openAppointmentSlots": 15,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 27,
-                            "openAppointmentSlots": 27,
+                            "openTimeslots": 13,
+                            "openAppointmentSlots": 13,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 86,
+                    "openTimeslots": 42,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 86,
+                    "openAppointmentSlots": 42,
                     "name": "Katy Market H-E-B",
                     "longitude": -95.82005,
                     "latitude": 29.77644,
@@ -6207,13 +6093,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 38,
-                            "openAppointmentSlots": 38,
+                            "openTimeslots": 26,
+                            "openAppointmentSlots": 26,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 82,
-                            "openAppointmentSlots": 82,
+                            "openTimeslots": 70,
+                            "openAppointmentSlots": 70,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -6222,10 +6108,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 171,
+                    "openTimeslots": 147,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 171,
+                    "openAppointmentSlots": 147,
                     "name": "Abilene H-E-B",
                     "longitude": -99.75934,
                     "latitude": 32.43348,
@@ -6259,13 +6145,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 78,
-                            "openAppointmentSlots": 78,
+                            "openTimeslots": 76,
+                            "openAppointmentSlots": 76,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 179,
-                            "openAppointmentSlots": 179,
+                            "openTimeslots": 193,
+                            "openAppointmentSlots": 193,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -6274,10 +6160,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 309,
+                    "openTimeslots": 321,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 309,
+                    "openAppointmentSlots": 321,
                     "name": "Boerne H-E-B plus!",
                     "longitude": -98.73481,
                     "latitude": 29.78173,
@@ -6399,25 +6285,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 50,
-                            "openAppointmentSlots": 50,
+                            "openTimeslots": 39,
+                            "openAppointmentSlots": 39,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 48,
-                            "openAppointmentSlots": 48,
+                            "openTimeslots": 36,
+                            "openAppointmentSlots": 36,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 38,
-                            "openAppointmentSlots": 38,
+                            "openTimeslots": 29,
+                            "openAppointmentSlots": 29,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 136,
+                    "openTimeslots": 104,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 136,
+                    "openAppointmentSlots": 104,
                     "name": "Spring Green Market H-E-B",
                     "longitude": -95.81427,
                     "latitude": 29.69558,
@@ -6467,25 +6353,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 437,
-                            "openAppointmentSlots": 437,
+                            "openTimeslots": 394,
+                            "openAppointmentSlots": 394,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 451,
-                            "openAppointmentSlots": 451,
+                            "openTimeslots": 393,
+                            "openAppointmentSlots": 393,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 85,
-                            "openAppointmentSlots": 85,
+                            "openTimeslots": 62,
+                            "openAppointmentSlots": 62,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 973,
+                    "openTimeslots": 849,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 973,
+                    "openAppointmentSlots": 849,
                     "name": "Zarzamora and Military H-E-B plus!",
                     "longitude": -98.5339,
                     "latitude": 29.35787,
@@ -6555,18 +6441,18 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 195,
-                            "openAppointmentSlots": 195,
+                            "openTimeslots": 180,
+                            "openAppointmentSlots": 180,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 195,
-                            "openAppointmentSlots": 195,
+                            "openTimeslots": 180,
+                            "openAppointmentSlots": 180,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 192,
-                            "openAppointmentSlots": 192,
+                            "openTimeslots": 176,
+                            "openAppointmentSlots": 176,
                             "manufacturer": "Pediatric_Pfizer"
                         },
                         {
@@ -6575,10 +6461,10 @@
                             "manufacturer": "Ultra_Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 699,
+                    "openTimeslots": 653,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 699,
+                    "openAppointmentSlots": 653,
                     "name": "Victoria H-E-B plus!",
                     "longitude": -96.99736,
                     "latitude": 28.85159,
@@ -6594,25 +6480,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 62,
-                            "openAppointmentSlots": 62,
+                            "openTimeslots": 56,
+                            "openAppointmentSlots": 56,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 57,
-                            "openAppointmentSlots": 57,
+                            "openTimeslots": 53,
+                            "openAppointmentSlots": 53,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 40,
-                            "openAppointmentSlots": 40,
+                            "openTimeslots": 35,
+                            "openAppointmentSlots": 35,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 159,
+                    "openTimeslots": 144,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 159,
+                    "openAppointmentSlots": 144,
                     "name": "Bunker Hill H-E-B",
                     "longitude": -95.53206,
                     "latitude": 29.78485,
@@ -6633,15 +6519,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 49,
-                            "openAppointmentSlots": 49,
+                            "openTimeslots": 48,
+                            "openAppointmentSlots": 48,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 104,
+                    "openTimeslots": 103,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 104,
+                    "openAppointmentSlots": 103,
                     "name": "Sienna Market H-E-B",
                     "longitude": -95.53497,
                     "latitude": 29.53928,
@@ -6657,25 +6543,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 14,
-                            "openAppointmentSlots": 14,
+                            "openTimeslots": 10,
+                            "openAppointmentSlots": 10,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 61,
-                            "openAppointmentSlots": 61,
+                            "openTimeslots": 57,
+                            "openAppointmentSlots": 57,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 54,
-                            "openAppointmentSlots": 54,
+                            "openTimeslots": 50,
+                            "openAppointmentSlots": 50,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 129,
+                    "openTimeslots": 117,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 129,
+                    "openAppointmentSlots": 117,
                     "name": "Southland and 12th St H-E-B",
                     "longitude": -97.68171,
                     "latitude": 26.18251,
@@ -6774,20 +6660,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 15,
-                            "openAppointmentSlots": 15,
+                            "openTimeslots": 6,
+                            "openAppointmentSlots": 6,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 4,
-                            "openAppointmentSlots": 4,
+                            "openTimeslots": 7,
+                            "openAppointmentSlots": 7,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 19,
+                    "openTimeslots": 13,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 19,
+                    "openAppointmentSlots": 13,
                     "name": "Laredo H-E-B plus!",
                     "longitude": -99.47435,
                     "latitude": 27.60863,
@@ -6860,8 +6746,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 224,
-                            "openAppointmentSlots": 224,
+                            "openTimeslots": 222,
+                            "openAppointmentSlots": 222,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -6870,10 +6756,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 368,
+                    "openTimeslots": 366,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 368,
+                    "openAppointmentSlots": 366,
                     "name": "Alon Market H-E-B",
                     "longitude": -98.53463,
                     "latitude": 29.55254,
@@ -6894,15 +6780,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 24,
-                            "openAppointmentSlots": 24,
+                            "openTimeslots": 21,
+                            "openAppointmentSlots": 21,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 39,
+                    "openTimeslots": 36,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 39,
+                    "openAppointmentSlots": 36,
                     "name": "Brodie Lane H-E-B",
                     "longitude": -97.83076,
                     "latitude": 30.21489,
@@ -6936,25 +6822,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 35,
-                            "openAppointmentSlots": 35,
+                            "openTimeslots": 29,
+                            "openAppointmentSlots": 29,
                             "manufacturer": "Janssen"
                         },
                         {
-                            "openTimeslots": 79,
-                            "openAppointmentSlots": 79,
+                            "openTimeslots": 73,
+                            "openAppointmentSlots": 73,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 80,
-                            "openAppointmentSlots": 80,
+                            "openTimeslots": 71,
+                            "openAppointmentSlots": 71,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 194,
+                    "openTimeslots": 173,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 194,
+                    "openAppointmentSlots": 173,
                     "name": "Montrose Market H-E-B",
                     "longitude": -95.40284,
                     "latitude": 29.7379,
@@ -7004,20 +6890,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 101,
-                            "openAppointmentSlots": 101,
+                            "openTimeslots": 92,
+                            "openAppointmentSlots": 92,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 64,
-                            "openAppointmentSlots": 64,
+                            "openTimeslots": 58,
+                            "openAppointmentSlots": 58,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 165,
+                    "openTimeslots": 150,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 165,
+                    "openAppointmentSlots": 150,
                     "name": "North Woodlands Market H-E-B",
                     "longitude": -95.51296,
                     "latitude": 30.22918,
@@ -7087,15 +6973,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 16,
-                            "openAppointmentSlots": 16,
+                            "openTimeslots": 7,
+                            "openAppointmentSlots": 7,
                             "manufacturer": "Moderna"
                         }
                     ],
-                    "openTimeslots": 16,
+                    "openTimeslots": 7,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 16,
+                    "openAppointmentSlots": 7,
                     "name": "Kostoryz and Gollihar H-E-B",
                     "longitude": -97.40516,
                     "latitude": 27.73917,
@@ -7181,25 +7067,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 31,
-                            "openAppointmentSlots": 31,
+                            "openTimeslots": 26,
+                            "openAppointmentSlots": 26,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 38,
-                            "openAppointmentSlots": 38,
+                            "openTimeslots": 35,
+                            "openAppointmentSlots": 35,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 44,
-                            "openAppointmentSlots": 44,
+                            "openTimeslots": 40,
+                            "openAppointmentSlots": 40,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 113,
+                    "openTimeslots": 101,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 113,
+                    "openAppointmentSlots": 101,
                     "name": "Morgan and Grimes H-E-B",
                     "longitude": -97.67639,
                     "latitude": 26.20337,
@@ -7233,20 +7119,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 13,
-                            "openAppointmentSlots": 13,
-                            "manufacturer": "Pfizer"
-                        },
-                        {
-                            "openTimeslots": 9,
-                            "openAppointmentSlots": 9,
+                            "openTimeslots": 7,
+                            "openAppointmentSlots": 7,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 22,
+                    "openTimeslots": 7,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 22,
+                    "openAppointmentSlots": 7,
                     "name": "San Pedro and Oblate H-E-B",
                     "longitude": -98.4995,
                     "latitude": 29.50282,
@@ -7280,8 +7161,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 118,
-                            "openAppointmentSlots": 118,
+                            "openTimeslots": 92,
+                            "openAppointmentSlots": 92,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -7290,10 +7171,10 @@
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 219,
+                    "openTimeslots": 193,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 219,
+                    "openAppointmentSlots": 193,
                     "name": "Lamar and Rundberg H-E-B",
                     "longitude": -97.69689,
                     "latitude": 30.36357,
@@ -7351,13 +7232,13 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 52,
-                            "openAppointmentSlots": 52,
+                            "openTimeslots": 40,
+                            "openAppointmentSlots": 40,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 52,
-                            "openAppointmentSlots": 52,
+                            "openTimeslots": 46,
+                            "openAppointmentSlots": 46,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -7366,10 +7247,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 133,
+                    "openTimeslots": 115,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 133,
+                    "openAppointmentSlots": 115,
                     "name": "Slaughter and South Congress H-E-B",
                     "longitude": -97.78723,
                     "latitude": 30.16862,
@@ -7432,25 +7313,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 240,
-                            "openAppointmentSlots": 240,
+                            "openTimeslots": 226,
+                            "openAppointmentSlots": 226,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 154,
-                            "openAppointmentSlots": 154,
+                            "openTimeslots": 141,
+                            "openAppointmentSlots": 141,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 9,
+                            "openAppointmentSlots": 9,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 412,
+                    "openTimeslots": 376,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 412,
+                    "openAppointmentSlots": 376,
                     "name": "281 and Evans Road H-E-B plus!",
                     "longitude": -98.45756,
                     "latitude": 29.63886,
@@ -7466,8 +7347,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 310,
-                            "openAppointmentSlots": 310,
+                            "openTimeslots": 334,
+                            "openAppointmentSlots": 334,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -7481,10 +7362,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 729,
+                    "openTimeslots": 753,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 729,
+                    "openAppointmentSlots": 753,
                     "name": "Fairfield Market H-E-B",
                     "longitude": -95.74599,
                     "latitude": 29.9925,
@@ -7500,8 +7381,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 6,
-                            "openAppointmentSlots": 6,
+                            "openTimeslots": 4,
+                            "openAppointmentSlots": 4,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -7510,15 +7391,15 @@
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 16,
+                            "openAppointmentSlots": 16,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 38,
+                    "openTimeslots": 34,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 38,
+                    "openAppointmentSlots": 34,
                     "name": "Jones and West H-E-B",
                     "longitude": -95.5859,
                     "latitude": 29.91104,
@@ -7539,15 +7420,15 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 77,
-                            "openAppointmentSlots": 77,
+                            "openTimeslots": 72,
+                            "openAppointmentSlots": 72,
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 141,
+                    "openTimeslots": 136,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 141,
+                    "openAppointmentSlots": 136,
                     "name": "The Market at Stone Oak",
                     "longitude": -98.50062,
                     "latitude": 29.662,
@@ -7563,8 +7444,8 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 18,
-                            "openAppointmentSlots": 18,
+                            "openTimeslots": 16,
+                            "openAppointmentSlots": 16,
                             "manufacturer": "Moderna"
                         },
                         {
@@ -7573,10 +7454,10 @@
                             "manufacturer": "Pfizer"
                         }
                     ],
-                    "openTimeslots": 34,
+                    "openTimeslots": 32,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 34,
+                    "openAppointmentSlots": 32,
                     "name": "Lakeline H-E-B plus!",
                     "longitude": -97.8034,
                     "latitude": 30.47786,
@@ -7621,20 +7502,20 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
+                            "openTimeslots": 5,
+                            "openAppointmentSlots": 5,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 10,
-                            "openAppointmentSlots": 10,
+                            "openTimeslots": 5,
+                            "openAppointmentSlots": 5,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 20,
+                    "openTimeslots": 10,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 20,
+                    "openAppointmentSlots": 10,
                     "name": "Texas City H-E-B",
                     "longitude": -94.94893,
                     "latitude": 29.39535,
@@ -7673,13 +7554,13 @@
                             "manufacturer": "Janssen"
                         },
                         {
-                            "openTimeslots": 100,
-                            "openAppointmentSlots": 100,
+                            "openTimeslots": 89,
+                            "openAppointmentSlots": 89,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 80,
-                            "openAppointmentSlots": 80,
+                            "openTimeslots": 68,
+                            "openAppointmentSlots": 68,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -7688,10 +7569,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 291,
+                    "openTimeslots": 268,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 291,
+                    "openAppointmentSlots": 268,
                     "name": "Broadway Central Market",
                     "longitude": -98.46408,
                     "latitude": 29.47069,
@@ -7730,8 +7611,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 30,
-                            "openAppointmentSlots": 30,
+                            "openTimeslots": 29,
+                            "openAppointmentSlots": 29,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -7740,10 +7621,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 60,
+                    "openTimeslots": 59,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 60,
+                    "openAppointmentSlots": 59,
                     "name": "Carrizo Springs H-E-B",
                     "longitude": -99.85102,
                     "latitude": 28.53642,
@@ -7759,25 +7640,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 35,
-                            "openAppointmentSlots": 35,
+                            "openTimeslots": 19,
+                            "openAppointmentSlots": 19,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 28,
-                            "openAppointmentSlots": 28,
+                            "openTimeslots": 14,
+                            "openAppointmentSlots": 14,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 32,
-                            "openAppointmentSlots": 32,
+                            "openTimeslots": 16,
+                            "openAppointmentSlots": 16,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 95,
+                    "openTimeslots": 49,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 95,
+                    "openAppointmentSlots": 49,
                     "name": "Valley Mills H-E-B plus!",
                     "longitude": -97.13916,
                     "latitude": 31.52508,
@@ -7793,20 +7674,15 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 35,
-                            "openAppointmentSlots": 35,
+                            "openTimeslots": 12,
+                            "openAppointmentSlots": 12,
                             "manufacturer": "Moderna"
-                        },
-                        {
-                            "openTimeslots": 17,
-                            "openAppointmentSlots": 17,
-                            "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 52,
+                    "openTimeslots": 12,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 52,
+                    "openAppointmentSlots": 12,
                     "name": "University Blvd H-E-B",
                     "longitude": -97.68859,
                     "latitude": 30.56107,
@@ -7827,8 +7703,8 @@
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 50,
-                            "openAppointmentSlots": 50,
+                            "openTimeslots": 49,
+                            "openAppointmentSlots": 49,
                             "manufacturer": "Pfizer"
                         },
                         {
@@ -7837,10 +7713,10 @@
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 80,
+                    "openTimeslots": 79,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 80,
+                    "openAppointmentSlots": 79,
                     "name": "Palmhurst H-E-B",
                     "longitude": -98.31816,
                     "latitude": 26.25684,
@@ -7856,25 +7732,25 @@
                     "state": "TX",
                     "slotDetails": [
                         {
-                            "openTimeslots": 97,
-                            "openAppointmentSlots": 97,
+                            "openTimeslots": 85,
+                            "openAppointmentSlots": 85,
                             "manufacturer": "Moderna"
                         },
                         {
-                            "openTimeslots": 69,
-                            "openAppointmentSlots": 69,
+                            "openTimeslots": 62,
+                            "openAppointmentSlots": 62,
                             "manufacturer": "Pfizer"
                         },
                         {
-                            "openTimeslots": 19,
-                            "openAppointmentSlots": 19,
+                            "openTimeslots": 9,
+                            "openAppointmentSlots": 9,
                             "manufacturer": "Pediatric_Pfizer"
                         }
                     ],
-                    "openTimeslots": 185,
+                    "openTimeslots": 156,
                     "openFluTimeslots": 0,
                     "openFluAppointmentSlots": 0,
-                    "openAppointmentSlots": 185,
+                    "openAppointmentSlots": 156,
                     "name": "Pearland Market H-E-B",
                     "longitude": -95.26499,
                     "latitude": 29.55812,
@@ -7923,15 +7799,15 @@
             "Content-Type",
             "binary/octet-stream",
             "Content-Length",
-            "159190",
+            "156878",
             "Connection",
             "close",
             "Date",
-            "Sat, 18 Jun 2022 23:54:24 GMT",
+            "Sun, 19 Jun 2022 16:52:27 GMT",
             "Last-Modified",
-            "Sat, 18 Jun 2022 23:53:48 GMT",
+            "Sun, 19 Jun 2022 16:51:55 GMT",
             "ETag",
-            "\"957ade97aabbebbd1f6dedf02e3481f7\"",
+            "\"cd26b27ddcdab0af41463630dd244e97\"",
             "Cache-Control",
             "max-age:0",
             "Accept-Ranges",
@@ -7941,11 +7817,11 @@
             "X-Cache",
             "Miss from cloudfront",
             "Via",
-            "1.1 7189b8cad57dc2d1ab0dd5f90144f2a2.cloudfront.net (CloudFront)",
+            "1.1 e59248dced0c86acee162cdb37ef8ba6.cloudfront.net (CloudFront)",
             "X-Amz-Cf-Pop",
             "SFO5-P1",
             "X-Amz-Cf-Id",
-            "sRPz8SMbBY6UHkK1IxL28sYr52kURoistIjjiWS5e5SK9tra8ah5JA=="
+            "F0S8Z8lmq7p6x8Wo7b2PH1CmpxaLZjU-mMGHRhmq4QJ-IDhogih-ZA=="
         ],
         "responseIsBinary": false
     }

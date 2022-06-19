@@ -22,6 +22,8 @@ const API_URL =
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
   moderna: VaccineProduct.moderna,
+  // NOTE: the naming progression for Moderna is different than Pfizer.
+  pediatric_moderna: VaccineProduct.modernaAge0_5,
   janssen: VaccineProduct.janssen,
   pediatric_pfizer: VaccineProduct.pfizerAge5_11,
   ultra_pediatric_pfizer: VaccineProduct.pfizerAge0_4,
