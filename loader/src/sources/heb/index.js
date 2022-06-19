@@ -24,6 +24,7 @@ const PRODUCT_NAMES = {
   moderna: VaccineProduct.moderna,
   janssen: VaccineProduct.janssen,
   pediatric_pfizer: VaccineProduct.pfizerAge5_11,
+  ultra_pediatric_pfizer: VaccineProduct.pfizerAge0_4,
 };
 
 async function fetchRawData() {
