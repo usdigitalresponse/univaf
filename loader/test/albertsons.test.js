@@ -12,6 +12,17 @@ const { ParseError } = require("../src/exceptions");
 
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
+const basicLocation = {
+  id: "123456789",
+  region: "Eastern_-_6",
+  address: "Albertsons 0393 - 7315 Famous Ave., Nowhere, MD, 20912",
+  lat: "38.98247194054162",
+  long: "-76.9879339600021",
+  coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
+  availability: "yes",
+  drugName: ["PfizerChild"],
+};
+
 describe("Albertsons", () => {
   // Keep a copy of manual corrections so we can reset it if altered in tests.
   const _corrections = { ...corrections };
@@ -154,14 +165,8 @@ describe("Albertsons", () => {
       .query(true)
       .reply(200, [
         {
-          id: "1600116808972",
-          region: "Alaska",
+          ...basicLocation,
           address: "Safeway 3410 Safeway - 30 College Rd, Fairbanks, AK, 99701",
-          lat: "64.8515679",
-          long: "-147.7024008",
-          coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
-          availability: "no",
-          drugName: ["Moderna"],
         },
       ]);
 
@@ -177,18 +182,12 @@ describe("Albertsons", () => {
       .query(true)
       .reply(200, [
         {
-          id: "1600116808972",
-          region: "Alaska",
-          address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
-          lat: "64.8515679",
-          long: "-147.7024008",
-          coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+          ...basicLocation,
           availability: "whoseywhatsit?",
-          drugName: ["Moderna"],
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: "AK" });
+    const result = await checkAvailability(() => {}, { states: "MD" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty(
       "availability.available",
@@ -223,18 +222,12 @@ describe("Albertsons", () => {
       .query(true)
       .reply(200, [
         {
-          id: "1600116808972",
-          region: "Alaska",
-          address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
-          lat: "64.8515679",
-          long: "-147.7024008",
-          coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
-          availability: "whoseywhatsit?",
+          ...basicLocation,
           drugName: ["Not A Known Vaccine", "Pfizer"],
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: "AK" });
+    const result = await checkAvailability(() => {}, { states: "MD" });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
@@ -245,15 +238,8 @@ describe("Albertsons", () => {
       .query(true)
       .reply(200, [
         {
-          id: "1600116808972",
-          region: "Alaska",
+          ...basicLocation,
           address: "Public Test  - 1211 Test St, Testville, AK, 99201",
-          lat: "47.66007159999999",
-          long: "-117.4316272",
-          coach_url: "https://kordinator.mhealthcoach.net/vcl/1638566162684",
-          availability: "no",
-          drugName: ["PfizerChild"],
-          availabilityTimeframe: null,
         },
       ]);
 
@@ -444,15 +430,9 @@ describe("Albertsons", () => {
         200,
         [
           {
-            id: "1637101034326",
-            region: "Eastern_-_6",
+            ...basicLocation,
             address:
               "Takoma Park Recreation Center  - 7315 New Hampshire Avenue, Takoma Park, MD, 20912",
-            lat: "38.98247194054162",
-            long: "-76.9879339600021",
-            coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
-            availability: "yes",
-            drugName: ["PfizerChild"],
           },
         ],
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
@@ -464,7 +444,7 @@ describe("Albertsons", () => {
     expect(result[0]).toHaveProperty("location_type", "CLINIC");
     expect(result[0]).toHaveProperty(
       "meta.booking_url_pediatric",
-      "https://kordinator.mhealthcoach.net/vcl/1637101034326"
+      basicLocation.coach_url
     );
   });
 
@@ -476,15 +456,9 @@ describe("Albertsons", () => {
         200,
         [
           {
-            id: "1637101034326",
-            region: "Eastern_-_6",
+            ...basicLocation,
             address:
               "Some unknown store #8134 - 7315 Famous Ave., Nowhere, MD, 20912",
-            lat: "38.98247194054162",
-            long: "-76.9879339600021",
-            coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
-            availability: "yes",
-            drugName: ["PfizerChild"],
           },
         ],
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
@@ -509,14 +483,8 @@ describe("Albertsons", () => {
   it("errors when formatting locations with a name and address that can't be separated", () => {
     expect(() => {
       formatLocation({
-        id: "1637101034326",
-        region: "Eastern_-_6",
+        ...basicLocation,
         address: "Something 7315 Famous Ave., Nowhere, MD, 20912",
-        lat: "38.98247194054162",
-        long: "-76.9879339600021",
-        coach_url: "https://kordinator.mhealthcoach.net/vcl/1637101034326",
-        availability: "yes",
-        drugName: ["PfizerChild"],
       });
     }).toThrow(ParseError);
   });
@@ -524,35 +492,23 @@ describe("Albertsons", () => {
   it("errors when formatting locations with a URL for a name", () => {
     expect(() => {
       formatLocation({
-        id: "1637101034326",
-        region: "Eastern_-_6",
+        ...basicLocation,
         address:
           "https://kordinator.mhealthcoach.net/vcl/1636075700051 - Vons - 3439 Via Montebello, Carlsbad, CA, 92009",
-        lat: "38.98247194054162",
-        long: "-76.9879339600021",
-        coach_url: "https://kordinator.mhealthcoach.net/vcl/1636075700051",
-        availability: "yes",
-        drugName: ["PfizerChild"],
       });
     }).toThrow(ParseError);
   });
 
   it("includes manual corrections to locations", () => {
     // Should replace the provided address with this one.
-    corrections["123456789"] = {
+    corrections[basicLocation.id] = {
       address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
     };
 
     expect(
       formatLocation({
-        id: "123456789",
-        region: "Alaska",
+        ...basicLocation,
         address: "Whoseywhatsit - some crazy address that's not valid",
-        lat: "64.8515679",
-        long: "-147.7024008",
-        coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
-        availability: "no",
-        drugName: ["Moderna"],
       })
     ).toEqual(
       expect.objectContaining({
@@ -573,15 +529,9 @@ describe("Albertsons", () => {
 
   it("removes one-off event dates from location names", () => {
     const formatted = formatLocation({
-      id: "123456789",
-      region: "California",
+      ...basicLocation,
       address:
         "Albertsons 0393 - Simi Valley Jun 3 - 1268 Madera Rd, Simi Valley, CA, 93065",
-      lat: "64.8515679",
-      long: "-147.7024008",
-      coach_url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
-      availability: "yes",
-      drugName: ["Moderna"],
     });
 
     expect(formatted).toHaveProperty("name", "Albertsons Pharmacy #393");
@@ -589,5 +539,31 @@ describe("Albertsons", () => {
     expect(formatted).toHaveProperty("city", "Simi Valley");
     expect(formatted).toHaveProperty("state", "CA");
     expect(formatted).toHaveProperty("postal_code", "93065");
+  });
+
+  it("removes repeated sections in the address/name", () => {
+    const formatted = formatLocation({
+      ...basicLocation,
+      address:
+        "Some info - Happy Lands Church - Some info - 7315 Famous Ave., Nowhere, MD, 20912",
+    });
+
+    expect(formatted.name).toEqual("Some info - Happy Lands Church");
+  });
+
+  it("removes redundant sections that are already in other parts of the name", () => {
+    const longerSectionFirst = formatLocation({
+      ...basicLocation,
+      address:
+        "Happy Lands Church - Some info - Church - 7315 Famous Ave., Nowhere, MD, 20912",
+    });
+    const longerSectionSecond = formatLocation({
+      ...basicLocation,
+      address:
+        "Church - Happy Lands Church - Some info - 7315 Famous Ave., Nowhere, MD, 20912",
+    });
+
+    expect(longerSectionFirst.name).toEqual("Happy Lands Church - Some info");
+    expect(longerSectionSecond.name).toEqual("Happy Lands Church - Some info");
   });
 });

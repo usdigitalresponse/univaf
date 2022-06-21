@@ -393,14 +393,18 @@ function parseNameAndAddress(text) {
       break;
     }
   }
-  // Sometimes we have just a brand name separated from the rest, even though
-  // the brand name is elsewhere in the name. In these cases, drop it.
-  // e.g. "Safeway 149 - Safeway - 1610 West Lincoln, Yakima, WA, 98902"
+  // Sometimes sections of the name are repeated, or repeat a substring of
+  // another section. For example, store brands are often repeated like:
+  //     "Safeway 149 - Safeway - 1610 West Lincoln, Yakima, WA, 98902"
+  //      ^ Brand       ^ Repeat
+  // We want to find and remove these redundant sections.
   const withoutRedundantSections = sections
-    .map((section) => {
-      if (!/\s/.test(section)) {
-        for (const otherSection of sections) {
-          if (otherSection !== section && otherSection.includes(section)) {
+    .map((section, index) => {
+      for (let i = 0; i < sections.length; i++) {
+        if (i !== index && sections[i].includes(section)) {
+          if (sections[i] !== section) {
+            return null;
+          } else if (i < index) {
             return null;
           }
         }
