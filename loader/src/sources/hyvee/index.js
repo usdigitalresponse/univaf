@@ -24,6 +24,7 @@ const SOURCE_NAME = "univaf-hyvee";
 const PROVIDER_NAME = "hyvee";
 const VACCINE_NAMES = {
   Moderna: VaccineProduct.moderna,
+  "Pediatric-Moderna (3-5)": VaccineProduct.modernaAge0_5,
   "Pfizer-BioNTech": VaccineProduct.pfizer,
   "Pediatric-Pfizer (5-11)": VaccineProduct.pfizerAge5_11,
   Janssen: VaccineProduct.janssen,
