@@ -348,33 +348,6 @@ async function getData(states) {
 }
 
 const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
-const addressFieldParts = /^\s*(?<name>.+?)\s*-\s+(?<address>.+)$/;
-const pediatricPrefixes = [
-  /^Pfizer Child\s*-\s*(?<body>.*)$/i,
-  /^Ages 5\+ welcome\s*-\s*(?<body>.*)$/i,
-  /^All ages welcome 5\+\s+(?<body>.*)$/i,
-  /^Pediatric(\s+Clinic)?\s+(?<body>.*)$/i,
-];
-
-// Match info about one-off events that is embedded in the `address` field.
-// Listings for one-off events currently look like:
-//
-//   Osco Pharmacy Pediatric Booster Clinic - Aurora June 9  - 1157 Eola Road, Aurora, IL, 60502
-//
-// Where the event info is in the form `- <city> <month> <day> -`.
-const raw = String.raw;
-const addressEventPattern = new RegExp(
-  [
-    raw`\s*-\s*`,
-    raw`(?<city>[^-]+)`,
-    raw`\s`,
-    raw`(?<month>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*)`,
-    raw`\s+`,
-    raw`(?<day>\d{1,2})`,
-    raw`\s*-\s*`,
-  ].join(""),
-  "i"
-);
 
 /**
  * Parse a location name and address from Albertsons (they're both part of
@@ -391,29 +364,63 @@ function parseNameAndAddress(text) {
     throw new ParseError(`Found a URL in the name "${text}"`);
   }
 
-  // Some locations represent one-off events on a particular day, and the date
-  // is in the address.
-  // TODO: preserve this info to put in `availability.capacity`?
-  text = text.replace(addressEventPattern, " - ");
+  // The main goal here is to prevent age ranges (e.g. "5 - 11 years old") from
+  // getting split up in the next step. But this also puts in an en-dash for
+  // better typography. ;)
+  const cleanText = text.replace(/(\d+) - (\d+ year)/g, "$1\u2013$2");
 
-  // Some locations have separate pediatric and non-pediatric API locations.
-  // The pediatric ones often have prefixes like "Pfizer Child".
-  let pediatric = false;
-  let body = text;
-  for (const pattern of pediatricPrefixes) {
-    const match = text.match(pattern);
-    if (match) {
-      pediatric = true;
-      body = match.groups.body;
+  // The address field is freeform, and often has a whole mess of metadata
+  // stuffed into it (actual address, location name, whether it's pediatric
+  // only, etc.). Generally, different pieces of information are separated by
+  // " - " and the actual address always comes last. Our goal here is to
+  // separate the address and other bits.
+  const sections = cleanText.split(/\s*-\s+/g).map((s) => s.trim());
+  let address = sections.pop();
+  let maybeAddressPart;
+  while ((maybeAddressPart = sections.pop())) {
+    if (/^\d+$/.test(maybeAddressPart)) {
+      // If it's just a number, it's probably the building number with a dash
+      // separating it from the street name (we've seen this sometimes when
+      // streets are numberic, e.g. "1600 - 16th Street").
+      address = `${maybeAddressPart} ${address}`;
+    } else if (/^\d+\s+\w+$/.test(maybeAddressPart)) {
+      // A number followed by a single word is probably the first part of a
+      // street name that had a dash in it, e.g. "1600 Berlin - Cross Rd".
+      // (Usually there aren't spaces around the dash, but we've seen some.)
+      address = `${maybeAddressPart}-${address}`;
+    } else {
+      sections.push(maybeAddressPart);
       break;
     }
   }
+  // Sometimes sections of the name are repeated, or repeat a substring of
+  // another section. For example, store brands are often repeated like:
+  //     "Safeway 149 - Safeway - 1610 West Lincoln, Yakima, WA, 98902"
+  //      ^ Brand       ^ Repeat
+  // We want to find and remove these redundant sections.
+  const withoutRedundantSections = sections
+    .map((section, index) => {
+      for (let i = 0; i < sections.length; i++) {
+        if (i !== index && sections[i].includes(section)) {
+          if (sections[i] !== section) {
+            return null;
+          } else if (i < index) {
+            return null;
+          }
+        }
+      }
+      return section;
+    })
+    .filter(Boolean);
 
-  const partMatch = body.match(addressFieldParts);
-  if (!partMatch) {
-    throw new ParseError(`Could not separate name and address in "${body}"`);
+  let name = withoutRedundantSections.join(" - ");
+  if (!name) {
+    throw new ParseError(`Could not separate name and address in "${text}"`);
   }
-  let { name, address } = partMatch.groups;
+
+  // Some locations have separate pediatric and non-pediatric API locations.
+  // The pediatric ones often have text in the name identifying them as such.
+  const isPediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
 
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
@@ -433,7 +440,7 @@ function parseNameAndAddress(text) {
     storeBrand,
     storeNumber,
     address: parseUsAddress(address),
-    isPediatric: !!pediatric,
+    isPediatric,
   };
 }
 
@@ -532,9 +539,15 @@ function formatLocation(data, validAt, checkedAt) {
   );
   logMatchDebugInfo(pharmacyMatch, data, matchAddress, storeBrand, storeNumber);
 
+  let timezone;
+  let info_phone;
+  let info_url = storeBrand?.url;
+  let description = data.description;
+  let position = {
+    longitude: parseFloat(data.long),
+    latitude: parseFloat(data.lat),
+  };
   if (pharmacyMatch && pharmacyMatch.score > 0.2) {
-    // TODO: fill in other data from known stores, like info URL, phone,
-    // timezone, geo coordinate.
     storeNumber = pharmacyMatch.data.c_parentEntityID;
     // TODO: consider using c_geomodifier for the name. (We'd still need to
     // create a string with the store number for matching the brand, though.)
@@ -545,6 +558,7 @@ function formatLocation(data, validAt, checkedAt) {
       // data from our scraped, saved list of known pharmacy locations.
       throw new Error(`Failed to match a brand to known location "${name}"`);
     }
+
     address = {
       lines: [
         pharmacyMatch.data.address.line1,
@@ -555,6 +569,20 @@ function formatLocation(data, validAt, checkedAt) {
       state: pharmacyMatch.data.address.region,
       zip: pharmacyMatch.data.address.postalCode,
     };
+    timezone = pharmacyMatch.data.timezone;
+    info_url = pharmacyMatch.data.c_pagesURL || storeBrand.url;
+    info_phone = pharmacyMatch.data.mainPhone?.display;
+    description =
+      description ||
+      pharmacyMatch.data.c_metaInformation?.description ||
+      pharmacyMatch.data.covidVaccineSiteInstructions ||
+      pharmacyMatch.data.description;
+    if (pharmacyMatch.data.geocodedCoordinate) {
+      position = {
+        longitude: parseFloat(pharmacyMatch.data.geocodedCoordinate.long),
+        latitude: parseFloat(pharmacyMatch.data.geocodedCoordinate.lat),
+      };
+    }
   }
 
   // If we couldn't match this to some expected brand, don't attempt to output
@@ -598,21 +626,18 @@ function formatLocation(data, validAt, checkedAt) {
     city: address.city,
     state: address.state,
     postal_code: address.zip,
-    position: {
-      longitude: parseFloat(data.long),
-      latitude: parseFloat(data.lat),
-    },
+    position,
 
-    info_url: storeBrand.url,
+    info_phone,
+    info_url,
     booking_url: data.coach_url || undefined,
     meta: {
       mhealth_address: data.address,
       albertsons_region: data.region,
       [`booking_url_${bookingType}`]: data.coach_url || undefined,
+      timezone,
     },
-
-    // The raw data doesn't have a `description`, but some corrections add it.
-    description: data.description,
+    description,
 
     availability: {
       source: "univaf-albertsons",
@@ -637,7 +662,7 @@ async function checkAvailability(handler, options) {
   }
 
   const stores = await getData(states);
-  stores.forEach((store) => handler(store));
+  stores.forEach((store) => handler(store, { update_location: true }));
   if (config.debug) {
     console.error("Matches to known locations:", knownLocationMatches);
   }
