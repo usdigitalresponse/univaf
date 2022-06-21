@@ -520,7 +520,7 @@ module.exports = {
     } else if (text.includes("moderna")) {
       if (/ages?\s+18( and up|\s*\+)/i.test(text)) {
         return VaccineProduct.moderna;
-      } else if (/ages?\s+6 months/i.test(text)) {
+      } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
         return VaccineProduct.modernaAge0_5;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
@@ -536,7 +536,7 @@ module.exports = {
         return VaccineProduct.pfizer;
       } else if (/ages?\s+5|\b5\s?-\s?11\b/i.test(text)) {
         return VaccineProduct.pfizerAge5_11;
-      } else if (/ages?\s+6 months/i.test(text)) {
+      } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
         return VaccineProduct.pfizerAge0_4;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
