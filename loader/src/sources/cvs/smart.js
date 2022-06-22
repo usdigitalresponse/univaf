@@ -12,10 +12,14 @@ const {
   formatExternalIds,
   valuesAsObject,
 } = require("../../smart-scheduling-links");
+const { createWarningLogger } = require("../../utils");
 const { CVS_BOOKING_URL } = require("./shared");
 
 const CVS_SMART_API_URL =
   "https://www.cvs.com/immunizations/inventory/data/$bulk-publish";
+
+const warn = createWarningLogger("cvsSmart");
+const logError = createWarningLogger("cvsSmart", Sentry.Severity.Error);
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -100,38 +104,20 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
           available = Available.unknown;
-          console.error(`CVS SMART: non-integer capcity: ${extension}`);
-          Sentry.captureMessage(`Unparseable slot capacity`, {
-            level: Sentry.Severity.Error,
-            contexts: {
-              raw_slot: slot,
-            },
-          });
+          logError("Non-integer slot capcity", slot, true);
         } else if (capacity > 1) {
           // The CVS API currently returns 0 (no appointments) or 1 (*some*
           // appointments) rather than actual capacity estimates. It doesn't
           // indicate this in any way, so watch for unexpected values in case
           // something in their implementation to be more detailed.
-          console.warn(`Got unexpected > 1 capacity for CVS: ${slot}`);
-          Sentry.captureMessage(`Unexpected > 1 capacity for CVS`, {
-            level: Sentry.Severity.Info,
-            contexts: {
-              raw_slot: slot,
-            },
-          });
+          warn("Unexpected > 1 capacity for slot", { slot }, true);
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         // We don't use the Booking URL; we hardcode a better one that puts you
         // directly into the screener flow instead of an interstitial page.
         // bookingLink = extension.valueUrl;
       } else {
-        console.warn(`Got unexpected slot extension for CVS: ${slot}`);
-        Sentry.captureMessage(`Unexpected slot extension for CVS`, {
-          level: Sentry.Severity.Info,
-          contexts: {
-            raw_slot: slot,
-          },
-        });
+        warn("Unexpected slot extension", { slot }, true);
       }
     }
 

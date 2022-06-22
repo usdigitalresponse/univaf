@@ -15,6 +15,9 @@ const { locationSchema } = require("./support/schemas");
 const { VaccineProduct } = require("../src/model");
 const { EXTENSIONS } = require("../src/smart-scheduling-links");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 describe("PrepMod API", () => {
   jest.setTimeout(60000);
 

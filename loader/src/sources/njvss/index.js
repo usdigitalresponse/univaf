@@ -11,7 +11,7 @@ const {
   oneLine,
   popItem,
   titleCase,
-  warn,
+  createWarningLogger,
 } = require("../../utils");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
@@ -28,6 +28,12 @@ const PROVIDER = {
   sams: "sams_club",
   walmart: "walmart",
 };
+
+const warn = createWarningLogger("njvss");
+
+// TODO: clean up the no-longer-relevant logs in this module that use this
+// because we don't actually want to be notified about them.
+const logDebug = console.warn;
 
 /**
  * @typedef {Object} NjvssRecord
@@ -145,6 +151,13 @@ async function getNjvssData() {
  * @returns {Array<NjvssRecord>}
  */
 function filterActualNjvssLocations(locations) {
+  // TODO: re-evaluate whether this function and this data file (and most of
+  // what this function does) is still needed. We log a lot of changes from this
+  // data file that we don't actually care about, and we don't really update the
+  // file. New Jersey now manages this info in Airtable, anyway.
+  // See also:
+  // - https://github.com/usdigitalresponse/univaf/issues/198
+  // - https://github.com/usdigitalresponse/univaf/issues/116
   let knownLocations = require("./known-njvss-locations.json");
   knownLocations = knownLocations.map((known) => {
     return Object.assign({}, known, {
@@ -189,7 +202,7 @@ function filterActualNjvssLocations(locations) {
     // If our list of known locations is incomplete, log it so we have a signal
     // that we should to update our list of known participating locations.
     if (location.available > 0) {
-      warn(oneLine`
+      logDebug(oneLine`
         NJVSS reports availability for a new site: "${location.name}" at
         "${location.vras_provideraddress}"
       `);
@@ -202,7 +215,7 @@ function filterActualNjvssLocations(locations) {
   // Sanity-check that we don't have any previously known locations that didn't
   // match up to something in the NJVSS database now.
   for (const known of knownLocations) {
-    warn(oneLine`
+    logDebug(oneLine`
       Previously known NJVSS location not found in NJVSS data:
       "${known.name}" at "${known.address}"
     `);
@@ -402,7 +415,7 @@ function parseNjvssAddress(address) {
   try {
     return parseUsAddress(address);
   } catch (error) {
-    warn(error.message);
+    warn(error);
     return { lines: [address], city: null, state: "NJ", zip: null };
   }
 }

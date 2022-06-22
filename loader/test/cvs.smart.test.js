@@ -12,6 +12,9 @@ const { locationSchema } = require("./support/schemas");
 const fixtures = require("./fixtures/cvs.smart.fixtures");
 const { Available } = require("../src/model");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 describe("CVS SMART Scheduling Links API", () => {
   const [CVS_BASE, CVS_MANIFEST_PATH] = splitHostAndPath(CVS_SMART_API_URL);
 

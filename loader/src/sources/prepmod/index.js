@@ -6,7 +6,6 @@
  * contact at least one (and sometimes several) hosts in each state.
  */
 
-const Sentry = require("@sentry/node");
 const { ApiClient } = require("../../api-client");
 const {
   EXTENSIONS,
@@ -20,19 +19,11 @@ const {
 const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
-const { matchVaccineProduct } = require("../../utils");
+const { matchVaccineProduct, createWarningLogger } = require("../../utils");
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
 
-function warn(message, context) {
-  console.warn(`PrepMod: ${message}`, context);
-  // Sentry does better fingerprinting with an actual exception object.
-  if (message instanceof Error) {
-    Sentry.captureException(message, { level: Sentry.Severity.Info });
-  } else {
-    Sentry.captureMessage(message, Sentry.Severity.Info);
-  }
-}
+const warn = createWarningLogger("prepmod");
 
 function getApiForHost(host) {
   return new SmartSchedulingLinksApi(`${host}${API_PATH}`);
@@ -228,16 +219,37 @@ function parseSchedule(schedule) {
       } else if (nonCovidProductName.test(extension.valueCoding.display)) {
         data.hasNonCovidProducts = true;
       } else {
-        warn(`Unparseable product extension: ${JSON.stringify(extension)}`);
+        warn(
+          "Unparseable product extension",
+          {
+            scheduleId: schedule.id,
+            extension,
+          },
+          true
+        );
       }
     } else if (extension.url === EXTENSIONS.DOSE) {
       if (extension.valueInteger >= 1 && extension.valueInteger <= 2) {
         doses.add(extension.valueInteger);
       } else {
-        warn(`Unparseable dose extension: ${JSON.stringify(extension)}`);
+        warn(
+          "Unparseable dose extension",
+          {
+            scheduleId: schedule.id,
+            extension,
+          },
+          true
+        );
       }
     } else {
-      warn(`Unknown schedule extension url: ${JSON.stringify(extension)}`);
+      warn(
+        `Unknown schedule extension url: "${extension.url}"`,
+        {
+          scheduleId: schedule.id,
+          extension,
+        },
+        true
+      );
     }
   }
 
@@ -283,16 +295,26 @@ function formatSlots(smartSlots) {
           // TODO: should have something that automatically parses by value type.
           capacity = parseInt(extension.valueInteger);
           if (isNaN(capacity)) {
-            warn(`Non-integer capacity: ${JSON.stringify(extension)}`, {
-              slotId: smartSlot.id,
-            });
+            warn(
+              `Non-integer slot capacity`,
+              {
+                slotId: smartSlot.id,
+                extension,
+              },
+              true
+            );
           }
         } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
           booking_url = extension.valueUrl;
         } else {
-          warn(`Unknown slot extension url: ${JSON.stringify(extension)}`, {
-            slotId: smartSlot.id,
-          });
+          warn(
+            `Unknown slot extension url: "${extension.url}"`,
+            {
+              slotId: smartSlot.id,
+              extension,
+            },
+            true
+          );
         }
       }
 

@@ -53,7 +53,7 @@ const VACCINE_IDS = {
 // response.
 const VACCINE_IDS_SHORT = mapKeys(VACCINE_IDS, (_, key) => key.split("-")[0]);
 
-const warn = createWarningLogger("Rite Aid Scraper");
+const warn = createWarningLogger("riteAidScraper");
 
 async function queryZipCode(zip, radius = 100, stores = null) {
   const response = await httpClient({

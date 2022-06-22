@@ -15,7 +15,7 @@
  */
 
 const Sentry = require("@sentry/node");
-const { httpClient } = require("../../utils");
+const { httpClient, createWarningLogger } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
@@ -31,15 +31,7 @@ const VACCINE_NAMES = {
   Janssen: VaccineProduct.janssen,
 };
 
-function warn(message, context) {
-  console.warn(`HyVee: ${message}`, context);
-  // Sentry does better fingerprinting with an actual exception object.
-  if (message instanceof Error) {
-    Sentry.captureException(message, { level: Sentry.Severity.Info });
-  } else {
-    Sentry.captureMessage(message, Sentry.Severity.Info);
-  }
-}
+const warn = createWarningLogger("hyvee");
 
 /**
  * Get an array of raw store & covid availability records from the HyVee API.

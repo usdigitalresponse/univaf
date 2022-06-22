@@ -19,7 +19,7 @@ const {
   getLocationName,
 } = require("./common");
 
-const warn = createWarningLogger("Rite Aid API");
+const warn = createWarningLogger("riteAidApi");
 
 // Log a warning if a location has more than this many slots in a given day.
 const MAXIMUM_SLOT_COUNT = 500;
