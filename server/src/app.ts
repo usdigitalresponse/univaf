@@ -49,7 +49,7 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(logRequest);
 app.use(datadogMiddleware);
 app.use(compression());
-app.use(bodyParser.json({ limit: "1mb" }));
+app.use(bodyParser.json({ limit: "2.5mb" }));
 app.use(cors());
 app.use(authorizeRequest);
 app.use(urlDecodeSpecialPathChars);
