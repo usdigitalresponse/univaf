@@ -1,3 +1,19 @@
+/**
+ * WARNING: THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ *
+ * Load data from a final snapshot of Vaccinate the States's database. UNIVAF
+ * originally partnered with Vaccinate the States, who had a sizable and
+ * dedicated volunteer force working to identify and source detailed information
+ * about locations, while UNIVAF worked to find and organize corresponding
+ * appointment availability data for those locations.
+ *
+ * Vaccinate the States has since shut down, and this loader was used to pull in
+ * and make use of data from a final snapshot of their database. This loader is
+ * retained for historical purposes and for reference when diagnosing issues in
+ * data that may have originally been sourced from Vaccinate the States. It is
+ * no longer meaningfully usable.
+ */
+
 const Sentry = require("@sentry/node");
 const { httpClient, splitOnce, oneLine } = require("../../utils");
 

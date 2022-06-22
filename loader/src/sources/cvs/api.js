@@ -1,4 +1,6 @@
 /**
+ * WARNING: THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ *
  * CVS appointment checker based based on their official API.
  * Docs: https://devportal-test.cvshealth.com/api/196
  *
@@ -11,7 +13,7 @@
 const got = require("got");
 const { HttpApiError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
-const { httpClient, oneLine, warn } = require("../../utils");
+const { httpClient, oneLine, createWarningLogger } = require("../../utils");
 const {
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
   CVS_BOOKING_URL,
@@ -20,6 +22,8 @@ const {
 
 const API_URL = "https://api.cvshealth.com/";
 const AVAILABILITY_ENDPOINT = "/immunization-status/v1/covax-availability";
+
+const warn = createWarningLogger("cvsApi");
 
 /**
  * @typedef {Object} CvsApiLocation
@@ -126,6 +130,8 @@ function parseApiLocation(location, lastUpdated) {
  * @param {string} [apiUrl] Base URL for the CVS API.
  */
 async function checkAvailability(handler, _options) {
+  warn("WARNING: cvsApi is deprecated and no longer maintained.");
+
   const apiKey = process.env.CVS_API_KEY;
   let apiUrl = process.env.CVS_API_URL || API_URL;
 
