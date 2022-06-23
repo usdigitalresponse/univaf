@@ -1,3 +1,15 @@
+/**
+ * WARNING: THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ *
+ * Load data from vaccinespotter.org, a similar project to this one. They pull
+ * data from some sources we don't, and vice-versa.
+ *
+ * VaccineSpotter.org is no longer operational, and this loader is retained
+ * mainly for historical purposes and for reference when diagnosing issues in
+ * data that may have originally been sourced from VaccineSpotter.org. It is no
+ * longer actually usable.
+ */
+
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const {
@@ -5,13 +17,11 @@ const {
   titleCase,
   unpadNumber,
   getUniqueExternalIds,
+  createWarningLogger,
 } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
-function warn(message, context) {
-  console.warn(`VaccineSpotter: ${message}`, context);
-  Sentry.captureMessage(message, Sentry.Severity.Info);
-}
+const warn = createWarningLogger("vaccinespotter");
 
 async function queryState(state) {
   try {
@@ -426,6 +436,8 @@ function formatStore(store) {
 }
 
 async function checkAvailability(handler, options) {
+  warn("WARNING: vaccinespotter is deprecated and no longer maintained.");
+
   let states = ["NJ"];
   if (options.vaccinespotterStates) {
     states = options.vaccinespotterStates

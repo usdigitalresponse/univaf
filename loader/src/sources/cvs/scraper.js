@@ -1,5 +1,5 @@
 /**
- * THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ * WARNING: THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
  *
  * Scrape appointment availability from CVS's website.
  * Note this scraper was originally focused only on the state of New Jersey,
@@ -8,13 +8,20 @@
  */
 
 const knownStores = require("./known-stores");
-const { httpClient, randomInt, randomUserAgent, warn } = require("../../utils");
+const {
+  httpClient,
+  randomInt,
+  randomUserAgent,
+  createWarningLogger,
+} = require("../../utils");
 const { LocationType, Available } = require("../../model");
 const {
   CVS_BOOKING_URL,
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
   getStoreCounty,
 } = require("./shared");
+
+const warn = createWarningLogger("cvsScraper");
 
 // The zip code selected are reverse engineered based on CVS' advertised
 // vaccine location. The city/town with CVS that provides that provide COVID
@@ -358,6 +365,8 @@ function sleep(ms) {
  * @return {array} Array of results conforming to the scraper standard.
  */
 async function checkAvailability(handler, _options) {
+  warn("WARNING: cvsScraper is deprecated and no longer maintained.");
+
   const clinicsZip = njClinicZip;
 
   const standardResults = {};
