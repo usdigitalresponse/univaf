@@ -7,7 +7,7 @@ Documents in this folder are a general guide to manipulating and maintaining the
     - [Other Services](#other-services)
 - [Deployment](#deployment)
     - [Building](#building)
-    - [Deploying New Images](#deploying-new-images)
+    - [Deploying New Images](#deploying-new-images-to-aws)
 - [Bastion Server](#bastion-server)
 
 
@@ -19,15 +19,19 @@ Most of the infrastructure and services that support this project are in Amazon 
 
 Major components:
 
-- Most code runs in ECS as Docker containers.
+- Most code runs in Elastic Container Service (ECS) as Docker containers. Everything runs in a single ECS *cluster*.
+    - The main concept in ECS is a *task*, which you can generally think of as Docker container.
+    - The API server is an ECS *service* (named `api`). A *service* is a set of long-running tasks that ECS keeps a certain number of instances running (so if one stops, ECS starts a new one, and keeps N copies running where N scales between an upper and lower limit based on resource usage).
+    - Most other code run as *scheduled tasks* in the same clauser as the API service. A *scheduled task* isn't actually a built-in feature of ECS, but is a well-known pattern — it's a *CloudWatch event* that is triggered on a schedule and that tells the ECS cluster to run a particular *task* — basically `cron` for Docker containers. Terraform is incredibly helpful by letting us make this pattern into a single, manageable configuration object.
+        - Each loader source (e.g. `albertsons`, `krogerSmart`, `walgreensSmart`) is a separate task (see [`terraform/loaders.tf`](../../terraform/loaders.tf)). This lets us control the schedule and arguments for each source we pull data from in an organized way.
+        - Other scheduled tasks are part of the `server` code and support its functions. For example, the `daily_data_snapshot_task` dumps a copy of the database each night into S3 as JSON files that are used for historical analysis.
 - CloudFront is used as a caching proxy in front of the API server.
 - The database is managed in RDS.
 - Historical log data is saved and made publicly accessible in S3.
 
 As much of the infrastructure as possible is managed in Terraform, but a few bits are set up manually:
 
-- Domain name in Route53.
-- SSL certificate in ACM.
+- SSL certificate in ACM. (The actual DNS records are managed in Terraform, though.)
 - Bastion server and its associated security group in EC2.
 
 
@@ -35,40 +39,52 @@ As much of the infrastructure as possible is managed in Terraform, but a few bit
 
 We also rely on a handful of other services for critical operations tasks:
 
-- [Terraform Cloud][terraform-cloud] manages checking and applying our Terraform configurations.
-- Errors are tracked in [Sentry][sentry].
+- **[Terraform Cloud][terraform-cloud]** manages checking and applying our Terraform configurations.
+- **GitHub actions** works in concert with Terraform Cloud to automatically deploy changes that land on the `main` branch.
+- **[Sentry][sentry]** tracks exceptions in our code. It also tracks warnings about unexpected content in the data we pull in from external sources (e.g. a new, unknown vaccine code), which is critical to keeping the service up-to-date and accurate.
+- **[DataDog][]** for general stats on our services. The most imporant of these is usually metrics on HTTP requests. Sometimes the server may be rejecting bad requests with a 4xx status code, and the dashboards in DataDog are the best place to see that happening since they might not trigger exceptions or other kinds of alerts.
+- **[1Password][1pw]** stores Important team and partner credentials in a shared *vault*.
+- **GitHub pages** hosts the demo UI at https://usdigitalresponse.github.io/univaf/. However, we don’t generally point everyday residents to this URL and are not aware of anybody using it in a production capacity — it’s intended a demonstration and testing tool for API consumers.
+- **[Slack][slack-usdr]** for team communication. We have two channels in USDR’s Slack:
+    - One for team discussion
+    - One for errors and alerts from the above services. When there’s an incident, the alerts channel is usually how we find out about it. We typically start a thread based on the alert that was posted to the channel, so if you are looking for live discussion of an ongoing problem, check there first.
+
+Please get in touch with a project lead for access to any of these systems.
 
 
 ## Deployment
 
 ### Building
 
-Because most of our code runs as Docker containers in ECS tasks, deploying new code requires first building and uploading Docker images to AWS ECR. We have GitHub Actions configured to automatically build images on every push in the [`ci` workflow][workflow-ci] (see the [logs in the "actions" tab][workflow-ci-runs]).
+**Most of our production code runs as Docker containers in ECS tasks.** Deploying new code requires first building and uploading Docker images to AWS Elastic Container Registry (ECR). We use GitHub Actions to automatically build images on every push and to *publish* those images to ECR on pushes to the `main` branch. See the [`ci` workflow][workflow-ci] for details and see the [logs in the "actions" tab][workflow-ci-runs]).
 
-Images are tagged with the hash of the git commit they were built from, e.g. `appointment-server:bd2834bdc6dc09f5e925a407f883e838130ae5bc` is the API server image built from commit `bd2834bdc6dc09f5e925a407f883e838130ae5bc`. Images built from the `main` branch are *also* tagged with `latest`.
+Images are tagged with the hash of the git commit they were built from, e.g. `univaf-server:bd2834bdc6dc09f5e925a407f883e838130ae5bc` is the API server image built from commit `bd2834bdc6dc09f5e925a407f883e838130ae5bc`. *(NOTE: we used to publish a `latest` tag, but no longer do so.)*
+
+For specific Docker build steps and commands, check the [`build_docker` job of `ci` workflow][workflow-ci].
+
+**The Demo UI is a static site built with Webpack.** We use GitHub Actions to automatically build and publish the site. The [`ui-deploy` workflow][workflow-ui-deploy] automatically builds and deploys the site every time a commit lands on the `main` branch. See the main README for details on [building the static site manually](../../README.md#building-and-viewing-the-ui).
 
 
-### Deploying New Images
+### Deploying New Images to AWS
 
-**The loaders** always run the `latest` image, so once a commit has landed on the `main` branch and been built, the next loader run will use it.
+In most cases, deploying new code or infrastructure changes to AWS happens automatically on any push to the `main` branch:
 
-**The API server** is configured to use a specific commit hash, so you must update and manually apply the Terraform configuration in order to deploy. This helps ensure that Terraform configurations stay in sync with the image being deployed.
+1. When a new commit is pushed to `main`, the `ci` workflow builds and tests it.
+2. If the build and tests run successfully, the `ci` workflow tags the built Docker images and pushes them to ECR.
+3. The `ci` workflow runs the [`scripts/deploy_infra.sh`](../../scripts/deploy_infra.sh) script, which creates and pushes a commit that updates the [deployed Docker image tag](../../terraform/server_deploy.tf.json) in our Terraform configuration files.
+4. Any push to `main` that alters our Terraform configuration will cause Terraform to automatically plan and apply the new configuration.
 
-After merging a PR into the `main` branch, you can deploy via the following steps:
-
-1. Wait for the `ci` workflow to finish so that the new image is actually available to be deployed.
-2. Update the Terraform configurations by running `scripts/deploy_infra.sh` from the root directory of the repo. This will alter the Terraform configuration and create a new commit.
-3. `git push` the new commit to GitHub.
-4. In Terraform Cloud, click "see details" on the latest run, and review the plan it shows to ensure it makes sense.
-5. In Terraform Cloud, click the confirm button to apply the plan.
-
-**The Demo UI** just runs as a GitHub pages site, and is automatically updated via the [`ui-deploy` workflow][workflow-ui-deploy] every time a commit lands on the `main` branch. You can view it at https://usdigitalresponse.github.io/univaf/.
+You can perform any of the above steps manually if necessary, but we prefer the automatic process wherever possible (please reference the steps in the `ci` workflow to understand what commands you would run). This includes any changes to services or resources in AWS — please perform those changes *in Terraform configuration files*. (See the [AWS provider reference docs][terraform-aws-provider] for details on configuring various AWS services.)
 
 ### Terraforming Locally
 
-In order to run terraform locally, you have to auth terraform to terraform cloud. This requires a cloud invite; reach out to the project owners to get an invite. Once you clone down the repository locally, navigate to the `terraform/` directory in your preferred shell. Run `terraform login`, which will create an API access token for you. You'll be prompted to paste it in to your shell in order to access it. Initialize to the backend using `terraform init`. At this point, you will be able to run terraform commands as expected: `terraform plan`, `terraform apply`, `terraform state list`...
+In order to run terraform locally, you have to auth `terraform` to terraform cloud. This requires a cloud invite; reach out to the project owners to get an invite. Once you clone the repository locally, navigate to the `terraform/` directory in your preferred shell. Run `terraform login`, which will create an API access token for you. You'll be prompted to paste it in to your shell in order to access it. Initialize to the backend using `terraform init`. At this point, you will be able to run terraform commands as expected: `terraform plan`, `terraform apply`, `terraform state list`, etc.
+
+**Please avoid running commands that change Terraform’s state locally (e.g. `terraform apply`) and instead run them in Terraform Cloud.** If you absolutely need to modify state locally, coordinate with the rest of the team by following the instructions below.
 
 ### Terraforming changes that require manual state intervention
+
+Terraform plans and applies changes based on a saved *state* that should reflect the actual resources that exist in AWS. Modifying state by applying Terraform changes locally instead of on Terraform Cloud will cause Terraform Cloud to start working based on stale data, and potentially create plans that don’t actually work, which means new changes cannot be deployed!
 
 Follow this process when making any changes in terraform that may affect another person's work.
 
@@ -98,7 +114,11 @@ And then run any commands you'd like from inside the SSH session.
 
 [terraform-cloud]: https://app.terraform.io/
 [sentry]: https://sentry.io/
+[datadog]: https://www.datadoghq.com/
+[1pw]: https://1password.com/
+[slack-usdr]: https://usdigitalresponse.slack.com/
 [bastion-server]: https://en.wikipedia.org/wiki/Bastion_host
+[terraform-aws-provider]: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 [workflow-ci]: ../../.github/workflows/ci.yml
 [workflow-ci-runs]: https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml
 [workflow-ui-deploy]: ../../.github/workflows/ui-deploy.yml
