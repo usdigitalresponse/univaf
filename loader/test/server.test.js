@@ -2,6 +2,9 @@ const got = require("got");
 const nock = require("nock");
 const { runServer } = require("../src/server");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 describe("Server", () => {
   let server;
 

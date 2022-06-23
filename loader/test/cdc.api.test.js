@@ -10,6 +10,9 @@ const {
 const { Available } = require("../src/model");
 const { locationSchema } = require("./support/schemas");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 describe("CDC Open Data API", () => {
   afterEach(() => {
     nock.cleanAll();

@@ -1,6 +1,9 @@
 const { UpdateQueue, ApiClient } = require("../src/api-client");
 const nock = require("nock");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 const MOCK_HOST = "http://univaf.test";
 
 describe("API Client", () => {

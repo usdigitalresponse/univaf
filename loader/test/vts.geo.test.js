@@ -1,6 +1,9 @@
 const nock = require("nock");
 const { checkAvailability } = require("../src/sources/vts/geo");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 const apiResponse = require("./fixtures/vts.geo.test.json");
 const noopHandler = () => {};
 

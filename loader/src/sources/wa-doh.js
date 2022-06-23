@@ -1,11 +1,16 @@
 // Washington State DoH hosts data for multiple states for some providers where
 // they have API access. (In practice, this is pretty much only Costco.)
 
-const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../model");
-const { httpClient, matchVaccineProduct } = require("../utils");
+const {
+  httpClient,
+  matchVaccineProduct,
+  createWarningLogger,
+} = require("../utils");
 const { HttpApiError } = require("../exceptions");
 const allStates = require("../states.json");
+
+const warn = createWarningLogger("waDoh");
 
 // You can also navigate to this URL in a browser and get an interactive
 // GraphQL testing console.
@@ -73,16 +78,6 @@ const INVALID_LOCATIONS = [
   "riteaid-5288",
   "prep-mod-3696ec0d-3869-4ff4-88ce-1030db1639ef",
 ];
-
-function warn(message, context) {
-  console.warn(`WA DoH: ${message}`, context);
-  // Sentry does better fingerprinting with an actual exception object.
-  if (message instanceof Error) {
-    Sentry.captureException(message, { level: Sentry.Severity.Info });
-  } else {
-    Sentry.captureMessage(message, Sentry.Severity.Info);
-  }
-}
 
 class WaDohApiError extends HttpApiError {
   parse(response) {

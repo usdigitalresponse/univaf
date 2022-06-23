@@ -262,7 +262,7 @@ module.exports = {
 
     let zip = match[4];
     if (zip.split("-")[0].length < 5) {
-      module.exports.warn(`Invalid ZIP code in address: "${address}"`);
+      warn(`Invalid ZIP code in address: "${address}"`);
       zip = undefined;
     }
 
@@ -369,23 +369,15 @@ module.exports = {
     );
   },
 
-  /**
-   * Log a warning to STDERR on the console.
-   * @param {...any} infos
-   */
-  warn(...infos) {
-    // TODO: replace with real logger, maybe with fancy colors and whatnot.
-    console.warn("Warning:", ...infos);
-  },
-
-  createWarningLogger(prefix) {
+  createWarningLogger(prefix, level = Sentry.Severity.Info) {
     return function warn(message, context, sendContextToSentry = false) {
+      const logMessage = prefix ? `${prefix}: ${message}` : message;
       console.warn(
-        `${prefix}: ${message}`,
+        logMessage,
         context !== undefined ? nodeUtil.inspect(context, { depth: 8 }) : ""
       );
 
-      const sentryInfo = { level: Sentry.Severity.Info };
+      const sentryInfo = { level };
       if (context && sendContextToSentry) {
         sentryInfo.contexts = { context };
       }
@@ -394,7 +386,7 @@ module.exports = {
       if (message instanceof Error) {
         Sentry.captureException(message, sentryInfo);
       } else {
-        Sentry.captureMessage(message, sentryInfo);
+        Sentry.captureMessage(logMessage, sentryInfo);
       }
     };
   },
@@ -582,3 +574,5 @@ module.exports = {
     throw new ParseError(`Text is not a URL: "${text}"`);
   },
 };
+
+const warn = module.exports.createWarningLogger("utils");

@@ -33,20 +33,14 @@ const {
   titleCase,
   unpadNumber,
   cleanUrl,
+  createWarningLogger,
 } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
 
-function warn(message, context) {
-  console.warn(`CDC API: ${message}`, context);
-  Sentry.captureMessage(message, Sentry.Severity.Info);
-}
-
-function error(message, context) {
-  console.error(`CDC API: ${message}`, context);
-  Sentry.captureMessage(message, Sentry.Severity.Error);
-}
+const warn = createWarningLogger("cdcApi");
+const error = createWarningLogger("cdcApi", Sentry.Severity.Error);
 
 async function* queryState(state) {
   const PAGE_SIZE = 5000;
@@ -211,11 +205,15 @@ function getWalmartId(location) {
     return unpadNumber(numberInName[1]);
   }
 
-  warn("Unexpected Walmart/Sams ID format", {
-    id: location.provider_location_guid,
-    storeNumber: location.loc_store_no,
-    storeName: location.loc_name,
-  });
+  warn(
+    "Unexpected Walmart/Sams ID format",
+    {
+      id: location.provider_location_guid,
+      storeNumber: location.loc_store_no,
+      storeName: location.loc_name,
+    },
+    true
+  );
   return null;
 }
 
@@ -284,10 +282,14 @@ const locationSystems = [
       // There doesn't appear to be a simple way to match up to their data here.
       const id = location.loc_store_no.match(/^\s*0*69(\d\d)\s*$/)?.[1];
       if (!id) {
-        warn("Unexpected Bartell ID format", {
-          id: location.provider_location_guid,
-          storeNumber: location.loc_store_no,
-        });
+        warn(
+          "Unexpected Bartell ID format",
+          {
+            id: location.provider_location_guid,
+            storeNumber: location.loc_store_no,
+          },
+          true
+        );
       }
       return [
         ["bartell", id],
@@ -306,10 +308,14 @@ const locationSystems = [
         // the store number prefixed with "1-".
         return `1-${storeNumber}`;
       }
-      warn("Unexpected Winn-Dixie ID format", {
-        id: location.provider_location_guid,
-        storeNumber: location.loc_store_no,
-      });
+      warn(
+        "Unexpected Winn-Dixie ID format",
+        {
+          id: location.provider_location_guid,
+          storeNumber: location.loc_store_no,
+        },
+        true
+      );
       return null;
     },
   },

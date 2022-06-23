@@ -1,4 +1,4 @@
-const { warn } = require("../../utils");
+const { createWarningLogger } = require("../../utils");
 const knownStores = require("./known-stores");
 
 // Show the corporate number instead of individual pharmacies' numbers because:
@@ -9,6 +9,8 @@ const CVS_CORPORATE_PHARMACY_PHONE_NUMBER = "(800) 746-7287";
 const CVS_BOOKING_URL = "https://www.cvs.com/vaccine/intake/store/cvd-schedule";
 
 const TESTING = process.env.NODE_ENV === "test";
+
+const warn = createWarningLogger("cvs/shared");
 
 /**
  * Helper function to return a county string based on CVS store number
@@ -41,7 +43,7 @@ function getStoreCounty(storeNumber) {
   // This is the worst case. We are going to show the user "Unknown County"
   // We should avoid this whenever possible.
   if (!TESTING) {
-    warn(`CVS store address ${knownStores[storeNumber].address} has no county`);
+    warn(`Store address ${knownStores[storeNumber].address} has no county`);
   }
   return null;
 }

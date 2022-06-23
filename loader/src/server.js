@@ -2,14 +2,17 @@ const getStream = require("get-stream");
 const http = require("http");
 const process = require("process");
 const Sentry = require("@sentry/node");
+const { createWarningLogger } = require("./utils");
 
 const hostname = "0.0.0.0";
 const port = process.env.PORT || 3010;
 const shutdownSignals = ["SIGTERM", "SIGINT"];
 let server = null;
 
+const logError = createWarningLogger("loader/server", Sentry.Severity.Error);
+
 function handleError(error, origin) {
-  console.error(error.stack || error);
+  logError(error);
   shutdownServer(origin, () => process.exit(1));
 }
 
@@ -77,8 +80,7 @@ function runServer(runFunc, options) {
       success = await runFunc({ options, send: true, ...data, compact: true });
     } catch (error) {
       // `runFunc()` should always handle errors itself, but just in case...
-      console.error(error);
-      Sentry.captureException(error);
+      logError(error);
     }
     res.statusCode = success ? 200 : 500;
     res.end(`Success: ${success}`);

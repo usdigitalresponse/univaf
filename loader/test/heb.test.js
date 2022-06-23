@@ -3,6 +3,9 @@ const { LocationType, Available } = require("../src/model");
 const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 describe("H-E-B", () => {
   it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
     const result = await checkAvailability(() => {}, { states: "TX" });

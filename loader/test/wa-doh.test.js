@@ -9,6 +9,9 @@ const {
 const { expectDatetimeString, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 
 describe("Washington DoH API", () => {

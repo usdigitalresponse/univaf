@@ -12,7 +12,7 @@
 
 const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
-const { httpClient } = require("../../utils");
+const { httpClient, createWarningLogger } = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
 
 const API_URL =
@@ -28,6 +28,8 @@ const PRODUCT_NAMES = {
   pediatric_pfizer: VaccineProduct.pfizerAge5_11,
   ultra_pediatric_pfizer: VaccineProduct.pfizerAge0_4,
 };
+
+const warn = createWarningLogger("heb");
 
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
@@ -76,16 +78,6 @@ async function getData(states) {
     .filter((location) => states.includes(location.state));
 }
 
-function warn(message, context) {
-  console.warn(`H-E-B: ${message}`, context);
-  // Sentry does better fingerprinting with an actual exception object.
-  if (message instanceof Error) {
-    Sentry.captureException(message, { level: Sentry.Severity.Info });
-  } else {
-    Sentry.captureMessage(message, Sentry.Severity.Info);
-  }
-}
-
 function formatAvailability(openSlots) {
   if (openSlots > 0) {
     return Available.yes;
@@ -107,7 +99,7 @@ function formatAvailableProducts(raw) {
       const productType = value.manufacturer.toLowerCase();
       const formatted = PRODUCT_NAMES[productType];
       if (productType != "other" && !formatted) {
-        warn(`Unknown product type`, value.manufacturer);
+        warn(`Unknown product type`, value.manufacturer, true);
       }
       if (value.openAppointmentSlots > 0) {
         return formatted;

@@ -4,6 +4,9 @@ const {
   formatExternalIds,
 } = require("../src/smart-scheduling-links");
 
+// Mock utils so we can track logs.
+jest.mock("../src/utils");
+
 describe("smart-scheduling-links", () => {
   describe("valuesAsObject", () => {
     it("should combine a list of FHIR values into an object", () => {

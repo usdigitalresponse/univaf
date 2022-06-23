@@ -21,9 +21,12 @@
  * "The Little Clinic" locations.
  */
 
-const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../model");
-const { unpadNumber, getUniqueExternalIds } = require("../utils");
+const {
+  unpadNumber,
+  getUniqueExternalIds,
+  createWarningLogger,
+} = require("../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -36,10 +39,7 @@ const {
 const API_URL =
   "https://api.kroger.com/v1/health-wellness/schedules/vaccines/$bulk-publish";
 
-function warn(message, context) {
-  console.warn(`Kroger: ${message}`, context);
-  Sentry.captureMessage(message, Sentry.Severity.Info);
-}
+const warn = createWarningLogger("krogerSmart");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -116,11 +116,15 @@ const KROGER_BRAND_ID_SYSTEMS = [
           const longId = `${newPrefix}${shortId.slice(2)}`;
           ids.push(["kroger_the_little_clinic", longId], ["kroger", longId]);
         } else {
-          warn(`Unknown ID prefix for The Little Clinic "${shortId}"`, {
-            id: location.id,
-            name: location.name,
-            state: location.address.state,
-          });
+          warn(
+            `Unknown ID prefix for The Little Clinic "${shortId}"`,
+            {
+              id: location.id,
+              name: location.name,
+              state: location.address.state,
+            },
+            true
+          );
         }
       }
 
@@ -148,11 +152,15 @@ function formatKrogerExternalIds(location) {
     }
   }
   if (!foundSubBrand) {
-    warn(`Unknown sub-brand for Kroger store "${location.name}"`, {
-      id: location.id,
-      name: location.name,
-      state: location.address.state,
-    });
+    warn(
+      `Unknown sub-brand for Kroger store "${location.name}"`,
+      {
+        id: location.id,
+        name: location.name,
+        state: location.address.state,
+      },
+      true
+    );
   }
 
   external_ids = external_ids.flatMap((id) => [
@@ -235,11 +243,15 @@ function getBookingLink(locationInfo) {
     if (!link) {
       link = slotLink;
     } else if (link !== slotLink) {
-      warn("Kroger slots have different booking links", {
-        id: locationInfo.location.id,
-        name: locationInfo.location.name,
-        state: locationInfo.location.address.state,
-      });
+      warn(
+        "Kroger slots have different booking links",
+        {
+          id: locationInfo.location.id,
+          name: locationInfo.location.name,
+          state: locationInfo.location.address.state,
+        },
+        true
+      );
       return null;
     }
   }
@@ -261,20 +273,14 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity) || capacity < 0) {
           available = Available.unknown;
-          warn("Kroger SMART: invalid slot capcity", { extension });
+          warn("Invalid slot capacity", { extension });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         // We don't use the Booking URL; we hardcode a better one that puts you
         // directly into the screener flow instead of an interstitial page.
         // bookingLink = extension.valueUrl;
       } else {
-        console.warn(`Got unexpected slot extension for Kroger: ${slot}`);
-        Sentry.captureMessage(`Unexpected slot extension for Kroger`, {
-          level: Sentry.Severity.Info,
-          contexts: {
-            raw_slot: slot,
-          },
-        });
+        warn("Unexpected slot extension", slot);
       }
     }
 
