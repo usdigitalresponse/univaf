@@ -26,8 +26,7 @@ Major components:
 
 As much of the infrastructure as possible is managed in Terraform, but a few bits are set up manually:
 
-- Domain name in Route53.
-- SSL certificate in ACM.
+- SSL certificate in ACM. (The actual DNS records are managed in Terraform, though.)
 - Bastion server and its associated security group in EC2.
 
 
@@ -35,8 +34,17 @@ As much of the infrastructure as possible is managed in Terraform, but a few bit
 
 We also rely on a handful of other services for critical operations tasks:
 
-- [Terraform Cloud][terraform-cloud] manages checking and applying our Terraform configurations.
-- Errors are tracked in [Sentry][sentry].
+- **[Terraform Cloud][terraform-cloud]** manages checking and applying our Terraform configurations.
+- **GitHub actions** works in concert with Terraform Cloud to automatically deploy changes that land on the `main` branch.
+- **[Sentry][sentry]** tracks exceptions in our code. It also tracks warnings about unexpected content in the data we pull in from external sources (e.g. a new, unknown vaccine code), which is critical to keeping the service up-to-date and accurate.
+- **[DataDog][]** for general stats on our services. The most imporant of these is usually metrics on HTTP requests. Sometimes the server may be rejecting bad requests with a 4xx status code, and the dashboards in DataDog are the best place to see that happening since they might not trigger exceptions or other kinds of alerts.
+- **[1Password][1pw]** stores Important team and partner credentials in a shared *vault*.
+- **GitHub pages** hosts the demo UI at https://usdigitalresponse.github.io/univaf/. However, we don’t generally point everyday residents to this URL and are not aware of anybody using it in a production capacity — it’s intended a demonstration and testing tool for API consumers.
+- **[Slack][slack-usdr]** for team communication. We have two channels in USDR’s Slack:
+    - One for team discussion
+    - One for errors and alerts from the above services. When there’s an incident, the alerts channel is usually how we find out about it. We typically start a thread based on the alert that was posted to the channel, so if you are looking for live discussion of an ongoing problem, check there first.
+
+Please get in touch with a project lead for access to any of these systems.
 
 
 ## Deployment
@@ -98,6 +106,9 @@ And then run any commands you'd like from inside the SSH session.
 
 [terraform-cloud]: https://app.terraform.io/
 [sentry]: https://sentry.io/
+[datadog]: https://www.datadoghq.com/
+[1pw]: https://1password.com/
+[slack-usdr]: https://usdigitalresponse.slack.com/
 [bastion-server]: https://en.wikipedia.org/wiki/Bastion_host
 [workflow-ci]: ../../.github/workflows/ci.yml
 [workflow-ci-runs]: https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml
