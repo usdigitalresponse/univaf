@@ -19,7 +19,12 @@ Most of the infrastructure and services that support this project are in Amazon 
 
 Major components:
 
-- Most code runs in ECS as Docker containers.
+- Most code runs in Elastic Container Service (ECS) as Docker containers. Everything runs in a single ECS *cluster*.
+    - The main concept in ECS is a *task*, which you can generally think of as Docker container.
+    - The API server is an ECS *service* (named `api`). A *service* is a set of long-running tasks that ECS keeps a certain number of instances running (so if one stops, ECS starts a new one, and keeps N copies running where N scales between an upper and lower limit based on resource usage).
+    - Most other code run as *scheduled tasks* in the same clauser as the API service. A *scheduled task* isn't actually a built-in feature of ECS, but is a well-known pattern — it's a *CloudWatch event* that is triggered on a schedule and that tells the ECS cluster to run a particular *task* — basically `cron` for Docker containers. Terraform is incredibly helpful by letting us make this pattern into a single, manageable configuration object.
+        - Each loader source (e.g. `albertsons`, `krogerSmart`, `walgreensSmart`) is a separate task (see [`terraform/loaders.tf`](../../terraform/loaders.tf)). This lets us control the schedule and arguments for each source we pull data from in an organized way.
+        - Other scheduled tasks are part of the `server` code and support its functions. For example, the `daily_data_snapshot_task` dumps a copy of the database each night into S3 as JSON files that are used for historical analysis.
 - CloudFront is used as a caching proxy in front of the API server.
 - The database is managed in RDS.
 - Historical log data is saved and made publicly accessible in S3.
@@ -113,6 +118,7 @@ And then run any commands you'd like from inside the SSH session.
 [1pw]: https://1password.com/
 [slack-usdr]: https://usdigitalresponse.slack.com/
 [bastion-server]: https://en.wikipedia.org/wiki/Bastion_host
+[terraform-aws-provider]: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 [workflow-ci]: ../../.github/workflows/ci.yml
 [workflow-ci-runs]: https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml
 [workflow-ui-deploy]: ../../.github/workflows/ui-deploy.yml
