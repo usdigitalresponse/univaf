@@ -14,6 +14,39 @@ import { ValueError, NotFoundError, OutOfDateError } from "../src/exceptions";
 
 installTestDatabaseHooks();
 
+describe("db.createLocation", () => {
+  it("should create new records", async () => {
+    const location = await createLocation(TestLocation);
+    const result = await getLocationById(location.id);
+
+    expect(result).toHaveProperty("name", TestLocation.name);
+  });
+
+  it("rejects if the data is invalid", async () => {
+    await expect(() =>
+      createLocation({ ...TestLocation, name: 5 })
+    ).rejects.toThrow(ValueError);
+  });
+});
+
+describe("db.updateLocation", () => {
+  it("should update a location by ID", async () => {
+    const location = await createLocation(TestLocation);
+    await updateLocation(location, { name: "New name" });
+    const result = await getLocationById(location.id);
+
+    expect(result).toHaveProperty("name", "New name");
+  });
+
+  it("rejects if the update contains invalid data", async () => {
+    const location = await createLocation(TestLocation);
+
+    await expect(() => updateLocation(location, { name: 5 })).rejects.toThrow(
+      ValueError
+    );
+  });
+});
+
 describe("db.updateAvailability", () => {
   it("should update a location's availability", async () => {
     const location = await createLocation(TestLocation);

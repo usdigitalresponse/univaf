@@ -238,4 +238,40 @@ describe("validateLocationInput", () => {
       validateLocationInput({ name: "Somewhere" }, true)
     ).toThrowError(ValueError);
   });
+
+  it("checks minimum_age_months", () => {
+    let input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      minimum_age_months: 6,
+    };
+    expect(() => validateLocationInput(input)).not.toThrow(ValueError);
+
+    input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      minimum_age_months: 0,
+    };
+    expect(() => validateLocationInput(input)).toThrow(ValueError);
+  });
+
+  it("checks minimum_age_years", () => {
+    let input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      minimum_age_years: 6,
+    };
+    expect(() => validateLocationInput(input)).not.toThrow(ValueError);
+
+    input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      minimum_age_years: 0,
+    };
+    expect(() => validateLocationInput(input)).toThrow(ValueError);
+  });
 });

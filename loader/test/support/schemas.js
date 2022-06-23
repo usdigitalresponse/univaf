@@ -117,6 +117,18 @@ const locationSchema = {
     requires_waitlist: { type: "boolean" },
     meta: { type: "object" },
     is_public: { type: "boolean" },
+    minimum_age_months: {
+      type: "number",
+      format: "int32",
+      minimum: 1,
+      nullable: true,
+    },
+    minimum_age_years: {
+      type: "number",
+      format: "int32",
+      minimum: 1,
+      nullable: true,
+    },
     availability: availabilitySchema,
   },
   required: ["name", "provider", "address_lines", "city", "state"],

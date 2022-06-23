@@ -207,6 +207,18 @@ const PROVIDER_LOCATION_SCHEMA = {
     booking_url: { type: "string", format: "uri", nullable: true },
     description: { type: "string", nullable: true },
     requires_waitlist: { type: "boolean", nullable: true },
+    minimum_age_months: {
+      type: "number",
+      format: "int32",
+      minimum: 1,
+      nullable: true,
+    },
+    minimum_age_years: {
+      type: "number",
+      format: "int32",
+      minimum: 1,
+      nullable: true,
+    },
     meta: { type: "object", nullable: true },
     is_public: { type: "boolean", nullable: true },
     internal_notes: { type: "string", nullable: true },

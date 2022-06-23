@@ -49,6 +49,8 @@ const providerLocationFields = [
   "booking_url",
   "description",
   "requires_waitlist",
+  "minimum_age_months",
+  "minimum_age_years",
   "meta",
   "created_at",
   "updated_at",
