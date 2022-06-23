@@ -42,6 +42,17 @@ const API_PATH = "/resource/5jp2-pgaw.json";
 const warn = createWarningLogger("cdcApi");
 const error = createWarningLogger("cdcApi", Sentry.Severity.Error);
 
+function positiveNumberOrNull(value) {
+  const numberValue = parseInt(value, 10);
+  if (numberValue < 0) {
+    // FIXME: make it safe for this to throw instead.
+    error(`Expected number >= 0 or null, but got ${JSON.stringify(value)}`);
+    return null;
+  }
+
+  return numberValue ? numberValue : null;
+}
+
 async function* queryState(state) {
   const PAGE_SIZE = 5000;
 
@@ -144,6 +155,8 @@ function formatStore(storeItems, checkedAt) {
       postal_code: base.loc_admin_zip,
       info_phone: base.loc_phone,
       info_url: cleanUrl(base.web_address),
+      minimum_age_months: positiveNumberOrNull(base.min_age_months),
+      minimum_age_years: positiveNumberOrNull(base.min_age_years),
       meta,
 
       availability: {

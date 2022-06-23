@@ -20,6 +20,11 @@ describe("CDC Open Data API", () => {
 
   const fixturePath = path.join(__dirname, "fixtures/cdc.api.01929.json");
 
+  it.nock("should output valid data", async () => {
+    const result = await checkAvailability(() => {}, { states: "AK" });
+    expect(result).toContainItemsMatchingSchema(locationSchema);
+  });
+
   it("should only show products that are in stock", async () => {
     // This fixture lists Moderna, Pfizer, and J&J products, but only Pfizer is
     // flagged as in stock.
@@ -235,5 +240,22 @@ describe("CDC Open Data API", () => {
     );
 
     expect(formatted).toBeFalsy();
+  });
+
+  it("reports null for minimum ages that are 0", async () => {
+    const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
+    const formatted = formatStore(
+      [
+        {
+          ...baseEntry,
+          min_age_months: "0",
+          min_age_years: "12",
+        },
+      ],
+      new Date()
+    );
+
+    expect(formatted.minimum_age_months).toBeNull();
+    expect(formatted).toHaveProperty("minimum_age_years", 12);
   });
 });
