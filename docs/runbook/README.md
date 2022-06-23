@@ -74,7 +74,7 @@ In most cases, deploying new code or infrastructure changes to AWS happens autom
 3. The `ci` workflow runs the [`scripts/deploy_infra.sh`](../../scripts/deploy_infra.sh) script, which creates and pushes a commit that updates the [deployed Docker image tag](../../terraform/server_deploy.tf.json) in our Terraform configuration files.
 4. Any push to `main` that alters our Terraform configuration will cause Terraform to automatically plan and apply the new configuration.
 
-You can perform any of the above steps manually if necessary, but we prefer the automatic process wherever possible. This includes any changes to services or resources in AWS — please perform those changes *in Terraform configuration files*. (See the [AWS provider reference docs][terraform-aws-provider] for details on configuring various AWS services.)
+You can perform any of the above steps manually if necessary, but we prefer the automatic process wherever possible (please reference the steps in the `ci` workflow to understand what commands you would run). This includes any changes to services or resources in AWS — please perform those changes *in Terraform configuration files*. (See the [AWS provider reference docs][terraform-aws-provider] for details on configuring various AWS services.)
 
 ### Terraforming Locally
 
