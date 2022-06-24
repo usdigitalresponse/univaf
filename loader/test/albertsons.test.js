@@ -110,10 +110,17 @@ describe("Albertsons", () => {
         },
         meta: {
           albertsons_region: "Alaska",
-          booking_url_adult:
-            "https://kordinator.mhealthcoach.net/vcl/1600116808972",
           mhealth_address: "Safeway 3410 - 30 College Rd, Fairbanks, AK, 99701",
           timezone: "America/Anchorage",
+          booking_url_adult:
+            "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+          booking_urls: [
+            {
+              available: "NO",
+              products: ["moderna"],
+              url: "https://kordinator.mhealthcoach.net/vcl/1600116808972",
+            },
+          ],
         },
         description:
           "Looking for a pharmacy near you in Fairbanks, AK? Our on-site pharmacy can administer Covid vaccinations, Pfizer, Moderna, and J&J Covid second booster shot and flu shots at no additional cost. Fill, refill or transfer prescriptions with us. We welcome scheduled or walk-in immunizations. Back to school vaccine immunizations and covid-19 PCR NAAT walk in test now available. We are located at 30 College Rd.",
@@ -150,11 +157,18 @@ describe("Albertsons", () => {
         },
         meta: {
           albertsons_region: "Alaska",
-          booking_url_adult:
-            "https://kordinator.mhealthcoach.net/vcl/1600114849843",
           mhealth_address:
             "Carrs 1813 - 1501 Huffman Road, Anchorage, AK, 99515",
           timezone: "America/Anchorage",
+          booking_url_adult:
+            "https://kordinator.mhealthcoach.net/vcl/1600114849843",
+          booking_urls: [
+            {
+              available: "YES",
+              products: ["pfizer", "moderna"],
+              url: "https://kordinator.mhealthcoach.net/vcl/1600114849843",
+            },
+          ],
         },
         description:
           "Looking for a pharmacy near you in Anchorage, AK? Our on-site pharmacy can administer Covid vaccinations, Pfizer, Moderna, and J&J Covid second booster shot and flu shots at no additional cost. Fill, refill or transfer prescriptions with us. We welcome scheduled or walk-in immunizations. Back to school vaccine immunizations and covid-19 PCR NAAT walk in test now available. We are located at 1501 Huffman Rd.",
@@ -269,6 +283,17 @@ describe("Albertsons", () => {
             drugName: ["PfizerChild"],
           },
           {
+            id: "1635993536220",
+            region: "Eastern_-_6",
+            address:
+              "Pfizer Infant - Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
+            lat: "38.939784",
+            long: "-77.332298",
+            coach_url: "https://kordinator.mhealthcoach.net/vcl/1635993536220",
+            availability: "yes",
+            drugName: ["PfizerChild"],
+          },
+          {
             id: "1600100807144",
             region: "Virginia",
             address:
@@ -293,6 +318,8 @@ describe("Albertsons", () => {
           ["albertsons_safeway", "1635993536219"],
           ["safeway", "5"],
           ["albertsons_store_number", "safeway:5"],
+          ["albertsons", "1635993536220"],
+          ["albertsons_safeway", "1635993536220"],
           ["albertsons", "1600100807144"],
           ["albertsons_safeway", "1600100807144"],
         ],
@@ -313,20 +340,45 @@ describe("Albertsons", () => {
         availability: {
           source: "univaf-albertsons",
           available: "YES",
-          products: ["pfizer_age_5_11", "pfizer", "moderna", "jj"],
+          products: [
+            "pfizer_age_5_11",
+            "pfizer_age_0_4",
+            "pfizer",
+            "moderna",
+            "jj",
+          ],
           is_public: true,
           checked_at: expectDatetimeString(),
           valid_at: "2021-10-28T07:06:13.000Z",
         },
         meta: {
           albertsons_region: "Virginia",
+          mhealth_address:
+            "Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
+          timezone: "America/New_York",
           booking_url_adult:
             "https://kordinator.mhealthcoach.net/vcl/1600100807144",
           booking_url_pediatric:
             "https://kordinator.mhealthcoach.net/vcl/1635993536219",
-          mhealth_address:
-            "Safeway 0005 - 11120 South Lakes Drive, Reston, VA, 20191",
-          timezone: "America/New_York",
+          booking_url_infant:
+            "https://kordinator.mhealthcoach.net/vcl/1635993536220",
+          booking_urls: [
+            {
+              available: "YES",
+              products: ["pfizer_age_5_11"],
+              url: "https://kordinator.mhealthcoach.net/vcl/1635993536219",
+            },
+            {
+              available: "YES",
+              products: ["pfizer_age_0_4"],
+              url: "https://kordinator.mhealthcoach.net/vcl/1635993536220",
+            },
+            {
+              available: "YES",
+              products: ["pfizer", "moderna", "jj"],
+              url: "https://kordinator.mhealthcoach.net/vcl/1600100807144",
+            },
+          ],
         },
         description:
           "Looking for a pharmacy near you in Reston, VA? Our on-site pharmacy can administer Covid vaccinations, Pfizer, Moderna, and J&J Covid second booster shot and flu shots at no additional cost. Fill, refill or transfer prescriptions with us. We welcome scheduled or walk-in immunizations. Back to school vaccine immunizations and covid-19 PCR NAAT walk in test now available. We are located at 11120 S Lakes Dr.",
@@ -370,13 +422,25 @@ describe("Albertsons", () => {
     expect(result[0]).toMatchSchema(locationSchema);
     expect(result).toHaveProperty("0.meta", {
       albertsons_region: "California_-_San_Diego_4",
+      mhealth_address:
+        "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+      timezone: "America/Los_Angeles",
       booking_url_adult:
         "https://kordinator.mhealthcoach.net/vcl/1600118533422",
       booking_url_pediatric:
         "https://kordinator.mhealthcoach.net/vcl/1610138028763",
-      mhealth_address:
-        "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
-      timezone: "America/Los_Angeles",
+      booking_urls: [
+        {
+          available: "NO",
+          products: ["pfizer_age_5_11"],
+          url: "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+        },
+        {
+          available: "NO",
+          products: undefined,
+          url: "https://kordinator.mhealthcoach.net/vcl/1600118533422",
+        },
+      ],
     });
   });
 
@@ -415,13 +479,25 @@ describe("Albertsons", () => {
     expect(result[0]).toMatchSchema(locationSchema);
     expect(result).toHaveProperty("0.meta", {
       albertsons_region: "California_-_San_Diego_4",
+      mhealth_address:
+        "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
+      timezone: "America/Los_Angeles",
       booking_url_adult:
         "https://kordinator.mhealthcoach.net/vcl/1600118533422",
       booking_url_pediatric:
         "https://kordinator.mhealthcoach.net/vcl/1610138028763",
-      mhealth_address:
-        "Albertsons 0393 - 1268 Madera Rd, Simi Valley, CA, 93065",
-      timezone: "America/Los_Angeles",
+      booking_urls: [
+        {
+          available: "NO",
+          products: ["pfizer_age_5_11"],
+          url: "https://kordinator.mhealthcoach.net/vcl/1610138028763",
+        },
+        {
+          available: "NO",
+          products: undefined,
+          url: "https://kordinator.mhealthcoach.net/vcl/1600118533422",
+        },
+      ],
     });
   });
 
