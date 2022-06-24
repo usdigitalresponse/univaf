@@ -213,12 +213,6 @@ const PROVIDER_LOCATION_SCHEMA = {
       minimum: 1,
       nullable: true,
     },
-    minimum_age_years: {
-      type: "number",
-      format: "int32",
-      minimum: 1,
-      nullable: true,
-    },
     meta: { type: "object", nullable: true },
     is_public: { type: "boolean", nullable: true },
     internal_notes: { type: "string", nullable: true },

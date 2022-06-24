@@ -193,14 +193,17 @@ info:
     ## Eligible Age Ranges
 
     Vaccines *and* locations have age ranges they are authorized for, so be
-    careful to check both when displaying information about availability.
+    careful to check both when displaying information about availability. For
+    example, a vaccine may be authorized for people older than 6 months, but
+    the location may only be authorized to take patients older than 60 months
+    (5 years).
 
     When it comes to a location, pharmacists and clinicians are each authorized
     to administer vaccines to people of a particular age, so the minimum age
     a location can handle is determined by its staff (and possibly other
     policies of the organization managing the location). You can find this info
-    in the `minimum_age_months` and `minimum_age_years` fields of a location.
-    Please note we don’t always have this info, so those fields may be null.
+    in the `minimum_age_months` field of a location. Please note we don’t always
+    have this info, the field may be null.
 
     Each vaccine is also designed and authorized for a particular age range.
     These are indicated by the different codes we use in the
@@ -771,21 +774,9 @@ components:
           type: number
           format: int32
           description: |
-            The minimum patient age in months at this location if < 1 year
-            (otherwise this will be null and you should check
-            `minimum_age_years`).
-
-            Pharmacists and doctors are authorized to administer vaccines to
-            different age ranges, which means locations have minimum ages
-            (determined by who is staffing them) in addition to the age ranges
-            for particular vaccines.
-        minimum_age_years:
-          type: number
-          format: int32
-          description: |
-            The minimum patient age in years at this location if >= 1 year
-            (otherwise this will be null and you should check
-            `minimum_age_months`).
+            The minimum patient age in months at this location. May be null if
+            a minimum age is not known. (For example, this will be `6` for a
+            minimum age of 6 months, and `144` for a minimum age of 12 years.)
 
             Pharmacists and doctors are authorized to administer vaccines to
             different age ranges, which means locations have minimum ages

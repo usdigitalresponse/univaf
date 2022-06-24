@@ -242,7 +242,7 @@ describe("CDC Open Data API", () => {
     expect(formatted).toBeFalsy();
   });
 
-  it("reports null for minimum ages that are 0", async () => {
+  it("reports minimum age in months", async () => {
     const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
     const formatted = formatStore(
       [
@@ -255,7 +255,22 @@ describe("CDC Open Data API", () => {
       new Date()
     );
 
+    expect(formatted).toHaveProperty("minimum_age_months", 144);
+  });
+
+  it("reports null for minimum ages that are 0", async () => {
+    const baseEntry = JSON.parse(await fs.readFile(fixturePath, "utf8"))[0];
+    const formatted = formatStore(
+      [
+        {
+          ...baseEntry,
+          min_age_months: "0",
+          min_age_years: "0",
+        },
+      ],
+      new Date()
+    );
+
     expect(formatted.minimum_age_months).toBeNull();
-    expect(formatted).toHaveProperty("minimum_age_years", 12);
   });
 });

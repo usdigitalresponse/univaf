@@ -59,7 +59,6 @@ export interface ProviderLocation {
   description: string;
   requires_waitlist: boolean;
   minimum_age_months?: number;
-  minimum_age_years?: number;
   meta: any;
   is_public: boolean;
   internal_notes: string;
