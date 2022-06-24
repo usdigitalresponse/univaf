@@ -33,6 +33,7 @@ const {
   LocationType,
   VaccineProduct,
   PediatricVaccineProducts,
+  EarlyPediatricVaccineProducts,
 } = require("../../model");
 const { ParseError } = require("../../exceptions");
 const { corrections } = require("./corrections");
@@ -304,20 +305,10 @@ async function getData(states) {
       const adult = group.find((l) => l.meta.booking_url_adult);
       const pediatric = group.find((l) => l.meta.booking_url_pediatric);
       const infant = group.find((l) => l.meta.booking_url_infant);
-
       // If a location had no available vaccines and had no special naming
       // prefix, we won't know whether it is adult or pediatric. We can't know
       // whether this is a problem or not, so always allow it.
       const unknown = group.find((l) => !l.availability.products);
-      if (!unknown && (!adult || !pediatric)) {
-        warn(
-          "Trying to merge locations other than an adult and pediatric!",
-          group
-        );
-        return null;
-      }
-
-      const booking_urls = group.flatMap((l) => l.meta.booking_urls);
 
       const result = Object.assign({}, ...group);
       result.meta = {
@@ -328,7 +319,7 @@ async function getData(states) {
         booking_url_adult: adult?.booking_url,
         booking_url_pediatric: pediatric?.booking_url,
         booking_url_infant: infant?.booking_url,
-        booking_urls,
+        booking_urls: group.flatMap((l) => l.meta.booking_urls),
       };
       result.booking_url = GENERIC_BOOKING_URL;
       result.external_ids = getUniqueExternalIds(
@@ -442,15 +433,11 @@ function parseNameAndAddress(text) {
 
   // Some locations have separate pediatric and non-pediatric API locations.
   // The pediatric ones often have text in the name identifying them as such.
-  const isInfant = /\binfant/i.test(name);
-  const isPediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
+  const isInfant = /\binfant|\bages? 3|\bages? 6\s?m/i.test(name);
+  const isPediatric =
+    !isInfant && /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
   const vaccineBrands = name.toLowerCase().match(/moderna|pfizer/g) || [];
   const productsInName = [];
-  if (isInfant && isPediatric) {
-    throw new ParseError(
-      `Address field indicates both infant-only and pediatric-only: "${text}"`
-    );
-  }
   if (isInfant) {
     if (vaccineBrands.includes("moderna")) {
       productsInName.push(VaccineProduct.modernaAge0_5);
@@ -662,6 +649,8 @@ function formatLocation(data, validAt, checkedAt) {
   isPediatric =
     isPediatric ||
     (!isInfant && products.some((p) => PediatricVaccineProducts.has(p)));
+  isInfant =
+    isInfant || products.some((p) => EarlyPediatricVaccineProducts.has(p));
   const bookingType = isInfant ? "infant" : isPediatric ? "pediatric" : "adult";
 
   const external_ids = [
