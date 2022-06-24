@@ -713,6 +713,20 @@ components:
               description: |
                 Name of the API clients or scrapers that supplied data used to
                 compile this availability object.
+            minimum_eligible_age_months:
+              type: number
+              format: int32
+              description: |
+                The minimum eligible patient age (in months) based on the
+                location and the available vaccine products. (For example, this
+                will be `6` for a minimum age of 6 months, and `144` for a
+                minimum age of 12 years.)
+
+                This combines information about each vaccine in the `products`
+                field of the availability data with the `minimum_age_months`
+                field of the location. See
+                [Eligible Age Ranges](#section/Eligible-Age-Ranges) for a
+                deeper explanation.
           required:
             - sources
     Location:

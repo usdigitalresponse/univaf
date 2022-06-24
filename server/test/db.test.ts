@@ -708,3 +708,43 @@ describe("db.addExternalIds", () => {
     });
   });
 });
+
+describe("db.getLocationById", () => {
+  it("includes availability", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+    const result = await getLocationById(location.id);
+
+    expect(result).toHaveProperty("availability.available", "YES");
+  });
+
+  it("calculates minimum eligible age in availability", async () => {
+    // The minimum location age is 36, but the minimum vaccine age is 6.
+    const location = await createLocation({
+      ...TestLocation,
+      minimum_age_months: 36,
+    });
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      products: ["jj", "pfizer", "pfizer_age_0_4"],
+    });
+    let result = await getLocationById(location.id);
+    expect(result).toHaveProperty(
+      "availability.minimum_eligible_age_months",
+      36
+    );
+
+    // Change the minimum vaccine age to 144.
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      products: ["jj", "pfizer"],
+      valid_at: new Date(),
+    });
+    result = await getLocationById(location.id);
+    expect(result).toHaveProperty("availability.products", ["jj", "pfizer"]);
+    expect(result).toHaveProperty(
+      "availability.minimum_eligible_age_months",
+      144
+    );
+  });
+});
