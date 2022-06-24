@@ -50,9 +50,19 @@ const PediatricVaccineProducts = new Set([
   VaccineProduct.modernaAge6_11,
 ]);
 
+/**
+ * `VaccineProduct` values that are for very young children.
+ * @readonly
+ */
+const EarlyPediatricVaccineProducts = new Set([
+  VaccineProduct.pfizerAge0_4,
+  VaccineProduct.modernaAge0_5,
+]);
+
 module.exports = {
   Available,
   LocationType,
   VaccineProduct,
   PediatricVaccineProducts,
+  EarlyPediatricVaccineProducts,
 };
