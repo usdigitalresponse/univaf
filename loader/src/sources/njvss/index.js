@@ -13,6 +13,7 @@ const {
   titleCase,
   createWarningLogger,
 } = require("../../utils");
+const { corrections } = require("./corrections");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
 const NJVSS_AWS_KEY_ID =
@@ -438,6 +439,11 @@ async function checkAvailability(handler, _options) {
   let result = [];
   for (const location of locations) {
     let provider = PROVIDER.njvss;
+
+    // Apply corrections for known-bad source data.
+    if (location.res_id in corrections) {
+      Object.assign(location, corrections[location.res_id]);
+    }
 
     // FIXME: there are some fields we should not try to update if
     // `_options.send` is true (we expect NJVSS to have messy data, and
