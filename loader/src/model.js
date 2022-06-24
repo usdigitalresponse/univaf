@@ -47,9 +47,7 @@ const VaccineProduct = {
  */
 const PediatricVaccineProducts = new Set([
   VaccineProduct.pfizerAge5_11,
-  VaccineProduct.pfizerAge0_4,
   VaccineProduct.modernaAge6_11,
-  VaccineProduct.modernaAge0_5,
 ]);
 
 module.exports = {

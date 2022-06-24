@@ -60,9 +60,10 @@ const IGNORE_ADDRESS_PATTERN = / \., \., [A-Z]{2}, \d{5}/;
 // Maps Albertsons product names to our product names.
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
-  moderna: VaccineProduct.moderna,
-  jnj: VaccineProduct.janssen,
   pfizerchild: VaccineProduct.pfizerAge5_11,
+  moderna: VaccineProduct.moderna,
+  modernachild: VaccineProduct.modernaAge0_5,
+  jnj: VaccineProduct.janssen,
 };
 
 const BASE_BRAND = {
@@ -302,6 +303,7 @@ async function getData(states) {
 
       const adult = group.find((l) => l.meta.booking_url_adult);
       const pediatric = group.find((l) => l.meta.booking_url_pediatric);
+      const infant = group.find((l) => l.meta.booking_url_infant);
 
       // If a location had no available vaccines and had no special naming
       // prefix, we won't know whether it is adult or pediatric. We can't know
@@ -315,13 +317,18 @@ async function getData(states) {
         return null;
       }
 
+      const booking_urls = group.flatMap((l) => l.meta.booking_urls);
+
       const result = Object.assign({}, ...group);
       result.meta = {
         ...unknown?.meta,
+        ...infant?.meta,
         ...pediatric?.meta,
         ...adult?.meta,
         booking_url_adult: adult?.booking_url,
         booking_url_pediatric: pediatric?.booking_url,
+        booking_url_infant: infant?.booking_url,
+        booking_urls,
       };
       result.booking_url = GENERIC_BOOKING_URL;
       result.external_ids = getUniqueExternalIds(
@@ -350,10 +357,25 @@ async function getData(states) {
 const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
 
 /**
+ * @typedef {Object} AddressData
+ * @property {string} name
+ * @property {string} [storeBrand]
+ * @property {string} [storeNumber]
+ * @property {boolean} isPediatric
+ * @property {boolean} isInfant
+ * @property {string[]} productsInName
+ * @property {Object} address
+ * @property {string[]} address.lines
+ * @property {string} address.city
+ * @property {string} address.state
+ * @property {string} [address.zip]
+ */
+
+/**
  * Parse a location name and address from Albertsons (they're both part of
  * the same string).
  * @param {string} text
- * @returns {{name: string, storeBrand: string|undefined, storeNumber: string|undefined, isPediatric: boolean, address: {lines: Array<string>, city: string, state: string, zip?: string}}}
+ * @returns {AddressData}
  */
 function parseNameAndAddress(text) {
   // Some locations have names like:
@@ -420,7 +442,30 @@ function parseNameAndAddress(text) {
 
   // Some locations have separate pediatric and non-pediatric API locations.
   // The pediatric ones often have text in the name identifying them as such.
+  const isInfant = /\binfant/i.test(name);
   const isPediatric = /\bchild|\bpediatric|\bpeds?\b|\bages? (5|6)/i.test(name);
+  const vaccineBrands = name.toLowerCase().match(/moderna|pfizer/g) || [];
+  const productsInName = [];
+  if (isInfant && isPediatric) {
+    throw new ParseError(
+      `Address field indicates both infant-only and pediatric-only: "${text}"`
+    );
+  }
+  if (isInfant) {
+    if (vaccineBrands.includes("moderna")) {
+      productsInName.push(VaccineProduct.modernaAge0_5);
+    }
+    if (vaccineBrands.includes("pfizer")) {
+      productsInName.push(VaccineProduct.pfizerAge0_4);
+    }
+  } else if (isPediatric) {
+    if (vaccineBrands.includes("moderna")) {
+      productsInName.push(VaccineProduct.moderna);
+    }
+    if (vaccineBrands.includes("pfizer")) {
+      productsInName.push(VaccineProduct.pfizerAge5_11);
+    }
+  }
 
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
@@ -441,6 +486,8 @@ function parseNameAndAddress(text) {
     storeNumber,
     address: parseUsAddress(address),
     isPediatric,
+    isInfant,
+    productsInName,
   };
 }
 
@@ -456,9 +503,9 @@ function formatAvailability(raw) {
 }
 
 function formatProducts(raw) {
-  if (!raw) return undefined;
+  if (!raw) return [];
 
-  const products = raw
+  return raw
     .map((value) => {
       const formatted = PRODUCT_NAMES[value.toLowerCase()];
       if (!formatted) {
@@ -467,8 +514,6 @@ function formatProducts(raw) {
       return formatted;
     })
     .filter(Boolean);
-
-  return products.length ? products : undefined;
 }
 
 // For debugging: Track how many entries matched known locations by what method.
@@ -522,8 +567,15 @@ function formatLocation(data, validAt, checkedAt) {
     return null;
   }
 
-  let { name, storeNumber, storeBrand, address, isPediatric } =
-    parseNameAndAddress(data.address);
+  let {
+    name,
+    storeNumber,
+    storeBrand,
+    address,
+    isPediatric,
+    isInfant,
+    productsInName,
+  } = parseNameAndAddress(data.address);
 
   // There are test locations in the data, and we should skip them.
   if (TEST_NAME_PATTERN.test(name)) {
@@ -595,13 +647,22 @@ function formatLocation(data, validAt, checkedAt) {
     return null;
   }
 
-  // Pediatric-only locations usually say so in the name and also list only
-  // pediatric products. However, some only do one of those, so we need to
-  // handle them as well.
-  const products = formatProducts(data.drugName);
+  // Some locations don't list what vaccines are offered, but the location name
+  // may indicate this info. This mainly happens when there is no availability.
+  // Further, `PfizerChild` is Albertsons's drug name for both infant/early
+  // childhood (6 months - 4 years) and for normal childhood (5-11 years). The
+  // only thing that differentiates those is from the location name.
+  let explicitProducts = formatProducts(data.drugName);
+  if (isInfant) {
+    explicitProducts = explicitProducts.map((p) =>
+      p === VaccineProduct.pfizerAge5_11 ? VaccineProduct.pfizerAge0_4 : p
+    );
+  }
+  const products = [...new Set([...productsInName, ...explicitProducts])];
   isPediatric =
     isPediatric ||
-    (products?.length && products.some((p) => PediatricVaccineProducts.has(p)));
+    (!isInfant && products.some((p) => PediatricVaccineProducts.has(p)));
+  const bookingType = isInfant ? "infant" : isPediatric ? "pediatric" : "adult";
 
   const external_ids = [
     ["albertsons", data.id],
@@ -614,8 +675,6 @@ function formatLocation(data, validAt, checkedAt) {
       `${storeBrand.key}:${storeNumber}`,
     ]);
   }
-
-  const bookingType = isPediatric ? "pediatric" : "adult";
 
   return {
     name,
@@ -634,8 +693,20 @@ function formatLocation(data, validAt, checkedAt) {
     meta: {
       mhealth_address: data.address,
       albertsons_region: data.region,
-      [`booking_url_${bookingType}`]: data.coach_url || undefined,
       timezone,
+      // The booking_url_* keys were an early attempt at handling adult vs.
+      // pediatric-only clinics, but is a pattern that doesn't actually work
+      // well anymore. We are maintaining this until New Jersey (the main
+      // audience for it) has a chance to switch over the `booking_urls` list
+      // below, which should fare better over time.
+      [`booking_url_${bookingType}`]: data.coach_url || undefined,
+      booking_urls: [
+        {
+          products: products.length ? products : undefined,
+          url: data.coach_url,
+          available: formatAvailability(data.availability),
+        },
+      ],
     },
     description,
 
@@ -645,7 +716,7 @@ function formatLocation(data, validAt, checkedAt) {
       checked_at: checkedAt,
       is_public: true,
       available: formatAvailability(data.availability),
-      products,
+      products: products.length ? products : undefined,
     },
   };
 }
