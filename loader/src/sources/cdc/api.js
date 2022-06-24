@@ -25,6 +25,7 @@
  */
 
 const Sentry = require("@sentry/node");
+const { ParseError } = require("../../exceptions");
 
 const { Available, VaccineProduct } = require("../../model");
 const {
@@ -41,6 +42,23 @@ const API_PATH = "/resource/5jp2-pgaw.json";
 
 const warn = createWarningLogger("cdcApi");
 const error = createWarningLogger("cdcApi", Sentry.Severity.Error);
+
+function parseWholeNumber(value) {
+  if (!value) return 0;
+
+  const numberValue = Number(value);
+  if (isNaN(numberValue) || numberValue < 0 || !Number.isInteger(numberValue)) {
+    // FIXME: make it safe for this to throw instead. (Then move this to utils.)
+    error(
+      new ParseError(
+        `Expected integer >= 0 or null, but got ${JSON.stringify(value)}`
+      )
+    );
+    return 0;
+  }
+
+  return numberValue;
+}
 
 async function* queryState(state) {
   const PAGE_SIZE = 5000;
@@ -116,6 +134,15 @@ function formatStore(storeItems, checkedAt) {
       meta[field] = base[field];
     }
 
+    meta.cdc_minimum_age = {
+      months: base.min_age_months,
+      years: base.min_age_years,
+    };
+    let minimum_age_months = parseWholeNumber(base.min_age_years) * 12;
+    if (!minimum_age_months) {
+      minimum_age_months = parseWholeNumber(base.min_age_months) || null;
+    }
+
     const productFields = [
       "ndc",
       "med_name",
@@ -144,6 +171,7 @@ function formatStore(storeItems, checkedAt) {
       postal_code: base.loc_admin_zip,
       info_phone: base.loc_phone,
       info_url: cleanUrl(base.web_address),
+      minimum_age_months,
       meta,
 
       availability: {

@@ -238,4 +238,31 @@ describe("validateLocationInput", () => {
       validateLocationInput({ name: "Somewhere" }, true)
     ).toThrowError(ValueError);
   });
+
+  it("requires minimum_age_months to be > 0", () => {
+    let input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      // @ts-expect-error TS is unhappy with null here, but we need to test it.
+      minimum_age_months: null,
+    };
+    expect(() => validateLocationInput(input)).not.toThrow(ValueError);
+
+    input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      minimum_age_months: 6,
+    };
+    expect(() => validateLocationInput(input)).not.toThrow(ValueError);
+
+    input = {
+      name: "A Place",
+      provider: "CVS",
+      state: "NJ",
+      minimum_age_months: 0,
+    };
+    expect(() => validateLocationInput(input)).toThrow(ValueError);
+  });
 });

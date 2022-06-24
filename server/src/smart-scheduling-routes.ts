@@ -19,6 +19,7 @@ import {
   CapacityRecord,
 } from "./interfaces";
 import states from "./states.json";
+import { CVX_CODES, PRODUCT_NAMES, VaccineCode } from "./vaccines";
 
 const BOOKING_DEEP_LINK =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link";
@@ -43,33 +44,6 @@ const EXTENSION_VACCINE_DOSE =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-dose";
 const EXTENSION_VACCINE_PRODUCT =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product";
-
-// https://www.cdc.gov/vaccines/programs/iis/COVID-19-related-codes.html
-const CVX_CODES: { [index: string]: number } = {
-  astra_zeneca: 210,
-  jj: 212,
-  moderna: 207,
-  moderna_age_6_11: 227,
-  moderna_age_0_5: 228,
-  novavax: 211,
-  pfizer: 208,
-  pfizer_age_5_11: 218,
-  pfizer_age_0_4: 219,
-  sanofi: 225,
-};
-
-const PRODUCT_NAMES: { [index: string]: string } = {
-  astra_zeneca: "AstraZeneca",
-  jj: "Johnson & Johnson",
-  moderna: "Moderna",
-  moderna_age_6_11: "Moderna Pediatric (Ages 6-11)",
-  moderna_age_0_5: "Moderna Pediatric (Ages 0-5)",
-  novavax: "NovaVax",
-  pfizer: "Pfizer",
-  pfizer_age_5_11: "Pfizer Pediatric (Ages 5-11)",
-  pfizer_age_0_4: "Pfizer Pediatric (Ages 0-4)",
-  sanofi: "Sanofi Pasteur",
-};
 
 const DOSE_NUMBERS: { [index: string]: number[] } = {
   all_doses: [1, 2],
@@ -258,8 +232,8 @@ export async function listSchedules(
               url: EXTENSION_VACCINE_PRODUCT,
               valueCoding: {
                 system: SYSTEM_CVX,
-                code: CVX_CODES[product],
-                display: PRODUCT_NAMES[product],
+                code: CVX_CODES[product as VaccineCode],
+                display: PRODUCT_NAMES[product as VaccineCode],
               },
             });
           }

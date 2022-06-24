@@ -14,6 +14,39 @@ import { ValueError, NotFoundError, OutOfDateError } from "../src/exceptions";
 
 installTestDatabaseHooks();
 
+describe("db.createLocation", () => {
+  it("should create new records", async () => {
+    const location = await createLocation(TestLocation);
+    const result = await getLocationById(location.id);
+
+    expect(result).toHaveProperty("name", TestLocation.name);
+  });
+
+  it("rejects if the data is invalid", async () => {
+    await expect(() =>
+      createLocation({ ...TestLocation, name: 5 })
+    ).rejects.toThrow(ValueError);
+  });
+});
+
+describe("db.updateLocation", () => {
+  it("should update a location by ID", async () => {
+    const location = await createLocation(TestLocation);
+    await updateLocation(location, { name: "New name" });
+    const result = await getLocationById(location.id);
+
+    expect(result).toHaveProperty("name", "New name");
+  });
+
+  it("rejects if the update contains invalid data", async () => {
+    const location = await createLocation(TestLocation);
+
+    await expect(() => updateLocation(location, { name: 5 })).rejects.toThrow(
+      ValueError
+    );
+  });
+});
+
 describe("db.updateAvailability", () => {
   it("should update a location's availability", async () => {
     const location = await createLocation(TestLocation);
@@ -673,5 +706,45 @@ describe("db.addExternalIds", () => {
       const { external_ids } = await getLocationById(TestLocation2.id);
       expect(external_ids).toEqual(originalExternalIds);
     });
+  });
+});
+
+describe("db.getLocationById", () => {
+  it("includes availability", async () => {
+    const location = await createLocation(TestLocation);
+    await updateAvailability(location.id, TestLocation.availability);
+    const result = await getLocationById(location.id);
+
+    expect(result).toHaveProperty("availability.available", "YES");
+  });
+
+  it("calculates minimum eligible age in availability", async () => {
+    // The minimum location age is 36, but the minimum vaccine age is 6.
+    const location = await createLocation({
+      ...TestLocation,
+      minimum_age_months: 36,
+    });
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      products: ["jj", "pfizer", "pfizer_age_0_4"],
+    });
+    let result = await getLocationById(location.id);
+    expect(result).toHaveProperty(
+      "availability.minimum_eligible_age_months",
+      36
+    );
+
+    // Change the minimum vaccine age to 144.
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      products: ["jj", "pfizer"],
+      valid_at: new Date(),
+    });
+    result = await getLocationById(location.id);
+    expect(result).toHaveProperty("availability.products", ["jj", "pfizer"]);
+    expect(result).toHaveProperty(
+      "availability.minimum_eligible_age_months",
+      144
+    );
   });
 });

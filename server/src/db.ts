@@ -18,6 +18,7 @@ import { logger, logStackTrace } from "./logger";
 import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
+import { minimumAgeForProducts } from "./vaccines";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
@@ -49,6 +50,7 @@ const providerLocationFields = [
   "booking_url",
   "description",
   "requires_waitlist",
+  "minimum_age_months",
   "meta",
   "created_at",
   "updated_at",
@@ -245,6 +247,13 @@ export async function listLocations({
       delete row.availability.location_id;
       delete row.availability.is_public;
       delete row.availability.rank;
+
+      if (row.minimum_age_months != null && row.availability.products?.length) {
+        row.availability.minimum_eligible_age_months = Math.max(
+          row.minimum_age_months,
+          minimumAgeForProducts(row.availability.products)
+        );
+      }
     }
 
     return row;

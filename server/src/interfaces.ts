@@ -58,6 +58,7 @@ export interface ProviderLocation {
   booking_url: string;
   description: string;
   requires_waitlist: boolean;
+  minimum_age_months?: number;
   meta: any;
   is_public: boolean;
   internal_notes: string;
