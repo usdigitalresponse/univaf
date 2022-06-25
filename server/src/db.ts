@@ -29,7 +29,7 @@ const DEFAULT_BATCH_SIZE = 2000;
 // was disabled).
 // When merging records from multiple sources, we only include records from
 // within this many milliseconds of each other.
-const AVAILABILITY_MERGE_TIMEFRAME = 48 * 60 * 60 * 1000;
+const AVAILABILITY_MERGE_TIMEFRAME = 7 * 24 * 60 * 60 * 1000;
 
 export const db = Knex(loadDbConfig());
 
