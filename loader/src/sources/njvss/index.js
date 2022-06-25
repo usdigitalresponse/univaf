@@ -241,10 +241,12 @@ function filterActualNjvssLocations(locations) {
  * @returns {Array<object>}
  */
 async function findLocationIds(locations) {
+  // FIXME: a lot has changed about how we manage locations and IDs since this
+  // was written. We can probably just use external_ids for this job now!
   let savedLocations;
   try {
     const client = ApiClient.fromEnv();
-    savedLocations = await client.getLocations({ provider: PROVIDER.njvss });
+    savedLocations = await client.getLocations({ state: "NJ" });
   } catch (error) {
     warn(
       `Could not contact API. This may output already known locations with different IDs. (${error})`
