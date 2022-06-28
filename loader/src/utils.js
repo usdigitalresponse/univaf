@@ -514,6 +514,8 @@ module.exports = {
         return VaccineProduct.moderna;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
         return VaccineProduct.modernaAge0_5;
+      } else if (/ages? 6\s?-11/i.test(text)) {
+        return VaccineProduct.modernaAge6_11;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
         // trigger warnings so we can address it.
