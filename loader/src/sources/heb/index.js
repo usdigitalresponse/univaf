@@ -14,6 +14,7 @@ const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
 const { httpClient, createWarningLogger } = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
+const { assertSchema } = require("../../schema-validation");
 
 const API_URL =
   "https://heb-ecom-covid-vaccine.hebdigital-prd.com/vaccine_locations.json";
@@ -98,7 +99,13 @@ function formatAvailableProducts(raw) {
     .map((value) => {
       const productType = value.manufacturer.toLowerCase();
       const formatted = PRODUCT_NAMES[productType];
-      if (productType != "other" && !formatted) {
+      // "other" denotes non-COVID vaccines, like the flu vaccine.
+      // "multiple" denotes more than one possible vaccine in a time slot.
+      // Unfortunately, there doesn't seem to be a way to get details without
+      // making an additional call for each location, which we don't want to
+      // do. On the other hand, we can get usually get the list of products from
+      // the CDC, so this is probably OK.
+      if (productType !== "other" && productType !== "multiple" && !formatted) {
         warn(`Unknown product type`, value.manufacturer, true);
       }
       if (value.openAppointmentSlots > 0) {
@@ -110,7 +117,57 @@ function formatAvailableProducts(raw) {
   return formatted.length ? formatted : undefined;
 }
 
+// API data for each location should look like this. The schema is fairly strict
+// since we are pulling on an unversioned API designed for the web UI, and want
+// the system to scream at us for any potentially impactful change.
+const hebLocationSchema = {
+  type: "object",
+  properties: {
+    type: { enum: ["store"] },
+    name: { type: "string" },
+    storeNumber: { type: "integer", minimum: 1 },
+    street: { type: "string" },
+    city: { type: "string" },
+    state: { type: "string", pattern: "[a-zA-Z]{2}" },
+    zip: { type: "string", pattern: "\\d{1,5}" },
+    longitude: { type: "number" },
+    latitude: { type: "number" },
+    url: {
+      anyOf: [
+        { type: "string", format: "url" },
+        { type: "string", maxLength: 0, nullable: true },
+      ],
+    },
+    fluUrl: {
+      anyOf: [
+        { type: "string", format: "url" },
+        { type: "string", maxLength: 0, nullable: true },
+      ],
+    },
+    openTimeslots: { type: "integer", minimum: 0 },
+    openFluTimeslots: { type: "integer", minimum: 0 },
+    openFluAppointmentSlots: { type: "integer", minimum: 0 },
+    openAppointmentSlots: { type: "integer", minimum: 0 },
+    slotDetails: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          openTimeslots: { type: "integer", minimum: 0 },
+          openAppointmentSlots: { type: "integer", minimum: 0 },
+          manufacturer: { type: "string" },
+        },
+        required: ["openTimeslots", "openAppointmentSlots"],
+        additionalProperties: false,
+      },
+    },
+  },
+  additionalProperties: false,
+};
+hebLocationSchema.required = Object.keys(hebLocationSchema.properties);
+
 function formatLocation(data, checkedAt, validAt) {
+  assertSchema(hebLocationSchema, data);
   if (!checkedAt) checkedAt = new Date().toISOString();
 
   const external_ids = [["heb", `${data.storeNumber}`]];
