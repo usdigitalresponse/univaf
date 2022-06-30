@@ -291,7 +291,7 @@ describe("Albertsons", () => {
             long: "-77.332298",
             coach_url: "https://kordinator.mhealthcoach.net/vcl/1635993536220",
             availability: "yes",
-            drugName: ["PfizerChild"],
+            drugName: ["PfizerToddler"],
           },
           {
             id: "1600100807144",
