@@ -135,13 +135,13 @@ const hebLocationSchema = {
     url: {
       anyOf: [
         { type: "string", format: "url" },
-        { type: "string", maxLength: 5, nullable: true },
+        { type: "string", maxLength: 0, nullable: true },
       ],
     },
     fluUrl: {
       anyOf: [
         { type: "string", format: "url" },
-        { type: "string", maxLength: 5, nullable: true },
+        { type: "string", maxLength: 0, nullable: true },
       ],
     },
     openTimeslots: { type: "integer", minimum: 0 },
