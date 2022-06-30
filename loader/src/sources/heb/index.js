@@ -98,7 +98,13 @@ function formatAvailableProducts(raw) {
     .map((value) => {
       const productType = value.manufacturer.toLowerCase();
       const formatted = PRODUCT_NAMES[productType];
-      if (productType != "other" && !formatted) {
+      // "other" denotes non-COVID vaccines, like the flu vaccine.
+      // "multiple" denotes more than one possible vaccine in a time slot.
+      // Unfortunately, there doesn't seem to be a way to get details without
+      // making an additional call for each location, which we don't want to
+      // do. On the other hand, we can get usually get the list of products from
+      // the CDC, so this is probably OK.
+      if (productType !== "other" && productType !== "multiple" && !formatted) {
         warn(`Unknown product type`, value.manufacturer, true);
       }
       if (value.openAppointmentSlots > 0) {

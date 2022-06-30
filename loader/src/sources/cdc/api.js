@@ -352,6 +352,7 @@ const locationSystems = [
   // vaccine scheduling system (rxtouch.com). Not sure if these are just
   // arbitrarily different, or if they are a pharmacy-specific ID or something.
   { system: "hannaford", pattern: /^Hannaford/i },
+  { system: "heb", pattern: /^H[\s-]?E[\s-]?B\b/i },
 ];
 
 // FIXME: these need to be able to correct more than just the ID.
