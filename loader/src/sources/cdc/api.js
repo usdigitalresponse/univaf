@@ -490,6 +490,10 @@ const ndcLookup = {
   [normalizeNdc("80777-0273-98")]: VaccineProduct.moderna, // sale
   [normalizeNdc("80777-0273-99")]: VaccineProduct.moderna, // sale
 
+  // 80777-275-* can be used as an adult booser or ages 6-11 primary dose.
+  [normalizeNdc("80777-0275-05")]: VaccineProduct.modernaAge6_11, // use
+  [normalizeNdc("80777-0275-99")]: VaccineProduct.modernaAge6_11, // sale
+
   [normalizeNdc("80777-0277-05")]: VaccineProduct.modernaAge6_11, // use
   [normalizeNdc("80777-0277-99")]: VaccineProduct.modernaAge6_11, // sale
 
