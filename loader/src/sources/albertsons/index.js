@@ -62,8 +62,13 @@ const IGNORE_ADDRESS_PATTERN = / \., \., [A-Z]{2}, \d{5}/;
 const PRODUCT_NAMES = {
   pfizer: VaccineProduct.pfizer,
   pfizerchild: VaccineProduct.pfizerAge5_11,
+  pfizertoddler: VaccineProduct.pfizerAge0_4,
   moderna: VaccineProduct.moderna,
+  // Albertsons appears to be using *both* modernachild and modernatoddler
+  // for ages < 6 (clicking through to book on any "modernachild" entry only
+  // allows you to book for ages 3-5).
   modernachild: VaccineProduct.modernaAge0_5,
+  modernatoddler: VaccineProduct.modernaAge0_5,
   jnj: VaccineProduct.janssen,
 };
 
@@ -635,20 +640,11 @@ function formatLocation(data, validAt, checkedAt) {
   }
 
   // Some locations don't list what vaccines are offered, but the location name
-  // may indicate this info. This mainly happens when there is no availability.
-  // Further, `PfizerChild` is Albertsons's drug name for both infant/early
-  // childhood (6 months - 4 years) and for normal childhood (5-11 years). The
-  // only thing that differentiates those is from the location name.
-  let explicitProducts = formatProducts(data.drugName);
-  if (isInfant) {
-    explicitProducts = explicitProducts.map((p) =>
-      p === VaccineProduct.pfizerAge5_11 ? VaccineProduct.pfizerAge0_4 : p
-    );
-  }
+  // may indicate this info, so combine both sources.
+  const explicitProducts = formatProducts(data.drugName);
   const products = [...new Set([...productsInName, ...explicitProducts])];
   isPediatric =
-    isPediatric ||
-    (!isInfant && products.some((p) => PediatricVaccineProducts.has(p)));
+    isPediatric || products.some((p) => PediatricVaccineProducts.has(p));
   isInfant =
     isInfant || products.some((p) => EarlyPediatricVaccineProducts.has(p));
   const bookingType = isInfant ? "infant" : isPediatric ? "pediatric" : "adult";
