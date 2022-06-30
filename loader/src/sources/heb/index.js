@@ -14,6 +14,7 @@ const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
 const { httpClient, createWarningLogger } = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
+const { assertSchema } = require("../../schema-validation");
 
 const API_URL =
   "https://heb-ecom-covid-vaccine.hebdigital-prd.com/vaccine_locations.json";
@@ -116,7 +117,57 @@ function formatAvailableProducts(raw) {
   return formatted.length ? formatted : undefined;
 }
 
+// API data for each location should look like this. The schema is fairly strict
+// since we are pulling on an unversioned API designed for the web UI, and want
+// the system to scream at us for any potentially impactful change.
+const hebLocationSchema = {
+  type: "object",
+  properties: {
+    type: { enum: ["store"] },
+    name: { type: "string" },
+    storeNumber: { type: "integer", minimum: 1 },
+    street: { type: "string" },
+    city: { type: "string" },
+    state: { type: "string", pattern: "[a-zA-Z]{2}" },
+    zip: { type: "string", pattern: "\\d{1,5}" },
+    longitude: { type: "number" },
+    latitude: { type: "number" },
+    url: {
+      anyOf: [
+        { type: "string", format: "url" },
+        { type: "string", maxLength: 5, nullable: true },
+      ],
+    },
+    fluUrl: {
+      anyOf: [
+        { type: "string", format: "url" },
+        { type: "string", maxLength: 5, nullable: true },
+      ],
+    },
+    openTimeslots: { type: "integer", minimum: 0 },
+    openFluTimeslots: { type: "integer", minimum: 0 },
+    openFluAppointmentSlots: { type: "integer", minimum: 0 },
+    openAppointmentSlots: { type: "integer", minimum: 0 },
+    slotDetails: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          openTimeslots: { type: "integer", minimum: 0 },
+          openAppointmentSlots: { type: "integer", minimum: 0 },
+          manufacturer: { type: "string" },
+        },
+        required: ["openTimeslots", "openAppointmentSlots"],
+        additionalProperties: false,
+      },
+    },
+  },
+  additionalProperties: false,
+};
+hebLocationSchema.required = Object.keys(hebLocationSchema.properties);
+
 function formatLocation(data, checkedAt, validAt) {
+  assertSchema(hebLocationSchema, data);
   if (!checkedAt) checkedAt = new Date().toISOString();
 
   const external_ids = [["heb", `${data.storeNumber}`]];
