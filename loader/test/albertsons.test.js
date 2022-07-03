@@ -3,6 +3,7 @@ const {
   API_URL,
   checkAvailability,
   formatLocation,
+  parseNameAndAddress,
 } = require("../src/sources/albertsons");
 const { corrections } = require("../src/sources/albertsons/corrections");
 const { Available } = require("../src/model");
@@ -644,5 +645,23 @@ describe("Albertsons", () => {
 
     expect(longerSectionFirst.name).toEqual("Happy Lands Church - Some info");
     expect(longerSectionSecond.name).toEqual("Happy Lands Church - Some info");
+  });
+
+  it("finds store number and brand when age ranges might look like store numbers", () => {
+    const result = parseNameAndAddress(
+      "Pfizer Age 5 to 11 Albertsons 3592  - 15970 Los Serranos City Club Dr, Chino Hills, CA, 91709"
+    );
+    expect(result).toEqual(
+      expect.objectContaining({
+        storeBrand: expect.objectContaining({ key: "albertsons" }),
+        storeNumber: "3592",
+        address: {
+          lines: ["15970 Los Serranos City Club Dr"],
+          city: "Chino Hills",
+          state: "CA",
+          zip: "91709",
+        },
+      })
+    );
   });
 });

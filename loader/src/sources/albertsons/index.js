@@ -462,7 +462,7 @@ function parseNameAndAddress(text) {
   // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
   // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
   const numberMatch = name.match(
-    /^(?<name>.*?)\s+#?(?<number>\d{2,6})(?:\s+\1)?/
+    /^(?<name>.*?)(?<!\d\sto)\s+#?(?<number>\d{2,6})(?:\s+\1)?/
   );
   let storeNumber;
   if (numberMatch) {
@@ -728,5 +728,6 @@ async function checkAvailability(handler, options) {
 module.exports = {
   checkAvailability,
   formatLocation,
+  parseNameAndAddress,
   API_URL,
 };
