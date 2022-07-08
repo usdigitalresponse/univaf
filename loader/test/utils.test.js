@@ -239,6 +239,7 @@ describe("matchVaccineProduct", () => {
     [v.moderna, "Moderna COVID-19 Vaccine/Booster (Ages 18+)"],
 
     [v.modernaAge6_11, "Moderna COVID-19 Vaccine (ages 6-11 Primary, 18+ Booster)"],
+    [v.modernaAge6_11, "Moderna Pediatric COVID-19 Vaccine (Ages 6 through 11)"],
 
     [v.modernaAge0_5, "Moderna Pediatric COVID-19 Vaccine (Ages 6 months - 5 years)"],
     [v.modernaAge0_5, "Moderna COVID-19 Vaccine (Ages 6m-5yrs)"],
