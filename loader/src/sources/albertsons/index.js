@@ -459,14 +459,41 @@ function parseNameAndAddress(text) {
     }
   }
 
-  // Most store names are in the form "<Brand Name> NNNN", e.g. "Safeway 3189".
-  // Sometimes names repeat after the store number, e.g. "Safeway 3189 Safeway".
-  const numberMatch = name.match(
-    /^(?<name>.*?)(?<!\d\sto)\s+#?(?<number>\d{2,6})(?:\s+\1)?/
+  // Identify the store number from the name string, avoiding things like
+  // dates, times, and age ranges.
+  const numberExpression = new RegExp(
+    String.raw`
+    ^
+    (?<name>.*?)
+    (?<!
+      \d\sto   |
+      \d\s?-   |
+      \sages?  |
+      \sjan\w+ |
+      \sfeb\w+ |
+      \smar\w+ |
+      \sapr\w+ |
+      \smay\w+ |
+      \sjun\w+ |
+      \sjul\w+ |
+      \saug\w+ |
+      \ssep\w+ |
+      \soct\w+ |
+      \snov\w+ |
+      \sdec\w+
+    )
+    \s+
+    #?(?<number>\d{2,6})
+    (\s|$)
+  `.replace(/\s+/g, ""),
+    "i"
   );
+  const numberMatch = name.match(numberExpression);
   let storeNumber;
   if (numberMatch) {
     storeNumber = unpadNumber(numberMatch.groups.number);
+    // Sometimes names repeat after the number, like "Safeway 3189 Safeway",
+    // so we rewrite the name here to clean that up.
     name = `${numberMatch.groups.name} ${storeNumber}`;
   }
 
