@@ -1,0 +1,225 @@
+# Configure deployment on Render.com infrastructure.
+# For info on options, see: https://render.com/docs/blueprint-spec
+#
+# THIS IS AN EXPERIMENT. Our primary deployment is still on AWS, but we hope to
+# switch to this if it works well and is not too expensive. See:
+# https://github.com/usdigitalresponse/univaf/issues/683
+
+databases:
+  - name: univaf-db-production
+    plan: pro
+    databaseName: univaf_db_production
+    user: univaf
+    # Not sepecifying IPs for now; we may want to set this to an empty array
+    # to disallow public connections, though. i.e. `ipAllowList: []`
+    # ipAllowList:
+    #   - source: 203.0.113.4/30
+    #     description: office
+
+services:
+  - name: API Server
+    type: web
+    plan: standard
+    env: node
+    repo: "https://github.com/usdigitalresponse/univaf.git"
+    scaling:
+      minInstances: 1
+      maxInstances: 6
+      targetMemoryPercent: 60 # optional if targetCPUPercent is set
+      targetCPUPercent: 60 # optional if targetMemory is set
+    buildCommand: "cd server && npm install && npm run build"
+    startCommand: "cd server && npm run migrate && node ./dist/src/server.js"
+    healthCheckPath: "/health"
+    envVars:
+      - fromGroup: "Server Environment"
+
+  # Dump database and historical log files in S3
+  - name: "Daily Data Snapshot"
+    type: cron
+    schedule: "0 5 * * *"
+    plan: standard
+    env: node
+    repo: "https://github.com/usdigitalresponse/univaf.git"
+    branch: main
+    buildCommand: |
+      cd server
+      npm install && npm run build
+    startCommand: |
+      cd server
+      node scripts/availability_dump.js --write-to-s3 --clear-log
+    envVars:
+      - fromGroup: "Server Environment"
+      - key: DATA_SNAPSHOT_S3_BUCKET
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_DEFAULT_REGION
+        sync: false
+
+  # Loaders -----------------------------------------------------------------
+  # NOTE: This first loader also defines properties for re-use by the others.
+  - &loader-config
+    name: "Loader: CVS SMART"
+    schedule: "0/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader cvsSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+    # Common options used for all crons. (Other configs use `<<` to repeat this
+    # cron job's configuration and override the above, non-common values.)
+    plan: starter
+    type: cron
+    env: node
+    region: oregon
+    autoDeploy: true
+    repo: "https://github.com/usdigitalresponse/univaf.git"
+    branch: main
+    buildCommand: |
+      cd loader
+      npm install
+    envVars:
+      - fromGroup: "Loader Environment"
+
+  - <<: *loader-config
+    name: "Loader: NJVSS"
+    schedule: "0/5 * * * *" # Every five minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader njvss --send --compact
+    envVars:
+      - fromGroup: "Loader Environment"
+      - key: NJVSS_AWS_KEY_ID
+        sync: false
+      - key: NJVSS_AWS_SECRET_KEY
+        sync: false
+
+  - <<: *loader-config
+    name: "Loader: Rite Aid API"
+    schedule: "0/30 * * * *" # Every 30 minutes
+    # Our API key does not permit queries in CO, so it is missing from this list.
+    startCommand: |
+      cd loader
+      bin/univaf-loader riteAidApi --send --compact --states "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"
+    envVars:
+      - fromGroup: "Loader Environment"
+      - key: RITE_AID_URL
+        sync: false
+      - key: RITE_AID_KEY
+        sync: false
+
+  - <<: *loader-config
+    name: "Loader: Rite Aid Scraper"
+    schedule: "0/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader riteAidScraper --send --compact --states "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"
+
+  - <<: *loader-config
+    name: "Loader: Walgreens SMART"
+    schedule: "2/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader walgreensSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: Kroger SMART"
+    schedule: "4/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader krogerSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: Albertsons"
+    schedule: "6/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader albertsons --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: HyVee"
+    schedule: "8/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader hyvee --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: H-E-B"
+    schedule: "1/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader heb --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: WA Dept. of Health"
+    schedule: "3/5 * * * *" # Every 5 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader waDoh --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: CDC Open Data API"
+    schedule: "7/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader cdcApi --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+
+  - <<: *loader-config
+    name: "Loader: PrepMod"
+    schedule: "9/10 * * * *" # Every 10 minutes
+    startCommand: |
+      cd loader
+      bin/univaf-loader prepmod --send --compact --states "AK,WA" --hide-missing-locations
+
+envVarGroups:
+  - name: "Server Environment"
+    envVars:
+      - key: NODE_VERSION
+        value: "16.16.0"
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: univaf-db-production
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: univaf-db-production
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: univaf-db-production
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: univaf-db-production
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: univaf-db-production
+          property: database
+      - key: API_KEYS
+        sync: false
+      - key: PRIMARY_HOST
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        # FIXME: should be 'production' if/when we turn off AWS
+        value: render
+
+  - name: "Loader Environment"
+    envVars:
+      - key: NODE_VERSION
+        value: "16.16.0"
+      - key: NODE_ENV
+        value: production
+      - key: API_URL
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        # FIXME: should be 'production' if/when we turn off AWS
+        value: render
