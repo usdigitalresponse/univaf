@@ -7,6 +7,7 @@
 
 databases:
   - name: univaf-db-production
+    region: oregon
     plan: pro
     databaseName: univaf_db_production
     user: univaf
@@ -18,6 +19,7 @@ databases:
 
 services:
   - name: DataDog Agent
+    region: oregon
     type: pserv
     plan: starter
     env: docker
@@ -27,10 +29,12 @@ services:
         sync: false
 
   - name: API Server
+    region: oregon
     type: web
     plan: standard
     env: node
     repo: "https://github.com/usdigitalresponse/univaf.git"
+    branch: main
     scaling:
       minInstances: 1
       maxInstances: 6
@@ -69,6 +73,7 @@ services:
 
   # Dump database and historical log files in S3
   - name: "Daily Data Snapshot"
+    region: oregon
     type: cron
     schedule: "0 5 * * *"
     plan: standard
