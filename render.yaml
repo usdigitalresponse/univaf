@@ -41,34 +41,28 @@ services:
     healthCheckPath: "/health"
     envVars:
       - fromGroup: "Server Environment"
-      - &DD_AGENT_HOST
-        key: DD_AGENT_HOST
+      - key: DD_AGENT_HOST
         fromService:
           name: DataDog Agent
           type: web
           property: host
-      - &DB_HOST
-        key: DB_HOST
+      - key: DB_HOST
         fromDatabase:
           name: univaf-db-production
           property: host
-      - &DB_PORT
-        key: DB_PORT
+      - key: DB_PORT
         fromDatabase:
           name: univaf-db-production
           property: port
-      - &DB_USERNAME
-        key: DB_USERNAME
+      - key: DB_USERNAME
         fromDatabase:
           name: univaf-db-production
           property: user
-      - &DB_PASSWORD
-        key: DB_PASSWORD
+      - key: DB_PASSWORD
         fromDatabase:
           name: univaf-db-production
           property: password
-      - &DB_NAME
-        key: DB_NAME
+      - key: DB_NAME
         fromDatabase:
           name: univaf-db-production
           property: database
@@ -89,12 +83,31 @@ services:
       node scripts/availability_dump.js --write-to-s3 --clear-log
     envVars:
       - fromGroup: "Server Environment"
-      - *DD_AGENT_HOST
-      - *DB_HOST
-      - *DB_PORT
-      - *DB_USERNAME
-      - *DB_PASSWORD
-      - *DB_NAME
+      - key: DD_AGENT_HOST
+        fromService:
+          name: DataDog Agent
+          type: web
+          property: host
+      - key: DB_HOST
+        fromDatabase:
+          name: univaf-db-production
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: univaf-db-production
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: univaf-db-production
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: univaf-db-production
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: univaf-db-production
+          property: database
       - key: DATA_SNAPSHOT_S3_BUCKET
         value: "univaf-render-test-data-snapshots"
       - key: AWS_ACCESS_KEY_ID
@@ -126,7 +139,11 @@ services:
       npm install
     envVars:
       - fromGroup: "Loader Environment"
-      - *DD_AGENT_HOST
+      - key: DD_AGENT_HOST
+        fromService:
+          name: DataDog Agent
+          type: web
+          property: host
 
   - <<: *loader-config
     name: "Loader: NJVSS"
@@ -136,7 +153,11 @@ services:
       bin/univaf-loader njvss --send --compact
     envVars:
       - fromGroup: "Loader Environment"
-      - *DD_AGENT_HOST
+      - key: DD_AGENT_HOST
+        fromService:
+          name: DataDog Agent
+          type: web
+          property: host
       - key: NJVSS_AWS_KEY_ID
         sync: false
       - key: NJVSS_AWS_SECRET_KEY
@@ -151,7 +172,11 @@ services:
       bin/univaf-loader riteAidApi --send --compact --states "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"
     envVars:
       - fromGroup: "Loader Environment"
-      - *DD_AGENT_HOST
+      - key: DD_AGENT_HOST
+        fromService:
+          name: DataDog Agent
+          type: web
+          property: host
       - key: RITE_AID_URL
         sync: false
       - key: RITE_AID_KEY
