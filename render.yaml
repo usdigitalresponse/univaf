@@ -52,7 +52,7 @@ services:
       - key: DD_AGENT_HOST
         fromService:
           name: DataDog Agent
-          type: web
+          type: pserv
           property: host
 
   # Dump database and historical log files in S3
