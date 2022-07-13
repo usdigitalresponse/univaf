@@ -45,31 +45,6 @@ services:
     healthCheckPath: "/health"
     envVars:
       - fromGroup: "Server Environment"
-      - key: DD_AGENT_HOST
-        fromService:
-          name: DataDog Agent
-          type: web
-          property: host
-      - key: DB_HOST
-        fromDatabase:
-          name: univaf-db-production
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: univaf-db-production
-          property: port
-      - key: DB_USERNAME
-        fromDatabase:
-          name: univaf-db-production
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: univaf-db-production
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: univaf-db-production
-          property: database
 
   # Dump database and historical log files in S3
   - name: "Daily Data Snapshot"
