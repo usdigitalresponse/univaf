@@ -24,8 +24,11 @@ services:
     plan: starter
     env: docker
     repo: "https://github.com/render-examples/datadog-agent.git"
+    branch: main
     envVars:
       - key: DD_API_KEY
+        sync: false
+      - key: DD_SITE
         sync: false
 
   - name: API Server
