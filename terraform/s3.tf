@@ -37,7 +37,7 @@ resource "aws_s3_bucket_policy" "render_test_data_snapshots" {
   bucket = aws_s3_bucket.render_test_data_snapshots.id
   policy = jsonencode({
     Version = "2008-10-17"
-    Id      = "Policy8542383977173"
+    Id      = "Policy8542383977174"
     Statement = [{
       Sid       = "PublicReadAccess"
       Effect    = "Allow"
