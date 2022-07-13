@@ -34,7 +34,7 @@ services:
     plan: standard
     env: node
     repo: "https://github.com/usdigitalresponse/univaf.git"
-    branch: main
+    branch: render-is-simpler-than-aws-or-so-we-hope
     scaling:
       minInstances: 1
       maxInstances: 6
