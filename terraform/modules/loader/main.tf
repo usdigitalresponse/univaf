@@ -4,8 +4,8 @@ module "loader_task" {
   name    = var.name
   image   = var.loader_image
   role    = var.role
-  cpu     = 1024
-  memory  = 2048
+  cpu     = 512
+  memory  = 1024
   port    = 3000
   command = concat(var.command, [var.loader_source])
 
