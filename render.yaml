@@ -49,28 +49,34 @@ services:
     healthCheckPath: "/health"
     envVars:
       - fromGroup: "Server Environment"
-      - key: DD_AGENT_HOST
+      - &DD_AGENT_HOST
+        key: DD_AGENT_HOST
         fromService:
           name: DataDog Agent
           type: pserv
           property: host
-      - key: DB_HOST
+      - &DB_HOST
+        key: DB_HOST
         fromDatabase:
           name: univaf-db-production
           property: host
-      - key: DB_PORT
+      - &DB_PORT
+        key: DB_PORT
         fromDatabase:
           name: univaf-db-production
           property: port
-      - key: DB_USERNAME
+      - &DB_USERNAME
+        key: DB_USERNAME
         fromDatabase:
           name: univaf-db-production
           property: user
-      - key: DB_PASSWORD
+      - &DB_PASSWORD
+        key: DB_PASSWORD
         fromDatabase:
           name: univaf-db-production
           property: password
-      - key: DB_NAME
+      - &DB_NAME
+        key: DB_NAME
         fromDatabase:
           name: univaf-db-production
           property: database
@@ -94,31 +100,12 @@ services:
       node scripts/availability_dump.js --write-to-s3 --clear-log
     envVars:
       - fromGroup: "Server Environment"
-      - key: DD_AGENT_HOST
-        fromService:
-          name: DataDog Agent
-          type: web
-          property: host
-      - key: DB_HOST
-        fromDatabase:
-          name: univaf-db-production
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: univaf-db-production
-          property: port
-      - key: DB_USERNAME
-        fromDatabase:
-          name: univaf-db-production
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: univaf-db-production
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: univaf-db-production
-          property: database
+      - *DD_AGENT_HOST
+      - *DB_HOST
+      - *DB_PORT
+      - *DB_USERNAME
+      - *DB_PASSWORD
+      - *DB_NAME
       - key: DATA_SNAPSHOT_S3_BUCKET
         value: "univaf-render-test-data-snapshots"
       - key: AWS_ACCESS_KEY_ID
