@@ -49,6 +49,11 @@ services:
     healthCheckPath: "/health"
     envVars:
       - fromGroup: "Server Environment"
+      - key: DD_AGENT_HOST
+        fromService:
+          name: DataDog Agent
+          type: web
+          property: host
 
   # Dump database and historical log files in S3
   - name: "Daily Data Snapshot"
