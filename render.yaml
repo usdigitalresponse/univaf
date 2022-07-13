@@ -40,7 +40,11 @@ services:
       maxInstances: 6
       targetMemoryPercent: 60 # optional if targetCPUPercent is set
       targetCPUPercent: 60 # optional if targetMemory is set
-    buildCommand: "cd server && npm install && npm run build"
+    buildCommand: |
+      cd server
+      npm ci --production=false
+      npm run build
+      npm prune --production
     startCommand: "cd server && npm run migrate && node ./dist/src/server.js"
     healthCheckPath: "/health"
     envVars:
@@ -57,7 +61,9 @@ services:
     branch: main
     buildCommand: |
       cd server
-      npm install && npm run build
+      npm ci --production=false
+      npm run build
+      npm prune --production
     startCommand: |
       cd server
       node scripts/availability_dump.js --write-to-s3 --clear-log
@@ -116,7 +122,7 @@ services:
     branch: main
     buildCommand: |
       cd loader
-      npm install
+      npm ci --production=true
     envVars:
       - fromGroup: "Loader Environment"
       - key: DD_AGENT_HOST
