@@ -72,7 +72,7 @@ services:
       - key: AWS_SECRET_ACCESS_KEY
         sync: false
       - key: AWS_DEFAULT_REGION
-        sync: "us-west-2"
+        value: "us-west-2"
 
   # Loaders -----------------------------------------------------------------
   # NOTE: This first loader also defines properties for re-use by the others.
