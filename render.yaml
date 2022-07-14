@@ -43,6 +43,9 @@ services:
       maxInstances: 6
       targetMemoryPercent: 60 # optional if targetCPUPercent is set
       targetCPUPercent: 60 # optional if targetMemory is set
+    buildFilter:
+      paths:
+        - server/**
     buildCommand: |
       cd server
       npm ci --production=false
@@ -93,6 +96,9 @@ services:
     env: node
     repo: "https://github.com/usdigitalresponse/univaf.git"
     branch: main
+    buildFilter:
+      paths:
+        - server/**
     buildCommand: |
       cd server
       npm ci --production=false
@@ -135,6 +141,9 @@ services:
     autoDeploy: true
     repo: "https://github.com/usdigitalresponse/univaf.git"
     branch: main
+    buildFilter:
+      paths:
+        - loader/**
     buildCommand: |
       cd loader
       npm ci --production=true
