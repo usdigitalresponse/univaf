@@ -23,6 +23,7 @@ const knexConfig = require("../knexfile");
 const luxon = require("luxon");
 const JSONStream = require("JSONStream");
 const stream = require("stream");
+const { pipeline } = require("stream/promises");
 const { Buffer } = require("buffer");
 const zlib = require("zlib");
 
@@ -202,12 +203,7 @@ async function uploadStream(s, path) {
 }
 
 async function writeStreamToLocal(s, path) {
-  const writeStream = fs.createWriteStream(`output/${path}`);
-  s.pipe(writeStream);
-  return new Promise((resolve, reject) => {
-    s.on("close", resolve);
-    s.on("error", reject);
-  });
+  return await pipeline(s, fs.createWriteStream(`output/${path}`));
 }
 
 async function ensureLocalOutputDirs() {
@@ -261,14 +257,14 @@ async function main() {
   for (const table of ["external_ids", "availability"]) {
     writeLog(`writing ${pathFor(table, runDate)}`);
     await writeStream(
-      getTableStream(table).pipe(bufferedGzipStream()),
+      stream.compose(getTableStream(table), bufferedGzipStream()),
       pathFor(table, runDate)
     );
   }
 
   writeLog(`writing ${pathFor("provider_locations", runDate)}`);
   await writeStream(
-    getProviderLocationsStream().pipe(bufferedGzipStream()),
+    stream.compose(getProviderLocationsStream(), bufferedGzipStream()),
     pathFor("provider_locations", runDate)
   );
 
@@ -276,7 +272,10 @@ async function main() {
   for (const logRunDate of logRunDates) {
     writeLog(`writing ${pathFor("availability_log", logRunDate)}`);
     await writeStream(
-      getAvailabilityLogStream(logRunDate).pipe(bufferedGzipStream()),
+      stream.compose(
+        getAvailabilityLogStream(logRunDate),
+        bufferedGzipStream()
+      ),
       pathFor("availability_log", logRunDate)
     );
   }
