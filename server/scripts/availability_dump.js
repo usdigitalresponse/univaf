@@ -23,6 +23,8 @@ const knexConfig = require("../knexfile");
 const luxon = require("luxon");
 const JSONStream = require("JSONStream");
 const stream = require("stream");
+const { Buffer } = require("buffer");
+const zlib = require("zlib");
 
 Sentry.init();
 
@@ -57,6 +59,80 @@ function removeNullPropertiesStream() {
       callback(null, record);
     },
   });
+}
+
+/**
+ * A stream that emits buffers of a given size (in bytes). Useful when an input
+ * stream might emit data in small chunks, while the next stream in a pipeline
+ * works more efficiently with larger chunks, or chunks of a given size.
+ *
+ * In practice, we use this for gzipping, since gzip stream work most
+ * efficiently if data comes in chunks of at least 32 kB (this actually makes
+ * a pretty big difference).
+ *
+ * We couldn't find a good version of this on NPM (which seems surprising,
+ * we're probably missing it). The `stream-chunker` package, which is popular,
+ * performs *terribly* and is often worse than no chunking at all.
+ */
+class BufferedStream extends stream.Transform {
+  constructor({ size = 256 * 1024, ...options } = {}) {
+    super(options);
+    this.size = size;
+    this.resetBuffer();
+  }
+
+  resetBuffer() {
+    this.buffer = Buffer.allocUnsafe(this.size);
+    this.offset = 0;
+  }
+
+  _transform(input, encoding, callback) {
+    if (typeof input === "string") {
+      input = Buffer.from(input, encoding);
+    } else if (!(input instanceof Buffer)) {
+      callback(
+        new TypeError(
+          `BufferedStream input must be strings or buffers, not ${input.constructor.name}`
+        )
+      );
+      return;
+    }
+
+    let inputPosition = 0;
+    while (inputPosition < input.length) {
+      const written = input.copy(this.buffer, this.offset, inputPosition);
+      inputPosition += written;
+      this.offset += written;
+
+      if (this.offset === this.size) {
+        this.push(this.buffer);
+        this.resetBuffer();
+      }
+    }
+    callback();
+  }
+
+  _flush(callback) {
+    if (this.offset > 0) {
+      this.push(this.buffer.slice(0, this.offset));
+    }
+    callback();
+  }
+
+  _destroy(error, callback) {
+    this.buffer = null;
+    callback(error);
+  }
+}
+
+function bufferedGzipStream(size = 64 * 1024) {
+  return stream.compose(
+    new BufferedStream({ size }),
+    zlib.createGzip({
+      level: zlib.constants.Z_BEST_COMPRESSION,
+      chunkSize: size,
+    })
+  );
 }
 
 function getQueryStream(queryBuilder) {
@@ -157,7 +233,7 @@ function formatDate(date) {
 }
 
 function pathFor(type, date) {
-  return `${type}/${type}-${formatDate(date)}.ndjson`;
+  return `${type}/${type}-${formatDate(date)}.ndjson.gz`;
 }
 
 function eachDayOfInterval({ start, end }) {
@@ -184,12 +260,15 @@ async function main() {
 
   for (const table of ["external_ids", "availability"]) {
     writeLog(`writing ${pathFor(table, runDate)}`);
-    await writeStream(getTableStream(table), pathFor(table, runDate));
+    await writeStream(
+      getTableStream(table).pipe(bufferedGzipStream()),
+      pathFor(table, runDate)
+    );
   }
 
   writeLog(`writing ${pathFor("provider_locations", runDate)}`);
   await writeStream(
-    getProviderLocationsStream(),
+    getProviderLocationsStream().pipe(bufferedGzipStream()),
     pathFor("provider_locations", runDate)
   );
 
@@ -197,7 +276,7 @@ async function main() {
   for (const logRunDate of logRunDates) {
     writeLog(`writing ${pathFor("availability_log", logRunDate)}`);
     await writeStream(
-      getAvailabilityLogStream(logRunDate),
+      getAvailabilityLogStream(logRunDate).pipe(bufferedGzipStream()),
       pathFor("availability_log", logRunDate)
     );
   }
