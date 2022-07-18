@@ -83,6 +83,8 @@ class BufferedStream extends stream.Transform {
   }
 
   resetBuffer() {
+    // Allocate a *new* buffer because we emit the previous buffer to the
+    // stream's consumer (in `_transform`) and can no longer safely write to it.
     this.buffer = Buffer.allocUnsafe(this.size);
     this.offset = 0;
   }
@@ -106,6 +108,8 @@ class BufferedStream extends stream.Transform {
       this.offset += written;
 
       if (this.offset === this.size) {
+        // Emit the filled buffer rather than a copy. `resetBuffer` allocates a
+        // new buffer more efficiently than making a copy.
         this.push(this.buffer);
         this.resetBuffer();
       }
