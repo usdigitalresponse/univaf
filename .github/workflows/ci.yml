@@ -185,9 +185,11 @@ jobs:
             ${{ matrix.build_path }}
 
           # Report image info
-          SIZE=docker image inspect \
-            "dev/$ECR_REPOSITORY:$IMAGE_TAG" \
-            --format '\{\{.VirtualSize\}\}'
+          SIZE=$(
+            docker image inspect \
+              --format '\{\{.VirtualSize\}\}' \
+              "${IMAGE_NAME}"
+          )
           SIZE_MB=$(($SIZE / 1024 / 1024))
           echo "Built image \`${IMAGE_NAME}\`: ${SIZE_MB} MB" >> $GITHUB_STEP_SUMMARY
 
