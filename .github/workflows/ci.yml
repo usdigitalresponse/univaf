@@ -177,11 +177,19 @@ jobs:
 
       - name: Build ${{ matrix.repository }}
         run: |
+          IMAGE_NAME="dev/${ECR_REPOSITORY}:${IMAGE_TAG}"
           docker build \
-            -t dev/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t "${IMAGE_NAME}" \
             -f ${{ matrix.dockerfile }} \
             --build-arg RELEASE="${IMAGE_TAG}" \
             ${{ matrix.build_path }}
+
+          # Report image info
+          SIZE=docker image inspect \
+            "dev/$ECR_REPOSITORY:$IMAGE_TAG" \
+            --format '\{\{.VirtualSize\}\}'
+          SIZE_MB=$(($SIZE / 1024 / 1024))
+          echo "Built image \`${IMAGE_NAME}\`: ${SIZE_MB} MB" >> $GITHUB_STEP_SUMMARY
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
