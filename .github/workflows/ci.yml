@@ -187,7 +187,7 @@ jobs:
           # Report image info
           SIZE=$(
             docker image inspect \
-              --format '\{\{.VirtualSize\}\}' \
+              --format '{{ .VirtualSize }}' \
               "${IMAGE_NAME}"
           )
           SIZE_MB=$(($SIZE / 1024 / 1024))
