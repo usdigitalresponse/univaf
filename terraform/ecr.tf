@@ -16,8 +16,8 @@ resource "aws_ecr_repository" "loader_repository" {
   }
 }
 
-// This repository is maintained only for historical reference. The seed image
-// should not actually ever be used in production.
+# This repository is maintained only for historical reference. The seed image
+# should not actually ever be used in production.
 resource "aws_ecr_repository" "seed_repository" {
   name                 = "univaf-db-seed"
   image_tag_mutability = "IMMUTABLE"
