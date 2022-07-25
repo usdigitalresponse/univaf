@@ -50,3 +50,8 @@ variable "subnets" {
 variable "env_vars" {
   default = {}
 }
+
+variable "enabled" {
+  description = "Whether to schedule the loader for automatic runs"
+  default = true
+}

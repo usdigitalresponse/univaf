@@ -57,6 +57,7 @@ resource "aws_cloudwatch_log_stream" "log_stream" {
 
 module "loader_schedule" {
   source = "../../modules/schedule"
+  count       = var.enabled ? 1 : 0
 
   name        = var.name
   schedule    = var.schedule
