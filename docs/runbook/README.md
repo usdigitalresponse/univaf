@@ -13,26 +13,35 @@ Documents in this folder are a general guide to manipulating and maintaining the
 
 ## General Overview
 
+### Render
+
+Most of the infrastructure and services that support this project run in [Render][] (with a few items in AWS; see below). Render monitors this GitHub repository for changes and will build and re-deploy the various services as needed. We run most things in AWS, but Render provides higher-level tooling that is much easier to manage and fits our needs pretty well.
+
+The configuration for all our Render services is managed in [`render.yaml`](../../render.yaml) in the root of this repo. You can find documentation for what you can do in that file at https://render.com/docs/infrastructure-as-code.
+
+What services run in Render?
+
+- A Postgres database for storing all our data.
+
+- The API Server (code in the `server` directory) is a publicly accessible web service. This is what you’re contacting when you browse to https://getmyvax.org.
+
+- A cron job to snapshot the database and export logs for historical analysis once a day.
+
+- A cron job for each data source we pull information from. These run the loader (code in the `loader` directory) with appropriate arguments for the given source.
+
+- A DataDog agent for sending metrics (see [“Other Services”](#other-services) below).
+
+
 ### AWS
 
-Most of the infrastructure and services that support this project are in Amazon Web Services (AWS), and the vast majority of our AWS resources are in the `us-west-2` region. We try to maintain as much configuration as reasonably possible in *Terraform* configuration files in the [`terraform`](../../terraform) directory (we use *Terraform Cloud* to actually apply those configurations to AWS; see "other services").
+We use AWS for a few things that Render can’t do right now. Like Render, we manage all our AWS resources in code via *Terraform Cloud*, and the configuration files live in the [`terraform`](../../terraform) directory. Any time files in the `terraform` directory change on the `main` branch, Terraform Cloud will automatically apply the current configuration files.
 
-Major components:
+What resources are in AWS?
 
-- Most code runs in Elastic Container Service (ECS) as Docker containers. Everything runs in a single ECS *cluster*.
-    - The main concept in ECS is a *task*, which you can generally think of as Docker container.
-    - The API server is an ECS *service* (named `api`). A *service* is a set of long-running tasks that ECS keeps a certain number of instances running (so if one stops, ECS starts a new one, and keeps N copies running where N scales between an upper and lower limit based on resource usage).
-    - Most other code run as *scheduled tasks* in the same clauser as the API service. A *scheduled task* isn't actually a built-in feature of ECS, but is a well-known pattern — it's a *CloudWatch event* that is triggered on a schedule and that tells the ECS cluster to run a particular *task* — basically `cron` for Docker containers. Terraform is incredibly helpful by letting us make this pattern into a single, manageable configuration object.
-        - Each loader source (e.g. `albertsons`, `krogerSmart`, `walgreensSmart`) is a separate task (see [`terraform/loaders.tf`](../../terraform/loaders.tf)). This lets us control the schedule and arguments for each source we pull data from in an organized way.
-        - Other scheduled tasks are part of the `server` code and support its functions. For example, the `daily_data_snapshot_task` dumps a copy of the database each night into S3 as JSON files that are used for historical analysis.
-- CloudFront is used as a caching proxy in front of the API server.
-- The database is managed in RDS.
-- Historical log data is saved and made publicly accessible in S3.
+- DNS for `getmyvax.org` and subdomains.
+- A publicly accessible S3 bucket that stores historical data and logs for analysis. (The “snapshot” cron job in Render writes to this bucket nightly.)
 
-As much of the infrastructure as possible is managed in Terraform, but a few bits are set up manually:
-
-- SSL certificate in ACM. (The actual DNS records are managed in Terraform, though.)
-- Bastion server and its associated security group in EC2.
+*NOTE: we used to run all our services in AWS, so you’ll find more complex Terraform files in this repo’s history. You might also find some legacy resources in AWS that are still being cleaned up.*
 
 
 ### Other Services
@@ -40,7 +49,7 @@ As much of the infrastructure as possible is managed in Terraform, but a few bit
 We also rely on a handful of other services for critical operations tasks:
 
 - **[Terraform Cloud][terraform-cloud]** manages checking and applying our Terraform configurations.
-- **GitHub actions** works in concert with Terraform Cloud to automatically deploy changes that land on the `main` branch.
+- **GitHub actions** runs tests and deploys the demo UI (see “GitHub pages” below).
 - **[Sentry][sentry]** tracks exceptions in our code. It also tracks warnings about unexpected content in the data we pull in from external sources (e.g. a new, unknown vaccine code), which is critical to keeping the service up-to-date and accurate.
 - **[DataDog][]** for general stats on our services. The most imporant of these is usually metrics on HTTP requests. Sometimes the server may be rejecting bad requests with a 4xx status code, and the dashboards in DataDog are the best place to see that happening since they might not trigger exceptions or other kinds of alerts.
 - **[1Password][1pw]** stores Important team and partner credentials in a shared *vault*.
@@ -54,27 +63,20 @@ Please get in touch with a project lead for access to any of these systems.
 
 ## Deployment
 
-### Building
+### Build & Deploy
 
-**Most of our production code runs as Docker containers in ECS tasks.** Deploying new code requires first building and uploading Docker images to AWS Elastic Container Registry (ECR). We use GitHub Actions to automatically build images on every push and to *publish* those images to ECR on pushes to the `main` branch. See the [`ci` workflow][workflow-ci] for details and see the [logs in the "actions" tab][workflow-ci-runs]).
+**Most of our production code builds and runs automatically on Render.** Every time a new commit lands on the `main` branch, Render will attempt to build and deploy it. If you need to trigger a deploy manually, log into the [Render dashboard][], click on the service you want to deploy, and click the “manual deploy” button.
 
-Images are tagged with the hash of the git commit they were built from, e.g. `univaf-server:bd2834bdc6dc09f5e925a407f883e838130ae5bc` is the API server image built from commit `bd2834bdc6dc09f5e925a407f883e838130ae5bc`. *(NOTE: we used to publish a `latest` tag, but no longer do so.)*
+![Manually deploying to Render](../_assets/render-manual-deploy.png)
 
-For specific Docker build steps and commands, check the [`build_docker` job of `ci` workflow][workflow-ci].
+**Resources in AWS deploy automatically via Terraform Cloud.** Every time a new commit that changes Terraform files lands on the `main` branch, Terraform Cloud will deploy. It will also *plan* a deployment (and tell you what it would create/update/destroy) every time you push to a Pull Request branch (this will show up as a “check” at the bottom of a PR).
+
+If you need to trigger Terraform manually, log into [Terraform Cloud][terraform-cloud], browse to the “univaf-infra” workspace, click the “actions” dropdown in the upper-right, and select “start new run.”
+
+![Manually deploying in Terraform Cloud](../_assets/terraform-manual-deploy.png)
 
 **The Demo UI is a static site built with Webpack.** We use GitHub Actions to automatically build and publish the site. The [`ui-deploy` workflow][workflow-ui-deploy] automatically builds and deploys the site every time a commit lands on the `main` branch. See the main README for details on [building the static site manually](../../README.md#building-and-viewing-the-ui).
 
-
-### Deploying New Images to AWS
-
-In most cases, deploying new code or infrastructure changes to AWS happens automatically on any push to the `main` branch:
-
-1. When a new commit is pushed to `main`, the `ci` workflow builds and tests it.
-2. If the build and tests run successfully, the `ci` workflow tags the built Docker images and pushes them to ECR.
-3. The `ci` workflow runs the [`scripts/deploy_infra.sh`](../../scripts/deploy_infra.sh) script, which creates and pushes a commit that updates the [deployed Docker image tag](../../terraform/server_deploy.tf.json) in our Terraform configuration files.
-4. Any push to `main` that alters our Terraform configuration will cause Terraform to automatically plan and apply the new configuration.
-
-You can perform any of the above steps manually if necessary, but we prefer the automatic process wherever possible (please reference the steps in the `ci` workflow to understand what commands you would run). This includes any changes to services or resources in AWS — please perform those changes *in Terraform configuration files*. (See the [AWS provider reference docs][terraform-aws-provider] for details on configuring various AWS services.)
 
 ### Terraforming Locally
 
@@ -95,27 +97,12 @@ Follow this process when making any changes in terraform that may affect another
 5. Give clear notification when you are starting and ending that work, so the rest of the team can act appropriately.
 
 
-## Bastion Server
-
-Most of our services in AWS are in VPCs without public access, so if you need to log directly into a server, the database, or something else, you’ll need to do it through the [bastion server][bastion-server]. You can SSH into the bastion from a computer on the public internet, and from there run any commands that need access to our internal services, like using `psql` to log directly into the database.
-
-In general, you should try to find a way to do most tasks that doesn't require manual intervention through the bastion, but it’s there when you absolutely need it or when there’s an emergency.
-
-Please see another maintainer or the AWS console for the bastion’s IP address, SSH keys, etc.
-
-Usually, you’ll log in via SSH:
-
-```sh
-$ ssh -i ~/.ssh/<your-keyfile> <user>@<bastion-ip-address>
-```
-
-And then run any commands you'd like from inside the SSH session.
-
-
 [terraform-cloud]: https://app.terraform.io/
 [sentry]: https://sentry.io/
 [datadog]: https://www.datadoghq.com/
 [1pw]: https://1password.com/
+[render]: https://render.com/
+[render-dashboard]: https://dashboard.render.com/
 [slack-usdr]: https://usdigitalresponse.slack.com/
 [bastion-server]: https://en.wikipedia.org/wiki/Bastion_host
 [terraform-aws-provider]: https://registry.terraform.io/providers/hashicorp/aws/latest/docs

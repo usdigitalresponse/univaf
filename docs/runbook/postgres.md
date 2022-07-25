@@ -9,35 +9,30 @@
 
 ## Overview
 
-The application is currently backed by a single PostgreSQL database server managed through AWS RDS. View the web console at: https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2
-
-We have "performance insights" turned on, and you can navigate to it from the web console to see overall database load statistics and information about common or slow-performing queries.
+The application is currently backed by a single PostgreSQL database server managed through Render. You can view metrics or logs and get a login URL for `psql` in Render’s web dashboard (https://dashboard.render.com/).
 
 
 ## Backups
 
-RDS is configured to save daily snapshots of the database, which you can browse at https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2#snapshots-list:tab=automated.
-
-
-### Restoring From a Snapshot
-
-When viewing the list of snapshots in the RDS web console, you can create a new database from one of the snapshots by selecting it and then choosing "restore snapshot" from the "actions" dropdown at the top of the list (or from the "actions" dropdown on the top-right of a snapshot's details page). You’ll then walk through the steps of setting a name, instance class, VPC, and other basic properties of the database. In most cases, you’ll want them to be the same as or similar to the database you are restoring a snapshot of, so use that database instance in the console as a reference.
-
-*Note that you can’t restore directly to an existing database instance.* That means that, if you are switching to the backup data, you’ll need to create the new database from the snapshot, update and apply our Terraform configurations to point any relevant services to the new database, and then retire the old database (probably through Terraform again).
+Render is configured to save daily snapshots of the database, which you can browse in the web dashboard. For details on backups and restoring, see the Render docs: https://render.com/docs/databases#backups.
 
 
 ## Logging in with `psql`
 
-For some maintenance and other tasks, you might need to log directly into the database and run commands with `psql`. Since the database is in a VPC without public access, you’ll need to log into the bastion server first, and run `psql` from there.
+For some maintenance and other tasks, you might need to log directly into the database and run commands with `psql`. At the moment, you can do this from your own local machine, but we may disable that, and should probably log in from within Render’s data center instead. There are a couple ways to do this:
 
-To log into the bastion server, see ["bastion server" in the runbook README][bastion-server].
+1. You can start a shell session in your browser by opening Render’s web dashboard, clicking on a service or cron job, and clicking on “shell” in the sidebar.
+
+    ![Render Web Shell](../_assets/render-web-shell.png)
+
+2. Alternatively, you can SSH into a Render service by following the directions at https://render.com/docs/ssh.
 
 Please take special care when logging directly into the production database; you’re working with live data!
 
 
 ## Understanding Table Sizes
 
-RDS doesn’t provide great tools for taking a detailed look at the database, and if you are running low on disk space or need to understand what’s taking up resources, you may need to log in with `psql` and run some queries.
+Render doesn’t provide great tools for taking a detailed look at the database, and if you are running low on disk space or need to understand what’s taking up resources, you may need to log in with `psql` and run some queries.
 
 The following query can be pretty helpful in understanding basic size information about tables:
 
@@ -71,4 +66,3 @@ If a table gets too big and you need to save disk space on the database server, 
 
 
 [issue-208]: https://github.com/usdigitalresponse/univaf/issues/208
-[bastion-server]: ./README.md#bastion-server
