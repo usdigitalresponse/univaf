@@ -216,19 +216,3 @@ jobs:
         run: |
           docker tag dev/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs:
-      - build_docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Create + push deploy commit
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions-bot@usdigitalresponse.org"
-
-          ./scripts/deploy_infra.sh
-          git push

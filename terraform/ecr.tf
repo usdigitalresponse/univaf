@@ -1,3 +1,8 @@
+# Container Registries
+#
+# These registries are maintained for historical reference and to make
+# re-deployment on AWS easier. We may eventually delete them.
+
 resource "aws_ecr_repository" "server_repository" {
   name                 = "univaf-server"
   image_tag_mutability = "IMMUTABLE"

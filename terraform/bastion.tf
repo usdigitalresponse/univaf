@@ -1,7 +1,15 @@
+# Bastion Server
+#
+# The bastion server has access to our private networks and services, but is
+# accessible from public networks (this is also often referred to as a
+# "jump box").
+#
+# We use it to manually log in and run scripts, investigate issues, or make DB
+# queries. (We try and avoid this, though! Whenever possible, these tasks should
+# be accomplished by versioned code, like migrations.)
 
-# The bastion server was manually created
-# this security group is associated with the server through the console.
-# The security group was manually imported to terraform state and is now tracked here.
+# The bastion server (an EC2 instance) was manually created. This security group
+# is associated with it through the AWS web console.
 resource "aws_security_group" "bastion_security_group" {
 
   name        = "bastion-security"

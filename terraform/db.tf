@@ -1,4 +1,5 @@
-
+# This database is retained for historical reference, but will eventually be
+# removed.
 module "db" {
   source = "./modules/rds"
 
@@ -13,7 +14,6 @@ module "db" {
   allocated_storage = var.db_size
   instance_class    = var.db_instance
   ingress_allow_security_groups = compact([
-    aws_security_group.ecs_tasks.id,
     aws_security_group.bastion_security_group.id
   ])
   performance_insights_enabled = true
