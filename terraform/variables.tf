@@ -98,6 +98,11 @@ variable "domain_name" {
   default     = ""
 }
 
+variable "api_remote_domain_name" {
+  description = "The domain name for a service outside AWS to send traffic to"
+  default     = ""
+}
+
 variable "api_sentry_dsn" {
   description = "The Sentry.io DSN to use for the API service"
   default     = ""
