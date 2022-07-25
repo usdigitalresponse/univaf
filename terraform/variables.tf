@@ -3,11 +3,6 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
-variable "az_count" {
-  description = "Number of AZs to cover in a given region"
-  default     = 2
-}
-
 variable "domain_name" {
   description = "The domain name to use for HTTPS traffic"
   default     = ""
