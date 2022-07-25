@@ -7,8 +7,8 @@ resource "aws_ecr_repository" "server_repository" {
   }
 }
 
-resource "aws_ecr_repository" "seed_repository" {
-  name                 = "univaf-db-seed"
+resource "aws_ecr_repository" "loader_repository" {
+  name                 = "univaf-loader"
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -16,8 +16,10 @@ resource "aws_ecr_repository" "seed_repository" {
   }
 }
 
-resource "aws_ecr_repository" "loader_repository" {
-  name                 = "univaf-loader"
+# This repository is maintained only for historical reference. The seed image
+# should not actually ever be used in production.
+resource "aws_ecr_repository" "seed_repository" {
+  name                 = "univaf-db-seed"
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
