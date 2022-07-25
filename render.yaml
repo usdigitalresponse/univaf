@@ -107,6 +107,9 @@ services:
     startCommand: |
       cd server
       node scripts/availability_dump.js --write-to-s3 --clear-log
+    domains:
+      - getmyvax.org
+      - www.getmyvax.org
     envVars:
       - fromGroup: "Server Environment"
       - *DD_AGENT_HOST
@@ -116,7 +119,7 @@ services:
       - *DB_PASSWORD
       - *DB_NAME
       - key: DATA_SNAPSHOT_S3_BUCKET
-        value: "univaf-render-test-data-snapshots"
+        value: "univaf-data-snapshots"
       - key: AWS_ACCESS_KEY_ID
         sync: false
       - key: AWS_SECRET_ACCESS_KEY
@@ -259,8 +262,7 @@ envVarGroups:
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
-        # FIXME: should be 'production' if/when we turn off AWS
-        value: render
+        value: production
       - key: DB_POOL_SIZE_AVAILABILITY
         value: "5"
 
@@ -279,5 +281,4 @@ envVarGroups:
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
-        # FIXME: should be 'production' if/when we turn off AWS
-        value: render
+        value: production

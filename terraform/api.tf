@@ -58,7 +58,7 @@ resource "aws_alb_listener_rule" "redirect_www" {
   }
 }
 
-# Add DNS (optional)
+# These domains are managed in AWS, but point to non-AWS resources.
 data "aws_route53_zone" "domain_zone" {
   count = var.domain_name != "" ? 1 : 0
   name  = var.domain_name
@@ -69,13 +69,9 @@ resource "aws_route53_record" "api_domain_record" {
 
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = var.domain_name
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.univaf_api[0].domain_name
-    zone_id                = aws_cloudfront_distribution.univaf_api[0].hosted_zone_id
-    evaluate_target_health = false
-  }
+  type    = "CNAME"
+  records = [var.api_remote_domain_name]
+  ttl     = 300
 }
 
 resource "aws_route53_record" "api_www_domain_record" {
