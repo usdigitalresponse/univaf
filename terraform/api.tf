@@ -24,23 +24,3 @@ resource "aws_route53_record" "api_www_domain_record" {
   records = [var.domain_name]
   ttl     = 300
 }
-
-# This log group is maintained for historical reference.
-resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
-  name              = "/ecs/daily-data-snapshot"
-  retention_in_days = 30
-
-  tags = {
-    Name = "daily-data-snapshot"
-  }
-}
-
-# This log group is maintained for historical reference.
-resource "aws_cloudwatch_log_group" "api_log_group" {
-  name              = "/ecs/api"
-  retention_in_days = 30
-
-  tags = {
-    Name = "api"
-  }
-}
