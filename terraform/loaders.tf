@@ -9,6 +9,7 @@ module "cvs_smart_loader" {
   source = "./modules/loader"
 
   name          = "cvs-smart-api"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "cvsSmart"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
@@ -25,6 +26,7 @@ module "njvss_loader" {
   source = "./modules/loader"
 
   name          = "njvss"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "njvss"
   api_url       = "http://${aws_alb.main.dns_name}"
@@ -44,6 +46,7 @@ module "rite_aid_loader" {
   source = "./modules/loader"
 
   name          = "riteAidApi"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "riteAidApi"
   // Our API key does not permit queries in CO, so it is missing from this list.
@@ -65,6 +68,7 @@ module "rite_aid_scraper_loader" {
   source = "./modules/loader"
 
   name          = "riteAidScraper"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "riteAidScraper"
   command       = ["--states", "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
@@ -81,6 +85,7 @@ module "walgreens_loader" {
   source = "./modules/loader"
 
   name          = "walgreensSmart"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "walgreensSmart"
@@ -97,6 +102,7 @@ module "kroger_loader" {
   source = "./modules/loader"
 
   name          = "krogerSmart"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "krogerSmart"
@@ -113,6 +119,7 @@ module "albertsons_loader" {
   source = "./modules/loader"
 
   name          = "albertsons"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "albertsons"
@@ -129,6 +136,7 @@ module "hyvee_loader" {
   source = "./modules/loader"
 
   name          = "hyvee"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "hyvee"
@@ -145,6 +153,7 @@ module "heb_loader" {
   source = "./modules/loader"
 
   name          = "heb"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "heb"
@@ -161,6 +170,7 @@ module "washington_doh_loader" {
   source = "./modules/loader"
 
   name          = "waDoh"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "waDoh"
@@ -177,6 +187,7 @@ module "cdc_loader" {
   source = "./modules/loader"
 
   name          = "cdcApi"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "cdcApi"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
@@ -193,6 +204,7 @@ module "vts_geo_loader" {
   source = "./modules/loader"
 
   name          = "vtsGeo"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "vtsGeo"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
@@ -209,6 +221,7 @@ module "prepmod_loader" {
   source = "./modules/loader"
 
   name          = "prepmod"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AK,WA", "--hide-missing-locations"]
   loader_source = "prepmod"
