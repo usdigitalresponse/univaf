@@ -19,10 +19,10 @@
   "homepage": "https://getmyvax.org/",
   "devDependencies": {
     "ajv-keywords": "^5.1.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.20.0",
     "jest": "^27.2.4",
     "nock": "^13.1.0",
-    "prettier": "^2.5.1"
+    "prettier": "^2.7.1"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.121.0",
