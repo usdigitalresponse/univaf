@@ -33,7 +33,7 @@ At the top level of this repo, you’ll also find some other useful directories:
 
 - **`scripts`** contains scripts for managing releases, deployments, and other tasks.
 
-- **`terraform`** contains Terraform configuration files used to deploy this project to AWS. We try to keep as much of our infrastructure configuration as possible stored here as code.
+- **`terraform`** contains Terraform configuration files for the parts of this project hosted in AWS (historical data in S3, domain names). (Most code runs on [Render](https://render.com) rather than AWS, and is managed in [`render.yaml`](./render.yaml).)
 
 
 ## Developing Locally
