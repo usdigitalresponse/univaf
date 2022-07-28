@@ -9,9 +9,8 @@ import {
   LocationAvailability,
 } from "./interfaces";
 import { NotFoundError, OutOfDateError, ValueError } from "./exceptions";
-import Knex from "knex";
 import { validateAvailabilityInput, validateLocationInput } from "./validation";
-import { loadDbConfig } from "./config";
+import { createDbClient } from "./db-client";
 import { UUID_PATTERN } from "./utils";
 import { logger, logStackTrace } from "./logger";
 
@@ -31,7 +30,7 @@ const DEFAULT_BATCH_SIZE = 2000;
 // within this many milliseconds of each other.
 const AVAILABILITY_MERGE_TIMEFRAME = 7 * 24 * 60 * 60 * 1000;
 
-export const db = Knex(loadDbConfig());
+export const db = createDbClient("Data");
 
 const providerLocationFields = [
   "id",

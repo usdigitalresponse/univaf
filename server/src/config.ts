@@ -1,3 +1,4 @@
+import os from "node:os";
 import type { Knex } from "knex";
 
 export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
@@ -31,6 +32,18 @@ export function getPrimaryHost(): string {
     );
   }
   return host || null;
+}
+
+/**
+ * Get a string identifier for host machine instance the app is running on.
+ * @returns {string}
+ */
+export function getHostInstance(): string {
+  if (process.env.RENDER) {
+    return `${process.env.RENDER_SERVICE_NAME}-${process.env.RENDER_INSTANCE_ID}`;
+  } else {
+    return os.hostname();
+  }
 }
 
 export function loadDbConfig(): Knex.Config {
