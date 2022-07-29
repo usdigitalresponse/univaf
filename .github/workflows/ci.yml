@@ -62,6 +62,7 @@ jobs:
           npm ci
 
       - name: Run server tests
+        continue-on-error: true
         run: |
           cd server
           npm run test
@@ -73,6 +74,7 @@ jobs:
           DB_PASSWORD: test-password
 
       - name: Run loader tests
+        continue-on-error: true
         env:
           NOCK_BACK_MODE: lockdown
         run: |
@@ -81,9 +83,14 @@ jobs:
 
       # TODO: We should write some tests :(
       - name: Build UI
+        continue-on-error: true
         run: |
           cd ui
           NODE_ENV=production npm build
+
+      - name: My backup step
+        if: ${{ failure() }}
+        run: "echo 'Tests failed!' && false"
 
   lint:
     name: Run linters
