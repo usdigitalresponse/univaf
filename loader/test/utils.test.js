@@ -16,7 +16,7 @@ const {
 
 describe("splitOnce", () => {
   it("splits once on a single character", () => {
-    expect(splitOnce("test:123", ":")).toEqual(["test", "123", "456"]);
+    expect(splitOnce("test:123", ":")).toEqual(["test", "123"]);
     expect(splitOnce("test-123-123", "-")).toEqual(["test", "123-123"]);
     expect(splitOnce("test:123", "3")).toEqual(["test:12", ""]);
     expect(splitOnce("test-123-123", "t")).toEqual(["", "est-123-123"]);

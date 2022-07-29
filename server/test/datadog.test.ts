@@ -28,7 +28,7 @@ describe("datadog middleware", () => {
     const res = mockResponse();
 
     datadogMiddleware(mockRequest, res, nextSpy);
-    expect(nextSpy.mock.calls).toHaveLength(2);
+    expect(nextSpy.mock.calls).toHaveLength(1);
   });
 
   it("should have correct metrics on single endpoint call", async () => {
