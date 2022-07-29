@@ -56,7 +56,6 @@
   "devDependencies": {
     "@types/body-parser": "1.19.1",
     "@types/compression": "1.7.1",
-    "@types/concurrently": "6.2.1",
     "@types/cors": "^2.8.11",
     "@types/errorhandler": "1.5.0",
     "@types/eslint": "8.4.5",
@@ -69,7 +68,7 @@
     "@types/winston": "2.4.4",
     "@typescript-eslint/eslint-plugin": "5.31.0",
     "@typescript-eslint/parser": "5.31.0",
-    "concurrently": "6.2.0",
+    "concurrently": "7.3.0",
     "eslint": "8.20.0",
     "got": "^11.8.5",
     "jest": "^28.1.3",
