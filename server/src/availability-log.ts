@@ -1,12 +1,12 @@
-import Knex from "knex";
-import { loadDbConfig } from "./config";
+import { createDbClient } from "./db-client";
 import { AvailabilityInput } from "./interfaces";
 
 interface AvailabilityLog extends AvailabilityInput {
   changed_at: Date | string;
 }
 
-export const availabilityDb = Knex(loadDbConfig()); // for now, store with the rest of our data
+// For now, we store these logs alongside with the rest of our data.
+export const availabilityDb = createDbClient("Availability");
 
 export async function write(
   locationId: string,
