@@ -41,6 +41,10 @@
   "jest": {
     "setupFilesAfterEnv": [
       "./test/support/setup.js"
+    ],
+    "reporters": [
+      "default",
+      "github-actions"
     ]
   }
 }

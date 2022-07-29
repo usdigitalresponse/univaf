@@ -10,6 +10,7 @@ module.exports = {
   },
   testMatch: ["**/test/**/*.test.(ts|js)"],
   testEnvironment: "node",
+  reporters: ["default", "github-actions"],
   coverageReporters: ["text", "html"],
   globalSetup: "<rootDir>/test/globalSetup.ts",
 };
