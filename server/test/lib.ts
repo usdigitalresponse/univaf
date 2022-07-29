@@ -36,7 +36,7 @@ export function useServerForTests(app: Application): Context {
       context.server.close((error?: Error) => {
         // Jest needs a tick after server shutdown to detect
         // that the resources have been released.
-        setTimeout(() => done(error), 0);
+        setTimeout(() => done(error), 10);
       });
     } else {
       done();
