@@ -24,6 +24,9 @@ const SOURCE_NAME = "univaf-hyvee";
 const PROVIDER_NAME = "hyvee";
 const VACCINE_NAMES = {
   Moderna: VaccineProduct.moderna,
+  // Moderna 12-17 is the same product as 12+ or 18+. This is a little messy,
+  // since technically these might be separate appointment slots for teens.
+  "Moderna (12-17)": VaccineProduct.moderna,
   "Pediatric-Moderna (3-5)": VaccineProduct.modernaAge0_5,
   "Pfizer-BioNTech": VaccineProduct.pfizer,
   "Pediatric-Pfizer (5-11)": VaccineProduct.pfizerAge5_11,
