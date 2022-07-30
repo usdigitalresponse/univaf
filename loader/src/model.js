@@ -32,6 +32,7 @@ const VaccineProduct = {
   astraZeneca: "astra_zeneca",
   janssen: "jj",
   moderna: "moderna",
+  modernaAge12_17: "moderna_age_12_17",
   modernaAge6_11: "moderna_age_6_11",
   modernaAge0_5: "moderna_age_0_5",
   novavax: "novavax",

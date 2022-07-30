@@ -550,8 +550,12 @@ components:
           description: |
             List of vaccine products available on this date. Not present if not
             known. Current possible values include: ``moderna`,
-            `moderna_age_6_11`, `moderna_age_0_5`, `pfizer`, `pfizer_age_5_11`,
-            `pfizer_age_0_4`, `jj`, `sanofi`.
+            `moderna_age_12_17`, `moderna_age_6_11`, `moderna_age_0_5`,
+            `pfizer`, `pfizer_age_5_11`, `pfizer_age_0_4`, `jj`, `sanofi`.
+
+            (Note: `moderna_age_12_17` does not actually denote a separate
+            vaccine. Some providers book appointments in this age range
+            separately, and this product indicates that.)
         dose:
           type: string
           description: |
@@ -602,8 +606,12 @@ components:
           description: |
             List of vaccine products available for this slot. Not present if not
             known. Current possible values include: `moderna`,
-            `moderna_age_6_11`, `moderna_age_0_5`, `pfizer`, `pfizer_age_5_11`,
-            `pfizer_age_0_4`, `jj`, `sanofi`.
+            `moderna_age_12_17`, `moderna_age_6_11`, `moderna_age_0_5`,
+            `pfizer`, `pfizer_age_5_11`, `pfizer_age_0_4`, `jj`, `sanofi`.
+
+            (Note: `moderna_age_12_17` does not actually denote a separate
+            vaccine. Some providers book appointments in this age range
+            separately, and this product indicates that.)
         dose:
           type: string
           description: |
@@ -665,9 +673,13 @@ components:
             type: string
           description: |
             List of vaccine products available. Not present if not known.
-            Current possible values include: `moderna`, `moderna_age_6_11`,
-            `moderna_age_0_5`, `pfizer`, `pfizer_age_5_11`, `pfizer_age_0_4`,
-            `jj`, `sanofi`.
+            Current possible values include: `moderna`, `moderna_age_12_17`,
+            `moderna_age_6_11`, `moderna_age_0_5`, `pfizer`, `pfizer_age_5_11`,
+            `pfizer_age_0_4`, `jj`, `sanofi`.
+
+            (Note: `moderna_age_12_17` does not actually denote a separate
+            vaccine. Some providers book appointments in this age range
+            separately, and this product indicates that.)
         doses:
           type: array
           items:

@@ -2,6 +2,7 @@ export type VaccineCode =
   | "astra_zeneca"
   | "jj"
   | "moderna"
+  | "moderna_age_12_17"
   | "moderna_age_6_11"
   | "moderna_age_0_5"
   | "novavax"
@@ -15,6 +16,7 @@ export const CVX_CODES: { [code in VaccineCode]: number } = {
   astra_zeneca: 210,
   jj: 212,
   moderna: 207,
+  moderna_age_12_17: 207,
   moderna_age_6_11: 227,
   moderna_age_0_5: 228,
   novavax: 211,
@@ -28,6 +30,7 @@ export const PRODUCT_NAMES: { [code in VaccineCode]: string } = {
   astra_zeneca: "AstraZeneca",
   jj: "Johnson & Johnson",
   moderna: "Moderna",
+  moderna_age_12_17: "Moderna (Ages 12-17)",
   moderna_age_6_11: "Moderna Pediatric (Ages 6-11)",
   moderna_age_0_5: "Moderna Pediatric (Ages 0-5)",
   novavax: "NovaVax",
@@ -41,6 +44,7 @@ export const MINIMUM_PRODUCT_AGES: { [code in VaccineCode]: number } = {
   astra_zeneca: 18 * 12,
   jj: 18 * 12,
   moderna: 12 * 12,
+  moderna_age_12_17: 12 * 12,
   moderna_age_6_11: 6 * 12,
   moderna_age_0_5: 6,
   novavax: 18 * 12,
