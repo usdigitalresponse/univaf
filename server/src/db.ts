@@ -104,10 +104,10 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
   const locationId = await db.transaction(async (tx) => {
     const inserted = await tx.raw(
       `INSERT INTO provider_locations (
-      ${sqlFields.map((x) => x[0]).join(", ")}
-    )
-    VALUES (${sqlFields.map((_) => "?").join(", ")})
-    RETURNING id`,
+        ${sqlFields.map((x) => x[0]).join(", ")}
+      )
+      VALUES (${sqlFields.map((_) => "?").join(", ")})
+      RETURNING id`,
       sqlFields.map((x) => x[1] ?? null)
     );
 
