@@ -83,7 +83,7 @@ function parseNjvssCsv(csvText) {
     );
   }
 
-  return csvParse(cleanText, {
+  return csvParse.parse(cleanText, {
     columns: true,
     cast: true,
     // Some values can't be automatically cast, so cast them explicitly here.
