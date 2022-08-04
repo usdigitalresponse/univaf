@@ -369,7 +369,7 @@ module.exports = {
     );
   },
 
-  createWarningLogger(prefix, level = Sentry.Severity.Info) {
+  createWarningLogger(prefix, level = "info") {
     return function warn(message, context, sendContextToSentry = false) {
       const logMessage = prefix ? `${prefix}: ${message}` : message;
       console.warn(
