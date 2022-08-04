@@ -1,7 +1,6 @@
 const getStream = require("get-stream");
 const http = require("http");
 const process = require("process");
-const Sentry = require("@sentry/node");
 const { createWarningLogger } = require("./utils");
 
 const hostname = "0.0.0.0";
@@ -9,7 +8,7 @@ const port = process.env.PORT || 3010;
 const shutdownSignals = ["SIGTERM", "SIGINT"];
 let server = null;
 
-const logError = createWarningLogger("loader/server", Sentry.Severity.Error);
+const logError = createWarningLogger("loader/server", "error");
 
 function handleError(error, origin) {
   logError(error);

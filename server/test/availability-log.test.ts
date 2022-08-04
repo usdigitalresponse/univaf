@@ -12,7 +12,6 @@ describe("availability_log", () => {
     const cols = await db("availability").columnInfo();
     const logCols = await availabilityDb("availability_log").columnInfo();
 
-    // @ts-expect-error TypeScript doesn't know what properties are present.
     delete cols.id; // availability_log does not include id
 
     // Allow nullability to be different

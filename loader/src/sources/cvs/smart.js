@@ -3,7 +3,6 @@
  * https://github.com/smart-on-fhir/smart-scheduling-links/
  */
 
-const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../../model");
 const {
   EXTENSIONS,
@@ -19,7 +18,7 @@ const CVS_SMART_API_URL =
   "https://www.cvs.com/immunizations/inventory/data/$bulk-publish";
 
 const warn = createWarningLogger("cvsSmart");
-const logError = createWarningLogger("cvsSmart", Sentry.Severity.Error);
+const logError = createWarningLogger("cvsSmart", "error");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the

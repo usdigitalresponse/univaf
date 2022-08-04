@@ -41,7 +41,7 @@ const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
 
 const warn = createWarningLogger("cdcApi");
-const error = createWarningLogger("cdcApi", Sentry.Severity.Error);
+const error = createWarningLogger("cdcApi", "error");
 
 function parseWholeNumber(value) {
   if (!value) return 0;

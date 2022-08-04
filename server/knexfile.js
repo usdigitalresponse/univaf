@@ -1,3 +1,4 @@
+/** @type {import("knex").Knex.Config} */
 const base = {
   client: "postgresql",
   connection: {

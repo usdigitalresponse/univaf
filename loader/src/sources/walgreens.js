@@ -145,7 +145,7 @@ function formatCapacity(slots) {
           available = Available.unknown;
           console.error(`Walgreens SMART: non-integer capcity: ${extension}`);
           Sentry.captureMessage(`Unparseable slot capacity`, {
-            level: Sentry.Severity.Error,
+            level: "error",
             contexts: {
               raw_slot: slot,
             },

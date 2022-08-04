@@ -83,7 +83,7 @@ async function run(options) {
           };
           console.error(message, JSON.stringify(logData));
           Sentry.captureMessage(message, {
-            level: Sentry.Severity.Error,
+            level: "error",
             contexts: { send_error: logData },
           });
           success = false;
