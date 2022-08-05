@@ -4,8 +4,7 @@ import { getPlatform, LOG_LEVEL } from "./config";
 
 // Some platforms include the timestamp for each log line, so adding our own
 // timestamp makes them harder to read.
-const platform = getPlatform();
-const shouldLogTimestamp = !(platform === "render" || platform === "ecs");
+const shouldLogTimestamp = !["render", "ecs"].includes(getPlatform());
 
 const univafLogFormat = printf(({ level, message, label, timestamp }) => {
   let formatted = `[${label}] ${level}: ${message}`;
