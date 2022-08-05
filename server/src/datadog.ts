@@ -1,8 +1,15 @@
 import { Response, Request, NextFunction } from "express";
 import StatsD from "hot-shots";
+import { getHostInstance, getPlatform } from "./config";
+
+const globalTags = [`instance:${getHostInstance()}`];
+if (getPlatform()) {
+  globalTags.push(`platform:${getPlatform()}`);
+}
 
 export const dogstatsd = new StatsD({
   mock: process.env.NODE_ENV == "test",
+  globalTags,
 });
 const stat = "node.express.router";
 const DELIMITER = "-";

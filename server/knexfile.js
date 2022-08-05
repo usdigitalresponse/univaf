@@ -12,6 +12,8 @@ const base = {
     tableName: "migrations",
   },
   pool: {
+    min: 0,
+    max: 10,
     afterCreate(conn, done) {
       // Ensure Postgres formats times in UTC.
       conn.query('SET timezone="UTC";', done);
