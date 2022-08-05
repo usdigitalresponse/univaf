@@ -34,6 +34,19 @@ export function getPrimaryHost(): string {
   return host || null;
 }
 
+export function getPlatform(): string {
+  if (process.env.RENDER) {
+    return "render";
+  } else if (
+    process.env.ECS_CONTAINER_METADATA_URI ||
+    process.env.ECS_CONTAINER_METADATA_URI_V4
+  ) {
+    return "ecs";
+  } else {
+    return "";
+  }
+}
+
 /**
  * Get a string identifier for host machine instance the app is running on.
  * @returns {string}

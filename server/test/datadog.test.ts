@@ -40,8 +40,10 @@ describe("datadog middleware", () => {
     );
     expect(middlewareMetrics).toHaveLength(2);
 
-    expect(dogstatsd.mockBuffer).toContain(
-      "node.express.router.response_total:1|c|#route:/api/edge/locations,method:get,response_code:200"
+    expect(dogstatsd.mockBuffer).toContainEqual(
+      expect.stringMatching(
+        /^node\.express\.router\.response_total:1\|c\|#.*response_code:200.*/
+      )
     );
     expect(dogstatsd.mockBuffer).toContainEqual(
       expect.stringMatching(/^node\.express\.router\.response_time:/)
@@ -58,10 +60,10 @@ describe("datadog middleware", () => {
     expect(res.statusCode).toBe(404);
 
     expect(
-      dogstatsd.mockBuffer.filter(
-        (s) =>
-          s ===
-          "node.express.router.response_total:1|c|#route:/api/edge/locations/:id,method:get,response_code:404"
+      dogstatsd.mockBuffer.filter((s) =>
+        /^node\.express\.router\.response_total:1\|c\|#.*route:\/api\/edge\/locations\/:id.*response_code:404.*/.test(
+          s
+        )
       )
     ).toHaveLength(2);
   });

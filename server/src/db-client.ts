@@ -12,12 +12,11 @@ export function createDbClient(label: string): KnexType<any, unknown[]> {
   const pool = (client.client as KnexType.Client).pool;
   const instanceName = getHostInstance();
   const poolStatName = `db.${label.toLowerCase()}.pool`;
-  const poolStatTags = [`instance:${instanceName}`];
 
   function logPoolSize() {
     const poolSize = pool.numUsed() + pool.numFree();
     logger.debug(`${instanceName} ${label} DB pool size: ${poolSize}`);
-    dogstatsd.gauge(`${poolStatName}.size`, poolSize, poolStatTags);
+    dogstatsd.gauge(`${poolStatName}.size`, poolSize);
   }
   pool.on("createSuccess", logPoolSize);
   pool.on("destroySuccess", logPoolSize);
@@ -26,8 +25,7 @@ export function createDbClient(label: string): KnexType<any, unknown[]> {
   function logPendingAcquires() {
     dogstatsd.gauge(
       `${poolStatName}.pending_acquires`,
-      pool.numPendingAcquires(),
-      poolStatTags
+      pool.numPendingAcquires()
     );
   }
   pool.on("acquireRequest", logPendingAcquires);
@@ -42,8 +40,7 @@ export function createDbClient(label: string): KnexType<any, unknown[]> {
       acquireTimes.delete(eventId);
       dogstatsd.histogram(
         `${poolStatName}.acquire_time`,
-        Date.now() - startTime,
-        poolStatTags
+        Date.now() - startTime
       );
     } else {
       logger.warn(

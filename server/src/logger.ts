@@ -1,14 +1,11 @@
 import { createLogger, Logger, transports, format } from "winston";
 const { combine, timestamp, splat, printf, label } = format;
-import { LOG_LEVEL } from "./config";
+import { getPlatform, LOG_LEVEL } from "./config";
 
 // Some platforms include the timestamp for each log line, so adding our own
 // timestamp makes them harder to read.
-const shouldLogTimestamp = !(
-  process.env.RENDER ||
-  process.env.ECS_CONTAINER_METADATA_URI ||
-  process.env.ECS_CONTAINER_METADATA_URI_V4
-);
+const platform = getPlatform();
+const shouldLogTimestamp = !(platform === "render" || platform === "ecs");
 
 const univafLogFormat = printf(({ level, message, label, timestamp }) => {
   let formatted = `[${label}] ${level}: ${message}`;
