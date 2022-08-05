@@ -35,7 +35,10 @@ describe("datadog middleware", () => {
     const res = await context.client.get<any>("api/edge/locations");
     expect(res.statusCode).toBe(200);
 
-    expect(dogstatsd.mockBuffer).toHaveLength(2);
+    const middlewareMetrics = dogstatsd.mockBuffer.filter((x) =>
+      x.startsWith("node.express.router.")
+    );
+    expect(middlewareMetrics).toHaveLength(2);
 
     expect(dogstatsd.mockBuffer).toContain(
       "node.express.router.response_total:1|c|#route:/api/edge/locations,method:get,response_code:200"
