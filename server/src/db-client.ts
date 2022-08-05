@@ -1,6 +1,6 @@
 import Knex from "knex";
 import type { Knex as KnexType } from "knex";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import { logger } from "./logger";
 import { getHostInstance, loadDbConfig } from "./config";
 import { dogstatsd } from "./datadog";
