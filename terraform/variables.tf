@@ -106,7 +106,13 @@ variable "api_sentry_dsn" {
 
 variable "api_sentry_traces_sample_rate" {
   description = "The sample rate for Sentry performance monitoring"
+  type        = number
   default     = 0.2
+
+  validation {
+    condition     = var.api_sentry_traces_sample_rate >= 0.0 && var.api_sentry_traces_sample_rate <= 1.0
+    error_message = "api_sentry_traces_sample_rate must be between 0 and 1."
+  }
 }
 
 variable "loader_sentry_dsn" {

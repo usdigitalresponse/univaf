@@ -109,7 +109,7 @@ module "api_task" {
     DB_PASSWORD               = var.db_password
     API_KEYS                  = var.api_key
     SENTRY_DSN                = var.api_sentry_dsn
-    SENTRY_TRACES_SAMPLE_RATE = var.api_sentry_traces_sample_rate
+    SENTRY_TRACES_SAMPLE_RATE = format("%.2f", var.api_sentry_traces_sample_rate)
     PRIMARY_HOST              = var.domain_name
     ENV                       = "production"
   }
