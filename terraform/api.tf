@@ -102,15 +102,16 @@ module "api_task" {
   datadog_api_key = var.datadog_api_key
 
   env_vars = {
-    RELEASE      = var.api_release_version
-    DB_HOST      = module.db.host
-    DB_NAME      = module.db.db_name
-    DB_USERNAME  = var.db_user
-    DB_PASSWORD  = var.db_password
-    API_KEYS     = var.api_key
-    SENTRY_DSN   = var.api_sentry_dsn
-    PRIMARY_HOST = var.domain_name
-    ENV          = "production"
+    RELEASE                   = var.api_release_version
+    DB_HOST                   = module.db.host
+    DB_NAME                   = module.db.db_name
+    DB_USERNAME               = var.db_user
+    DB_PASSWORD               = var.db_password
+    API_KEYS                  = var.api_key
+    SENTRY_DSN                = var.api_sentry_dsn
+    SENTRY_TRACES_SAMPLE_RATE = var.api_sentry_traces_sample_rate
+    PRIMARY_HOST              = var.domain_name
+    ENV                       = "production"
   }
 
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]

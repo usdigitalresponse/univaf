@@ -3,6 +3,8 @@ import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
+import { RELEASE } from "./config";
 import { authorizeRequest, versionedMiddleware } from "./middleware";
 import { datadogMiddleware } from "./datadog";
 import { logger, logStackTrace } from "./logger";
@@ -10,12 +12,6 @@ import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
-
-Sentry.init({
-  // Sentry's session tracking keeps the process running, which causes tests to
-  // hang. We don't really need session tracking, so turn it off.
-  autoSessionTracking: false,
-});
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.
@@ -43,9 +39,21 @@ app.enable("trust proxy");
 // servers with exploitable vulnerabilities.
 app.disable("x-powered-by");
 
+Sentry.init({
+  // Sentry's session tracking keeps the process running, which causes tests to
+  // hang. We don't really need session tracking, so turn it off.
+  autoSessionTracking: false,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({ app }),
+  ],
+  release: RELEASE,
+});
+
 // Middleware ----------------------------------------------------
 
 app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 app.use(logRequest);
 app.use(datadogMiddleware);
 app.use(compression());

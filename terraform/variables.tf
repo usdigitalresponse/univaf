@@ -104,6 +104,11 @@ variable "api_sentry_dsn" {
   sensitive   = true
 }
 
+variable "api_sentry_traces_sample_rate" {
+  description = "The sample rate for Sentry performance monitoring"
+  default     = 0.2
+}
+
 variable "loader_sentry_dsn" {
   description = "The Sentry.io DSN to use for the loaders"
   default     = ""
