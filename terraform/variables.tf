@@ -111,7 +111,7 @@ variable "api_sentry_traces_sample_rate" {
 
   validation {
     condition     = var.api_sentry_traces_sample_rate >= 0.0 && var.api_sentry_traces_sample_rate <= 1.0
-    error_message = "api_sentry_traces_sample_rate must be between 0 and 1."
+    error_message = "The api_sentry_traces_sample_rate variable must be between 0 and 1."
   }
 }
 
