@@ -3,6 +3,9 @@ import type { Knex } from "knex";
 
 export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 
+export const RELEASE =
+  process.env.RELEASE || process.env.RENDER_GIT_COMMIT || undefined;
+
 export function getApiKeys(): Array<string> {
   let keyList = process.env.API_KEYS;
   if (!keyList) {
