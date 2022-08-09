@@ -1,3 +1,4 @@
+const timers = require("node:timers/promises");
 const { UpdateQueue, ApiClient } = require("../src/api-client");
 const nock = require("nock");
 
@@ -56,15 +57,12 @@ describe("API Client", () => {
       let currentCalls = 0;
       let maxCalls = 0;
       const mockClient = {
-        sendUpdate(update, _options) {
+        async sendUpdate(update, _options) {
           currentCalls++;
           maxCalls = Math.max(currentCalls, maxCalls);
-          return new Promise((resolve) =>
-            setTimeout(() => {
-              currentCalls--;
-              resolve(update);
-            }, 50)
-          );
+          await timers.setTimeout(50);
+          currentCalls--;
+          return update;
         },
       };
 

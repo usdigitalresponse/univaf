@@ -3,8 +3,8 @@ class HttpApiError extends Error {
    * Create an error object for a bad response from an API.
    * @param {http.IncomingMessage} response
    */
-  constructor(response) {
-    super(`${response.statusCode} ${response.statusMessage}`);
+  constructor(response, { cause = null } = {}) {
+    super(`${response.statusCode} ${response.statusMessage}`, { cause });
     try {
       this.parse(response);
     } catch (_) {

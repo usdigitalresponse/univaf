@@ -7,6 +7,7 @@
  * need lots of updates to do so).
  */
 
+const timers = require("node:timers/promises");
 const knownStores = require("./known-stores");
 const {
   httpClient,
@@ -355,10 +356,6 @@ function createCannedUnavailableStore() {
   return fillerResults;
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 /**
  * Kick off the scraper to crawl the getIMZStores endpoint.
  *
@@ -378,7 +375,7 @@ async function checkAvailability(handler, _options) {
       Object.values(clinicResults).forEach((item) => handler(item));
     }
 
-    await sleep(randomInt(3, 7) * 1000);
+    await timers.setTimeout(randomInt(3, 7) * 1000);
   }
 
   const finalResult = { ...createCannedUnavailableStore(clinicsZip) };

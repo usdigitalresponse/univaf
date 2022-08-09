@@ -165,7 +165,7 @@ async function checkAvailability(handler, _options) {
     });
   } catch (error) {
     if (error instanceof got.HTTPError) {
-      throw new CvsApiError(error.response);
+      throw new CvsApiError(error.response, { cause: error });
     }
     throw error;
   }
