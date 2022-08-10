@@ -223,6 +223,9 @@ module.exports.corrections = {
     lat: "41.6121506",
     long: "-87.718918",
   },
+  1660088122107: {
+    address: "Safeway 1094 - 1891 Pioneer pkwy, Springfield, OR, 97477",
+  },
 
   // These two are the adult and pediatric versions of a single location, but
   // one is labeled in the raw data as "Albertsons Pharmacy 4706" and the
