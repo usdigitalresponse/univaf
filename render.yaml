@@ -257,7 +257,7 @@ envVarGroups:
       - key: SENTRY_DSN
         sync: false
       - key: SENTRY_TRACES_SAMPLE_RATE
-        value: "0.2"
+        value: "0.01"
       - key: SENTRY_ENVIRONMENT
         # FIXME: should be 'production' if/when we turn off AWS
         value: render
@@ -275,7 +275,7 @@ envVarGroups:
       - key: SENTRY_DSN
         sync: false
       - key: SENTRY_TRACES_SAMPLE_RATE
-        value: "0.2"
+        value: "0.01"
       - key: SENTRY_ENVIRONMENT
         # FIXME: should be 'production' if/when we turn off AWS
         value: render
