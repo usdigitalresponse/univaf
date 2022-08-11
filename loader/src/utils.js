@@ -525,7 +525,7 @@ module.exports = {
       }
     } else if (/nova\s*vax/.test(text)) {
       return VaccineProduct.novavax;
-    } else if (text.includes("pfizer")) {
+    } else if (text.includes("comirnaty") || text.includes("pfizer")) {
       if (/ages?\s+12( and up|\s*\+)/i.test(text)) {
         return VaccineProduct.pfizer;
       } else if (/ages?\s+5|\b5\s?(-|through)\s?11\b/i.test(text)) {
