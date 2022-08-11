@@ -1,3 +1,4 @@
+const timers = require("node:timers/promises");
 const nodeUtil = require("util");
 const Sentry = require("@sentry/node");
 const got = require("got");
@@ -182,7 +183,7 @@ class RateLimit {
       let release;
       this._waiting = new Promise((r) => (release = r));
 
-      await module.exports.wait(minimumWait);
+      await timers.setTimeout(minimumWait);
 
       // Schedule `_waiting` to release in the next microtask.
       Promise.resolve().then(() => {
@@ -348,25 +349,6 @@ module.exports = {
         (chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1).toLowerCase()
       )
       .join(" ");
-  },
-
-  /**
-   * Get a promise that resolves after N milliseconds. This is useful for
-   * suspending an async function for a brief period:
-   * @param {int} milliseconds Time to wait in milliseconds.
-   * @returns {Promise}
-   *
-   * @example
-   * async function whatever() {
-   *   doSomething();
-   *   await wait(500);
-   *   doSomethingElse();
-   * }
-   */
-  wait(milliseconds) {
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(milliseconds), milliseconds)
-    );
   },
 
   createWarningLogger(prefix, level = "info") {

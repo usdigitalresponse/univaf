@@ -424,10 +424,13 @@ function isInStock(product) {
   }
 }
 
+/**
+ * @param {Array} products
+ * @returns {string}
+ */
 function formatValidAt(products) {
   const dates = products.map((p) => p.quantity_last_updated);
-  dates.sort();
-  return dates[dates.length - 1];
+  return dates.sort().at(-1);
 }
 
 function formatAvailable(products) {

@@ -331,7 +331,7 @@ export const listAvailability = async (
   if (!includePrivate) dbQuery = dbQuery.where("is_public", true);
 
   const data = await dbQuery;
-  const lastItem = data[data.length - 1];
+  const lastItem = data.at(-1);
 
   response.json({
     links: Pagination.createLinks(request, { next: lastItem?.id }),

@@ -39,7 +39,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Cache Dependencies
         uses: actions/cache@v3
@@ -86,7 +86,7 @@ jobs:
         if: ${{ always() }}
         run: |
           cd ui
-          NODE_ENV=production npm build
+          NODE_ENV=production npm run build
 
   lint:
     name: Run linters
@@ -97,7 +97,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Cache Dependencies
         uses: actions/cache@v3

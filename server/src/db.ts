@@ -338,10 +338,7 @@ export async function* iterateLocationBatches({
     if (batch.length < batchSize) {
       nextValues = null;
     } else {
-      nextValues = [
-        batch[batch.length - 1].created_at.toISOString(),
-        batch[batch.length - 1].id,
-      ];
+      nextValues = [batch.at(-1).created_at.toISOString(), batch.at(-1).id];
     }
 
     yield {
