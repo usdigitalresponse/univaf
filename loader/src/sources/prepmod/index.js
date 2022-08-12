@@ -177,6 +177,7 @@ function formatLocationBookingUrl(host, location) {
 // - Adenovirus vaccines (This one has a narrower definition to make sure we
 //   are only matching vaccines against adenovirus, not ones that might be using
 //   modified adenovirus as a vaccine against COVID or other things.)
+// - Monkeypox vaccine (Jynneos)
 const raw = String.raw;
 const nonCovidProductName = new RegExp(
   [
@@ -185,6 +186,8 @@ const nonCovidProductName = new RegExp(
     raw`zoster`,
     raw`^\s*adenovirus\s*$`,
     raw`^child and adolescent immunization`,
+    raw`monkeypox`,
+    raw`jynneos`,
   ].join("|"),
   "i"
 );
