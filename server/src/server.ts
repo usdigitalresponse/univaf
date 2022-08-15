@@ -1,4 +1,5 @@
 import app from "./app";
+import { createHttpTerminator } from "http-terminator";
 import process from "process";
 import { db } from "./db";
 import { logger, logStackTrace } from "./logger";
@@ -10,25 +11,19 @@ const env = app.get("env");
 /**
  * Shutdown gracefully on SIGINT/SIGTERM/etc.
  */
-function handleSignal(signal = "signal") {
+async function handleSignal(signal = "signal") {
   // Unhook handler so a second signal will immediately kill the process.
   process.removeAllListeners(signal);
 
-  function hardShutdown(error: Error) {
+  logger.info(`Received ${signal}: process exiting...`);
+  try {
+    await serverTerminator.terminate();
+    await Promise.all([db.destroy(), availabilityDb.destroy()]);
+    process.kill(process.pid, signal);
+  } catch (error) {
     logStackTrace(logger, error);
     process.exit(1);
   }
-
-  logger.info(`Received ${signal}: process exiting...`);
-  server.close((error: Error) => {
-    if (error) {
-      hardShutdown(error);
-    }
-
-    Promise.all([db.destroy(), availabilityDb.destroy()])
-      .then(() => process.kill(process.pid, signal))
-      .catch(hardShutdown);
-  });
 }
 
 process.on("SIGINT", handleSignal);
@@ -41,6 +36,11 @@ process.on("SIGBREAK", handleSignal);
 const server = app.listen(port, () => {
   logger.info(`Server is running at http://localhost:${port} in ${env} mode`);
   logger.info("Press CTRL-C to stop\n");
+});
+
+const serverTerminator = createHttpTerminator({
+  gracefulTerminationTimeout: 10_000,
+  server,
 });
 
 export default server;

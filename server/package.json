@@ -44,6 +44,7 @@
     "errorhandler": "1.5.1",
     "express": "4.18.1",
     "hot-shots": "^9.2.0",
+    "http-terminator": "^3.2.0",
     "JSONStream": "^1.3.5",
     "knex": "^2.2.0",
     "lodash": "4.17.21",
