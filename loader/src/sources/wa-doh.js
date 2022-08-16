@@ -7,7 +7,7 @@ const {
   matchVaccineProduct,
   createWarningLogger,
 } = require("../utils");
-const { HttpApiError } = require("../exceptions");
+const { GraphQlError } = require("../exceptions");
 const allStates = require("../states.json");
 
 const warn = createWarningLogger("waDoh");
@@ -79,17 +79,6 @@ const INVALID_LOCATIONS = [
   "prep-mod-3696ec0d-3869-4ff4-88ce-1030db1639ef",
 ];
 
-class WaDohApiError extends HttpApiError {
-  parse(response) {
-    if (typeof response.body === "object") {
-      this.details = response.body;
-    } else {
-      this.details = JSON.parse(response.body);
-    }
-    this.message = this.details.errors.map((item) => item.message).join(", ");
-  }
-}
-
 /**
  *
  * @param {string} state 2-letter state abbreviation or state name to query
@@ -116,7 +105,7 @@ async function* queryState(state) {
       },
     });
     if (response.statusCode >= 400 || response.body.errors) {
-      throw new WaDohApiError(response);
+      throw new GraphQlError(response);
     }
 
     const data = response.body.data;
@@ -343,5 +332,4 @@ module.exports = {
   API_URL,
   checkAvailability,
   formatLocation,
-  WaDohApiError,
 };

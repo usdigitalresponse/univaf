@@ -28,9 +28,21 @@ class HttpApiError extends Error {
   }
 }
 
+class GraphQlError extends HttpApiError {
+  parse(response) {
+    if (typeof response.body === "object") {
+      this.details = response.body;
+    } else {
+      this.details = JSON.parse(response.body);
+    }
+    this.message = this.details.errors.map((item) => item.message).join(", ");
+  }
+}
+
 class ParseError extends Error {}
 
 module.exports = {
+  GraphQlError,
   HttpApiError,
   ParseError,
 };
