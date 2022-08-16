@@ -1,9 +1,9 @@
 const nock = require("nock");
+const { GraphQlError } = require("../src/exceptions");
 const { VaccineProduct } = require("../src/model");
 const {
   API_URL,
   checkAvailability,
-  WaDohApiError,
   formatLocation,
 } = require("../src/sources/wa-doh");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
@@ -90,7 +90,7 @@ describe("Washington DoH API", () => {
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
-  it("should throw WaDohApiError with detailed error info", async () => {
+  it("should throw GraphQlError with detailed error info", async () => {
     nock(API_URL_BASE)
       .post(API_URL_PATH)
       .reply(500, {
@@ -109,7 +109,7 @@ describe("Washington DoH API", () => {
       () => null,
       (error) => error
     );
-    expect(error).toBeInstanceOf(WaDohApiError);
+    expect(error).toBeInstanceOf(GraphQlError);
     expect(error.message).toContain("Expected type Int!");
   });
 

@@ -28,9 +28,36 @@ class HttpApiError extends Error {
   }
 }
 
+/**
+ * Represents errors received from a GraphQL query result.
+ */
+class GraphQlError extends HttpApiError {
+  parse(response) {
+    if (typeof response.body === "object") {
+      this.details = response.body;
+    } else {
+      this.details = JSON.parse(response.body);
+    }
+    this.message = this.details.errors.map((item) => item.message).join(", ");
+  }
+}
+
+/**
+ * If the HTTP response represents a GraphQL error, throws an instance of
+ * `GraphQlError` with relevant information.
+ * @param {http.IncomingMessage} response
+ */
+function assertValidGraphQl(response) {
+  if (response.statusCode >= 400 || response.body?.errors) {
+    throw new GraphQlError(response);
+  }
+}
+
 class ParseError extends Error {}
 
 module.exports = {
+  GraphQlError,
   HttpApiError,
   ParseError,
+  assertValidGraphQl,
 };

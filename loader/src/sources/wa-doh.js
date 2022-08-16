@@ -1,13 +1,14 @@
 // Washington State DoH hosts data for multiple states for some providers where
 // they have API access. (In practice, this is pretty much only Costco.)
 
+const assert = require("node:assert/strict");
 const { Available, LocationType } = require("../model");
 const {
   httpClient,
   matchVaccineProduct,
   createWarningLogger,
 } = require("../utils");
-const { HttpApiError } = require("../exceptions");
+const { assertValidGraphQl } = require("../exceptions");
 const allStates = require("../states.json");
 
 const warn = createWarningLogger("waDoh");
@@ -79,17 +80,6 @@ const INVALID_LOCATIONS = [
   "prep-mod-3696ec0d-3869-4ff4-88ce-1030db1639ef",
 ];
 
-class WaDohApiError extends HttpApiError {
-  parse(response) {
-    if (typeof response.body === "object") {
-      this.details = response.body;
-    } else {
-      this.details = JSON.parse(response.body);
-    }
-    this.message = this.details.errors.map((item) => item.message).join(", ");
-  }
-}
-
 /**
  *
  * @param {string} state 2-letter state abbreviation or state name to query
@@ -115,14 +105,16 @@ async function* queryState(state) {
         },
       },
     });
-    if (response.statusCode >= 400 || response.body.errors) {
-      throw new WaDohApiError(response);
-    }
+    assertValidGraphQl(response);
 
-    const data = response.body.data;
-    yield data.searchLocations.locations;
+    const data = response.body?.data?.searchLocations;
+    assert.ok(
+      Array.isArray(data?.locations) && data?.paging?.total,
+      `Response did not match expected format: ${JSON.stringify(response.body)}`
+    );
+    yield data.locations;
 
-    if (data.searchLocations.paging.total <= pageNum * pageSize) break;
+    if (data.paging.total <= pageNum * pageSize) break;
 
     pageNum++;
   }
@@ -343,5 +335,4 @@ module.exports = {
   API_URL,
   checkAvailability,
   formatLocation,
-  WaDohApiError,
 };

@@ -14,9 +14,11 @@
  * not worthwhile at the moment.
  */
 
+const assert = require("node:assert/strict");
 const Sentry = require("@sentry/node");
 const { httpClient, createWarningLogger } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
+const { assertValidGraphQl } = require("../../exceptions");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
 const BOOKING_URL = "https://www.hy-vee.com/my-pharmacy/covid-vaccine-consent";
@@ -99,7 +101,14 @@ async function fetchRawData() {
     },
   });
 
-  return response.body.data.searchPharmaciesNearPoint;
+  assertValidGraphQl(response);
+
+  const result = response.body?.data?.searchPharmaciesNearPoint;
+  assert.ok(
+    Array.isArray(result),
+    `Response did not match expected format: ${JSON.stringify(response.body)}`
+  );
+  return result;
 }
 
 function formatLocation(data, checkedAt) {
