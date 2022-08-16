@@ -109,7 +109,7 @@ async function* queryState(state) {
 
     const data = response.body?.data?.searchLocations;
     assert.ok(
-      Array.isArray(data?.locations) && data?.paging?.total,
+      Array.isArray(data?.locations) && typeof data?.paging?.total === "number",
       `Response did not match expected format: ${JSON.stringify(response.body)}`
     );
     yield data.locations;
