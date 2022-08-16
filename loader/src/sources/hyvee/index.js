@@ -18,7 +18,7 @@ const assert = require("node:assert/strict");
 const Sentry = require("@sentry/node");
 const { httpClient, createWarningLogger } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
-const { GraphQlError } = require("../../exceptions");
+const { assertValidGraphQl } = require("../../exceptions");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
 const BOOKING_URL = "https://www.hy-vee.com/my-pharmacy/covid-vaccine-consent";
@@ -101,11 +101,9 @@ async function fetchRawData() {
     },
   });
 
-  if (response.statusCode >= 400 || response.body.errors) {
-    throw new GraphQlError(response);
-  }
+  assertValidGraphQl(response);
 
-  const result = response.body.data.searchPharmaciesNearPoint;
+  const result = response.body?.data?.searchPharmaciesNearPoint;
   assert.ok(
     Array.isArray(result),
     `Response did not match expected format: ${JSON.stringify(response.body)}`

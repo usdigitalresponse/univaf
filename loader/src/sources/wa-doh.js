@@ -1,13 +1,14 @@
 // Washington State DoH hosts data for multiple states for some providers where
 // they have API access. (In practice, this is pretty much only Costco.)
 
+const assert = require("node:assert/strict");
 const { Available, LocationType } = require("../model");
 const {
   httpClient,
   matchVaccineProduct,
   createWarningLogger,
 } = require("../utils");
-const { GraphQlError } = require("../exceptions");
+const { assertValidGraphQl } = require("../exceptions");
 const allStates = require("../states.json");
 
 const warn = createWarningLogger("waDoh");
@@ -104,14 +105,16 @@ async function* queryState(state) {
         },
       },
     });
-    if (response.statusCode >= 400 || response.body.errors) {
-      throw new GraphQlError(response);
-    }
+    assertValidGraphQl(response);
 
-    const data = response.body.data;
-    yield data.searchLocations.locations;
+    const data = response.body?.data?.searchLocations;
+    assert.ok(
+      Array.isArray(data?.locations) && data?.paging?.total,
+      `Response did not match expected format: ${JSON.stringify(response.body)}`
+    );
+    yield data.locations;
 
-    if (data.searchLocations.paging.total <= pageNum * pageSize) break;
+    if (data.paging.total <= pageNum * pageSize) break;
 
     pageNum++;
   }
