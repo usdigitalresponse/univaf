@@ -6,7 +6,7 @@ import { getHostInstance, loadDbConfig } from "./config";
 import { dogstatsd } from "./datadog";
 
 export function createDbClient(label: string): KnexType<any, unknown[]> {
-  const client = Knex(loadDbConfig());
+  const client = Knex(loadDbConfig(label));
 
   // Add debug-related logging.
   const pool = (client.client as KnexType.Client).pool;

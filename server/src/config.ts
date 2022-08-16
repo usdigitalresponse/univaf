@@ -62,8 +62,29 @@ export function getHostInstance(): string {
   }
 }
 
-export function loadDbConfig(): Knex.Config {
+function getPoolSize(connectionName?: string): number {
+  if (!connectionName) return 0;
+
+  const sizeName = `DB_POOL_SIZE_${connectionName.toUpperCase()}`;
+  const rawSize = process.env[sizeName];
+  if (!rawSize) return 0;
+
+  const size = parseInt(rawSize, 10);
+  if (isNaN(size) || size < 0) {
+    throw new TypeError(`${sizeName} must be >= 0 (not "${rawSize}")`);
+  }
+  return size;
+}
+
+export function loadDbConfig(connectionName?: string): Knex.Config {
   const knexfile = require("../knexfile");
   const nodeEnv = process.env.NODE_ENV || "development";
-  return knexfile[nodeEnv];
+  const poolSize = getPoolSize(connectionName);
+  return {
+    ...knexfile[nodeEnv],
+    pool: {
+      ...knexfile[nodeEnv].pool,
+      max: poolSize || knexfile[nodeEnv].pool.max,
+    },
+  };
 }

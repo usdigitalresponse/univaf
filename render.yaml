@@ -261,6 +261,8 @@ envVarGroups:
       - key: SENTRY_ENVIRONMENT
         # FIXME: should be 'production' if/when we turn off AWS
         value: render
+      - key: DB_POOL_SIZE_AVAILABILIITY
+        value: "5"
 
   - name: "Loader Environment"
     envVars:
