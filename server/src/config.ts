@@ -70,8 +70,8 @@ function getPoolSize(connectionName?: string): number {
   if (!rawSize) return 0;
 
   const size = parseInt(rawSize, 10);
-  if (isNaN(size) || size < 1) {
-    throw new TypeError(`${sizeName} must be > 0 (not "${rawSize}")`);
+  if (isNaN(size) || size < 0) {
+    throw new TypeError(`${sizeName} must be >= 0 (not "${rawSize}")`);
   }
   return size;
 }
