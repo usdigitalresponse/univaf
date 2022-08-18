@@ -35,7 +35,7 @@ describe("PrepMod API", () => {
   // have tests with simpler, more contrived API responses to verify values.
   // This is too complicated to set up again if the API changes.
   it.nock("should successfully format results", async () => {
-    const result = await checkAvailability(() => {}, { states: "WA" });
+    const result = await checkAvailability(() => {}, { states: ["WA"] });
     expect(result).toEqual([
       {
         address_lines: ["500 Tausick Way"],
@@ -834,7 +834,7 @@ describe("PrepMod API", () => {
       .reply(200, toNdJson(testLocation.slots));
 
     const results = await checkAvailability(() => {}, {
-      states: "AK",
+      states: ["AK"],
       hideMissingLocations: true,
     });
     expect(results).toHaveLength(2);

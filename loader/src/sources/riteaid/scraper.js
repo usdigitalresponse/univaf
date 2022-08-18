@@ -347,25 +347,15 @@ function formatSlots(location) {
 }
 
 async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.riteAidStates) {
-    states = options.riteAidStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
+  if (!options.states?.length) {
     warn(`No states set for riteAidApi`);
-  }
-
-  if (options.rateLimit != null && isNaN(options.rateLimit)) {
-    throw new Error("Invalid --rate-limit set.");
+    return [];
   }
 
   const rateLimit = new RateLimit(options.rateLimit || 1);
 
   const results = [];
-  for (const state of states) {
+  for (const state of options.states) {
     for await (const apiLocation of queryState(state, rateLimit)) {
       let location;
       Sentry.withScope((scope) => {

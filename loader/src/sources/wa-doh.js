@@ -282,15 +282,9 @@ function formatLocation(data) {
  * Get availability data from the WA Department of Health API.
  */
 async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.waDohStates) {
-    states = options.waDohStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
   // WA doesn't support some US territories.
   const unsupported = new Set(["AA", "AP", "AE"]);
-  states = states.filter((state) => !unsupported.has(state));
+  const states = options?.states?.filter((state) => !unsupported.has(state));
 
   if (!states.length) console.error("No states specified for WA DoH");
 

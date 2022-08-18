@@ -283,22 +283,12 @@ function formatAddress(location) {
 }
 
 async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.riteAidStates) {
-    states = options.riteAidStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
   // Rite Aid only has stores in a few states, so filter down to those.
-  states = states.filter((state) => riteAidStates.has(state));
-
-  if (!states.length) {
+  const states = options.states?.filter((state) => riteAidStates.has(state));
+  if (!states?.length) {
     const statesText = Array.from(riteAidStates).join(", ");
     warn(`No states set for riteAidApi (supported: ${statesText})`);
-  }
-
-  if (options.rateLimit != null && isNaN(options.rateLimit)) {
-    throw new Error("Invalid --rate-limit set.");
+    return [];
   }
 
   const rateLimit = new RateLimit(options.rateLimit || 1);

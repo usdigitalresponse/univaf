@@ -56,7 +56,7 @@ describe("Rite Aid Source", () => {
 
     nock(API_URL).get("?stateCode=NJ").reply(200, responseFixture);
 
-    const locations = await checkAvailability(() => {}, { states: "NJ" });
+    const locations = await checkAvailability(() => {}, { states: ["NJ"] });
     expect(locations.length).toBe(108);
 
     expect(locations[0]).toStrictEqual({
@@ -202,7 +202,7 @@ describe("Rite Aid Source", () => {
 
   it("does not attempt to load states without Rite Aid stores", async () => {
     nock(API_URL).get("?stateCode=AK").reply(403, "uhoh");
-    const results = await checkAvailability(() => {}, { states: "AK" });
+    const results = await checkAvailability(() => {}, { states: ["AK"] });
     expect(results).toHaveLength(0);
   });
 

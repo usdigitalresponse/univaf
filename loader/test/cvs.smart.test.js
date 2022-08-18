@@ -30,7 +30,7 @@ describe("CVS SMART Scheduling Links API", () => {
       .get("/immunizations/inventory/data/slot.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
-    const result = await checkAvailability(() => null, { states: "VA" });
+    const result = await checkAvailability(() => null, { states: ["VA"] });
     expect(result).toEqual([
       {
         external_ids: [
@@ -92,7 +92,7 @@ describe("CVS SMART Scheduling Links API", () => {
         )
       );
 
-    const result = await checkAvailability(() => null, { states: "VA" });
+    const result = await checkAvailability(() => null, { states: ["VA"] });
     expect(result).toHaveProperty("0.availability.available", Available.no);
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
@@ -109,7 +109,7 @@ describe("CVS SMART Scheduling Links API", () => {
       .get("/immunizations/inventory/data/slot.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
-    const result = await checkAvailability(() => null, { states: "NJ" });
+    const result = await checkAvailability(() => null, { states: ["NJ"] });
     expect(result).toHaveLength(0);
   });
 });

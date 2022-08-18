@@ -203,17 +203,12 @@ async function getData(states) {
 }
 
 async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
+  if (!options.states?.length) {
     console.warn("No states specified for HyVee");
     return [];
   }
 
-  const locations = await getData(states);
+  const locations = await getData(options.states);
   locations.forEach((location) => handler(location));
   return locations;
 }

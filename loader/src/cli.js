@@ -151,14 +151,12 @@ function main() {
               Comma-separated list of states to query for multi-state sources
               (e.g. vaccinespotter)
             `,
-          })
-          .option("vaccinespotter-states", {
-            type: "string",
-            describe: "Overrides the `--states` option for vaccinespotter",
-          })
-          .option("rite-aid-states", {
-            type: "string",
-            describe: "Overrides the `--states` option for riteAidApi",
+            coerce(value) {
+              return value
+                .split(",")
+                .map((state) => state.trim().toUpperCase())
+                .filter(Boolean);
+            },
           })
           .option("hide-missing-locations", {
             type: "boolean",
@@ -178,6 +176,11 @@ function main() {
               Only make this many HTTP requests per second. (Only applies to
               the Rite Aid sources for now.)
             `,
+            coerce(value) {
+              if (isNaN(value) || value < 0) {
+                throw new Error(`--rate-limit must be a positive number.`);
+              }
+            },
           }),
       handler: run,
     })

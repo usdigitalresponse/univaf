@@ -338,21 +338,14 @@ function formatSlots(smartSlots) {
 }
 
 async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.prepmodStates) {
-    states = options.prepmodStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
+  if (!options.states?.length) {
     console.warn("No states specified for PrepMod");
     return [];
   }
 
   let results = [];
   for (const [state, namedHosts] of Object.entries(prepmodHostsByState)) {
-    if (states.includes(state)) {
+    if (options.states.includes(state)) {
       // Load known locations in the state so we can mark any that are missing
       // from PrepMod as private. (It's not unusual for locations to be public
       // and later become private, at which point we should hide them, too.)

@@ -734,17 +734,12 @@ function formatLocation(data, validAt, checkedAt) {
 }
 
 async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
+  if (!options.states?.length) {
     console.warn("No states specified for Albertsons");
     return [];
   }
 
-  const stores = await getData(states);
+  const stores = await getData(options.states);
   stores.forEach((store) => handler(store, { update_location: true }));
   if (config.debug) {
     console.error("Matches to known locations:", knownLocationMatches);

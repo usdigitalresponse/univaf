@@ -546,16 +546,14 @@ function formatProductTypes(products) {
 }
 
 async function checkAvailability(handler, options) {
-  const states = options.states?.split(",").map((state) => state.trim());
-
-  if (!states || !states.length) {
+  if (!options.states?.length) {
     warn("No states specified for cdcApi");
     return [];
   }
 
   const checkedAt = new Date().toISOString();
   let results = [];
-  for (const state of states) {
+  for (const state of options.states) {
     const entriesByStoreId = {};
     for await (const entry of queryState(state)) {
       if (!(entry.provider_location_guid in entriesByStoreId)) {

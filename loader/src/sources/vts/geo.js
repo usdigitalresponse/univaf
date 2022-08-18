@@ -150,14 +150,13 @@ async function updateGeo(handler, options) {
     Please fix https://github.com/usdigitalresponse/univaf/issues/433 first.
   `);
   /* eslint-disable no-unreachable */
-  const states = options.states?.split(",").map((state) => state.trim());
 
-  if (!states || !states.length) {
+  if (!options.states?.length) {
     warn("No states specified for vts.geo");
     return [];
   }
 
-  const statesFilter = new Set(states);
+  const statesFilter = new Set(options.states);
 
   const stores = await getStores();
   const results = stores.features

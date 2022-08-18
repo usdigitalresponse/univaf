@@ -438,19 +438,12 @@ function formatStore(store) {
 async function checkAvailability(handler, options) {
   warn("WARNING: vaccinespotter is deprecated and no longer maintained.");
 
-  let states = ["NJ"];
-  if (options.vaccinespotterStates) {
-    states = options.vaccinespotterStates
-      .split(",")
-      .map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
+  if (!options.states?.length) {
+    console.warn("No states specified for vaccinespotter");
   }
 
-  if (!states.length) console.warn("No states specified for vaccinespotter");
-
   let results = [];
-  for (const state of states) {
+  for (const state of options.states) {
     const stores = await queryState(state);
     const formatted = stores.features
       .filter(hasUsefulData)
