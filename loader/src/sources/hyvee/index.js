@@ -177,7 +177,7 @@ function formatProducts(vaccineData) {
       return result;
     });
 
-  return products.length ? products : undefined;
+  return products.length ? [...new Set(products)] : undefined;
 }
 
 async function getData(states) {
