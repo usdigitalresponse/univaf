@@ -6,6 +6,7 @@ const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
+const allStates = require("./states.json");
 
 Sentry.init();
 
@@ -149,13 +150,30 @@ function main() {
             type: "string",
             describe: oneLine`
               Comma-separated list of states to query for multi-state sources
-              (e.g. vaccinespotter)
+              (e.g. cvsSmart)
             `,
             coerce(value) {
-              return value
+              const invalid = [];
+              const parsed = value
                 .split(",")
-                .map((state) => state.trim().toUpperCase())
+                .map((state) => {
+                  const stateText = state.trim().toUpperCase();
+                  if (
+                    !stateText ||
+                    !allStates.find((item) => item.usps === stateText)
+                  ) {
+                    invalid.push(state);
+                  }
+                  return stateText;
+                })
                 .filter(Boolean);
+
+              if (invalid.length) {
+                const quoted = invalid.map((x) => `"${x}"`).join(", ");
+                throw new Error(`Unsupported states: ${quoted}`);
+              }
+
+              return parsed;
             },
           })
           .option("hide-missing-locations", {
