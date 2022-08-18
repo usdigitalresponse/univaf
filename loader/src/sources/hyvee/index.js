@@ -34,6 +34,7 @@ const VACCINE_NAMES = {
   "Pediatric-Pfizer (5-11)": VaccineProduct.pfizerAge5_11,
   "Pediatric-Pfizer (under 5)": VaccineProduct.pfizerAge0_4,
   Janssen: VaccineProduct.janssen,
+  Novavax: VaccineProduct.novavax,
 };
 
 const warn = createWarningLogger("hyvee");
@@ -176,7 +177,7 @@ function formatProducts(vaccineData) {
       return result;
     });
 
-  return products.length ? products : undefined;
+  return products.length ? [...new Set(products)] : undefined;
 }
 
 async function getData(states) {
