@@ -188,6 +188,7 @@ const nonCovidProductName = new RegExp(
     raw`^child and adolescent immunization`,
     raw`monkeypox`,
     raw`jynneos`,
+    raw`\btdap\b`,
   ].join("|"),
   "i"
 );
