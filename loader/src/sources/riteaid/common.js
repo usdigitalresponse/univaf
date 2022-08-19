@@ -2,7 +2,7 @@ const assert = require("assert").strict;
 const { HttpApiError } = require("../../exceptions");
 
 // States in which Rite Aid has stores.
-const RITE_AID_STATES = new Set([
+const RITE_AID_STATES = [
   "CA",
   "CO",
   "CT",
@@ -21,7 +21,7 @@ const RITE_AID_STATES = new Set([
   "VA",
   "VT",
   "WA",
-]);
+];
 
 class RiteAidApiError extends HttpApiError {
   parse(response) {
