@@ -147,6 +147,63 @@ const PHONE_NUMBER_PATTERN = new RegExp(
   r`$`
 );
 
+const DEFAULT_STATES = [
+  "AL",
+  "AK",
+  "AZ",
+  "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "DC",
+  "FL",
+  "GA",
+  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
+  "KS",
+  "KY",
+  "LA",
+  "ME",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
+  "MS",
+  "MO",
+  "MT",
+  "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
+  "NY",
+  "NC",
+  "ND",
+  "OH",
+  "OK",
+  "OR",
+  "PA",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VT",
+  "VA",
+  "WA",
+  "WV",
+  "WI",
+  "WY",
+  "MH",
+  "PR",
+  "VI",
+];
+
 /**
  * Enforce rate limits on operations by awaiting the `ready()` method on
  * instances of this class.
@@ -198,6 +255,8 @@ class RateLimit {
 }
 
 module.exports = {
+  DEFAULT_STATES,
+
   USER_AGENTS,
 
   TIME_ZONE_OFFSET_STRINGS,

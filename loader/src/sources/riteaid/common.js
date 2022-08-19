@@ -1,6 +1,28 @@
 const assert = require("assert").strict;
 const { HttpApiError } = require("../../exceptions");
 
+// States in which Rite Aid has stores.
+const RITE_AID_STATES = [
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "ID",
+  "MA",
+  "MD",
+  "MI",
+  "NH",
+  "NJ",
+  "NV",
+  "NY",
+  "OH",
+  "OR",
+  "PA",
+  "VA",
+  "VT",
+  "WA",
+];
+
 class RiteAidApiError extends HttpApiError {
   parse(response) {
     assert.equal(typeof response.body, "object");
@@ -55,4 +77,9 @@ function getLocationName(externalIds) {
   return nonBrandName;
 }
 
-module.exports = { RiteAidApiError, getExternalIds, getLocationName };
+module.exports = {
+  RITE_AID_STATES,
+  RiteAidApiError,
+  getExternalIds,
+  getLocationName,
+};

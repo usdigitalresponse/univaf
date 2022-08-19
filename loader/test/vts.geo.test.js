@@ -25,22 +25,22 @@ describe.skip("VtS Geo", () => {
 
   it("filters by state", async () => {
     let locations;
-    locations = await checkAvailability(noopHandler, { states: "NJ" });
+    locations = await checkAvailability(noopHandler, { states: ["NJ"] });
     expect(locations.length).toBe(0);
 
-    locations = await checkAvailability(noopHandler, { states: "CA" });
+    locations = await checkAvailability(noopHandler, { states: ["CA"] });
     expect(locations.length).not.toBe(0);
   });
 
   it("skips stores we don't care about", async () => {
     expect(apiResponse.features.length).toBe(3);
 
-    const locations = await checkAvailability(noopHandler, { states: "CA" });
+    const locations = await checkAvailability(noopHandler, { states: ["CA"] });
     expect(locations.length).toBe(2);
   });
 
   it("formats stores as expected", async () => {
-    const locations = await checkAvailability(noopHandler, { states: "CA" });
+    const locations = await checkAvailability(noopHandler, { states: ["CA"] });
     expect(locations[0]).toStrictEqual({
       external_ids: [
         ["vaccines_gov", "d91cd449-36c2-4cf5-9c1a-f4136d9a2bf7"],

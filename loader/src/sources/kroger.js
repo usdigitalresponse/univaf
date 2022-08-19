@@ -26,6 +26,7 @@ const {
   unpadNumber,
   getUniqueExternalIds,
   createWarningLogger,
+  DEFAULT_STATES,
 } = require("../utils");
 const {
   EXTENSIONS,
@@ -305,19 +306,7 @@ function formatCapacity(slots) {
     .map((key) => byDate[key]);
 }
 
-async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.krogerStates) {
-    states = options.krogerStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
-    console.warn("No states specified for Kroger");
-    return [];
-  }
-
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;

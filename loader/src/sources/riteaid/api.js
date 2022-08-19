@@ -14,6 +14,7 @@ const {
   requireAllProperties,
 } = require("../../schema-validation");
 const {
+  RITE_AID_STATES,
   RiteAidApiError,
   getExternalIds,
   getLocationName,
@@ -23,28 +24,6 @@ const warn = createWarningLogger("riteAidApi");
 
 // Log a warning if a location has more than this many slots in a given day.
 const MAXIMUM_SLOT_COUNT = 500;
-
-// States in which Rite Aid has stores.
-const riteAidStates = new Set([
-  "CA",
-  "CO",
-  "CT",
-  "DE",
-  "ID",
-  "MA",
-  "MD",
-  "MI",
-  "NH",
-  "NJ",
-  "NV",
-  "NY",
-  "OH",
-  "OR",
-  "PA",
-  "VA",
-  "VT",
-  "WA",
-]);
 
 const riteAidWrapperSchema = requireAllProperties({
   type: "object",
@@ -282,26 +261,11 @@ function formatAddress(location) {
   return `${location.street}, ${location.city}, ${location.state}, ${zipCode}`;
 }
 
-async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.riteAidStates) {
-    states = options.riteAidStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-  // Rite Aid only has stores in a few states, so filter down to those.
-  states = states.filter((state) => riteAidStates.has(state));
-
-  if (!states.length) {
-    const statesText = Array.from(riteAidStates).join(", ");
-    warn(`No states set for riteAidApi (supported: ${statesText})`);
-  }
-
-  if (options.rateLimit != null && isNaN(options.rateLimit)) {
-    throw new Error("Invalid --rate-limit set.");
-  }
-
-  const rateLimit = new RateLimit(options.rateLimit || 1);
+async function checkAvailability(
+  handler,
+  { states = RITE_AID_STATES, rateLimit }
+) {
+  const rateLimiter = new RateLimit(rateLimit || 1);
 
   let results = [];
   for (const state of states) {
@@ -311,7 +275,7 @@ async function checkAvailability(handler, options) {
 
     const stores = [];
     try {
-      const rawData = await queryState(state, rateLimit);
+      const rawData = await queryState(state, rateLimiter);
       for (const rawLocation of rawData) {
         Sentry.withScope((scope) => {
           scope.setContext("context", errorContext);

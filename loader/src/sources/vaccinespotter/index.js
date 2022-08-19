@@ -18,6 +18,7 @@ const {
   unpadNumber,
   getUniqueExternalIds,
   createWarningLogger,
+  DEFAULT_STATES,
 } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
@@ -435,19 +436,8 @@ function formatStore(store) {
   return result;
 }
 
-async function checkAvailability(handler, options) {
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   warn("WARNING: vaccinespotter is deprecated and no longer maintained.");
-
-  let states = ["NJ"];
-  if (options.vaccinespotterStates) {
-    states = options.vaccinespotterStates
-      .split(",")
-      .map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) console.warn("No states specified for vaccinespotter");
 
   let results = [];
   for (const state of states) {

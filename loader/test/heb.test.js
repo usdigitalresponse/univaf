@@ -8,7 +8,7 @@ jest.mock("../src/utils");
 
 describe("H-E-B", () => {
   it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
-    const result = await checkAvailability(() => {}, { states: "TX" });
+    const result = await checkAvailability(() => {}, { states: ["TX"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 

@@ -15,7 +15,12 @@
  */
 
 const Sentry = require("@sentry/node");
-const { httpClient, splitOnce, oneLine } = require("../../utils");
+const {
+  httpClient,
+  splitOnce,
+  oneLine,
+  DEFAULT_STATES,
+} = require("../../utils");
 
 const dataProviders = {
   "Rite-Aid": {
@@ -40,11 +45,6 @@ const dataProviders = {
     },
   },
 };
-
-function warn(message, context) {
-  console.warn(`VTS Geo: ${message}`, context);
-  Sentry.captureMessage(message, "info");
-}
 
 function error(message, context) {
   console.error(`VTS Geo: ${message}`, context);
@@ -144,18 +144,12 @@ function formatStore(store) {
   return result;
 }
 
-async function updateGeo(handler, options) {
+async function updateGeo(handler, { states = DEFAULT_STATES }) {
   throw new Error(oneLine`
     The vtsGeo source is unsafe!
     Please fix https://github.com/usdigitalresponse/univaf/issues/433 first.
   `);
   /* eslint-disable no-unreachable */
-  const states = options.states?.split(",").map((state) => state.trim());
-
-  if (!states || !states.length) {
-    warn("No states specified for vts.geo");
-    return [];
-  }
 
   const statesFilter = new Set(states);
 

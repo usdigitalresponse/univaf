@@ -21,7 +21,7 @@ describe("CDC Open Data API", () => {
   const fixturePath = path.join(__dirname, "fixtures/cdc.api.01929.json");
 
   it.nock("should output valid data", async () => {
-    const result = await checkAvailability(() => {}, { states: "AK" });
+    const result = await checkAvailability(() => {}, { states: ["AK"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
@@ -32,7 +32,7 @@ describe("CDC Open Data API", () => {
       "Content-Type": "application/json",
     });
 
-    const locations = await checkAvailability(() => null, { states: "NJ" });
+    const locations = await checkAvailability(() => null, { states: ["NJ"] });
     expect(locations).toHaveLength(1);
     expect(locations[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
@@ -63,7 +63,7 @@ describe("CDC Open Data API", () => {
         },
       ]);
 
-    const locations = await checkAvailability(() => null, { states: "NJ" });
+    const locations = await checkAvailability(() => null, { states: ["NJ"] });
     expect(locations).toHaveProperty("0.availability.available", Available.yes);
     expect(locations).toHaveProperty("1.availability.available", Available.no);
     expect(locations).toHaveProperty(
@@ -93,7 +93,7 @@ describe("CDC Open Data API", () => {
         },
       ]);
 
-    const locations = await checkAvailability(() => null, { states: "NJ" });
+    const locations = await checkAvailability(() => null, { states: ["NJ"] });
     expect(locations).toHaveProperty(
       "0.availability.available",
       Available.unknown

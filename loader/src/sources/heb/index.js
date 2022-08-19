@@ -12,7 +12,11 @@
 
 const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
-const { httpClient, createWarningLogger } = require("../../utils");
+const {
+  httpClient,
+  createWarningLogger,
+  DEFAULT_STATES,
+} = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
 const { assertSchema } = require("../../schema-validation");
 
@@ -204,17 +208,7 @@ function formatUrl(url) {
   return url ? url : "https://vaccine.heb.com/scheduler";
 }
 
-async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
-    console.warn("No states specified for H-E-B");
-    return [];
-  }
-
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;

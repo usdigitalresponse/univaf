@@ -16,7 +16,11 @@
 
 const assert = require("node:assert/strict");
 const Sentry = require("@sentry/node");
-const { httpClient, createWarningLogger } = require("../../utils");
+const {
+  httpClient,
+  createWarningLogger,
+  DEFAULT_STATES,
+} = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
 const { assertValidGraphQl } = require("../../exceptions");
 
@@ -202,17 +206,7 @@ async function getData(states) {
     .filter((location) => states.includes(location.state));
 }
 
-async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
-    console.warn("No states specified for HyVee");
-    return [];
-  }
-
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const locations = await getData(states);
   locations.forEach((location) => handler(location));
   return locations;

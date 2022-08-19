@@ -20,7 +20,7 @@ describe("Washington DoH API", () => {
   });
 
   it.nock("should successfully format results", async () => {
-    const result = await checkAvailability(() => {}, { states: "PR" });
+    const result = await checkAvailability(() => {}, { states: ["PR"] });
     expect(result).toEqual([
       {
         address_lines: ["PR #30 INTERSECCION AVENDIA", "RAFAEL CORDERO BARIO"],
@@ -105,7 +105,7 @@ describe("Washington DoH API", () => {
         ],
       });
 
-    const error = await checkAvailability(() => null, { states: "PR" }).then(
+    const error = await checkAvailability(() => null, { states: ["PR"] }).then(
       () => null,
       (error) => error
     );

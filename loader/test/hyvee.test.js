@@ -134,7 +134,7 @@ describe("HyVee", () => {
   });
 
   it.nock("should output valid data", async () => {
-    const states = stateData.map((x) => x.usps).join(",");
+    const states = stateData.map((x) => x.usps);
     const result = await checkAvailability(() => {}, { states });
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });

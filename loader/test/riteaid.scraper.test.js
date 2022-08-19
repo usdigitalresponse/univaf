@@ -44,7 +44,7 @@ describe("Rite Aid Scraper", () => {
 
   it.nock("should output valid data", async () => {
     const result = await checkAvailability(() => {}, {
-      states: "NJ",
+      states: ["NJ"],
       rateLimit: 0,
     });
     expect(result).toContainItemsMatchingSchema(locationSchema);
@@ -145,7 +145,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: "NJ" });
+    const result = await checkAvailability(() => {}, { states: ["NJ"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
@@ -287,7 +287,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: "NJ" });
+    const result = await checkAvailability(() => {}, { states: ["NJ"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0].availability.slots).toEqual([
       {
@@ -339,7 +339,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: "NJ" });
+    const result = await checkAvailability(() => {}, { states: ["NJ"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toHaveProperty("0.availability.available", Available.no);
   });
@@ -353,9 +353,9 @@ describe("Rite Aid Scraper", () => {
       ErrMsgDtl: null,
     });
 
-    await expect(checkAvailability(() => {}, { states: "NJ" })).rejects.toThrow(
-      "Something went wrong"
-    );
+    await expect(
+      checkAvailability(() => {}, { states: ["NJ"] })
+    ).rejects.toThrow("Something went wrong");
   });
 
   it("includes sub-brand IDs when appropriate", async () => {
@@ -392,7 +392,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: "NJ" });
+    const result = await checkAvailability(() => {}, { states: ["NJ"] });
     expect(result).toHaveProperty("0.external_ids", [
       ["rite_aid", "6958"],
       ["bartell", "58"],

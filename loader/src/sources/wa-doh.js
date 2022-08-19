@@ -7,6 +7,7 @@ const {
   httpClient,
   matchVaccineProduct,
   createWarningLogger,
+  DEFAULT_STATES,
 } = require("../utils");
 const { assertValidGraphQl } = require("../exceptions");
 const allStates = require("../states.json");
@@ -281,18 +282,16 @@ function formatLocation(data) {
 /**
  * Get availability data from the WA Department of Health API.
  */
-async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.waDohStates) {
-    states = options.waDohStates.split(",").map((state) => state.trim());
-  } else if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   // WA doesn't support some US territories.
   const unsupported = new Set(["AA", "AP", "AE"]);
-  states = states.filter((state) => !unsupported.has(state));
-
-  if (!states.length) console.error("No states specified for WA DoH");
+  states = states.filter((state) => {
+    if (unsupported.has(state)) {
+      console.warn(`"${state}" is not supported for WA DoH.`);
+      return false;
+    }
+    return true;
+  });
 
   const results = [];
   for (const state of states) {

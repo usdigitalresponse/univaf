@@ -6,6 +6,7 @@ const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
+const allStates = require("./states.json");
 
 Sentry.init();
 
@@ -149,16 +150,32 @@ function main() {
             type: "string",
             describe: oneLine`
               Comma-separated list of states to query for multi-state sources
-              (e.g. vaccinespotter)
+              (e.g. cvsSmart). If not specified all relevant states for the
+              requested sources will be checked.
             `,
-          })
-          .option("vaccinespotter-states", {
-            type: "string",
-            describe: "Overrides the `--states` option for vaccinespotter",
-          })
-          .option("rite-aid-states", {
-            type: "string",
-            describe: "Overrides the `--states` option for riteAidApi",
+            coerce(value) {
+              const invalid = [];
+              const parsed = value
+                .split(",")
+                .map((state) => {
+                  const stateText = state.trim().toUpperCase();
+                  if (
+                    !stateText ||
+                    !allStates.find((item) => item.usps === stateText)
+                  ) {
+                    invalid.push(state);
+                  }
+                  return stateText;
+                })
+                .filter(Boolean);
+
+              if (invalid.length) {
+                const quoted = invalid.map((x) => `"${x}"`).join(", ");
+                throw new Error(`Unsupported states: ${quoted}`);
+              }
+
+              return parsed;
+            },
           })
           .option("hide-missing-locations", {
             type: "boolean",
@@ -178,6 +195,11 @@ function main() {
               Only make this many HTTP requests per second. (Only applies to
               the Rite Aid sources for now.)
             `,
+            coerce(value) {
+              if (isNaN(value) || value < 0) {
+                throw new Error(`--rate-limit must be a positive number.`);
+              }
+            },
           }),
       handler: run,
     })

@@ -35,6 +35,7 @@ const {
   unpadNumber,
   cleanUrl,
   createWarningLogger,
+  DEFAULT_STATES,
 } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
@@ -545,14 +546,7 @@ function formatProductTypes(products) {
   return result.length ? result : undefined;
 }
 
-async function checkAvailability(handler, options) {
-  const states = options.states?.split(",").map((state) => state.trim());
-
-  if (!states || !states.length) {
-    warn("No states specified for cdcApi");
-    return [];
-  }
-
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const checkedAt = new Date().toISOString();
   let results = [];
   for (const state of states) {

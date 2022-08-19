@@ -27,6 +27,7 @@ const {
   parseUsAddress,
   getUniqueExternalIds,
   unpadNumber,
+  DEFAULT_STATES,
 } = require("../../utils");
 const {
   Available,
@@ -733,17 +734,7 @@ function formatLocation(data, validAt, checkedAt) {
   };
 }
 
-async function checkAvailability(handler, options) {
-  let states = [];
-  if (options.states) {
-    states = options.states.split(",").map((state) => state.trim());
-  }
-
-  if (!states.length) {
-    console.warn("No states specified for Albertsons");
-    return [];
-  }
-
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const stores = await getData(states);
   stores.forEach((store) => handler(store, { update_location: true }));
   if (config.debug) {
