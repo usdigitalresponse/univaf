@@ -76,8 +76,8 @@ async function fetchRawData() {
                 availableCovidVaccineManufacturers {
                   covidVaccineManufacturerId
                   manufacturerName
+                  doseTypes
                   isSingleDose
-                  isBooster
                   __typename
                 }
                 __typename
