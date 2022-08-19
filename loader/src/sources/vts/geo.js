@@ -46,11 +46,6 @@ const dataProviders = {
   },
 };
 
-function warn(message, context) {
-  console.warn(`VTS Geo: ${message}`, context);
-  Sentry.captureMessage(message, "info");
-}
-
 function error(message, context) {
   console.error(`VTS Geo: ${message}`, context);
   Sentry.captureMessage(message, "error");
