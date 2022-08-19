@@ -1,6 +1,5 @@
 "use strict";
 
-const server = require("./server");
 const Sentry = require("@sentry/node");
 const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
@@ -202,18 +201,6 @@ function main() {
             },
           }),
       handler: run,
-    })
-    .command({
-      command: "server",
-      describe: `
-        Start a web server that loads vaccine appointment availability when an
-        HTTP POST request is made to "/".
-
-        Use the "PORT" environment variable to specify what port to listen on.
-      `.trim(),
-      handler(options) {
-        return server.runServer(run, options);
-      },
     })
     .help()
     .parse();

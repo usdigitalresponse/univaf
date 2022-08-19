@@ -21,5 +21,5 @@ ENV RELEASE="${RELEASE}"
 ENV API_URL=""
 ENV API_KEY=""
 
-# run our built server
+# Run the loader
 ENTRYPOINT ["node", "./bin/univaf-loader", "--send", "--compact"]
