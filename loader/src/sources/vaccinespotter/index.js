@@ -18,6 +18,7 @@ const {
   unpadNumber,
   getUniqueExternalIds,
   createWarningLogger,
+  DEFAULT_STATES,
 } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
@@ -435,15 +436,11 @@ function formatStore(store) {
   return result;
 }
 
-async function checkAvailability(handler, options) {
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   warn("WARNING: vaccinespotter is deprecated and no longer maintained.");
 
-  if (!options.states?.length) {
-    console.warn("No states specified for vaccinespotter");
-  }
-
   let results = [];
-  for (const state of options.states) {
+  for (const state of states) {
     const stores = await queryState(state);
     const formatted = stores.features
       .filter(hasUsefulData)

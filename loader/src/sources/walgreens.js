@@ -7,7 +7,12 @@
 
 const Sentry = require("@sentry/node");
 const { Available, LocationType } = require("../model");
-const { titleCase, unpadNumber, createWarningLogger } = require("../utils");
+const {
+  titleCase,
+  unpadNumber,
+  createWarningLogger,
+  DEFAULT_STATES,
+} = require("../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -186,13 +191,8 @@ function formatCapacity(slots) {
     .map((key) => byDate[key]);
 }
 
-async function checkAvailability(handler, options) {
-  if (!options.states?.length) {
-    console.warn("No states specified for Walgreens");
-    return [];
-  }
-
-  const stores = await getData(options.states);
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+  const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;
 }

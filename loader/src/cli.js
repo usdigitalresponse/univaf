@@ -150,7 +150,8 @@ function main() {
             type: "string",
             describe: oneLine`
               Comma-separated list of states to query for multi-state sources
-              (e.g. cvsSmart)
+              (e.g. cvsSmart). If not specified all relevant states for the
+              requested sources will be checked.
             `,
             coerce(value) {
               const invalid = [];

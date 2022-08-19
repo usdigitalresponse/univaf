@@ -11,7 +11,7 @@ const {
   formatExternalIds,
   valuesAsObject,
 } = require("../../smart-scheduling-links");
-const { createWarningLogger } = require("../../utils");
+const { createWarningLogger, DEFAULT_STATES } = require("../../utils");
 const { CVS_BOOKING_URL } = require("./shared");
 
 const CVS_SMART_API_URL =
@@ -141,13 +141,8 @@ function formatCapacity(slots) {
     .map((key) => byDate[key]);
 }
 
-async function checkAvailability(handler, options) {
-  if (!options.states?.length) {
-    console.warn("No states specified for CVS");
-    return [];
-  }
-
-  const stores = await getData(options.states);
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+  const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;
 }

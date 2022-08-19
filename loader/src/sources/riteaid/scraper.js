@@ -24,6 +24,7 @@ const {
   RiteAidApiError,
   getExternalIds,
   getLocationName,
+  RITE_AID_STATES,
 } = require("./common");
 const { zipCodesCovering100Miles } = require("./zip-codes");
 
@@ -346,17 +347,15 @@ function formatSlots(location) {
   return allSlots;
 }
 
-async function checkAvailability(handler, options) {
-  if (!options.states?.length) {
-    warn(`No states set for riteAidApi`);
-    return [];
-  }
-
-  const rateLimit = new RateLimit(options.rateLimit || 1);
+async function checkAvailability(
+  handler,
+  { states = RITE_AID_STATES, rateLimit }
+) {
+  const rateLimiter = new RateLimit(rateLimit || 1);
 
   const results = [];
-  for (const state of options.states) {
-    for await (const apiLocation of queryState(state, rateLimit)) {
+  for (const state of states) {
+    for await (const apiLocation of queryState(state, rateLimiter)) {
       let location;
       Sentry.withScope((scope) => {
         scope.setContext("location", {

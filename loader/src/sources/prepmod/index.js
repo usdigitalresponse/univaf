@@ -19,7 +19,11 @@ const {
 const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
-const { matchVaccineProduct, createWarningLogger } = require("../../utils");
+const {
+  matchVaccineProduct,
+  createWarningLogger,
+  DEFAULT_STATES,
+} = require("../../utils");
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
 
@@ -337,19 +341,17 @@ function formatSlots(smartSlots) {
   return { available, slots };
 }
 
-async function checkAvailability(handler, options) {
-  if (!options.states?.length) {
-    console.warn("No states specified for PrepMod");
-    return [];
-  }
-
+async function checkAvailability(
+  handler,
+  { states = DEFAULT_STATES, hideMissingLocations = false }
+) {
   let results = [];
   for (const [state, namedHosts] of Object.entries(prepmodHostsByState)) {
-    if (options.states.includes(state)) {
+    if (states.includes(state)) {
       // Load known locations in the state so we can mark any that are missing
       // from PrepMod as private. (It's not unusual for locations to be public
       // and later become private, at which point we should hide them, too.)
-      const knownLocations = options.hideMissingLocations
+      const knownLocations = hideMissingLocations
         ? await getKnownLocations(state)
         : Object.create(null);
 

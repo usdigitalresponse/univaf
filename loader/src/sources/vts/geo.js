@@ -15,7 +15,12 @@
  */
 
 const Sentry = require("@sentry/node");
-const { httpClient, splitOnce, oneLine } = require("../../utils");
+const {
+  httpClient,
+  splitOnce,
+  oneLine,
+  DEFAULT_STATES,
+} = require("../../utils");
 
 const dataProviders = {
   "Rite-Aid": {
@@ -144,19 +149,14 @@ function formatStore(store) {
   return result;
 }
 
-async function updateGeo(handler, options) {
+async function updateGeo(handler, { states = DEFAULT_STATES }) {
   throw new Error(oneLine`
     The vtsGeo source is unsafe!
     Please fix https://github.com/usdigitalresponse/univaf/issues/433 first.
   `);
   /* eslint-disable no-unreachable */
 
-  if (!options.states?.length) {
-    warn("No states specified for vts.geo");
-    return [];
-  }
-
-  const statesFilter = new Set(options.states);
+  const statesFilter = new Set(states);
 
   const stores = await getStores();
   const results = stores.features

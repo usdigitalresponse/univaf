@@ -26,6 +26,7 @@ const {
   unpadNumber,
   getUniqueExternalIds,
   createWarningLogger,
+  DEFAULT_STATES,
 } = require("../utils");
 const {
   EXTENSIONS,
@@ -305,13 +306,8 @@ function formatCapacity(slots) {
     .map((key) => byDate[key]);
 }
 
-async function checkAvailability(handler, options) {
-  if (!options.states?.length) {
-    console.warn("No states specified for Kroger");
-    return [];
-  }
-
-  const stores = await getData(options.states);
+async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+  const stores = await getData(states);
   stores.forEach((store) => handler(store));
   return stores;
 }
