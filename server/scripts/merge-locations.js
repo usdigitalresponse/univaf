@@ -196,6 +196,12 @@ function planMerge(target, ...toMerge) {
           newData.meta = meta;
           hasChanges = true;
         }
+      } else if (key === "is_public") {
+        // If any of the locations is public, the merged result should be too.
+        if (!target.is_public && source.is_public) {
+          newData.is_public = true;
+          hasChanges = true;
+        }
       } else if (
         newData[key] == null &&
         target[key] == null &&
