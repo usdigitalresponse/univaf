@@ -602,6 +602,32 @@ describe("PrepMod API", () => {
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
+  it("cleans up malformed address lines", async () => {
+    const testLocation = createSmartLocation({
+      address: {
+        line: ["Some High School / 123 Example Rd., Somewheresville, SC 29614"],
+        city: "Somewheresville",
+        state: "SC",
+        postalCode: "29614",
+        district: "Greenville",
+      },
+    });
+
+    const result = formatLocation(
+      "https://myhealth.alaska.gov",
+      new Date(),
+      testLocation
+    );
+    expect(result).toHaveProperty("address_lines", [
+      "Some High School",
+      "123 Example Rd.",
+    ]);
+    expect(result).toHaveProperty("city", "Somewheresville");
+    expect(result).toHaveProperty("state", "SC");
+    expect(result).toHaveProperty("postal_code", "29614");
+    expect(result).toHaveProperty("county", "Greenville");
+  });
+
   it("identifies Pfizer for 5-11 year olds", async () => {
     const testLocation = createSmartLocation({
       schedules: [

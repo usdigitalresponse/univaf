@@ -59,6 +59,15 @@ const scheduleReference = Symbol("schedule");
 const sourceReference = Symbol("source");
 
 /**
+ * @typedef {Object} SmartSchdulingLinksAddress
+ * @property {string[]} line
+ * @property {string} city
+ * @property {string} state
+ * @property {string} postalCode
+ * @property {string} [district]
+ */
+
+/**
  * Compare two lists of states to see if they include any states in common.
  * If either of the values is `null` or `undefined` they are assumed to match.
  * The second value *may* be a string identifying a single state instead of an

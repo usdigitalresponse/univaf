@@ -6,6 +6,7 @@
  * contact at least one (and sometimes several) hosts in each state.
  */
 
+const { isDeepStrictEqual } = require("node:util");
 const { ApiClient } = require("../../api-client");
 const {
   EXTENSIONS,
@@ -24,6 +25,11 @@ const {
   createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
+
+/**
+ * Import types
+ * @typedef {import("../../smart-scheduling-links").SmartSchdulingLinksAddress} SmartSchdulingLinksAddress
+ */
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
 
@@ -114,11 +120,7 @@ function formatLocation(host, validTime, locationInfo) {
     provider: "prepmod",
     location_type: LocationType.clinic,
 
-    address_lines: smartLocation.address.line,
-    city: smartLocation.address.city,
-    state: smartLocation.address.state,
-    postal_code: smartLocation.address.postalCode,
-    county: smartLocation.address.district || undefined,
+    ...formatAddress(smartLocation.address),
     position,
 
     booking_url: formatLocationBookingUrl(host, smartLocation),
@@ -133,6 +135,44 @@ function formatLocation(host, validTime, locationInfo) {
       available,
       slots,
     },
+  };
+}
+
+// Attempts to match "<city>, <state abbreviation> <zip>" so it can be removed
+// from the address lines.
+const nonAddressLinePattern =
+  /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+\d{5}(-\d{4})?$/;
+
+/**
+ * Clean up and re-format the source data's address object. Sometimes city/state
+ * info is included in the lines, or multiple lines are collapsed together.
+ * This is a best-effort attempt to clean those up. Returns an object with the
+ * relevant UNIVAF-style address fields.
+ * @param {SmartSchdulingLinksAddress} rawAddress
+ * @returns {any}
+ */
+function formatAddress(rawAddress) {
+  const lines = rawAddress.line.flatMap((line) => {
+    line = line.replace(nonAddressLinePattern, "");
+    // A lot of locations seem to have multiple lines squished into one line,
+    // often using " | " or " / " as a separator. (" - " is common, too, but
+    // is often used legitimately, e.g. in some road names.)
+    return line.split(/\s+[|/]\s+/g).map((x) => x.trim());
+  });
+
+  // If we changed things above, log a warning so we know about it. This code
+  // is still a little speculative, so this will help us evaluate whether it's
+  // behaving correctly. Once we are more certain, this can be removed.
+  if (!isDeepStrictEqual(rawAddress.line, lines)) {
+    warn(`Poorly formatted address lines: ${JSON.stringify(rawAddress.line)}`);
+  }
+
+  return {
+    address_lines: lines,
+    city: rawAddress.city,
+    state: rawAddress.state,
+    postal_code: rawAddress.postalCode,
+    county: rawAddress.district || undefined,
   };
 }
 
