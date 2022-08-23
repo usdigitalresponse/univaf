@@ -31,6 +31,8 @@ const LocationType = {
 const VaccineProduct = {
   astraZeneca: "astra_zeneca",
   janssen: "jj",
+  jynneos: "jynneos",
+  jynneosAge0_17: "jynneos_age_0_17",
   moderna: "moderna",
   modernaAge6_11: "moderna_age_6_11",
   modernaAge0_5: "moderna_age_0_5",

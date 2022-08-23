@@ -582,6 +582,18 @@ module.exports = {
       }
     } else if (/janssen|johnson/.test(text)) {
       return VaccineProduct.janssen;
+    } else if (/jynneos|monkeypox/.test(text)) {
+      if (/ages?\s+18( and up|\s*\+)/i.test(text)) {
+        return VaccineProduct.jynneos;
+      } else if (/ages?\s+0|\b0\s?(-|through)\s?17\b/i.test(text)) {
+        return VaccineProduct.jynneosAge0_17;
+      } else if (/ped|child|age/i.test(text)) {
+        // Possibly a pediatric variation we haven't seen, so return nothing to
+        // trigger warnings so we can address it.
+        return undefined;
+      } else {
+        return VaccineProduct.jynneos;
+      }
     }
 
     return undefined;

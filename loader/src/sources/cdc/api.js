@@ -507,6 +507,9 @@ const ndcLookup = {
 
   [normalizeNdc("49281-0618-78")]: VaccineProduct.sanofi, // use
   [normalizeNdc("49281-0618-20")]: VaccineProduct.sanofi, // sale
+
+  [normalizeNdc("50632-0001-01")]: VaccineProduct.jynneos, // use
+  [normalizeNdc("50632-0001-02")]: VaccineProduct.jynneos, // sale
 };
 
 function normalizeNdc(ndcCode) {

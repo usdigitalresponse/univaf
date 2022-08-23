@@ -191,8 +191,6 @@ const nonCovidProductName = new RegExp(
     raw`zoster`,
     raw`^\s*adenovirus\s*$`,
     raw`^child and adolescent immunization`,
-    raw`monkeypox`,
-    raw`jynneos`,
     raw`\btdap\b`,
     raw`\bPCV(\d+)?\b`,
     raw`\bPPSV(\d+)?\b`,

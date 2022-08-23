@@ -255,6 +255,12 @@ describe("matchVaccineProduct", () => {
 
     [v.pfizerAge0_4, "Pfizer-BioNTech Pediatric COVID-19 Vaccine (Ages 6 months - 4 years)"],
 
+    // Monkeypox
+    [v.jynneos, "Monkeypox Vaccine (JYNNEOS™ Intradermal 0.1 mL; 18+)"],
+    [v.jynneos, "Monkeypox Vaccine (JYNNEOS™ SubQ 0.5 mL; 18+)"],
+
+    [v.jynneosAge0_17, "Monkeypox Vaccine (JYNNEOS™ SubQ 0.5 mL; 0 through 17 years)"],
+
     // Unpredicted pediatric types for Moderna/Pfizer
     [undefined, "Moderna Pediatric COVID Ages 3 - 9"],
     [undefined, "Pfizer Pediatric COVID Ages 3 - 9"],
