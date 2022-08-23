@@ -768,32 +768,6 @@ describe("PrepMod API", () => {
     expect(result).toBeNull();
   });
 
-  it("does not include monkeypox vaccines", async () => {
-    const testLocation = createSmartLocation({
-      schedules: [
-        {
-          extension: [
-            {
-              url: EXTENSIONS.PRODUCT,
-              valueCoding: {
-                system: "http://hl7.org/fhir/sid/cvx",
-                code: null,
-                display: "Monkeypox Vaccine (JYNNEOS™) (Ages 18+)",
-              },
-            },
-          ],
-        },
-      ],
-    });
-
-    const result = formatLocation(
-      "https://myhealth.alaska.gov",
-      new Date(),
-      testLocation
-    );
-    expect(result).toBeNull();
-  });
-
   it("hides locations not in the API response when --hide-missing-locations is set", async () => {
     const testLocation = createSmartLocation({ id: "abc123" });
     // A UNIVAF-formatted location that matches the above SMART SL data.
