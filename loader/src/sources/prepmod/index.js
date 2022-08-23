@@ -182,6 +182,7 @@ function formatLocationBookingUrl(host, location) {
 //   are only matching vaccines against adenovirus, not ones that might be using
 //   modified adenovirus as a vaccine against COVID or other things.)
 // - Monkeypox vaccine (Jynneos)
+// - Pneumococcal vaccines (PCV, PCV7, PCV13, PPSV, PPSV23, etc.)
 const raw = String.raw;
 const nonCovidProductName = new RegExp(
   [
@@ -193,6 +194,8 @@ const nonCovidProductName = new RegExp(
     raw`monkeypox`,
     raw`jynneos`,
     raw`\btdap\b`,
+    raw`\bPCV(\d+)?\b`,
+    raw`\bPPSV(\d+)?\b`,
   ].join("|"),
   "i"
 );
