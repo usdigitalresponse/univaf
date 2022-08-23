@@ -157,7 +157,7 @@ function formatAddress(rawAddress) {
     // A lot of locations seem to have multiple lines squished into one line,
     // often using ", " or " | " or " / " as a separator. (" - " is common, too,
     // but is often used legitimately, e.g. in some road names.)
-    return line.split(/(\s*,\s+|\s+[|/]\s+)/g).map((x) => x.trim());
+    return line.split(/\s*,\s+|\s+[|/]\s+/g).map((x) => x.trim());
   });
 
   // If we changed things above, log a warning so we know about it. This code
