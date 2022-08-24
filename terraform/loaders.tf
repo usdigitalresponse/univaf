@@ -12,7 +12,7 @@ module "cvs_smart_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "cvsSmart"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(5 minutes)"
@@ -27,7 +27,7 @@ module "njvss_loader" {
   name          = "njvss"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "njvss"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(5 minutes)"
@@ -48,7 +48,7 @@ module "rite_aid_loader" {
   loader_source = "riteAidApi"
   // Our API key does not permit queries in CO, so it is missing from this list.
   command     = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
-  api_url     = "http://${aws_lb.main.dns_name}"
+  api_url     = "http://${aws_alb.main.dns_name}"
   api_key     = var.api_key
   sentry_dsn  = var.loader_sentry_dsn
   schedule    = "rate(30 minutes)"
@@ -68,7 +68,7 @@ module "rite_aid_scraper_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "riteAidScraper"
   command       = ["--states", "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(*/10 * * * ? *)"
@@ -84,7 +84,7 @@ module "walgreens_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "walgreensSmart"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(2/10 * * * ? *)"
@@ -100,7 +100,7 @@ module "kroger_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "krogerSmart"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(4/10 * * * ? *)"
@@ -116,7 +116,7 @@ module "albertsons_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "albertsons"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(6/10 * * * ? *)"
@@ -132,7 +132,7 @@ module "hyvee_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "hyvee"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(0/10 * * * ? *)"
@@ -148,7 +148,7 @@ module "heb_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "heb"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(8/10 * * * ? *)"
@@ -164,7 +164,7 @@ module "washington_doh_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "waDoh"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(5 minutes)"
@@ -180,7 +180,7 @@ module "cdc_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "cdcApi"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(0 0,12 * * ? *)"
@@ -196,7 +196,7 @@ module "vts_geo_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "vtsGeo"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(1 1 1 1 ? 1970)" # don't ever schedule a run
@@ -212,7 +212,7 @@ module "prepmod_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   command       = ["--states", "AK,WA", "--hide-missing-locations"]
   loader_source = "prepmod"
-  api_url       = "http://${aws_lb.main.dns_name}"
+  api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "rate(5 minutes)"

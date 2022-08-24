@@ -1,13 +1,13 @@
 # Load Balancer
 
-resource "aws_lb" "main" {
+resource "aws_alb" "main" {
   name                       = "api-load-balancer"
   subnets                    = aws_subnet.public.*.id
   security_groups            = [aws_security_group.lb.id]
   drop_invalid_header_fields = true
 }
 
-resource "aws_lb_target_group" "api" {
+resource "aws_alb_target_group" "api" {
   name        = "api-target-group"
   port        = var.api_port
   protocol    = "HTTP"
@@ -25,20 +25,20 @@ resource "aws_lb_target_group" "api" {
   }
 }
 
-# Redirect all traffic from the load balancer to the target group
-resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = aws_lb.main.id
+# Redirect all traffic from the ALB to the target group
+resource "aws_alb_listener" "front_end" {
+  load_balancer_arn = aws_alb.main.id
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_lb_target_group.api.arn
+    target_group_arn = aws_alb_target_group.api.arn
     type             = "forward"
   }
 }
 
-resource "aws_lb_listener_rule" "redirect_www" {
-  listener_arn = aws_lb_listener.front_end.arn
+resource "aws_alb_listener_rule" "redirect_www" {
+  listener_arn = aws_alb_listener.front_end.arn
 
   condition {
     host_header {
@@ -114,7 +114,7 @@ module "api_task" {
     ENV                       = "production"
   }
 
-  depends_on = [aws_lb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
 
 module "daily_data_snapshot_task" {
@@ -184,12 +184,12 @@ resource "aws_ecs_service" "main" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.api.id
+    target_group_arn = aws_alb_target_group.api.id
     container_name   = "api"
     container_port   = var.api_port
   }
 
-  depends_on = [aws_lb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
+  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
 }
 
 # Set up CloudWatch group and log stream and retain logs for 30 days
@@ -217,7 +217,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
 
   origin {
     origin_id   = var.domain_name
-    domain_name = aws_lb.main.dns_name
+    domain_name = aws_alb.main.dns_name
 
     custom_origin_config {
       http_port              = 80

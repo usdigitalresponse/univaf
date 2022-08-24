@@ -1,7 +1,7 @@
 # outputs.tf
 
-output "lb_hostname" {
-  value = aws_lb.main.dns_name
+output "alb_hostname" {
+  value = aws_alb.main.dns_name
 }
 
 output "cloudfront_hostname" {
