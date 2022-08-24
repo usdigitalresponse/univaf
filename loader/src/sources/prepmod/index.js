@@ -141,7 +141,7 @@ function formatLocation(host, validTime, locationInfo) {
 // Attempts to match "<city>, <state abbreviation> <zip>" so it can be removed
 // from the address lines.
 const nonAddressLinePattern =
-  /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+\d{5}(-\d{4})?$/;
+  /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+(\d{5}(-\d{4})?|USA)$/;
 
 /**
  * Clean up and re-format the source data's address object. Sometimes city/state
