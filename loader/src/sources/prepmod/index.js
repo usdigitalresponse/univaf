@@ -174,7 +174,10 @@ function formatAddress(rawAddress) {
   // is still a little speculative, so this will help us evaluate whether it's
   // behaving correctly. Once we are more certain, this can be removed.
   if (!isDeepStrictEqual(cleanLines, extraCleanLines)) {
-    warn(`Poorly formatted address lines: ${JSON.stringify(rawAddress.line)}`);
+    warn(`Poorly formatted address lines: ${JSON.stringify(rawAddress.line)}`, {
+      original: JSON.stringify(rawAddress.line),
+      formatted: JSON.stringify(extraCleanLines),
+    });
   }
 
   return {
