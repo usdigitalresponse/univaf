@@ -152,8 +152,18 @@ const nonAddressLinePattern =
  * @returns {any}
  */
 function formatAddress(rawAddress) {
-  const lines = rawAddress.line.flatMap((line) => {
-    line = line.replace(nonAddressLinePattern, "");
+  // Fixes that are definitely correct.
+  const cleanLines = rawAddress.line
+    .map((line) => line.trim())
+    // Fix missing space between "Suite" and the suite number.
+    .map((line) => line.replace(/\b(suite|ste|unit)(#?)(\d+)/i, "$1 $2$3"))
+    // Remove city, state, and zip if they are included in the lines.
+    .map((line) => line.replace(nonAddressLinePattern, ""))
+    // Split on actual line breaks.
+    .flatMap((line) => line.split(/\s*\n\s*/g));
+
+  // Fixes that we may want to review for correctness.
+  const extraCleanLines = cleanLines.flatMap((line) => {
     // A lot of locations seem to have multiple lines squished into one line,
     // often using ", " or " | " or " / " as a separator. (" - " is common, too,
     // but is often used legitimately, e.g. in some road names.)
@@ -163,12 +173,12 @@ function formatAddress(rawAddress) {
   // If we changed things above, log a warning so we know about it. This code
   // is still a little speculative, so this will help us evaluate whether it's
   // behaving correctly. Once we are more certain, this can be removed.
-  if (!isDeepStrictEqual(rawAddress.line, lines)) {
+  if (!isDeepStrictEqual(cleanLines, extraCleanLines)) {
     warn(`Poorly formatted address lines: ${JSON.stringify(rawAddress.line)}`);
   }
 
   return {
-    address_lines: lines,
+    address_lines: extraCleanLines,
     city: rawAddress.city,
     state: rawAddress.state,
     postal_code: rawAddress.postalCode,
