@@ -47,14 +47,14 @@ module "rite_aid_loader" {
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "riteAidApi"
   // Our API key does not permit queries in CO, so it is missing from this list.
-  command       = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
-  api_url       = "http://${aws_alb.main.dns_name}"
-  api_key       = var.api_key
-  sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "rate(30 minutes)"
-  cluster_arn   = aws_ecs_cluster.main.arn
-  role          = aws_iam_role.ecs_task_execution_role.arn
-  subnets       = aws_subnet.public.*.id
+  command     = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
+  api_url     = "http://${aws_alb.main.dns_name}"
+  api_key     = var.api_key
+  sentry_dsn  = var.loader_sentry_dsn
+  schedule    = "rate(30 minutes)"
+  cluster_arn = aws_ecs_cluster.main.arn
+  role        = aws_iam_role.ecs_task_execution_role.arn
+  subnets     = aws_subnet.public.*.id
   env_vars = {
     RITE_AID_URL = var.rite_aid_api_url
     RITE_AID_KEY = var.rite_aid_api_key

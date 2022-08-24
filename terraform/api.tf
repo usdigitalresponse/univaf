@@ -1,9 +1,9 @@
 # Load Balancer
 
 resource "aws_alb" "main" {
-  name            = "api-load-balancer"
-  subnets         = aws_subnet.public.*.id
-  security_groups = [aws_security_group.lb.id]
+  name                       = "api-load-balancer"
+  subnets                    = aws_subnet.public.*.id
+  security_groups            = [aws_security_group.lb.id]
   drop_invalid_header_fields = true
 }
 
@@ -236,7 +236,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
     max_ttl                = 3600
 
     forwarded_values {
-      headers = ["Host", "Origin"]
+      headers      = ["Host", "Origin"]
       query_string = true
 
       cookies {
