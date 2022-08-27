@@ -10,6 +10,15 @@ import { TestLocation } from "./fixtures";
 
 import type { Knex } from "knex";
 
+// Don't clean out these tables before/after tests.
+const DO_NOT_RESET_TABLES = new Set([
+  // From PostGIS.
+  "spatial_ref_sys",
+  // Knex tables for tracking migrations, which the app shouldn't touch.
+  "migrations",
+  "migrations_lock",
+]);
+
 interface Context {
   server?: Server;
   client?: Got;
@@ -68,25 +77,23 @@ export function installTestDatabaseHooks(...extraConnections: Knex[]): void {
     await allResolved(conns.map((c) => c.destroy()));
   });
   beforeEach(async () => {
-    await allResolved(conns.map((c) => c.raw("BEGIN")));
+    await resetDatabase();
   });
-  afterEach(async () => {
-    await allResolved(conns.map((c) => c.raw("ROLLBACK")));
-  });
-
-  conns.map(mockDbTransactions);
 }
 
-function mockDbTransactions(db: Knex) {
-  // mock out db.transaction since we only use one connection when testing
-  // we use defineProperty here because it's defined as read-only
-  // TODO: Find a way to carry per-request db connection state so that we don't
-  // need this
-  Object.defineProperty(db, "transaction", {
-    value: async (f: (db: any) => Promise<any>) => {
-      return await f(db);
-    },
-  });
+async function resetDatabase() {
+  const tableData = await db("pg_tables")
+    .select("tablename")
+    .where("schemaname", "=", "public");
+  const tables = tableData
+    .map((row) => row.tablename)
+    .filter((name) => !DO_NOT_RESET_TABLES.has(name));
+
+  // Knex has a truncate() function, but it doesn't run on multiple tables.
+  // Alternatively, if we go table by table, we need to use the CASCADE
+  // keyword, which Knex does not support for truncation.
+  // See: https://github.com/knex/knex/issues/1506
+  await db.raw("TRUNCATE TABLE :tables: RESTART IDENTITY", { tables });
 }
 
 /**
