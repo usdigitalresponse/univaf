@@ -19,11 +19,15 @@ installTestDatabaseHooks(scriptDb);
 //   https://github.com/usdigitalresponse/univaf/pull/298#discussion_r664765210
 // - Rewrite the merge/duplicate scripts in TypeScript and leverage the
 //   `src/db` module (see #199).
-describe.skip("remove-duplicate-locations script", () => {
+describe("remove-duplicate-locations script", () => {
+  beforeEach(() => jest.spyOn(console, "warn").mockImplementation(() => {}));
+  afterEach(() => jest.mocked(console.warn).mockRestore());
+
   it("should remove duplicate locations", async () => {
     let location1 = await createLocation({
       ...TestLocation,
       id: undefined,
+      name: "Test location 1",
       external_ids: [
         ["some_uncommon_id", "a"],
         ["id_in_common", "xyz987"],
@@ -32,13 +36,14 @@ describe.skip("remove-duplicate-locations script", () => {
     let location2 = await createLocation({
       ...TestLocation,
       id: undefined,
+      name: "Test location 2",
       external_ids: [
         ["some_uncommon_id", "b"],
         ["id_in_common", "xyz987"],
       ],
     });
 
-    await main(["--commit"]);
+    await main({ commit: true });
 
     location1 = await getLocationById(location1.id);
     expect(location1).toHaveProperty(
@@ -47,11 +52,12 @@ describe.skip("remove-duplicate-locations script", () => {
         ["some_uncommon_id", "a"],
         ["id_in_common", "xyz987"],
         ["some_uncommon_id", "b"],
+        ["univaf_v1", location2.id],
       ])
     );
 
     location2 = await getLocationById(location2.id);
-    expect(location2).toBeNull();
+    expect(location2).toBeUndefined();
   });
 });
 
