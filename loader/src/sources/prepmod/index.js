@@ -141,7 +141,25 @@ function formatLocation(host, validTime, locationInfo) {
 // Attempts to match "<city>, <state abbreviation> <zip>" so it can be removed
 // from the address lines.
 const nonAddressLinePattern =
-  /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+(\d{5}(-\d{4})?|USA)$/;
+  /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+(\d{5}(-\d{4})?|USA)\s*$/;
+
+// A lot of locations seem to have multiple address lines squished into one,
+// often using ", " or " | " or " / " as a separator. (" - " is common, too,
+// but is often used legitimately, e.g. in some road names.)
+const maybeAddressLineBreaks = /\s*,\s+|\s+[|/]\s+/g;
+// These are things that are *definitey* line breaks, as opposed to the above,
+// which are more fuzzy and should be surfaced for human review.
+const addressLineBreaks = new RegExp(
+  [
+    // Actual line breaks
+    String.raw`\s*\n\s*`,
+    // Things that might be line breaks if followed by a suite or unit number.
+    String.raw`(?:${maybeAddressLineBreaks.source})(?=(?:suite|ste\.?|unit)\s+#?\d+)`,
+    // " - " is a delimiter if followed by a suite or unit number, too.
+    String.raw`\s+-\s+(?=(?:suite|ste\.?|unit)\s+#?\d+)`,
+  ].join("|"),
+  "ig"
+);
 
 /**
  * Clean up and re-format the source data's address object. Sometimes city/state
@@ -154,21 +172,17 @@ const nonAddressLinePattern =
 function formatAddress(rawAddress) {
   // Fixes that are definitely correct.
   const cleanLines = rawAddress.line
-    .map((line) => line.trim())
     // Fix missing space between "Suite" and the suite number.
-    .map((line) => line.replace(/\b(suite|ste|unit)(#?)(\d+)/i, "$1 $2$3"))
+    .map((line) => line.replace(/\b(suite|ste\.?|unit)(#?)(\d+)/i, "$1 $2$3"))
     // Remove city, state, and zip if they are included in the lines.
     .map((line) => line.replace(nonAddressLinePattern, ""))
-    // Split on actual line breaks.
-    .flatMap((line) => line.split(/\s*\n\s*/g));
+    // Split on things we are sure are line breaks.
+    .flatMap((line) => line.split(addressLineBreaks).map((x) => x.trim()));
 
   // Fixes that we may want to review for correctness.
-  const extraCleanLines = cleanLines.flatMap((line) => {
-    // A lot of locations seem to have multiple lines squished into one line,
-    // often using ", " or " | " or " / " as a separator. (" - " is common, too,
-    // but is often used legitimately, e.g. in some road names.)
-    return line.split(/\s*,\s+|\s+[|/]\s+/g).map((x) => x.trim());
-  });
+  const extraCleanLines = cleanLines.flatMap((line) =>
+    line.split(maybeAddressLineBreaks).map((x) => x.trim())
+  );
 
   // If we changed things above, log a warning so we know about it. This code
   // is still a little speculative, so this will help us evaluate whether it's
