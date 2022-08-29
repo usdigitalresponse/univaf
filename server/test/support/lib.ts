@@ -1,36 +1,3 @@
-import { createLocation, updateAvailability } from "../../src/db";
-import { ProviderLocation } from "../../src/interfaces";
-import { TestLocation } from "../fixtures";
-
-/**
- * Create a new provider with random identifiers.
- * @param customizations Any specific values that should be set on the location.
- *        If the `availability` property is set, an availability record will
- *        also be created for the location (the value for `availability` only
- *        needs to have the values you want to customize, acceptable values for
- *        unspecified but required properties will be created for you).
- * @returns {ProviderLocation}
- */
-export async function createRandomLocation(
-  customizations: any
-): Promise<ProviderLocation> {
-  const location = await createLocation({
-    ...TestLocation,
-    id: null,
-    external_ids: [["test_id", Math.random().toString()]],
-    ...customizations,
-  });
-
-  if (customizations.availability) {
-    await updateAvailability(location.id, {
-      ...TestLocation.availability,
-      ...customizations.availability,
-    });
-  }
-
-  return location;
-}
-
 // TODO: this is a copy of `expectDatetimeString` in loader/test/support/index`;
 // the implementatoins should be shared.
 /**
@@ -58,4 +25,18 @@ export function ndjsonParse(rawData: string): any[] {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
+}
+
+/**
+ * Wait for all promises to settle, then reject afterward if at least one
+ * of them rejected.
+ *
+ * This is similar to `Promise.all`, but it does not reject immediately. It is
+ * also like `Promise.allSettled`, but that function never rejects.
+ */
+export async function allResolved(promises: Promise<void>[]): Promise<void> {
+  const results = await Promise.allSettled(promises);
+  for (const result of results) {
+    if (result.status === "rejected") throw result.reason;
+  }
 }

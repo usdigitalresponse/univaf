@@ -1,7 +1,10 @@
 import type { AddressInfo } from "net";
 import { DateTime } from "luxon";
-import { createRandomLocation, ndjsonParse } from "./support/lib";
-import { installTestDatabaseHooks } from "./support/database-testing";
+import { ndjsonParse } from "./support/lib";
+import {
+  createRandomLocation,
+  installTestDatabaseHooks,
+} from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";
 import app from "../src/app";
 import { createLocation } from "../src/db";

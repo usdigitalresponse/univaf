@@ -1,16 +1,10 @@
-import { db } from "../../src/db";
-import { availabilityDb } from "../../src/availability-log";
-
 import type { Knex } from "knex";
-
-// Don't clean out these tables before/after tests.
-const DO_NOT_RESET_TABLES = new Set([
-  // From PostGIS.
-  "spatial_ref_sys",
-  // Knex tables for tracking migrations, which the app shouldn't touch.
-  "migrations",
-  "migrations_lock",
-]);
+import { db, createLocation, updateAvailability } from "../../src/db";
+import { availabilityDb } from "../../src/availability-log";
+import { ProviderLocation } from "../../src/interfaces";
+import { TestLocation } from "../fixtures";
+import { allResolved } from "./lib";
+import { clearData } from "./database-core";
 
 /**
  * Set up hooks to clear the content of tables and sequences between tests and
@@ -38,38 +32,35 @@ export function installTestDatabaseHooks(...extraConnections: Knex[]): void {
     await allResolved(conns.map((c) => c.destroy()));
   });
   beforeEach(async () => {
-    await resetDatabase();
+    await clearData(db);
   });
 }
 
-async function resetDatabase() {
-  const tableData = await db("pg_tables")
-    .select("tablename")
-    .where("schemaname", "=", "public");
-  const tables = tableData
-    .map((row) => row.tablename)
-    .filter((name) => !DO_NOT_RESET_TABLES.has(name));
-
-  // Knex has a truncate() function, but it doesn't run on multiple tables.
-  // Alternatively, if we go table by table, we need to use the CASCADE
-  // keyword, which Knex does not support for truncation.
-  // See: https://github.com/knex/knex/issues/1506
-  await db.raw("TRUNCATE TABLE :tables: RESTART IDENTITY", { tables });
-}
-
 /**
- * Wait for all promises to settle, then reject afterward if at least one
- * of them rejected.
- *
- * This is similar to `Promise.all`, but it does not reject immediately. It is
- * also like `Promise.allSettled`, but that function never rejects.
+ * Create a new provider with random identifiers.
+ * @param customizations Any specific values that should be set on the location.
+ *        If the `availability` property is set, an availability record will
+ *        also be created for the location (the value for `availability` only
+ *        needs to have the values you want to customize, acceptable values for
+ *        unspecified but required properties will be created for you).
+ * @returns {ProviderLocation}
  */
-function allResolved(promises: Promise<void>[]): Promise<void> {
-  return Promise.allSettled(promises).then(
-    (results: Array<PromiseFulfilledResult<void> | PromiseRejectedResult>) => {
-      for (const result of results) {
-        if (result.status === "rejected") throw result.reason;
-      }
-    }
-  );
+export async function createRandomLocation(
+  customizations: any
+): Promise<ProviderLocation> {
+  const location = await createLocation({
+    ...TestLocation,
+    id: null,
+    external_ids: [["test_id", Math.random().toString()]],
+    ...customizations,
+  });
+
+  if (customizations.availability) {
+    await updateAvailability(location.id, {
+      ...TestLocation.availability,
+      ...customizations.availability,
+    });
+  }
+
+  return location;
 }
