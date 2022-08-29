@@ -1,6 +1,6 @@
 import { URL } from "url";
 import app from "../src/app";
-import { useServerForTests } from "./support/lib";
+import { useServerForTests } from "./support/server-testing";
 
 describe("GET /", function () {
   const context = useServerForTests(app);

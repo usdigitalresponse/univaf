@@ -1,100 +1,6 @@
-import type { AddressInfo } from "net";
-import type { Application } from "express";
-import type { Server } from "http";
-import got, { Got } from "got";
-
-import { db, createLocation, updateAvailability } from "../../src/db";
-import { availabilityDb } from "../../src/availability-log";
+import { createLocation, updateAvailability } from "../../src/db";
 import { ProviderLocation } from "../../src/interfaces";
 import { TestLocation } from "../fixtures";
-
-import type { Knex } from "knex";
-
-// Don't clean out these tables before/after tests.
-const DO_NOT_RESET_TABLES = new Set([
-  // From PostGIS.
-  "spatial_ref_sys",
-  // Knex tables for tracking migrations, which the app shouldn't touch.
-  "migrations",
-  "migrations_lock",
-]);
-
-interface Context {
-  server?: Server;
-  client?: Got;
-}
-
-export function useServerForTests(app: Application): Context {
-  const context: Context = {};
-
-  beforeEach((done) => {
-    context.server = app.listen(0, () => {
-      const { port } = context.server.address() as AddressInfo;
-      app.set("port", port);
-      context.client = got.extend({
-        prefixUrl: `http://127.0.0.1:${port}`,
-        responseType: "json",
-        throwHttpErrors: false,
-      });
-      done();
-    });
-  });
-
-  afterEach((done) => {
-    if (context.server) {
-      context.server.close((error?: Error) => {
-        // Jest needs a tick after server shutdown to detect
-        // that the resources have been released.
-        setTimeout(() => done(error), 10);
-      });
-    } else {
-      done();
-    }
-  });
-
-  return context;
-}
-
-export function installTestDatabaseHooks(...extraConnections: Knex[]): void {
-  // Wait for all promises to settle, but reject afterward if at
-  // least one of them rejected.
-  function allResolved(promises: Promise<void>[]) {
-    return Promise.allSettled(promises).then(
-      (
-        results: Array<PromiseFulfilledResult<void> | PromiseRejectedResult>
-      ) => {
-        for (const result of results) {
-          if (result.status === "rejected") throw result.reason;
-        }
-      }
-    );
-  }
-
-  let conns: Knex[] = [db, availabilityDb, ...extraConnections];
-  conns = [...new Set(conns)];
-
-  afterAll(async () => {
-    await allResolved(conns.map((c) => c.destroy()));
-  });
-  beforeEach(async () => {
-    await resetDatabase();
-  });
-}
-
-async function resetDatabase() {
-  const tableData = await db("pg_tables")
-    .select("tablename")
-    .where("schemaname", "=", "public");
-  const tables = tableData
-    .map((row) => row.tablename)
-    .filter((name) => !DO_NOT_RESET_TABLES.has(name));
-
-  // Knex has a truncate() function, but it doesn't run on multiple tables.
-  // Alternatively, if we go table by table, we need to use the CASCADE
-  // keyword, which Knex does not support for truncation.
-  // See: https://github.com/knex/knex/issues/1506
-  await db.raw("TRUNCATE TABLE :tables: RESTART IDENTITY", { tables });
-}
 
 /**
  * Create a new provider with random identifiers.
@@ -125,6 +31,8 @@ export async function createRandomLocation(
   return location;
 }
 
+// TODO: this is a copy of `expectDatetimeString` in loader/test/support/index`;
+// the implementatoins should be shared.
 /**
  * Declare that a value should be a complete W3C-style ISO 8601 datetime
  * string. (e.g. "2021-03-13T05:53:20.123Z")
@@ -139,6 +47,8 @@ export function expectDatetimeString(): any {
   );
 }
 
+// TODO: this is the same as `parseJsonLines` in loader/src/utils; the
+// implementations should be shared.
 /**
  * Parse an ND-JSON (newline-delimited JSON) string in to an array of objects.
  * @param rawData the ND-JSON string to parse.

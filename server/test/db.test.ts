@@ -1,4 +1,4 @@
-import { installTestDatabaseHooks } from "./support/lib";
+import { installTestDatabaseHooks } from "./support/database-testing";
 import "./support/matchers";
 import {
   createLocation,
