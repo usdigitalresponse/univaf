@@ -1,5 +1,5 @@
 import { knex } from "knex";
-import { loadDbConfig } from "../src/config";
+import { loadDbConfig } from "../../src/config";
 
 export const testDb = knex(loadDbConfig());
 

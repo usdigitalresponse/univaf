@@ -3,10 +3,10 @@ import type { Application } from "express";
 import type { Server } from "http";
 import got, { Got } from "got";
 
-import { db, createLocation, updateAvailability } from "../src/db";
-import { availabilityDb } from "../src/availability-log";
-import { ProviderLocation } from "../src/interfaces";
-import { TestLocation } from "./fixtures";
+import { db, createLocation, updateAvailability } from "../../src/db";
+import { availabilityDb } from "../../src/availability-log";
+import { ProviderLocation } from "../../src/interfaces";
+import { TestLocation } from "../fixtures";
 
 import type { Knex } from "knex";
 

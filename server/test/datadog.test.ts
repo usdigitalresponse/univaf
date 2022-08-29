@@ -1,4 +1,4 @@
-import { installTestDatabaseHooks, useServerForTests } from "./lib";
+import { installTestDatabaseHooks, useServerForTests } from "./support/lib";
 import app from "../src/app";
 import { datadogMiddleware, MonitoredRequest, dogstatsd } from "../src/datadog";
 import { Response } from "express";

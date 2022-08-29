@@ -1,4 +1,4 @@
-import { installTestDatabaseHooks, useServerForTests } from "./lib";
+import { installTestDatabaseHooks, useServerForTests } from "./support/lib";
 import { getApiKeys } from "../src/config";
 import app from "../src/app";
 import { createLocation, updateAvailability } from "../src/db";

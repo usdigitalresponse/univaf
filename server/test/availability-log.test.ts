@@ -1,4 +1,4 @@
-import { installTestDatabaseHooks } from "./lib";
+import { installTestDatabaseHooks } from "./support/lib";
 import { db, createLocation, updateAvailability } from "../src/db";
 import { availabilityDb } from "../src/availability-log";
 import { OutOfDateError } from "../src/exceptions";

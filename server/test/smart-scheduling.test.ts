@@ -5,7 +5,7 @@ import {
   useServerForTests,
   installTestDatabaseHooks,
   ndjsonParse,
-} from "./lib";
+} from "./support/lib";
 import app from "../src/app";
 import { createLocation } from "../src/db";
 import { TestLocation } from "./fixtures";
