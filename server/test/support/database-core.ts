@@ -60,7 +60,9 @@ export async function clearDatabase(db: Knex): Promise<void> {
   await assertIsTestDatabase(db);
 
   const tables = await getApplicationTables(db);
-  await db.raw("DROP TABLE :tables: CASCADE", { tables });
+  if (tables.length) {
+    await db.raw("DROP TABLE :tables: CASCADE", { tables });
+  }
 
   await db.migrate.latest();
 }
