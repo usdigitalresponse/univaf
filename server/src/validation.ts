@@ -389,7 +389,7 @@ export function validateAvailabilityInput(data: any): AvailabilityInput {
   return data;
 }
 
-let stateLookup: Map<Lowercase<string>, typeof states[number]>;
+let stateLookup: Map<string, typeof states[number]>;
 
 /**
  * Get the correct state abbreviation given the full name or some type of
