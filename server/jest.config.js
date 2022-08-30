@@ -12,5 +12,5 @@ module.exports = {
   testEnvironment: "node",
   reporters: ["default", "github-actions"],
   coverageReporters: ["text", "html"],
-  globalSetup: "<rootDir>/test/globalSetup.ts",
+  globalSetup: "<rootDir>/test/support/globalSetup.ts",
 };

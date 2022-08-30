@@ -1,5 +1,5 @@
-import "./matchers";
-import { installTestDatabaseHooks } from "./lib";
+import "./support/matchers";
+import { installTestDatabaseHooks } from "./support/database-testing";
 import { createLocation, getLocationById } from "../src/db";
 import { TestLocation } from "./fixtures";
 import {

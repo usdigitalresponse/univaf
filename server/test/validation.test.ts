@@ -1,4 +1,4 @@
-import "./matchers";
+import "./support/matchers";
 import {
   validateAvailabilityInput,
   validateLocationInput,

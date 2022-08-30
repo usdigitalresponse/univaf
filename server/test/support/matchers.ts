@@ -1,4 +1,4 @@
-import { isDeepStrictEqual } from "util";
+import { isDeepStrictEqual } from "node:util";
 
 // These declarations aren't directly attached to our code, so ESLint sees
 // everything here as unused.
