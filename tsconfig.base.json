@@ -16,7 +16,7 @@
     "paths": {
       "univaf-common": ["common/src"],
       "univaf-server": ["server/src"],
-      "*": ["node_modules/*", "src/types/*"]
+      "*": ["node_modules/*"]
     },
     "allowJs": true,
     "composite": true
