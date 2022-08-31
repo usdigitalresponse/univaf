@@ -15,9 +15,20 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "univaf-common": ["../common/src"],
+      "univaf-server": ["../server/src"],
       "*": ["node_modules/*", "src/types/*"]
     },
-    "allowJs": true
+    "allowJs": true,
+
+    "composite": true
   },
-  "include": ["src/**/*", "scripts/**/*", "test/**/*", "knexfile.js"]
+  "include": [
+    "src/**/*",
+    "src/states.json",
+    "scripts/**/*",
+    "test/**/*",
+    "knexfile.js"
+  ],
+  "references": [{ "path": "../common" }]
 }

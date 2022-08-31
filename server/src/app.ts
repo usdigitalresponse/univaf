@@ -13,6 +13,13 @@ import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 import bodyParser from "body-parser";
 
+// import { commonThing } from "../../common";
+// import { moreData } from "../../common/src/more";
+import { commonThing, more } from "univaf-common";
+// import { moreData } from "univaf-common/more";
+console.error("commonThing:", commonThing);
+console.error("commonMore:", more.moreData);
+
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.
 function logRequest(request: Request, response: Response, next: NextFunction) {
