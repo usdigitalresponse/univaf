@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "univaf",
+  "description": "Gathers vaccination appointment availability information from providers across North America and makes it available in a standard format via a free-to-use, open API.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usdigitalresponse/univaf.git"
+  },
+  "author": "USDR",
+  "license": "MIT",
+  "workspaces": [
+    "common",
+    "loader",
+    "server",
+    "ui"
+  ]
+}
