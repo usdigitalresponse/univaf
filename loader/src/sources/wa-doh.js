@@ -1,6 +1,7 @@
 // Washington State DoH hosts data for multiple states for some providers where
 // they have API access. (In practice, this is pretty much only Costco.)
 
+const { states: allStates } = require("univaf-common");
 const assert = require("node:assert/strict");
 const { Available, LocationType } = require("../model");
 const {
@@ -10,7 +11,6 @@ const {
   DEFAULT_STATES,
 } = require("../utils");
 const { assertValidGraphQl } = require("../exceptions");
-const allStates = require("../states.json");
 
 const warn = createWarningLogger("waDoh");
 

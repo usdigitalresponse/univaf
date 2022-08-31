@@ -5,7 +5,7 @@ const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
-const allStates = require("./states.json");
+const { states: allStates } = require("univaf-common");
 
 Sentry.init();
 

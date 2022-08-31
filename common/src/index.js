@@ -1,4 +1,5 @@
 const more = require("./more");
+const states = require("./states.json");
 
 /**
  * Parse a Newline-Delimited JSON (NDJSON) document.
@@ -21,4 +22,5 @@ function parseJsonLines(text) {
 module.exports = {
   parseJsonLines,
   more,
+  states,
 };
