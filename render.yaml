@@ -53,6 +53,8 @@ services:
       npm prune --production
     startCommand: "cd server && npm run migrate && node ./dist/src/server.js"
     healthCheckPath: "/health"
+    domains:
+      - univaf.usdigitalresponse.org
     envVars:
       - fromGroup: "Server Environment"
       - &DD_AGENT_HOST
