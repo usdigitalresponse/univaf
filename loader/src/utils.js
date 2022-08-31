@@ -498,6 +498,7 @@ module.exports = {
    */
   httpClient: got.extend({
     headers: { "User-Agent": config.userAgent },
+    timeout: 2.5 * 60 * 1000, // 2.5 minutes
   }),
 
   /**
