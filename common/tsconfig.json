@@ -1,29 +1,10 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    // We require Node.js 16.x, so we can rely on recent ECMAScript support.
-    // See also https://github.com/tsconfig/bases for recommended values.
-    "lib": ["es2021"],
-    "target": "es2021",
-
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*", "src/types/*"]
-    },
-    "allowJs": true,
-    "composite": true,
-
-    // Special here
     "declarationMap": true,
     "declaration": true,
     "emitDeclarationOnly": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "src/states.json"]
 }
