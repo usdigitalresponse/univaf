@@ -1,4 +1,5 @@
-import { expectDatetimeString, ndjsonParse } from "./support/lib";
+import { parseJsonLines } from "univaf-common";
+import { expectDatetimeString } from "./support/lib";
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";
 import "./support/matchers";
@@ -153,7 +154,7 @@ describe("GET /api/edge/locations.ndjson", () => {
     } as any);
     expect(response.statusCode).toBe(200);
 
-    const data = ndjsonParse(response.body);
+    const data = parseJsonLines(response.body);
     expect(data).toHaveLength(1);
     expect(data[0]).toHaveProperty("external_ids", TestLocation.external_ids);
   });

@@ -475,24 +475,6 @@ module.exports = {
   },
 
   /**
-   * Parse a Newline-Delimited JSON (NDJSON) document.
-   * @param {string} text
-   * @returns {Array<any>}
-   */
-  parseJsonLines(text) {
-    return text
-      .split("\n")
-      .filter(Boolean)
-      .map((line, index) => {
-        try {
-          return JSON.parse(line);
-        } catch (error) {
-          throw new SyntaxError(`Error parsing line ${index + 1}: ${line}`);
-        }
-      });
-  },
-
-  /**
    * A pre-configured Got instance with appropriate headers, etc.
    * @type {import("got").GotRequestFunction}
    */

@@ -14,19 +14,6 @@ export function expectDatetimeString(): any {
   );
 }
 
-// TODO: this is the same as `parseJsonLines` in loader/src/utils; the
-// implementations should be shared.
-/**
- * Parse an ND-JSON (newline-delimited JSON) string in to an array of objects.
- * @param rawData the ND-JSON string to parse.
- */
-export function ndjsonParse(rawData: string): any[] {
-  return rawData
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
-}
-
 /**
  * Wait for all promises to settle, then reject afterward if at least one
  * of them rejected.
