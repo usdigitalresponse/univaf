@@ -1,6 +1,6 @@
 import type { AddressInfo } from "net";
 import { DateTime } from "luxon";
-import { parseJsonLines } from "univaf-common";
+import { parseJsonLines } from "univaf-common/utils";
 import {
   createRandomLocation,
   installTestDatabaseHooks,

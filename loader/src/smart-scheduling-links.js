@@ -3,7 +3,7 @@
  * https://github.com/smart-on-fhir/smart-scheduling-links/
  */
 
-const { parseJsonLines } = require("univaf-common");
+const { parseJsonLines } = require("univaf-common/utils");
 const { httpClient, filterObject, oneLine } = require("./utils");
 
 const MANIFEST_CACHE_TIME = 5 * 60 * 1000;

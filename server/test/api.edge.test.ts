@@ -1,4 +1,4 @@
-import { parseJsonLines } from "univaf-common";
+import { parseJsonLines } from "univaf-common/utils";
 import { expectDatetimeString } from "./support/lib";
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";

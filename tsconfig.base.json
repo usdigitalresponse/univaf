@@ -15,6 +15,7 @@
     "baseUrl": ".",
     "paths": {
       "univaf-common": ["common/src"],
+      "univaf-common/*": ["common/src/*"],
       "univaf-server": ["server/src"],
       "*": ["node_modules/*"]
     },

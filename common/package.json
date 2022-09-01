@@ -5,15 +5,20 @@
   "description": "Common tooling for other parts of UNIVAF.",
   "exports": {
     ".": "./src/index.js",
-    "./more": "./src/more.js"
+    "./more": "./src/more.js",
+    "./utils": "./src/utils.js"
   },
+  "types": "./dist/src/index.d.js",
   "typesVersions": {
     "*": {
       ".": [
         "./dist/src/index.d.js"
       ],
-      "./more": [
+      "./more.d.js": [
         "./dist/src/more.d.js"
+      ],
+      "./utils.d.js": [
+        "./dist/src/utils.d.js"
       ]
     }
   },
