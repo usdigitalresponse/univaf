@@ -47,25 +47,19 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
+          key: ${{ runner.os }}-npm-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1
+            ${{ runner.os }}-npm-v2
             ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: |
-          cd server
-          npm ci
-          cd ../loader
-          npm ci
-          cd ../ui
           npm ci
 
       - name: Run server tests
         if: ${{ always() }}
         run: |
-          cd server
-          npm run test
+          npm run test --workspace server
         env:
           DB_HOST: localhost
           DB_PORT: 5432
@@ -78,15 +72,13 @@ jobs:
         env:
           NOCK_BACK_MODE: lockdown
         run: |
-          cd loader
-          npm run test
+          npm run test --workspace loader
 
       # TODO: We should write some tests :(
       - name: Build UI
         if: ${{ always() }}
         run: |
-          cd ui
-          NODE_ENV=production npm run build
+          NODE_ENV=production npm run build --workspace ui
 
   lint:
     name: Run linters
@@ -105,18 +97,13 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
+          key: ${{ runner.os }}-npm-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1
+            ${{ runner.os }}-npm-v2
             ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: |
-          cd server
-          npm ci
-          cd ../loader
-          npm ci
-          cd ../ui
           npm ci
 
       # We have ESLint and Prettier installed separately in each subproject,
