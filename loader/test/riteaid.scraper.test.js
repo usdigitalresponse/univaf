@@ -1,10 +1,11 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const { Available } = require("../src/model");
 const {
   API_URL,
   checkAvailability,
 } = require("../src/sources/riteaid/scraper");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const { splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 // Mock utils so we can track logs.

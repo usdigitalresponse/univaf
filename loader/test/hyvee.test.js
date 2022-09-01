@@ -1,7 +1,7 @@
 const { states: stateData } = require("univaf-common");
+const { expectDatetimeString } = require("univaf-common/jest");
 const { checkAvailability, formatLocation } = require("../src/sources/hyvee");
 const { Available, LocationType } = require("../src/model");
-const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 // Mock utils so we can track logs.

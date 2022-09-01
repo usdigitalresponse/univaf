@@ -1,4 +1,5 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const {
   API_URL,
   checkAvailability,
@@ -7,7 +8,7 @@ const {
 } = require("../src/sources/albertsons");
 const { corrections } = require("../src/sources/albertsons/corrections");
 const { Available } = require("../src/model");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const { splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const { ParseError } = require("../src/exceptions");
 

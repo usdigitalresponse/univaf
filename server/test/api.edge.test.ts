@@ -1,5 +1,5 @@
 import { parseJsonLines } from "univaf-common/utils";
-import { expectDatetimeString } from "./support/lib";
+import { expectDatetimeString } from "univaf-common/jest";
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";
 import "./support/matchers";

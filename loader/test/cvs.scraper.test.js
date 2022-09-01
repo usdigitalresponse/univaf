@@ -1,3 +1,4 @@
+const { expectDatetimeString } = require("univaf-common/jest");
 const {
   convertToStandardSchema,
   createCannedUnavailableStore,
@@ -8,8 +9,6 @@ const {
   CVS_BOOKING_URL,
   getStoreCounty,
 } = require("../src/sources/cvs/shared");
-
-const { expectDatetimeString } = require("./support");
 
 // Mock utils so we can track logs.
 jest.mock("../src/utils");

@@ -1,13 +1,10 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const {
   checkAvailability,
   CVS_SMART_API_URL,
 } = require("../src/sources/cvs/smart");
-const {
-  expectDatetimeString,
-  splitHostAndPath,
-  toNdJson,
-} = require("./support");
+const { splitHostAndPath, toNdJson } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const fixtures = require("./fixtures/cvs.smart.fixtures");
 const { Available } = require("../src/model");

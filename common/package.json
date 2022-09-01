@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.js",
     "./more": "./src/more.js",
-    "./utils": "./src/utils.js"
+    "./utils": "./src/utils.js",
+    "./*": "./src/*.js"
   },
   "types": "./dist/src/index.d.js",
   "typesVersions": {
@@ -19,8 +20,14 @@
       ],
       "./utils.d.js": [
         "./dist/src/utils.d.js"
+      ],
+      "./*": [
+        "./dist/src/*"
       ]
     }
+  },
+  "peerDependencies": {
+    "jest": ">=28.0.0"
   },
   "devDependencies": {
     "typescript": "4.8.2"

@@ -1,6 +1,6 @@
+const { expectDatetimeString } = require("univaf-common/jest");
 const { checkAvailability, formatLocation } = require("../src/sources/heb");
 const { LocationType, Available } = require("../src/model");
-const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 // Mock utils so we can track logs.

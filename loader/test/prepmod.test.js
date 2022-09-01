@@ -1,4 +1,5 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const config = require("../src/config");
 const {
   API_PATH,
@@ -10,7 +11,7 @@ const {
   createSmartLocation,
   createSmartManifest,
 } = require("./support/smart-scheduling-links");
-const { expectDatetimeString, toNdJson } = require("./support");
+const { toNdJson } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const { VaccineProduct } = require("../src/model");
 const { EXTENSIONS } = require("../src/smart-scheduling-links");

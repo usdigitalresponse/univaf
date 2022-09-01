@@ -1,6 +1,6 @@
+const { expectDatetimeString } = require("univaf-common/jest");
 const { Available } = require("../src/model");
 const { formatStore } = require("../src/sources/vaccinespotter/index");
-const { expectDatetimeString } = require("./support");
 
 // Mock utils so we can track logs.
 jest.mock("../src/utils");

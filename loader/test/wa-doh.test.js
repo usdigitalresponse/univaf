@@ -1,4 +1,5 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const { GraphQlError } = require("../src/exceptions");
 const { VaccineProduct } = require("../src/model");
 const {
@@ -6,7 +7,7 @@ const {
   checkAvailability,
   formatLocation,
 } = require("../src/sources/wa-doh");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const { splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 // Mock utils so we can track logs.

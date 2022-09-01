@@ -1,10 +1,10 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const { checkAvailability, CvsApiError } = require("../src/sources/cvs/api");
 const {
   CVS_BOOKING_URL,
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
 } = require("../src/sources/cvs/shared");
-const { expectDatetimeString } = require("./support");
 
 // Mock utils so we can track logs.
 jest.mock("../src/utils");

@@ -1,10 +1,7 @@
 const nock = require("nock");
+const { expectDatetimeString } = require("univaf-common/jest");
 const { checkAvailability, API_URL } = require("../src/sources/kroger");
-const {
-  expectDatetimeString,
-  splitHostAndPath,
-  toNdJson,
-} = require("./support");
+const { splitHostAndPath, toNdJson } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const fixtures = require("./fixtures/kroger.smart.fixtures");
 const { Available } = require("../src/model");
