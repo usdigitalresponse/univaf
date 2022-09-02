@@ -389,7 +389,7 @@ module.exports = {
   /**
    * Remove an item matching a predicate function from an array and return it.
    * @param {Array} list Array to remove the item from.
-   * @param {(any) => bool} predicate Function to identify an item to remove
+   * @param {(any) => boolean} predicate Function to identify an item to remove
    */
   popItem(list, predicate) {
     const index = list.findIndex(predicate);
@@ -526,7 +526,7 @@ module.exports = {
   /**
    * Remove duplicate entries from a list of external IDs.
    * @param {Array<[string,string]>} idList
-   * @returns {Array<[string,string]}
+   * @returns {Array<[string,string]>}
    */
   getUniqueExternalIds(idList) {
     const seen = new Set();

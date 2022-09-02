@@ -68,7 +68,7 @@ class CvsApiError extends HttpApiError {
 /**
  * Convert availability value from the API to our availability model.
  * @param {string} apiValue Availability field from the CVS API
- * @returns {availability}
+ * @returns {Available}
  */
 function toAvailable(apiValue) {
   const text = apiValue.toLowerCase();
