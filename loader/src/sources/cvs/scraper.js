@@ -378,7 +378,7 @@ async function checkAvailability(handler, _options) {
     await timers.setTimeout(randomInt(3, 7) * 1000);
   }
 
-  const finalResult = { ...createCannedUnavailableStore(clinicsZip) };
+  const finalResult = { ...createCannedUnavailableStore() };
   for (const storeNumber in standardResults) {
     finalResult[storeNumber] = standardResults[storeNumber];
   }
