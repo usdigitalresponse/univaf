@@ -38,18 +38,20 @@ const logDebug = console.warn;
 
 /**
  * @typedef {Object} NjvssRecord
+ * @property {string} res_id
+ * @property {number} provider_id
  * @property {string} name
  * @property {string} statuscodename
  * @property {string} vras_provideraddress
- * @property {string} vras_typename Type of service, usually 'COVID Vaccination'
- * @property {float} vras_latitude
- * @property {float} vras_longitude
+ * @property {string} vras_typetext Type of service, usually 'COVID Vaccination'
+ * @property {number} vras_latitude
+ * @property {number} vras_longitude
  * @property {string} vras_typetext Additional details as an HTML string.
  * @property {boolean?} vras_allowschedulingforcountyresidentsonly Whether
  *           scheduling is allowed only for county residents. May be `null` if
  *           unknown.
  * @property {string} county
- * @property {int} available Number of available appointment slots
+ * @property {number} available Number of available appointment slots
  */
 
 /**
