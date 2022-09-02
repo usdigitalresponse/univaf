@@ -361,7 +361,7 @@ module.exports = {
   /**
    * Template string tag that transforms a template string into a single line.
    * Line breaks and indentations are reduced to a single space character.
-   * @param {Array<string>} strings String components of the template literal.
+   * @param {TemplateStringsArray} strings String components of the template literal.
    * @param  {...any} replacements Interpolated replacements in the template.
    * @returns {string}
    *
