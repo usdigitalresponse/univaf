@@ -21,6 +21,7 @@ const LocationType = {
   pharmacy: "PHARMACY",
   massVax: "MASS_VAX",
   clinic: "CLINIC",
+  mobileClinic: "MOBILE_CLINIC",
 };
 
 /**
