@@ -45,7 +45,12 @@ function createDatabaseSender() {
   };
 }
 
-// Returns true on success, and false on failure.
+/**
+ * The starting point of the script. Runs the requested loaders, then gathers
+ * and formats results and errors.
+ * @param {any} options
+ * @returns {Promise<void>}
+ */
 async function run(options) {
   let handler;
   if (options.send) {
@@ -55,7 +60,6 @@ async function run(options) {
     handler = createResultLogger(jsonSpacing);
   }
 
-  let success = true;
   const startTime = Date.now();
   try {
     const reports = await runSources(options.sources, handler, options);
@@ -86,7 +90,6 @@ async function run(options) {
             level: "error",
             contexts: { send_error: logData },
           });
-          success = false;
         }
       }
     }
@@ -98,23 +101,19 @@ async function run(options) {
         console.error(`Error in "${report.name}":`, report.error, "\n");
         Sentry.captureException(report.error);
         process.exitCode = 90;
-        success = false;
       } else {
         successCount++;
       }
     }
     if (successCount === 0) {
       process.exitCode = 1;
-      success = false;
     }
   } catch (error) {
     console.error(`Error: ${error}`);
     Sentry.captureException(error);
-    success = false;
   } finally {
     console.error(`Completed in ${(Date.now() - startTime) / 1000} seconds.`);
   }
-  return success;
 }
 
 function main() {
