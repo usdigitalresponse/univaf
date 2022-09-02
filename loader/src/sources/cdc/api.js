@@ -482,6 +482,15 @@ const ndcLookup = {
   [normalizeNdc("59267-0078-02")]: VaccineProduct.pfizerAge0_4, // sale
   [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge0_4, // sale
 
+  // Pfizer's bivalent reformulation for original & Omicron BA.4/BA.5.
+  [normalizeNdc("59267-0304-01")]: VaccineProduct.pfizerV2, // use, 6 dose vial
+  [normalizeNdc("59267-0304-02")]: VaccineProduct.pfizerV2, // sale, 6 dose vial
+  [normalizeNdc("59267-1404-01")]: VaccineProduct.pfizerV2, // use, 1 dose vial
+  [normalizeNdc("59267-1404-02")]: VaccineProduct.pfizerV2, // sale, 1 dose vial
+
+  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerAge5_11_v2, // sale
+  [normalizeNdc("59267-0565-02")]: VaccineProduct.pfizerAge5_11_v2, // sale
+
   [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
   [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
 
@@ -494,6 +503,11 @@ const ndcLookup = {
   [normalizeNdc("80777-0273-15")]: VaccineProduct.moderna, // use
   [normalizeNdc("80777-0273-98")]: VaccineProduct.moderna, // sale
   [normalizeNdc("80777-0273-99")]: VaccineProduct.moderna, // sale
+  // The 80777-0100-* is the same as above, but branded as "Spikevax".
+  [normalizeNdc("80777-0100-11")]: VaccineProduct.moderna, // use
+  [normalizeNdc("80777-0100-15")]: VaccineProduct.moderna, // use
+  [normalizeNdc("80777-0100-99")]: VaccineProduct.moderna, // sale
+  [normalizeNdc("80777-0100-98")]: VaccineProduct.moderna, // sale
 
   // 80777-275-* can be used as an adult booster or ages 6-11 primary dose.
   [normalizeNdc("80777-0275-05")]: VaccineProduct.modernaAge6_11, // use
@@ -504,6 +518,11 @@ const ndcLookup = {
 
   [normalizeNdc("80777-0279-05")]: VaccineProduct.modernaAge0_5, // use
   [normalizeNdc("80777-0279-99")]: VaccineProduct.modernaAge0_5, // sale
+
+  // Moderna's bivalent reformulation for original & Omicron BA.4/BA.5.
+  // It's designed for ages 6+, but as of 2022-09-02 only authorized for 18+.
+  [normalizeNdc("80777-0282-05")]: VaccineProduct.modernaV2, // use
+  [normalizeNdc("80777-0282-99")]: VaccineProduct.modernaV2, // sale
 
   [normalizeNdc("49281-0618-78")]: VaccineProduct.sanofi, // use
   [normalizeNdc("49281-0618-20")]: VaccineProduct.sanofi, // sale
