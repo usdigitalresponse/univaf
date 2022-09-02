@@ -172,7 +172,7 @@ function isCovidSchedule(schedule) {
  * @param {SmartSchedulingLinksApi} api
  * @param {Array<string>} [states] List of state abbreviations. If set, only
  *        return data for locations possibly in the given states.
- * @returns {Array<{location: any, schedules: Array<any>, slots: Array<any>}>}
+ * @returns {Promise<{location: any, schedules: Array<any>, slots: Array<any>}[]>}
  */
 async function getLocations(api, states) {
   const locations = Object.create(null);

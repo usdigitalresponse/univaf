@@ -238,7 +238,7 @@ function filterActualNjvssLocations(locations) {
  * Returns the list of passed in locations, but with each modified to add an
  * `id` property.
  * @param {Array<object>} locations List of found NJVSS locations.
- * @returns {Array<object>}
+ * @returns {Promise<Array<object>>}
  */
 async function findLocationIds(locations) {
   // FIXME: a lot has changed about how we manage locations and IDs since this

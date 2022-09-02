@@ -45,7 +45,7 @@ const warn = createWarningLogger("krogerSmart");
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
  * SMART SL API.
- * @returns {Array<any>}
+ * @returns {Promise<Array<any>>}
  */
 async function getData(states) {
   const api = new SmartSchedulingLinksApi(API_URL);
