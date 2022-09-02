@@ -1,7 +1,17 @@
+/**
+ * @typedef {object} HttpResponse
+ * @property {number} statusCode
+ * @property {string} [statusMessage]
+ * @property {any} body
+ */
+
+/**
+ * An error from an HTTP response.
+ */
 class HttpApiError extends Error {
   /**
    * Create an error object for a bad response from an API.
-   * @param {http.IncomingMessage} response
+   * @param {HttpResponse} response
    */
   constructor(response, { cause = null } = {}) {
     super(`${response.statusCode} ${response.statusMessage}`, { cause });
@@ -20,7 +30,7 @@ class HttpApiError extends Error {
    * It's safe for this to raise an exception (it will be handled and a more
    * generic error message will be set).
    *
-   * @param {http.IncomingMessage} response An HTTP response with error info.
+   * @param {HttpResponse} response An HTTP response with error info.
    */
   parse(response) {
     this.details = JSON.parse(response.body);
@@ -45,7 +55,7 @@ class GraphQlError extends HttpApiError {
 /**
  * If the HTTP response represents a GraphQL error, throws an instance of
  * `GraphQlError` with relevant information.
- * @param {http.IncomingMessage} response
+ * @param {HttpResponse} response
  */
 function assertValidGraphQl(response) {
   if (response.statusCode >= 400 || response.body?.errors) {

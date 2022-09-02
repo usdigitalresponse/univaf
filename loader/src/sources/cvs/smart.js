@@ -23,7 +23,7 @@ const logError = createWarningLogger("cvsSmart", "error");
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
  * SMART SL API.
- * @returns {Array<any>}
+ * @returns {Promise<Array<any>>}
  */
 async function getData(states) {
   const api = new SmartSchedulingLinksApi(CVS_SMART_API_URL);

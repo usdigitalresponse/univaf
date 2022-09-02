@@ -172,7 +172,7 @@ function isCovidSchedule(schedule) {
  * @param {SmartSchedulingLinksApi} api
  * @param {Array<string>} [states] List of state abbreviations. If set, only
  *        return data for locations possibly in the given states.
- * @returns {Array<{location: any, schedules: Array<any>, slots: Array<any>}>}
+ * @returns {Promise<{location: any, schedules: Array<any>, slots: Array<any>}[]>}
  */
 async function getLocations(api, states) {
   const locations = Object.create(null);
@@ -313,17 +313,18 @@ function isValidIdentifier(value) {
 
 /**
  * Create UNIVAF-style external IDs for a SMART SL location object.
- * @param {Object} location
- * @param {Object} [options]
- * @param {string} options.smartIdName If set, include the location object's ID
+ * @param {any} location
+ * @param {Object} options
+ * @param {string} [options.smartIdName] If set, include the location object's ID
  *        in the list of external IDs, using the string as the system name.
- * @param {(identifier: {system: string, value: string}) => [string, string]} options.formatUnknownId
+ * @param {(identifier: {system: string, value: string}) => [string, string]} [options.formatUnknownId]
  *        Customize handling of unknown ID systems. Normally, unknown system
  *        names are simply passed through, but you can provide custom mappings
  *        using this function. Return `["", ""]` to drop the identifier.
- * @returns {Array<[string,string]>}
+ * @returns {[string,string][]}
  */
 function formatExternalIds(location, { smartIdName, formatUnknownId } = {}) {
+  /** @type {[string,string][]} */
   const externalIds = [];
 
   if (smartIdName) externalIds.push([smartIdName, location.id]);

@@ -359,7 +359,7 @@ function createCannedUnavailableStore() {
 /**
  * Kick off the scraper to crawl the getIMZStores endpoint.
  *
- * @return {array} Array of results conforming to the scraper standard.
+ * @return {Promise<Array>} Array of results conforming to the scraper standard.
  */
 async function checkAvailability(handler, _options) {
   warn("WARNING: cvsScraper is deprecated and no longer maintained.");
@@ -378,7 +378,7 @@ async function checkAvailability(handler, _options) {
     await timers.setTimeout(randomInt(3, 7) * 1000);
   }
 
-  const finalResult = { ...createCannedUnavailableStore(clinicsZip) };
+  const finalResult = { ...createCannedUnavailableStore() };
   for (const storeNumber in standardResults) {
     finalResult[storeNumber] = standardResults[storeNumber];
   }

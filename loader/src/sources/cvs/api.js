@@ -68,7 +68,7 @@ class CvsApiError extends HttpApiError {
 /**
  * Convert availability value from the API to our availability model.
  * @param {string} apiValue Availability field from the CVS API
- * @returns {availability}
+ * @returns {Available}
  */
 function toAvailable(apiValue) {
   const text = apiValue.toLowerCase();
@@ -125,9 +125,11 @@ function parseApiLocation(location, lastUpdated) {
 
 /**
  * Get availability data from the CVS API.
- * @param {string} [apiKey] CVS API key. Can also be provided via the
- *        CVS_API_KEY environment variable.
- * @param {string} [apiUrl] Base URL for the CVS API.
+ * Make sure to set these environment variables:
+ * - CVS_API_KEY
+ * - CVS_API_URL (optional, the base URL for the CVS API)
+ * @param {(any) => void} handler
+ * @param {any} [_options]
  */
 async function checkAvailability(handler, _options) {
   warn("WARNING: cvsApi is deprecated and no longer maintained.");

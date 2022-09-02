@@ -12,6 +12,8 @@ const {
 const { assertValidGraphQl } = require("../exceptions");
 const allStates = require("../states.json");
 
+/** @typedef {import("../model").VaccineProduct} VaccineProduct */
+
 const warn = createWarningLogger("waDoh");
 
 // You can also navigate to this URL in a browser and get an interactive

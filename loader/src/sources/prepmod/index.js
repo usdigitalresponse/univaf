@@ -42,7 +42,7 @@ function getApiForHost(host) {
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
  * SMART SL API.
- * @returns {Array<any>}
+ * @returns {Promise<any[]>}
  */
 async function getDataForHost(host) {
   const api = getApiForHost(host);
