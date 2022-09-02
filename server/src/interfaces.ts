@@ -8,6 +8,7 @@ export enum LocationType {
   PHARMACY = "PHARMACY",
   MASS_VAX = "MASS_VAX",
   CLINIC = "CLINIC",
+  MOBILE_CLINIC = "MOBILE_CLINIC",
 }
 
 export interface Position {
