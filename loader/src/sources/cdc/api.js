@@ -483,13 +483,13 @@ const ndcLookup = {
   [normalizeNdc("59267-0078-04")]: VaccineProduct.pfizerAge0_4, // sale
 
   // Pfizer's bivalent reformulation for original & Omicron BA.4/BA.5.
-  [normalizeNdc("59267-0304-01")]: VaccineProduct.pfizerV2, // use, 6 dose vial
-  [normalizeNdc("59267-0304-02")]: VaccineProduct.pfizerV2, // sale, 6 dose vial
-  [normalizeNdc("59267-1404-01")]: VaccineProduct.pfizerV2, // use, 1 dose vial
-  [normalizeNdc("59267-1404-02")]: VaccineProduct.pfizerV2, // sale, 1 dose vial
+  [normalizeNdc("59267-0304-01")]: VaccineProduct.pfizerBa4Ba5, // use, 6 dose vial
+  [normalizeNdc("59267-0304-02")]: VaccineProduct.pfizerBa4Ba5, // sale, 6 dose vial
+  [normalizeNdc("59267-1404-01")]: VaccineProduct.pfizerBa4Ba5, // use, 1 dose vial
+  [normalizeNdc("59267-1404-02")]: VaccineProduct.pfizerBa4Ba5, // sale, 1 dose vial
 
-  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerAge5_11_v2, // sale
-  [normalizeNdc("59267-0565-02")]: VaccineProduct.pfizerAge5_11_v2, // sale
+  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
+  [normalizeNdc("59267-0565-02")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
 
   [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
   [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
@@ -521,8 +521,8 @@ const ndcLookup = {
 
   // Moderna's bivalent reformulation for original & Omicron BA.4/BA.5.
   // It's designed for ages 6+, but as of 2022-09-02 only authorized for 18+.
-  [normalizeNdc("80777-0282-05")]: VaccineProduct.modernaV2, // use
-  [normalizeNdc("80777-0282-99")]: VaccineProduct.modernaV2, // sale
+  [normalizeNdc("80777-0282-05")]: VaccineProduct.modernaBa4Ba5, // use
+  [normalizeNdc("80777-0282-99")]: VaccineProduct.modernaBa4Ba5, // sale
 
   [normalizeNdc("49281-0618-78")]: VaccineProduct.sanofi, // use
   [normalizeNdc("49281-0618-20")]: VaccineProduct.sanofi, // sale
