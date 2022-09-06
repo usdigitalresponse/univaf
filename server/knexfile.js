@@ -1,7 +1,7 @@
 /** @type {import("knex").Knex.Config} */
 const base = {
   client: "postgresql",
-  connection: {
+  connection: process.env.DB_URL || {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,

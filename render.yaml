@@ -63,31 +63,11 @@ services:
           name: DataDog Agent
           type: pserv
           property: host
-      - &DB_HOST
-        key: DB_HOST
+      - &DB_URL
+        key: DB_URL
         fromDatabase:
           name: univaf-db-production
-          property: host
-      - &DB_PORT
-        key: DB_PORT
-        fromDatabase:
-          name: univaf-db-production
-          property: port
-      - &DB_USERNAME
-        key: DB_USERNAME
-        fromDatabase:
-          name: univaf-db-production
-          property: user
-      - &DB_PASSWORD
-        key: DB_PASSWORD
-        fromDatabase:
-          name: univaf-db-production
-          property: password
-      - &DB_NAME
-        key: DB_NAME
-        fromDatabase:
-          name: univaf-db-production
-          property: database
+          property: connectionString
 
   # Dump database and historical log files in S3
   - name: "Daily Data Snapshot"
@@ -112,11 +92,7 @@ services:
     envVars:
       - fromGroup: "Server Environment"
       - *DD_AGENT_HOST
-      - *DB_HOST
-      - *DB_PORT
-      - *DB_USERNAME
-      - *DB_PASSWORD
-      - *DB_NAME
+      - *DB_URL
       - key: DATA_SNAPSHOT_S3_BUCKET
         value: "univaf-render-test-data-snapshots"
       - key: AWS_ACCESS_KEY_ID
