@@ -252,6 +252,7 @@ async function main() {
 
   if (!process.env.DATA_SNAPSHOT_S3_BUCKET) {
     writeLog("DATA_SNAPSHOT_S3_BUCKET environment var required");
+    process.exitCode = 1;
     return;
   }
 
