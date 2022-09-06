@@ -99,6 +99,8 @@ services:
         sync: false
       - key: AWS_SECRET_ACCESS_KEY
         sync: false
+      - key: AWS_REGION
+        value: "us-west-2"
       - key: AWS_DEFAULT_REGION
         value: "us-west-2"
 
