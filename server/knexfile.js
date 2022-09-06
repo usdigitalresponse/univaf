@@ -21,15 +21,29 @@ const base = {
   },
 };
 
+let testConnection;
+if (typeof base.connection === "string") {
+  const url = new URL(base.connection);
+  if (!url.pathname || url.pathname === "/") {
+    throw new Error(
+      `DB_URL must be in the form: "postgres://<user>:<password>@<host>:<port>/<dbname>?other=parameters" (not "${base.connection}")`
+    );
+  }
+  url.pathname = `${url.pathname.slice(1)}-test`;
+  testConnection = url.toString();
+} else {
+  testConnection = {
+    ...base.connection,
+    database: `${base.connection.database}-test`,
+  };
+}
+
 module.exports = {
   development: base,
   production: base,
   test: {
     ...base,
-    connection: {
-      ...base.connection,
-      database: `${base.connection.database}-test`,
-    },
+    connection: testConnection,
     pool: { ...base.pool, min: 1, max: 1 },
   },
 };
