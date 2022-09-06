@@ -15,8 +15,9 @@
  * `--clear-log` when running the command.
  */
 
+const { Upload } = require("@aws-sdk/lib-storage");
+const { S3 } = require("@aws-sdk/client-s3");
 const Sentry = require("@sentry/node");
-const aws = require("aws-sdk");
 const fs = require("fs");
 const knex = require("knex");
 const knexConfig = require("../knexfile");
@@ -30,7 +31,13 @@ const zlib = require("zlib");
 Sentry.init();
 
 const db = knex(knexConfig.development);
-const s3 = new aws.S3();
+// TODO: remove support for AWS_DEFAULT_REGION. We currently use it, and it was
+// automatically picked up in v2 of the SDK. That no longer seems to be the
+// case. (AWS_REGION works, though.)
+const s3 = new S3({
+  region:
+    process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || "us-east-1",
+});
 
 const FIRST_RUN_DATE = luxon.DateTime.fromISO("2021-05-19", { zone: "utc" });
 
@@ -168,12 +175,10 @@ function getAvailabilityLogStream(date) {
 }
 
 async function getAvailabilityLogRunDates(upToDate) {
-  const res = await s3
-    .listObjects({
-      Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
-      Prefix: "availability_log/",
-    })
-    .promise();
+  const res = await s3.listObjectsV2({
+    Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
+    Prefix: "availability_log/",
+  });
   const existingPaths = new Set(res.Contents.map((f) => f.Key));
 
   const dateRange = eachDayOfInterval({
@@ -197,13 +202,18 @@ async function deleteLoggedAvailabilityRows(upToDate) {
 }
 
 async function uploadStream(s, path) {
-  return s3
-    .upload({
+  const s3Upload = new Upload({
+    client: s3,
+    params: {
       Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
       Key: path,
       Body: s.pipe(stream.PassThrough()), // PassThrough supports .read(), which aws-sdk.s3 needs
-    })
-    .promise();
+    },
+    queueSize: 10,
+    partSize: 1024 * 1024 * 10,
+  });
+
+  return await s3Upload.done();
 }
 
 async function writeStreamToLocal(s, path) {
