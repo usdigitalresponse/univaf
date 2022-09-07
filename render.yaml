@@ -8,7 +8,7 @@
 databases:
   - name: univaf-db-production
     region: oregon
-    plan: pro
+    plan: standard plus
     databaseName: univaf_db_production
     user: univaf
     # Not sepecifying IPs for now; we may want to set this to an empty array
