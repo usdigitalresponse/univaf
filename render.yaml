@@ -6,10 +6,10 @@
 # https://github.com/usdigitalresponse/univaf/issues/683
 
 databases:
-  - name: univaf-db-production
+  - name: univaf-db
     region: oregon
     plan: standard plus
-    databaseName: univaf_db_production
+    databaseName: univaf_db
     user: univaf
     # Not sepecifying IPs for now; we may want to set this to an empty array
     # to disallow public connections, though. i.e. `ipAllowList: []`
@@ -66,7 +66,7 @@ services:
       - &DB_URL
         key: DB_URL
         fromDatabase:
-          name: univaf-db-production
+          name: univaf-db
           property: connectionString
 
   # Dump database and historical log files in S3
