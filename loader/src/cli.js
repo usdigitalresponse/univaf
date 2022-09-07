@@ -53,6 +53,8 @@ function createDatabaseSender() {
  * @returns {Promise<void>}
  */
 async function run(options) {
+  Sentry.setContext("CLI Arguments", { ...options });
+
   let handler;
   if (options.send) {
     handler = createDatabaseSender();
