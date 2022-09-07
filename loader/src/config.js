@@ -1,10 +1,13 @@
 const packageInfo = require("../package.json");
 
+// TODO: share the logic for getting the release/version with the server.
 const version =
   process.env.RELEASE ||
   process.env.COMMIT_REF ||
   process.env.COMMIT_SHA ||
   process.env.COMMIT_HASH ||
+  // Render
+  process.env.RENDER_GIT_COMMIT ||
   // GitHub Actions
   process.env.GITHUB_SHA ||
   // We don't necessarily bump this whenever we update, so it's only a fallback.
