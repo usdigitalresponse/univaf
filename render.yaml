@@ -66,7 +66,7 @@ services:
       - &DB_URL
         key: DB_URL
         fromDatabase:
-          name: univaf-db-production
+          name: univaf-db
           property: connectionString
 
   # Dump database and historical log files in S3
