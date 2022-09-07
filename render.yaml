@@ -74,7 +74,9 @@ services:
     region: oregon
     type: cron
     schedule: "0 5 * * *"
-    plan: standard
+    # The main bottleneck on this job is actually uploading to S3; even minimal
+    # CPU/memory don't impact overall run time.
+    plan: starter
     env: node
     repo: "https://github.com/usdigitalresponse/univaf.git"
     branch: main
