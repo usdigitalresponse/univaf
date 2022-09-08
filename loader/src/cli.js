@@ -3,11 +3,12 @@
 const Sentry = require("@sentry/node");
 const yargs = require("yargs");
 const { ApiClient } = require("./api-client");
+const config = require("./config");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
 const allStates = require("./states.json");
 
-Sentry.init();
+Sentry.init({ release: config.version });
 
 async function runSources(targets, handler, options) {
   targets =
@@ -52,6 +53,8 @@ function createDatabaseSender() {
  * @returns {Promise<void>}
  */
 async function run(options) {
+  Sentry.setContext("CLI Arguments", { ...options });
+
   let handler;
   if (options.send) {
     handler = createDatabaseSender();

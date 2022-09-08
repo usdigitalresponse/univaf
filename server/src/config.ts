@@ -3,6 +3,7 @@ import type { Knex } from "knex";
 
 export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 
+// TODO: share the logic for getting the release/version with the loader.
 export const RELEASE =
   process.env.RELEASE || process.env.RENDER_GIT_COMMIT || undefined;
 
