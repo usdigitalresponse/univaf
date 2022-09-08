@@ -11,11 +11,11 @@ databases:
     plan: standard plus
     databaseName: univaf_db
     user: univaf
-    # Not sepecifying IPs for now; we may want to set this to an empty array
-    # to disallow public connections, though. i.e. `ipAllowList: []`
-    # ipAllowList:
-    #   - source: 203.0.113.4/30
-    #     description: office
+    # Don't allow connections from the public internet.
+    # If you need to run scripts or log into the database directly, you should
+    # start a shell or SSH session for one of our internal services from the
+    # Render dashboard, and log in through that.
+    ipAllowList: []
 
 services:
   - name: DataDog Agent
