@@ -49,10 +49,12 @@ export function versionedMiddleware(
 export function parseJsonBody(
   options: bodyParser.OptionsJson
 ): ReturnType<typeof bodyParser.json> {
-  const { verify, ...otherOptions } = options;
-
   return bodyParser.json({
-    ...otherOptions,
+    ...options,
+
+    // `verify` is a convenient callback to get the decoded/decompressed body
+    // before parsing, so this wraps whatever `verify` function may have been
+    // passed in and uses it to count bytes.
     verify(
       request: AppRequest,
       response: Response,
@@ -60,8 +62,8 @@ export function parseJsonBody(
       encoding: string
     ) {
       request.bodyByteLength = buffer.byteLength || buffer.length;
-      if (verify) {
-        verify(request, response, buffer, encoding);
+      if (options.verify) {
+        options.verify(request, response, buffer, encoding);
       }
     },
   });
