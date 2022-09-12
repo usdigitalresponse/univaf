@@ -63,7 +63,7 @@
     "@types/eslint": "8.4.6",
     "@types/express": "4.17.13",
     "@types/jest": "28.1.7",
-    "@types/lodash": "4.14.184",
+    "@types/lodash": "4.14.185",
     "@types/luxon": "^3.0.1",
     "@types/node": "16.11.57",
     "@types/pg": "^8.6.5",
