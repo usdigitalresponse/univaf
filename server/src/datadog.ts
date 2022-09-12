@@ -59,6 +59,9 @@ export function datadogMiddleware(
     statTags.push(`method:${req.method.toLowerCase()}`);
     statTags.push(`response_code:${res.statusCode}`);
 
+    const isInternal = (req.headers["user-agent"] || "").startsWith("univaf");
+    statTags.push(`internal:${isInternal}`);
+
     const now = new Date();
     const responseTime = now.valueOf() - req.startTime.valueOf();
 

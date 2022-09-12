@@ -1,8 +1,10 @@
 import { Response, Request, NextFunction } from "express";
+import bodyParser from "body-parser";
 import { getApiKeys } from "./config";
 
 export interface AppRequest extends Request {
   authorization?: string;
+  bodyByteLength?: number;
   versioned: VersionedMethods;
 }
 
@@ -38,4 +40,29 @@ export function versionedMiddleware(
 ): void {
   req.versioned = new VersionedMethods(req);
   next();
+}
+
+/**
+ * A JSON body parsing middleware that also records the raw size of the request
+ * body as `request.bodyByteLength`.
+ */
+export function parseJsonBody(
+  options: bodyParser.OptionsJson
+): ReturnType<typeof bodyParser.json> {
+  const { verify, ...otherOptions } = options;
+
+  return bodyParser.json({
+    ...otherOptions,
+    verify(
+      request: AppRequest,
+      response: Response,
+      buffer: Buffer,
+      encoding: string
+    ) {
+      request.bodyByteLength = buffer.byteLength || buffer.length;
+      if (verify) {
+        verify(request, response, buffer, encoding);
+      }
+    },
+  });
 }
