@@ -5,13 +5,16 @@ import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import { RELEASE } from "./config";
-import { authorizeRequest, versionedMiddleware } from "./middleware";
+import {
+  authorizeRequest,
+  parseJsonBody,
+  versionedMiddleware,
+} from "./middleware";
 import { datadogMiddleware } from "./datadog";
 import { logger, logStackTrace } from "./logger";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
-import bodyParser from "body-parser";
 
 // TODO: we should use a proper logging library (e.g. Winston) which has
 // plugins and extensions for this, and will gather better data.
@@ -57,7 +60,7 @@ app.use(Sentry.Handlers.tracingHandler());
 app.use(logRequest);
 app.use(datadogMiddleware);
 app.use(compression());
-app.use(bodyParser.json({ limit: "2.5mb" }));
+app.use(parseJsonBody({ limit: "2.5mb" }));
 app.use(cors());
 app.use(authorizeRequest);
 app.use(urlDecodeSpecialPathChars);

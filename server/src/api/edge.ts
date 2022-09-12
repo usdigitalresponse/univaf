@@ -1,6 +1,7 @@
 "use strict";
 
 import { Request, Response } from "express";
+import { dogstatsd } from "../datadog";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
 import { AppRequest } from "../middleware";
@@ -238,6 +239,7 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
   }
 
   const result: any = { location: { action: null } };
+  const source = data?.source || data?.availability?.source;
 
   // FIXME: need to make this a single PG operation or add locks around it. It's
   // possible for two concurrent updates to both try and create a location.
@@ -251,7 +253,7 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     });
   }
   if (!location) {
-    location = await db.createLocation(data);
+    location = await db.createLocation(data, { source });
     result.location.action = "created";
   } else if (req.query.update_location) {
     // Only update an existing location if explicitly requested to do so via
@@ -261,7 +263,7 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     // need to opt in to updating here.)
     const fields = Object.keys(data).filter((key) => key !== "availability");
     if (fields.length > 1) {
-      await db.updateLocation(location, data);
+      await db.updateLocation(location, data, { source });
       result.location.action = "updated";
     }
   } else if (data.external_ids?.length) {
@@ -309,6 +311,11 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     res.status(201);
   }
   res.json({ data: result });
+
+  dogstatsd.increment("api.received.updates.count", [`source:${source}`]);
+  dogstatsd.histogram("api.received.updates.bytes", req.bodyByteLength, [
+    `source:${source}`,
+  ]);
 };
 
 // TODO

@@ -18,6 +18,7 @@ import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 import { minimumAgeForProducts } from "./vaccines";
+import { dogstatsd } from "./datadog";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
@@ -81,7 +82,10 @@ function selectSqlPoint(column: string): string {
  * Create a provider location.
  * @param data ProviderLocation-like object with data to insert
  */
-export async function createLocation(data: any): Promise<ProviderLocation> {
+export async function createLocation(
+  data: any,
+  { source = "unknown" } = {}
+): Promise<ProviderLocation> {
   data = validateLocationInput(data, true);
 
   const now = new Date();
@@ -113,6 +117,7 @@ export async function createLocation(data: any): Promise<ProviderLocation> {
 
     const locationId = inserted.rows[0].id;
     await addExternalIds(locationId, data.external_ids, tx);
+    dogstatsd.increment("db.locations.created.count", [`source:${source}`]);
     return locationId;
   });
   return await getLocationById(locationId, { includePrivate: true });
@@ -158,7 +163,7 @@ export async function addExternalIds(
 export async function updateLocation(
   location: ProviderLocation,
   data: any,
-  { mergeSubfields = true } = {}
+  { mergeSubfields = true, source = "unknown" } = {}
 ): Promise<void> {
   data = validateLocationInput(data);
   const sqlData: any = { updated_at: new Date() };
@@ -184,6 +189,8 @@ export async function updateLocation(
       await addExternalIds(location.id, data.external_ids, tx);
     }
   });
+
+  dogstatsd.increment("db.locations.updated.count", [`source:${source}`]);
 }
 
 /**
@@ -673,6 +680,7 @@ export async function updateAvailability(
     }
 
     result = { locationId: id, action: "update" };
+    dogstatsd.increment("db.availability.updated.count", [`source:${source}`]);
   } else {
     try {
       await db("availability").insert({
@@ -691,6 +699,9 @@ export async function updateAvailability(
         changed_at: valid_at,
       });
       result = { locationId: id, action: "create" };
+      dogstatsd.increment("db.availability.created.count", [
+        `source:${source}`,
+      ]);
     } catch (error) {
       if (error.message.includes("availability_location_id_fkey")) {
         throw new NotFoundError(`Could not find location ${id}`);
