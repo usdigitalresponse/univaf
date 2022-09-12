@@ -84,7 +84,7 @@ function selectSqlPoint(column: string): string {
  */
 export async function createLocation(
   data: any,
-  { source = "" } = {}
+  { source = "unknown" } = {}
 ): Promise<ProviderLocation> {
   data = validateLocationInput(data, true);
 
@@ -163,7 +163,7 @@ export async function addExternalIds(
 export async function updateLocation(
   location: ProviderLocation,
   data: any,
-  { mergeSubfields = true, source = "" } = {}
+  { mergeSubfields = true, source = "unknown" } = {}
 ): Promise<void> {
   data = validateLocationInput(data);
   const sqlData: any = { updated_at: new Date() };
