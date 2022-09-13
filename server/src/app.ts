@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import { RELEASE } from "./config";
 import {
+  AppRequest,
   authorizeRequest,
   parseJsonBody,
   versionedMiddleware,
@@ -24,9 +25,17 @@ function logRequest(request: Request, response: Response, next: NextFunction) {
 }
 
 function cacheControlMaxAge(seconds: number) {
-  return function (request: Request, response: Response, next: NextFunction) {
+  return function (
+    request: AppRequest,
+    response: Response,
+    next: NextFunction
+  ) {
     if (request.method == "GET") {
-      response.set("Cache-Control", `max-age=${seconds}`);
+      const directives = [
+        request.authorization ? "private" : "public",
+        `max-age=${seconds}`,
+      ];
+      response.set("Cache-Control", directives.join(", "));
     }
     next();
   };
