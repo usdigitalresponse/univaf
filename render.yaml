@@ -51,6 +51,7 @@ services:
     healthCheckPath: "/health"
     domains:
       - univaf.usdigitalresponse.org
+      - render.getmyvax.org
     envVars:
       - fromGroup: "Server Environment"
       - &DD_AGENT_HOST

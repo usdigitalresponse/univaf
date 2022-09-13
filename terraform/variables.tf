@@ -98,6 +98,16 @@ variable "domain_name" {
   default     = ""
 }
 
+variable "api_remote_domain_name_test" {
+  description = "The domain name for a service outside AWS to send traffic to"
+  default     = ""
+}
+
+variable "ssl_certificate_arn_render_test" {
+  description = "To enable HTTPS, the ARN of an SSL certificate created with ACM in us-east-1"
+  default     = ""
+}
+
 variable "api_remote_domain_name" {
   description = "The domain name for a service outside AWS to send traffic to"
   default     = ""

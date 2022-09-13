@@ -258,3 +258,81 @@ resource "aws_cloudfront_distribution" "univaf_api" {
     }
   }
 }
+
+# -----------------------------------------------------------------------------
+# NOT USED FOR PRODUCTION -- TESTING CLOUDFRONT IN FRONT OF RENDER
+
+# First we have to point DNS directly at Render so it can validate that it's ok
+# for it to respond to this hostname.
+resource "aws_route53_record" "api_render_domain_record" {
+  count   = var.api_remote_domain_name_test != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "render"
+  type    = "CNAME"
+  records = [var.api_remote_domain_name_test]
+  ttl     = 300
+}
+
+# # ...then we turn off the above record and replace it with this one that
+# # at CloudFront.
+# resource "aws_route53_record" "api_render_domain_record" {
+#   count = var.domain_name != "" ? 1 : 0
+
+#   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+#   name    = "render.${var.domain_name}"
+#   type    = "A"
+
+#   alias {
+#     name                   = aws_cloudfront_distribution.univaf_api_render[0].domain_name
+#     zone_id                = aws_cloudfront_distribution.univaf_api_render[0].hosted_zone_id
+#     evaluate_target_health = false
+#   }
+# }
+
+resource "aws_cloudfront_distribution" "univaf_api_render" {
+  count       = var.ssl_certificate_arn_render_test != "" ? 1 : 0
+  enabled     = true
+  price_class = "PriceClass_100" # North America
+  aliases     = ["render.${var.domain_name}"]
+
+  origin {
+    origin_id   = "render-test-origin"
+    domain_name = "api-server-phc8.onrender.com"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
+      origin_protocol_policy = "https-only"
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "render-test-origin"
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    max_ttl                = 3600
+
+    forwarded_values {
+      headers      = ["Host", "Origin"]
+      query_string = true
+
+      cookies {
+        forward = "none"
+      }
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn = var.ssl_certificate_arn_render_test
+    ssl_support_method  = "sni-only"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+}
