@@ -65,7 +65,7 @@ data "aws_route53_zone" "domain_zone" {
 }
 
 resource "aws_route53_record" "api_domain_record" {
-  count = var.domain_name != "" ? 1 : 0
+  count = var.api_remote_domain_name != "" ? 0 : (var.domain_name != "" ? 1 : 0)
 
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = var.domain_name
@@ -76,6 +76,15 @@ resource "aws_route53_record" "api_domain_record" {
     zone_id                = aws_cloudfront_distribution.univaf_api[0].hosted_zone_id
     evaluate_target_health = false
   }
+}
+
+resource "aws_route53_record" "api_domain_record_remote" {
+  count   = (var.api_remote_domain_name != "" && var.domain_name != 0) ? 1 : 0
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = var.domain_name
+  type    = "CNAME"
+  records = [var.api_remote_domain_name]
+  ttl     = 300
 }
 
 resource "aws_route53_record" "api_www_domain_record" {
