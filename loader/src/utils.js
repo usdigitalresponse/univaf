@@ -549,40 +549,44 @@ module.exports = {
    */
   matchVaccineProduct(name) {
     const text = name.toLowerCase();
+    const isBa4Ba5 = /bivalent|omicron|ba\.\s?4|ba\.\s?5/i.test(text);
+
     if (/astra\s*zeneca/.test(text)) {
-      return VaccineProduct.astraZeneca;
+      return isBa4Ba5 ? undefined : VaccineProduct.astraZeneca;
     } else if (text.includes("moderna")) {
       if (/ages?\s+18( and up|\s*\+)/i.test(text)) {
-        return VaccineProduct.moderna;
+        return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
-        return VaccineProduct.modernaAge0_5;
+        return isBa4Ba5 ? undefined : VaccineProduct.modernaAge0_5;
       } else if (/ages? 6\s?(-|through)\s?11/i.test(text)) {
-        return VaccineProduct.modernaAge6_11;
+        return isBa4Ba5 ? undefined : VaccineProduct.modernaAge6_11;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
         // trigger warnings so we can address it.
         return undefined;
       } else {
-        return VaccineProduct.moderna;
+        return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
       }
     } else if (/nova\s*vax/.test(text)) {
-      return VaccineProduct.novavax;
+      return isBa4Ba5 ? undefined : VaccineProduct.novavax;
     } else if (text.includes("comirnaty") || text.includes("pfizer")) {
       if (/ages?\s+12( and up|\s*\+)/i.test(text)) {
-        return VaccineProduct.pfizer;
+        return isBa4Ba5 ? VaccineProduct.pfizerBa4Ba5 : VaccineProduct.pfizer;
       } else if (/ages?\s+5|\b5\s?(-|through)\s?11\b/i.test(text)) {
-        return VaccineProduct.pfizerAge5_11;
+        return isBa4Ba5
+          ? VaccineProduct.pfizerBa4Ba5Age5_11
+          : VaccineProduct.pfizerAge5_11;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
-        return VaccineProduct.pfizerAge0_4;
+        return isBa4Ba5 ? undefined : VaccineProduct.pfizerAge0_4;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
         // trigger warnings so we can address it.
         return undefined;
       } else {
-        return VaccineProduct.pfizer;
+        return isBa4Ba5 ? VaccineProduct.pfizerBa4Ba5 : VaccineProduct.pfizer;
       }
     } else if (/janssen|johnson/.test(text)) {
-      return VaccineProduct.janssen;
+      return isBa4Ba5 ? undefined : VaccineProduct.janssen;
     }
 
     return undefined;

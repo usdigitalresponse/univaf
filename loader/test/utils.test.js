@@ -238,10 +238,14 @@ describe("matchVaccineProduct", () => {
     [v.moderna, "Moderna Booster COVID-19 Vaccine"],
     [v.moderna, "Moderna COVID-19 Vaccine/Booster (Ages 18+)"],
 
+    [v.modernaBa4Ba5, "Moderna COVID-19 Vaccine (Ages 12+)/Bivalent Booster (Ages 18+)"],
+    [v.modernaBa4Ba5, "Moderna COVID-19, Bivalent Booster (Ages 18+)"],
+
     [v.modernaAge6_11, "Moderna COVID-19 Vaccine (ages 6-11 Primary, 18+ Booster)"],
     [v.modernaAge6_11, "Moderna Pediatric COVID-19 Vaccine (Ages 6 through 11)"],
 
     [v.modernaAge0_5, "Moderna Pediatric COVID-19 Vaccine (Ages 6 months - 5 years)"],
+    [v.modernaAge0_5, "Moderna Pediatric COVID-19 Vaccine (Ages 6 months through 5 years)"],
     [v.modernaAge0_5, "Moderna COVID-19 Vaccine (Ages 6m-5yrs)"],
 
     [v.pfizer, "Pfizer-BioNTech"],
@@ -249,11 +253,20 @@ describe("matchVaccineProduct", () => {
     [v.pfizer, "Pfizer-BioNTech COVID-19 Vaccine/Booster (Ages 12+)"],
     [v.pfizer, "Comirnaty COVID-19 Vaccine/Booster (Ages 12+)"],
 
+    [v.pfizerBa4Ba5, "Pfizer-BioNTech COVID-19 Vaccine/Bivalent Booster (Ages 12+)"],
+    [v.pfizerBa4Ba5, "Pfizer COVID-19, Bivalent Booster (Ages 12+)"],
+
     [v.pfizerAge5_11, "Pediatric-Pfizer (5-11)"],
     [v.pfizerAge5_11, "Pfizer COVID-19 Vaccine (Ages 5-11)"],
     [v.pfizerAge5_11, "Pfizer-BioNTech Pediatric COVID-19 Vaccine/Booster (Ages 5 - 11)"],
+    [v.pfizerAge5_11, "Pfizer-BioNTech Pediatric COVID-19 Vaccine/Booster (Ages 5 through 11)"],
 
     [v.pfizerAge0_4, "Pfizer-BioNTech Pediatric COVID-19 Vaccine (Ages 6 months - 4 years)"],
+    [v.pfizerAge0_4, "Pfizer-BioNTech Pediatric COVID-19 Vaccine (Ages 6 months through 4 years)"],
+    [v.pfizerAge0_4, "Pfizer-BioNTech COVID-19 Vaccine (Ages 6m-4yrs)"],
+
+    [v.novavax, "Novavax COVID-19 Vaccine (Ages 12+)"],
+    [v.novavax, "Novavax COVID-19 Vaccine 12+"],
 
     // Unpredicted pediatric types for Moderna/Pfizer
     [undefined, "Moderna Pediatric COVID Ages 3 - 9"],
