@@ -93,6 +93,11 @@ variable "ssl_certificate_arn" {
   default     = ""
 }
 
+variable "ssl_certificate_arn_render_test" {
+  description = "To enable HTTPS, the ARN of an SSL certificate created with ACM in us-east-1"
+  default     = ""
+}
+
 variable "domain_name" {
   description = "The domain name to use for HTTPS traffic"
   default     = ""
