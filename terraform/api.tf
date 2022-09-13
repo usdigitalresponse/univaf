@@ -225,7 +225,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
       http_port              = 80
       https_port             = 443
       origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = var.api_remote_domain_name != "" ? "https-only" : "http-only"
     }
   }
 
