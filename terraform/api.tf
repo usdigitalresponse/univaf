@@ -265,11 +265,11 @@ resource "aws_cloudfront_distribution" "univaf_api" {
 # First we have to point DNS directly at Render so it can validate that it's ok
 # for it to respond to this hostname.
 resource "aws_route53_record" "api_render_domain_record" {
-  count   = var.domain_name != "" ? 1 : 0
+  count   = var.api_remote_domain_name_test != "" ? 1 : 0
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = "render"
   type    = "CNAME"
-  records = [var.domain_name]
+  records = [var.api_remote_domain_name_test]
   ttl     = 300
 }
 
