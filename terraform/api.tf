@@ -297,7 +297,7 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
 
   origin {
     origin_id   = "render-test-origin"
-    domain_name = "api-server-phc8.onrender.com"
+    domain_name = var.api_remote_domain_name_test
 
     custom_origin_config {
       http_port              = 80
