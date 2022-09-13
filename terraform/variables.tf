@@ -98,7 +98,7 @@ variable "domain_name" {
   default     = ""
 }
 
-variable "api_remote_domain_name" {
+variable "api_remote_domain_name_test" {
   description = "The domain name for a service outside AWS to send traffic to"
   default     = ""
 }
