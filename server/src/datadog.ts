@@ -35,8 +35,17 @@ function replacePipeChar(text: string | RegExp): string {
   return text && text.replace(REGEX_PIPE, DELIMITER);
 }
 
-function getRoute(req: MonitoredRequest): string {
-  const routePath = req.route && req.route.path ? req.route.path : "";
+function getRoute(res: Response): string {
+  let routePath = res.req.route?.path || "";
+
+  // If a middleware responds (e.g. to serve static files), there won’t be a
+  // route. If the request was successful or was a *server* error, use the
+  // requested URL. (These conditions are mainly to strip the wide variety of
+  // bad or malicious requests for non-existent URLs.)
+  if (!routePath && (res.statusCode < 300 || res.statusCode >= 500)) {
+    routePath = res.req.originalUrl.split("?", 1)[0];
+  }
+
   return replacePipeChar(routePath);
 }
 
@@ -49,7 +58,7 @@ export function datadogMiddleware(
     req.startTime = new Date();
   }
   res.on("finish", function () {
-    const route = getRoute(req);
+    const route = getRoute(res);
     const statTags = [];
 
     if (route.length > 0) {
