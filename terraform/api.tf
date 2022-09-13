@@ -262,32 +262,32 @@ resource "aws_cloudfront_distribution" "univaf_api" {
 # -----------------------------------------------------------------------------
 # NOT USED FOR PRODUCTION -- TESTING CLOUDFRONT IN FRONT OF RENDER
 
-# First we have to point DNS directly at Render so it can validate that it's ok
-# for it to respond to this hostname.
-resource "aws_route53_record" "api_render_domain_record" {
-  count   = var.api_remote_domain_name_test != "" ? 1 : 0
-  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = "render"
-  type    = "CNAME"
-  records = [var.api_remote_domain_name_test]
-  ttl     = 300
-}
-
-# # ...then we turn off the above record and replace it with this one that
-# # at CloudFront.
+# # First we have to point DNS directly at Render so it can validate that it's ok
+# # for it to respond to this hostname.
 # resource "aws_route53_record" "api_render_domain_record" {
-#   count = var.domain_name != "" ? 1 : 0
-
+#   count   = var.api_remote_domain_name_test != "" ? 1 : 0
 #   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-#   name    = "render.${var.domain_name}"
-#   type    = "A"
-
-#   alias {
-#     name                   = aws_cloudfront_distribution.univaf_api_render[0].domain_name
-#     zone_id                = aws_cloudfront_distribution.univaf_api_render[0].hosted_zone_id
-#     evaluate_target_health = false
-#   }
+#   name    = "render"
+#   type    = "CNAME"
+#   records = [var.api_remote_domain_name_test]
+#   ttl     = 300
 # }
+
+# ...then we turn off the above record and replace it with this one that
+# at CloudFront.
+resource "aws_route53_record" "api_render_domain_record" {
+  count = var.domain_name != "" ? 1 : 0
+
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "render.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.univaf_api_render[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api_render[0].hosted_zone_id
+    evaluate_target_health = false
+  }
+}
 
 resource "aws_cloudfront_distribution" "univaf_api_render" {
   count       = var.ssl_certificate_arn_render_test != "" ? 1 : 0
@@ -297,7 +297,7 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
 
   origin {
     origin_id   = "render-test-origin"
-    domain_name = "api-server-phc8.onrender.com"
+    domain_name = var.api_remote_domain_name_test
 
     custom_origin_config {
       http_port              = 80
