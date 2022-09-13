@@ -1,9 +1,5 @@
 # Configure deployment on Render.com infrastructure.
 # For info on options, see: https://render.com/docs/blueprint-spec
-#
-# THIS IS AN EXPERIMENT. Our primary deployment is still on AWS, but we hope to
-# switch to this if it works well and is not too expensive. See:
-# https://github.com/usdigitalresponse/univaf/issues/683
 
 databases:
   - name: univaf-db
@@ -96,7 +92,7 @@ services:
       - *DD_AGENT_HOST
       - *DB_URL
       - key: DATA_SNAPSHOT_S3_BUCKET
-        value: "univaf-render-test-data-snapshots"
+        value: "univaf-data-snapshots"
       - key: AWS_ACCESS_KEY_ID
         sync: false
       - key: AWS_SECRET_ACCESS_KEY
@@ -241,8 +237,7 @@ envVarGroups:
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
-        # FIXME: should be 'production' if/when we turn off AWS
-        value: render
+        value: production
       - key: DB_POOL_SIZE_AVAILABILITY
         value: "5"
 
@@ -261,5 +256,4 @@ envVarGroups:
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
-        # FIXME: should be 'production' if/when we turn off AWS
-        value: render
+        value: production
