@@ -50,3 +50,9 @@ variable "subnets" {
 variable "env_vars" {
   default = {}
 }
+
+variable "enabled" {
+  description = "Whether the task should actually run as scheduled"
+  type        = bool
+  default     = true
+}

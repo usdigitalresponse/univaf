@@ -193,13 +193,14 @@ module "vts_geo_loader" {
   source = "./modules/loader"
 
   name          = "vtsGeo"
+  enabled       = false
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "vtsGeo"
   command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "cron(1 1 1 1 ? 1970)" # don't ever schedule a run
+  schedule      = "cron(1 1 1 1 ? 1970)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id

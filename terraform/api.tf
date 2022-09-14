@@ -139,17 +139,21 @@ module "daily_data_snapshot_task" {
   }
 }
 
-module "daily_data_snapshot_schedule" {
-  source = "./modules/schedule"
+# NOTE: This schedule is commented out so that the snapshot task does not run,
+# but is quick to turn back on if we find we need to (e.g. something goes
+# horribly wrong with Render in production, and we need to switch back to AWS.)
+#
+# module "daily_data_snapshot_schedule" {
+#   source = "./modules/schedule"
 
-  name            = module.daily_data_snapshot_task.name
-  schedule        = "cron(0 5 * * ? *)"
-  role            = aws_iam_role.ecs_task_execution_role.arn
-  cluster_arn     = aws_ecs_cluster.main.arn
-  subnets         = aws_subnet.public.*.id
-  security_groups = [aws_security_group.ecs_tasks.id]
-  task_arn        = module.daily_data_snapshot_task.arn
-}
+#   name            = module.daily_data_snapshot_task.name
+#   schedule        = "cron(0 5 * * ? *)"
+#   role            = aws_iam_role.ecs_task_execution_role.arn
+#   cluster_arn     = aws_ecs_cluster.main.arn
+#   subnets         = aws_subnet.public.*.id
+#   security_groups = [aws_security_group.ecs_tasks.id]
+#   task_arn        = module.daily_data_snapshot_task.arn
+# }
 
 resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
   name              = "/ecs/${module.daily_data_snapshot_task.name}"
@@ -210,13 +214,14 @@ resource "aws_cloudwatch_log_stream" "api_log_stream" {
 
 # Add API server caching (enabled only if var.domain and var.ssl_certificate_arn are provided)
 resource "aws_cloudfront_distribution" "univaf_api" {
-  count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
-  enabled     = true
-  price_class = "PriceClass_100" # North America
-  aliases     = [var.domain_name, "www.${var.domain_name}"]
+  count        = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
+  enabled      = true
+  price_class  = "PriceClass_100" # North America
+  aliases      = [var.domain_name, "www.${var.domain_name}"]
+  http_version = "http2and3"
 
   origin {
-    origin_id   = var.domain_name
+    origin_id = var.domain_name
     # TODO: this should *just* point to the remote domain once the rest of our
     # AWS infrastructure is removed.
     domain_name = var.api_remote_domain_name != "" ? var.api_remote_domain_name : aws_alb.main.dns_name
@@ -249,84 +254,6 @@ resource "aws_cloudfront_distribution" "univaf_api" {
 
   viewer_certificate {
     acm_certificate_arn = var.ssl_certificate_arn
-    ssl_support_method  = "sni-only"
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-}
-
-# -----------------------------------------------------------------------------
-# NOT USED FOR PRODUCTION -- TESTING CLOUDFRONT IN FRONT OF RENDER
-
-# # First we have to point DNS directly at Render so it can validate that it's ok
-# # for it to respond to this hostname.
-# resource "aws_route53_record" "api_render_domain_record" {
-#   count   = var.api_remote_domain_name_test != "" ? 1 : 0
-#   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-#   name    = "render"
-#   type    = "CNAME"
-#   records = [var.api_remote_domain_name_test]
-#   ttl     = 300
-# }
-
-# ...then we turn off the above record and replace it with this one that
-# at CloudFront.
-resource "aws_route53_record" "api_render_domain_record" {
-  count = var.domain_name != "" ? 1 : 0
-
-  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = "render.${var.domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.univaf_api_render[0].domain_name
-    zone_id                = aws_cloudfront_distribution.univaf_api_render[0].hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-resource "aws_cloudfront_distribution" "univaf_api_render" {
-  count       = var.ssl_certificate_arn_render_test != "" ? 1 : 0
-  enabled     = true
-  price_class = "PriceClass_100" # North America
-  aliases     = ["render.${var.domain_name}"]
-
-  origin {
-    origin_id   = "render-test-origin"
-    domain_name = var.api_remote_domain_name_test
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
-      origin_protocol_policy = "https-only"
-    }
-  }
-
-  default_cache_behavior {
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "render-test-origin"
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    max_ttl                = 3600
-
-    forwarded_values {
-      headers      = ["Host", "Origin"]
-      query_string = true
-
-      cookies {
-        forward = "none"
-      }
-    }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn = var.ssl_certificate_arn_render_test
     ssl_support_method  = "sni-only"
   }
 
