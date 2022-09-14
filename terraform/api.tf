@@ -221,7 +221,7 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   http_version = "http2and3"
 
   origin {
-    origin_id   = var.domain_name
+    origin_id = var.domain_name
     # TODO: this should *just* point to the remote domain once the rest of our
     # AWS infrastructure is removed.
     domain_name = var.api_remote_domain_name != "" ? var.api_remote_domain_name : aws_alb.main.dns_name
