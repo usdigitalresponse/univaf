@@ -210,10 +210,11 @@ resource "aws_cloudwatch_log_stream" "api_log_stream" {
 
 # Add API server caching (enabled only if var.domain and var.ssl_certificate_arn are provided)
 resource "aws_cloudfront_distribution" "univaf_api" {
-  count       = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
-  enabled     = true
-  price_class = "PriceClass_100" # North America
-  aliases     = [var.domain_name, "www.${var.domain_name}"]
+  count        = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
+  enabled      = true
+  price_class  = "PriceClass_100" # North America
+  aliases      = [var.domain_name, "www.${var.domain_name}"]
+  http_version = "http2and3"
 
   origin {
     origin_id   = var.domain_name
