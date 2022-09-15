@@ -19,6 +19,7 @@ import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 import { minimumAgeForProducts } from "./vaccines";
 import { dogstatsd } from "./datadog";
+import { callWithSpan } from "./tracing";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
@@ -86,7 +87,7 @@ export async function createLocation(
   data: any,
   { source = "unknown" } = {}
 ): Promise<ProviderLocation> {
-  data = validateLocationInput(data, true);
+  data = callWithSpan(validateLocationInput, data, true);
 
   const now = new Date();
   const sqlData: { [index: string]: string } = {
@@ -165,7 +166,8 @@ export async function updateLocation(
   data: any,
   { mergeSubfields = true, source = "unknown" } = {}
 ): Promise<void> {
-  data = validateLocationInput(data);
+  data = callWithSpan(validateLocationInput, data);
+
   const sqlData: any = { updated_at: new Date() };
 
   for (let [key, value] of Object.entries(data)) {
@@ -583,7 +585,7 @@ export async function updateAvailability(
   id: string,
   data: AvailabilityInput
 ): Promise<{ action: string; locationId: string }> {
-  data = validateAvailabilityInput(data);
+  data = callWithSpan(validateAvailabilityInput, data);
   const {
     source,
     available = Availability.UNKNOWN,
