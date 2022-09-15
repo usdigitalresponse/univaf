@@ -3,7 +3,7 @@ import type { Knex as KnexType } from "knex";
 import * as Sentry from "@sentry/node";
 import { logger } from "./logger";
 import { getHostInstance, loadDbConfig } from "./config";
-import { dogstatsd } from "./datadog";
+import { dogMetrics } from "./datadog";
 
 export function createDbClient(label: string): KnexType<any, unknown[]> {
   const client = Knex(loadDbConfig(label));
@@ -16,14 +16,14 @@ export function createDbClient(label: string): KnexType<any, unknown[]> {
   function logPoolSize() {
     const poolSize = pool.numUsed() + pool.numFree();
     logger.debug(`${instanceName} ${label} DB pool size: ${poolSize}`);
-    dogstatsd.gauge(`${poolStatName}.size`, poolSize);
+    dogMetrics.gauge(`${poolStatName}.size`, poolSize);
   }
   pool.on("createSuccess", logPoolSize);
   pool.on("destroySuccess", logPoolSize);
 
   // Keep track of pending acquires (i.e. how backed up are we).
   function logPendingAcquires() {
-    dogstatsd.gauge(
+    dogMetrics.gauge(
       `${poolStatName}.pending_acquires`,
       pool.numPendingAcquires()
     );
@@ -38,7 +38,7 @@ export function createDbClient(label: string): KnexType<any, unknown[]> {
     const startTime = acquireTimes.get(eventId);
     if (startTime) {
       acquireTimes.delete(eventId);
-      dogstatsd.histogram(
+      dogMetrics.histogram(
         `${poolStatName}.acquire_time`,
         Date.now() - startTime
       );

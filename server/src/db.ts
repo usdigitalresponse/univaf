@@ -18,7 +18,7 @@ import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 import { minimumAgeForProducts } from "./vaccines";
-import { dogstatsd } from "./datadog";
+import { dogMetrics } from "./datadog";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
@@ -117,7 +117,7 @@ export async function createLocation(
 
     const locationId = inserted.rows[0].id;
     await addExternalIds(locationId, data.external_ids, tx);
-    dogstatsd.increment("db.locations.created.count", [`source:${source}`]);
+    dogMetrics.increment("db.locations.created.count", 1, [`source:${source}`]);
     return locationId;
   });
   return await getLocationById(locationId, { includePrivate: true });
@@ -190,7 +190,7 @@ export async function updateLocation(
     }
   });
 
-  dogstatsd.increment("db.locations.updated.count", [`source:${source}`]);
+  dogMetrics.increment("db.locations.updated.count", 1, [`source:${source}`]);
 }
 
 /**
@@ -680,7 +680,9 @@ export async function updateAvailability(
     }
 
     result = { locationId: id, action: "update" };
-    dogstatsd.increment("db.availability.updated.count", [`source:${source}`]);
+    dogMetrics.increment("db.availability.updated.count", 1, [
+      `source:${source}`,
+    ]);
   } else {
     try {
       await db("availability").insert({
@@ -699,7 +701,7 @@ export async function updateAvailability(
         changed_at: valid_at,
       });
       result = { locationId: id, action: "create" };
-      dogstatsd.increment("db.availability.created.count", [
+      dogMetrics.increment("db.availability.created.count", 1, [
         `source:${source}`,
       ]);
     } catch (error) {

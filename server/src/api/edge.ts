@@ -1,7 +1,7 @@
 "use strict";
 
 import { Request, Response } from "express";
-import { dogstatsd } from "../datadog";
+import { dogMetrics } from "../datadog";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
 import { AppRequest } from "../middleware";
@@ -312,8 +312,8 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
   }
   res.json({ data: result });
 
-  dogstatsd.increment("api.received.updates.count", [`source:${source}`]);
-  dogstatsd.histogram("api.received.updates.bytes", req.bodyByteLength, [
+  dogMetrics.increment("api.received.updates.count", 1, [`source:${source}`]);
+  dogMetrics.histogram("api.received.updates.bytes", req.bodyByteLength, [
     `source:${source}`,
   ]);
 };
