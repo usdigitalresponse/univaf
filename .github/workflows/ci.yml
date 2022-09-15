@@ -67,6 +67,8 @@ jobs:
         run: |
           cd server
           npm run test
+          # Test the datadog components when using the API instead of StatsD.
+          DATADOG_USE_API='true' npm test datadog
         env:
           DB_HOST: localhost
           DB_PORT: 5432

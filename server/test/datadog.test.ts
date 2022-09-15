@@ -1,7 +1,11 @@
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";
 import app from "../src/app";
-import { datadogMiddleware, MonitoredRequest, dogstatsd } from "../src/datadog";
+import {
+  datadogMiddleware,
+  MonitoredRequest,
+  dogMetrics,
+} from "../src/datadog";
 import { Response } from "express";
 
 installTestDatabaseHooks();
@@ -18,7 +22,12 @@ describe("datadog middleware", () => {
   const context = useServerForTests(app);
 
   afterEach(() => {
-    dogstatsd.mockBuffer = [];
+    if ("mockBuffer" in dogMetrics) {
+      dogMetrics.mockBuffer = [];
+    } else {
+      // @ts-expect-error dogMetrics.aggregator is not in the typings.
+      dogMetrics.aggregator.flush();
+    }
   });
 
   it("should call next() once", () => {
@@ -36,19 +45,38 @@ describe("datadog middleware", () => {
     const res = await context.client.get<any>("api/edge/locations");
     expect(res.statusCode).toBe(200);
 
-    const middlewareMetrics = dogstatsd.mockBuffer.filter((s) =>
-      s.startsWith("node.express.router.")
-    );
-    expect(middlewareMetrics).toHaveLength(2);
+    if ("mockBuffer" in dogMetrics) {
+      // One of this stat, with a value of 1, and a correct response_code tag.
+      const responseCounts = dogMetrics.mockBuffer.filter((s) =>
+        s.startsWith("node.express.router.response_total:")
+      );
+      expect(responseCounts).toHaveLength(1);
+      expect(responseCounts[0]).toMatch(/^[\w.]+:1\b/);
+      expect(responseCounts[0]).toMatch(/\bresponse_code:200\b/);
 
-    expect(dogstatsd.mockBuffer).toContainEqual(
-      expect.stringMatching(
-        /^node\.express\.router\.response_total:1\|c\|#.*response_code:200.*/
-      )
-    );
-    expect(dogstatsd.mockBuffer).toContainEqual(
-      expect.stringMatching(/^node\.express\.router\.response_time:/)
-    );
+      // One of this stat.
+      const responseTimes = dogMetrics.mockBuffer.filter((s) =>
+        s.startsWith("node.express.router.response_time:")
+      );
+      expect(responseTimes).toHaveLength(1);
+    } else {
+      // @ts-expect-error They typings are missing `aggregator`.
+      const buffer: any[] = Object.values(dogMetrics.aggregator.buffer);
+      const responseCounts = buffer.filter(
+        (m) => m.key === "node.express.router.response_total"
+      );
+      expect(responseCounts).toHaveLength(1);
+      expect(responseCounts[0]).toHaveProperty("value", 1);
+      expect(responseCounts[0]).toHaveProperty(
+        "tags",
+        expect.arrayContaining(["response_code:200"])
+      );
+
+      const responseTimes = buffer.filter(
+        (m) => m.key === "node.express.router.response_time"
+      );
+      expect(responseTimes).toHaveLength(1);
+    }
   });
 
   it("should have correct metrics on two endpoint calls", async () => {
@@ -60,12 +88,21 @@ describe("datadog middleware", () => {
     res = await context.client.get<any>(`api/edge/locations/x`, { retry: 0 });
     expect(res.statusCode).toBe(404);
 
-    expect(
-      dogstatsd.mockBuffer.filter((s) =>
-        /^node\.express\.router\.response_total:1\|c\|#.*route:\/api\/edge\/locations\/:id.*response_code:404.*/.test(
-          s
-        )
-      )
-    ).toHaveLength(2);
+    if ("mockBuffer" in dogMetrics) {
+      const responseCounts = dogMetrics.mockBuffer.filter((s) =>
+        s.startsWith("node.express.router.response_total:")
+      );
+      expect(responseCounts).toHaveLength(2);
+      expect(responseCounts[0]).toMatch(/\bresponse_code:404\b/);
+      expect(responseCounts[1]).toMatch(/\bresponse_code:404\b/);
+    } else {
+      // @ts-expect-error They typings are missing `aggregator`.
+      const buffer: any[] = Object.values(dogMetrics.aggregator.buffer);
+      const responseCounts = buffer.filter(
+        (m) => m.key === "node.express.router.response_total"
+      );
+      expect(responseCounts).toHaveLength(1);
+      expect(responseCounts[0]).toHaveProperty("value", 2);
+    }
   });
 });
