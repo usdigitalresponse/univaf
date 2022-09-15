@@ -3,6 +3,7 @@
 Documents in this folder are a general guide to manipulating and maintaining the [getmyvax.org](https://getmyvax.org) deployment of this software. Since this project is open-source, some things are described in general terms, and you may need to look elsewhere or ask other project members on Slack for details like server addresses, resource names, credentials, etc.
 
 - [General Overview](#general-overview)
+    - [Render](#render)
     - [AWS](#aws)
     - [Other Services](#other-services)
 - [Deployment](#deployment)
@@ -15,7 +16,7 @@ Documents in this folder are a general guide to manipulating and maintaining the
 
 ### Render
 
-Most of the infrastructure and services that support this project run in [Render][] (with a few items in AWS; see below). Render monitors this GitHub repository for changes and will build and re-deploy the various services as needed. We run most things in AWS, but Render provides higher-level tooling that is much easier to manage and fits our needs pretty well.
+Most of the infrastructure and services that support this project run in [Render][] (with a few items in AWS; see below). Render monitors this GitHub repository for changes and will build and re-deploy the various services as needed. (We used to run everything in AWS, but Render provides higher-level tooling that is much easier to manage and fits our needs pretty well.)
 
 The configuration for all our Render services is managed in [`render.yaml`](../../render.yaml) in the root of this repo. You can find documentation for what you can do in that file at https://render.com/docs/infrastructure-as-code.
 
@@ -34,12 +35,13 @@ What services run in Render?
 
 ### AWS
 
-We use AWS for a few things that Render can’t do right now. Like Render, we manage all our AWS resources in code via *Terraform Cloud*, and the configuration files live in the [`terraform`](../../terraform) directory. Any time files in the `terraform` directory change on the `main` branch, Terraform Cloud will automatically apply the current configuration files.
+We use AWS for a few things that Render can’t do right now. All our AWS resources are managed in code via *Terraform Cloud*, and the configuration files live in the [`terraform`](../../terraform) directory. Any time files in the `terraform` directory change on the `main` branch, Terraform Cloud will automatically apply the current configuration files.
 
 What resources are in AWS?
 
 - DNS for `getmyvax.org` and subdomains.
-- A publicly accessible S3 bucket that stores historical data and logs for analysis. (The “snapshot” cron job in Render writes to this bucket nightly.)
+- CloudFront for basic caching in front of the API. (The API’s usage today is relatively low; this mainly functions to keep things stable in case of sudden load or an attack.)
+- A publicly accessible S3 bucket that stores historical data and logs for analysis. (The “daily data snapshot” cron job in Render writes to this bucket nightly.)
 
 *NOTE: we used to run all our services in AWS, so you’ll find more complex Terraform files in this repo’s history. You might also find some legacy resources in AWS that are still being cleaned up.*
 
@@ -65,7 +67,7 @@ Please get in touch with a project lead for access to any of these systems.
 
 ### Build & Deploy
 
-**Most of our production code builds and runs automatically on Render.** Every time a new commit lands on the `main` branch, Render will attempt to build and deploy it. If you need to trigger a deploy manually, log into the [Render dashboard][], click on the service you want to deploy, and click the “manual deploy” button.
+**Most of our production code builds and runs automatically on Render.** Every time a new commit lands on the `main` branch, Render will attempt to build and deploy it. If you need to trigger a deploy manually, log into the [Render dashboard][render-dashboard], click on the service you want to deploy, and click the “manual deploy” button.
 
 ![Manually deploying to Render](../_assets/render-manual-deploy.png)
 
