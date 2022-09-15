@@ -253,6 +253,8 @@ envVarGroups:
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
         value: production
+      - key: DATADOG_API_KEY
+        sync: false
       - key: DB_POOL_SIZE_AVAILABILITY
         value: "5"
 
