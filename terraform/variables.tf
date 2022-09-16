@@ -65,29 +65,6 @@ variable "db_size" {
 variable "api_key" {
 }
 
-variable "cvs_api_key" {
-  description = "The CVS API Key"
-  sensitive   = true
-}
-
-variable "rite_aid_api_url" {
-  description = "The Rite Aid API URL"
-  default     = "https://api.riteaid.com/digital/Covid19-Vaccine/ProviderDetails"
-}
-
-variable "rite_aid_api_key" {
-  description = "The Rite Aid API Key"
-  sensitive   = true
-}
-
-variable "njvss_aws_key_id" {
-  sensitive = true
-}
-
-variable "njvss_aws_secret_key" {
-  sensitive = true
-}
-
 variable "ssl_certificate_arn" {
   description = "To enable HTTPS, the ARN of an SSL certificate created with ACM in us-east-1"
   default     = ""
@@ -128,12 +105,6 @@ variable "api_sentry_traces_sample_rate" {
     condition     = var.api_sentry_traces_sample_rate >= 0.0 && var.api_sentry_traces_sample_rate <= 1.0
     error_message = "The api_sentry_traces_sample_rate variable must be between 0 and 1."
   }
-}
-
-variable "loader_sentry_dsn" {
-  description = "The Sentry.io DSN to use for the loaders"
-  default     = ""
-  sensitive   = true
 }
 
 variable "data_snapshot_s3_bucket" {
