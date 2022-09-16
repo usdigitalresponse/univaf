@@ -112,14 +112,6 @@ variable "data_snapshot_s3_bucket" {
   default     = "univaf-data-snapshots"
 }
 
-variable "data_snapshot_aws_key_id" {
-  sensitive = true
-}
-
-variable "data_snapshot_aws_secret_key" {
-  sensitive = true
-}
-
 variable "datadog_api_key" {
   sensitive = true
 }
