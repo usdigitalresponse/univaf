@@ -177,19 +177,23 @@ resource "aws_cloudwatch_log_stream" "api_log_stream" {
 }
 
 
-# Add API server caching (enabled only if var.domain and var.ssl_certificate_arn are provided)
+# Use CloudFront as a caching layer in front of the API server (Render does not
+# provide a built-in one). Enabled only if var.domain, var.api_remote_domain and
+# var.ssl_certificate_arn are provided.
 resource "aws_cloudfront_distribution" "univaf_api" {
-  count        = var.domain_name != "" && var.ssl_certificate_arn != "" ? 1 : 0
+  count = (
+    var.domain_name != ""
+    && var.ssl_certificate_arn != ""
+    && var.api_remote_domain_name != "" ? 1 : 0
+  )
   enabled      = true
   price_class  = "PriceClass_100" # North America
   aliases      = [var.domain_name, "www.${var.domain_name}"]
   http_version = "http2and3"
 
   origin {
-    origin_id = var.domain_name
-    # TODO: this should *just* point to the remote domain once the rest of our
-    # AWS infrastructure is removed.
-    domain_name = var.api_remote_domain_name != "" ? var.api_remote_domain_name : aws_alb.main.dns_name
+    origin_id   = var.domain_name
+    domain_name = var.api_remote_domain_name
 
     custom_origin_config {
       http_port              = 80
