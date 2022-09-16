@@ -72,7 +72,7 @@ services:
   - name: "Daily Data Snapshot"
     region: oregon
     type: cron
-    schedule: "0 5 * * *"
+    schedule: "0 1 * * *"
     # The main bottleneck on this job is actually uploading to S3; even minimal
     # CPU/memory don't impact overall run time.
     plan: starter
