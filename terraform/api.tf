@@ -121,16 +121,16 @@ module "api_task" {
 # The data_snapshot_log_* resources are associated with a task that no longer
 # runs, but we are preserving the logs for a little while longer.
 resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
-  name              = "/ecs/${module.daily_data_snapshot_task.name}"
+  name              = "/ecs/daily-data-snapshot"
   retention_in_days = 30
 
   tags = {
-    Name = module.daily_data_snapshot_task.name
+    Name = "daily-data-snapshot"
   }
 }
 
 resource "aws_cloudwatch_log_stream" "data_snapshot_log_stream" {
-  name           = "${module.daily_data_snapshot_task.name}-log-stream"
+  name           = "daily-data-snapshot-log-stream"
   log_group_name = aws_cloudwatch_log_group.data_snapshot_log_group.name
 }
 
