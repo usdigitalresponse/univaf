@@ -14,6 +14,14 @@ databases:
     ipAllowList: []
 
 services:
+  # Run the DataDog agent as a separate service, effectively making it a proxy
+  # for custom metrics sending from our other services.
+  #
+  # While this is recommended by Render, it's definitely not what the agent was
+  # designed for and involves plenty of caveats about metrics management. One
+  # of these is that it sends a lot of system metrics that are pointless, since
+  # it is on virtual machine all by itself with nothing else utilizing the
+  # system in a meaningful way. We "fix" that using the `ECS_FARGATE` env var.
   - name: DataDog Agent
     region: oregon
     type: pserv
@@ -26,6 +34,10 @@ services:
         sync: false
       - key: DD_SITE
         sync: false
+      # HACK: Make the agent think it is on Fargate, preventing it from sending
+      # pointless system metrics (since nothing else is running on this system).
+      - key: ECS_FARGATE
+        value: "true"
 
   - name: API Server
     region: oregon
