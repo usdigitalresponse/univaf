@@ -18,10 +18,6 @@ variable "api_port" {
   default     = 3000
 }
 
-variable "health_check_path" {
-  default = "/health"
-}
-
 variable "db_password" {
   description = "The password for the database instance, filled via Terraform"
   sensitive   = true
@@ -67,30 +63,9 @@ variable "api_remote_domain_name" {
   default     = ""
 }
 
-variable "api_sentry_dsn" {
-  description = "The Sentry.io DSN to use for the API service"
-  default     = ""
-  sensitive   = true
-}
-
-variable "api_sentry_traces_sample_rate" {
-  description = "The sample rate for Sentry performance monitoring"
-  type        = number
-  default     = 0.01
-
-  validation {
-    condition     = var.api_sentry_traces_sample_rate >= 0.0 && var.api_sentry_traces_sample_rate <= 1.0
-    error_message = "The api_sentry_traces_sample_rate variable must be between 0 and 1."
-  }
-}
-
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
   default     = "univaf-data-snapshots"
-}
-
-variable "datadog_api_key" {
-  sensitive = true
 }
 
 # These AWS variables are present to clean up warnings in terraform
