@@ -87,39 +87,9 @@ resource "aws_route53_record" "api_www_domain_record" {
   ttl     = 300
 }
 
-module "api_task" {
-  source = "./modules/task"
 
-  name   = "api"
-  image  = "${aws_ecr_repository.server_repository.repository_url}:${var.api_release_version}"
-  role   = aws_iam_role.ecs_task_execution_role.arn
-  cpu    = var.cpu
-  memory = var.memory
-  port   = var.api_port
-
-  # Enable Datadog
-  datadog_enabled = true
-  datadog_api_key = var.datadog_api_key
-
-  env_vars = {
-    RELEASE                   = var.api_release_version
-    DB_HOST                   = module.db.host
-    DB_NAME                   = module.db.db_name
-    DB_USERNAME               = var.db_user
-    DB_PASSWORD               = var.db_password
-    API_KEYS                  = var.api_key
-    SENTRY_DSN                = var.api_sentry_dsn
-    SENTRY_TRACES_SAMPLE_RATE = format("%.2f", var.api_sentry_traces_sample_rate)
-    PRIMARY_HOST              = var.domain_name
-    ENV                       = "production"
-  }
-
-  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
-}
-
-
-# The data_snapshot_log_* resources are associated with a task that no longer
-# runs, but we are preserving the logs for a little while longer.
+# These log groups and streams are associated with a tasks that no longer run,
+# but we are preserving the logs for a little while longer.
 resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
   name              = "/ecs/daily-data-snapshot"
   retention_in_days = 30
@@ -134,34 +104,6 @@ resource "aws_cloudwatch_log_stream" "data_snapshot_log_stream" {
   log_group_name = aws_cloudwatch_log_group.data_snapshot_log_group.name
 }
 
-
-resource "aws_ecs_service" "main" {
-  name            = "api"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = module.api_task.arn
-  desired_count   = var.api_count
-  launch_type     = "FARGATE"
-
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-
-  network_configuration {
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    subnets          = aws_subnet.private.*.id
-    assign_public_ip = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_alb_target_group.api.id
-    container_name   = "api"
-    container_port   = var.api_port
-  }
-
-  depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
-}
-
-# Set up CloudWatch group and log stream and retain logs for 30 days
 resource "aws_cloudwatch_log_group" "api_log_group" {
   name              = "/ecs/api"
   retention_in_days = 30
