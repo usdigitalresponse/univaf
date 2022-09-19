@@ -30,6 +30,24 @@ const PROVIDER = {
   walmart: "walmart",
 };
 
+const VACCINE_NAMES = {
+  "Janssen (J&J) (18 and older)": VaccineProduct.janssen,
+  "Moderna_Peds_DarkBlueCap (6 - 11 years)": VaccineProduct.modernaAge6_11,
+  "Moderna_RedCap (12 and older)": VaccineProduct.moderna,
+  "Novavax (12 and older)": VaccineProduct.novavax,
+  "Pfizer_GrayCap (12 and older)": VaccineProduct.pfizer,
+  "Pfizer_Peds (5 - 11 years)": VaccineProduct.pfizerAge5_11,
+  "Pfizer_PurpleCap (12 and older)": VaccineProduct.pfizer,
+  "Booster Janssen (J&J) (18 and older)": VaccineProduct.janssen,
+  "Booster Moderna_DarkBlueCap (18 and older)": VaccineProduct.modernaBa4Ba5,
+  "Booster Pfizer_Peds (5 - 11 years)": VaccineProduct.pfizerAge5_11,
+  "Booster Pfizer_PurpleCap (12 and older)": VaccineProduct.pfizer,
+  "Moderna_Peds (6 months - 5 years)": VaccineProduct.modernaAge0_5,
+  "Pfizer_Peds (6 months - 4 years)": VaccineProduct.pfizerAge0_4,
+  "Booster Pfizer_GrayCap (12 and older)": VaccineProduct.pfizerBa4Ba5,
+  "Booster Moderna_RedCap (18 and older)": VaccineProduct.moderna,
+};
+
 const warn = createWarningLogger("njvss");
 
 // TODO: clean up the no-longer-relevant logs in this module that use this
@@ -386,29 +404,23 @@ function createNjIisId(location) {
  * @returns an array of strings representing which vaccines are available
  */
 function parseVaccineProducts(text) {
-  const result = [];
+  return [...text.matchAll(/<li>(?<vaccineName>.*?)<\/li>/gi)]
+    .map((match) => {
+      if (Object.hasOwn(VACCINE_NAMES, match.groups.vaccineName)) {
+        return VACCINE_NAMES[match.groups.vaccineName];
+      }
 
-  if (text.includes("<li>Moderna COVID-19 Vaccine</li>")) {
-    result.push(VaccineProduct.moderna);
-  }
-
-  if (text.includes("<li>Pfizer-BioNTech COVID-19 Vaccine</li>")) {
-    result.push(VaccineProduct.pfizer);
-  }
-
-  if (
-    text.includes(
-      "<li>Pediatrics Pfizer Covid-19 Vaccine for age (5-11) years</li>"
-    )
-  ) {
-    result.push(VaccineProduct.pfizerAge5_11);
-  }
-
-  if (text.includes("<li>Janssen (J&J) COVID-19 Vaccine</li>")) {
-    result.push(VaccineProduct.janssen);
-  }
-
-  return result;
+      warn(
+        `Unknown vaccine: "${match.groups.vaccineName}"`,
+        {
+          foundName: match.groups.vaccineName,
+          text,
+        },
+        true
+      );
+      return null;
+    })
+    .filter(Boolean);
 }
 
 /**
