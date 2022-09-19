@@ -30,6 +30,58 @@ When troubleshooting issues, you might need to log directly into the database an
 Please take special care when logging directly into the production database; you’re working with live data!
 
 
+## Copying the Database
+
+**First: do you really need to make a raw copy of the database for you situation?** If you just need a frozen copy of some of the data the database has, you should download a snapshot of one (or all) the tables at http://univaf-data-snapshots.s3.amazonaws.com/.
+
+If you really need raw SQL data, then the most straightforward way to do this is with `pg_dump`:
+
+1. Log into a server inside Render’s datacenter first, [as described above](#logging-in-with-psql). For this situation, you may want to create a whole new temporary service with an attached disk to log into, since the database dump may be large.
+
+2. Once you are logged into a shell with access to the database, dump a copy with `pg_dump`. In most cases, you’ll want to skip the `availability_log` table, since it is extremely large. If you need to keep it, try to do your copying work immediately after the “Daily Data Snapshot” job runs so you have the least excess data to worry about.
+
+    To dump a copy without `availability_log` data:
+
+    ```sh
+    # Dump schema + data for everything except availability_log
+    # (The log has too much data, and is not really important to copy most of time.)
+    pg_dump -d "${DATABASE_CONNECTION_STRING}" \
+        --no-owner \
+        --exclude-table availability_log \
+        > /data/univaf_dump.sql
+
+    # Add *schema* for availability_log
+    pg_dump -d "${DATABASE_CONNECTION_STRING}" \
+        --no-owner \
+        --schema-only \
+        --table availability_log \
+        >> /data/univaf_dump.sql
+    ```
+
+    To dump a complete copy, including `availability_log`:
+
+    ```sh
+    pg_dump -d "${DATABASE_CONNECTION_STRING}" \
+        --no-owner \
+        > /data/univaf_dump.sql
+    ```
+
+
+## Restoring a Database Dump
+
+If you’ve made a copy of the database with `pg_dump`, you can restore it into an empty database with `psql`:
+
+1. Log into a server inside Render’s datacenter first, [as described above](#logging-in-with-psql).
+
+2. Put that data in the new database! From your shell session:
+
+    ```sh
+    psql -d "${NEW_DATABASE_CONNECTION_STRING}" < /path/to/your/dump.sql
+    ```
+
+3. Log into the new database with `psql` and make sure the tables are populated.
+
+
 ## Understanding Table Sizes
 
 Render doesn’t provide great tools for taking a detailed look at the database, and if you are running low on disk space or need to understand what’s taking up resources, you may need to log in with `psql` and run some queries.
@@ -88,42 +140,10 @@ If a table gets too big and you need to save disk space on the database server, 
 
 4. Once the above steps are done, wait until a low usage time, or your planned maintenance window to do the rest of the work. Suspend all the loaders (so they stop writing new data; anything new after the next step will be lost until you are done). *Consider* suspending the API Server, although that’s not necessarily required.
 
-5. Use `pg_dump` to make a copy of the existing database. It has the same access restrictions as `psql`, so you’ll need to log into a server inside Render’s datacenter first, [as described above](#logging-in-with-psql). For this situation, you may want to create a whole new temporary service with an attached disk, since the database dump may be large.
+5. Follow the directions under [“Copying the Database”](#copying-the-database) to use `pg_dump` to make a copy of the existing database. You’ll probably want to follow the approach that skips the `availability_log` table.
 
-6. Once you are logged into a shell with access to the database, dump a copy with `pg_dump`. In most cases, you’ll want to skip the `availability_log` table, since it is extremely large. If you need to keep it, try to do your copying work immediately after the “Daily Data Snapshot” job runs so you have the least excess data to worry about.
+7. Put that data in the new database! Follow the directions under [“Restoring a Database Dump”](#restoring-a-database-dump).
 
-    To dump a copy without `availability_log` data:
-
-    ```sh
-    # Dump schema + data for everything except availability_log
-    # (The log has too much data, and is not really important to copy most of time.)
-    pg_dump -d "${OLD_DATABASE_CONNECTION_STRING}" \
-        --no-owner \
-        --exclude-table availability_log \
-        > /data/univaf_dump.sql
-
-    # Add *schema* for availability_log
-    pg_dump -d "${OLD_DATABASE_CONNECTION_STRING}" \
-        --no-owner \
-        --schema-only \
-        --table availability_log \
-        >> /data/univaf_dump.sql
-    ```
-    
-    To dump a complete copy, including `availability_log`:
-    
-    ```sh
-    pg_dump -d "${OLD_DATABASE_CONNECTION_STRING}" \
-        --no-owner \
-        > /data/univaf_dump.sql
-    ```
-    
-7. Put that data in the new database! From the same shell session:
-
-    ```sh
-    psql -d "${NEW_DATABASE_CONNECTION_STRING}" < /data/univaf_dump.sql
-    ```
-    
 8. Update all the services in the `render.yaml` file that pull their DB connection values from the old database, and change them to use the new database. Merge the changes to `main` and let the services re-deploy.
 
 9. Turn the API Server back on and make sure it’s able to connect to the database and query data.
