@@ -8,11 +8,6 @@ variable "ecs_task_execution_role_name" {
   default     = "myEcsTaskExecutionRole"
 }
 
-variable "ecs_auto_scale_role_name" {
-  description = "ECS auto scale role Name"
-  default     = "myEcsAutoScaleRole"
-}
-
 variable "az_count" {
   description = "Number of AZs to cover in a given region"
   default     = 2
@@ -21,25 +16,6 @@ variable "az_count" {
 variable "api_port" {
   description = "Port exposed by the docker image to redirect traffic to"
   default     = 3000
-}
-
-variable "api_count" {
-  description = "Number of docker containers to run"
-  default     = 2
-}
-
-variable "health_check_path" {
-  default = "/health"
-}
-
-variable "cpu" {
-  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
-  default     = 1024
-}
-
-variable "memory" {
-  description = "Fargate instance memory to provision (in MiB)"
-  default     = 2048
 }
 
 variable "db_password" {
@@ -60,9 +36,6 @@ variable "db_instance" {
 variable "db_size" {
   description = "The storage size for the DB"
   default     = 240
-}
-
-variable "api_key" {
 }
 
 variable "ssl_certificate_arn" {
@@ -90,30 +63,9 @@ variable "api_remote_domain_name" {
   default     = ""
 }
 
-variable "api_sentry_dsn" {
-  description = "The Sentry.io DSN to use for the API service"
-  default     = ""
-  sensitive   = true
-}
-
-variable "api_sentry_traces_sample_rate" {
-  description = "The sample rate for Sentry performance monitoring"
-  type        = number
-  default     = 0.01
-
-  validation {
-    condition     = var.api_sentry_traces_sample_rate >= 0.0 && var.api_sentry_traces_sample_rate <= 1.0
-    error_message = "The api_sentry_traces_sample_rate variable must be between 0 and 1."
-  }
-}
-
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
   default     = "univaf-data-snapshots"
-}
-
-variable "datadog_api_key" {
-  sensitive = true
 }
 
 # These AWS variables are present to clean up warnings in terraform
