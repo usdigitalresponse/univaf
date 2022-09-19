@@ -404,15 +404,23 @@ function createNjIisId(location) {
  * @returns an array of strings representing which vaccines are available
  */
 function parseVaccineProducts(text) {
-  const result = [];
+  return [...text.matchAll(/<li>(?<vaccineName>.*?)<\/li>/gi)]
+    .map((match) => {
+      if (Object.hasOwn(VACCINE_NAMES, match.groups.vaccineName)) {
+        return VACCINE_NAMES[match.groups.vaccineName];
+      }
 
-  for (const [key, value] of Object.entries(VACCINE_NAMES)) {
-    if (text.includes(`<li>${key}</li>`)) {
-      result.push(result[value]);
-    }
-  }
-
-  return result;
+      warn(
+        `Unknown vaccine: "${match.groups.vaccineName}"`,
+        {
+          foundName: match.groups.vaccineName,
+          text,
+        },
+        true
+      );
+      return null;
+    })
+    .filter(Boolean);
 }
 
 /**
