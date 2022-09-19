@@ -18,26 +18,6 @@ variable "api_port" {
   default     = 3000
 }
 
-variable "db_password" {
-  description = "The password for the database instance, filled via Terraform"
-  sensitive   = true
-}
-
-variable "db_user" {
-  description = "The database user"
-  default     = "postgres"
-}
-
-variable "db_instance" {
-  description = "The instance type for the DB"
-  default     = "db.m5.large"
-}
-
-variable "db_size" {
-  description = "The storage size for the DB"
-  default     = 240
-}
-
 variable "ssl_certificate_arn" {
   description = "To enable HTTPS, the ARN of an SSL certificate created with ACM in us-east-1"
   default     = ""
