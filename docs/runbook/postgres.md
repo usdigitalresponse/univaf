@@ -142,17 +142,17 @@ If a table gets too big and you need to save disk space on the database server, 
 
 5. Follow the directions under [“Copying the Database”](#copying-the-database) to use `pg_dump` to make a copy of the existing database. You’ll probably want to follow the approach that skips the `availability_log` table.
 
-7. Put that data in the new database! Follow the directions under [“Restoring a Database Dump”](#restoring-a-database-dump).
+6. Put that data in the new database! Follow the directions under [“Restoring a Database Dump”](#restoring-a-database-dump).
 
-8. Update all the services in the `render.yaml` file that pull their DB connection values from the old database, and change them to use the new database. Merge the changes to `main` and let the services re-deploy.
+7. Update all the services in the `render.yaml` file that pull their DB connection values from the old database, and change them to use the new database. Merge the changes to `main` and let the services re-deploy.
 
-9. Turn the API Server back on and make sure it’s able to connect to the database and query data.
+8. Turn the API Server back on and make sure it’s able to connect to the database and query data.
 
-10. Turn all the loaders back on.
+9. Turn all the loaders back on.
 
-11. Remove the old database entry from `render.yaml`. Note this won’t actually suspend or remove the database. It just stops it from being managed by the file.
+10. Remove the old database entry from `render.yaml`. Note this won’t actually suspend or remove the database. It just stops it from being managed by the file.
 
-12. In Render’s web console, suspend or remove the old database as appropriate.
+11. In Render’s web console, suspend or remove the old database as appropriate.
 
 
 [issue-208]: https://github.com/usdigitalresponse/univaf/issues/208
