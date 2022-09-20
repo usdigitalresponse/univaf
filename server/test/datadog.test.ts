@@ -18,16 +18,27 @@ const mockResponse = () => {
   } as any as Response;
 };
 
+// Replace metrics methods with mocks. Note we can't mock the module, because
+// we are testing things inside the module (the middleware) that will see the
+// actual implementation instead of the mock if we do so.
+const incrementMock = jest.spyOn(dogMetrics, "increment");
+const gaugeMock = jest.spyOn(dogMetrics, "gauge");
+const histogramMock = jest.spyOn(dogMetrics, "histogram");
+
+/**
+ * Get an array of all the calls that recorded a given metric name.
+ */
+function callsForMetric(mock: jest.MockInstance<any, any>, metric: string) {
+  return mock.mock.calls.filter((s) => (s[0] as string).startsWith(metric));
+}
+
 describe("datadog middleware", () => {
   const context = useServerForTests(app);
 
   afterEach(() => {
-    if ("mockBuffer" in dogMetrics) {
-      dogMetrics.mockBuffer = [];
-    } else {
-      // @ts-expect-error dogMetrics.aggregator is not in the typings.
-      dogMetrics.aggregator.flush();
-    }
+    incrementMock.mockClear();
+    gaugeMock.mockClear();
+    histogramMock.mockClear();
   });
 
   it("should call next() once", () => {
@@ -45,38 +56,38 @@ describe("datadog middleware", () => {
     const res = await context.client.get<any>("api/edge/locations");
     expect(res.statusCode).toBe(200);
 
-    if ("mockBuffer" in dogMetrics) {
-      // One of this stat, with a value of 1, and a correct response_code tag.
-      const responseCounts = dogMetrics.mockBuffer.filter((s) =>
-        s.startsWith("node.express.router.response_total:")
-      );
-      expect(responseCounts).toHaveLength(1);
-      expect(responseCounts[0]).toMatch(/^[\w.]+:1\b/);
-      expect(responseCounts[0]).toMatch(/\bresponse_code:200\b/);
+    // Submitted one response_total metric and one response_time metric.
+    const responseCounts = callsForMetric(
+      incrementMock,
+      "node.express.router.response_total"
+    );
+    expect(responseCounts).toHaveLength(1);
+    expect(responseCounts[0]).toEqual([
+      "node.express.router.response_total",
+      1,
+      [
+        "route:/api/edge/locations",
+        "method:get",
+        "response_code:200",
+        "internal:false",
+      ],
+    ]);
 
-      // One of this stat.
-      const responseTimes = dogMetrics.mockBuffer.filter((s) =>
-        s.startsWith("node.express.router.response_time:")
-      );
-      expect(responseTimes).toHaveLength(1);
-    } else {
-      // @ts-expect-error They typings are missing `aggregator`.
-      const buffer: any[] = Object.values(dogMetrics.aggregator.buffer);
-      const responseCounts = buffer.filter(
-        (m) => m.key === "node.express.router.response_total"
-      );
-      expect(responseCounts).toHaveLength(1);
-      expect(responseCounts[0]).toHaveProperty("value", 1);
-      expect(responseCounts[0]).toHaveProperty(
-        "tags",
-        expect.arrayContaining(["response_code:200"])
-      );
-
-      const responseTimes = buffer.filter(
-        (m) => m.key === "node.express.router.response_time"
-      );
-      expect(responseTimes).toHaveLength(1);
-    }
+    const responseTimes = callsForMetric(
+      histogramMock,
+      "node.express.router.response_time"
+    );
+    expect(responseTimes).toHaveLength(1);
+    expect(responseTimes[0]).toEqual([
+      "node.express.router.response_time",
+      expect.any(Number),
+      [
+        "route:/api/edge/locations",
+        "method:get",
+        "response_code:200",
+        "internal:false",
+      ],
+    ]);
   });
 
   it("should have correct metrics on two endpoint calls", async () => {
@@ -88,21 +99,13 @@ describe("datadog middleware", () => {
     res = await context.client.get<any>(`api/edge/locations/x`, { retry: 0 });
     expect(res.statusCode).toBe(404);
 
-    if ("mockBuffer" in dogMetrics) {
-      const responseCounts = dogMetrics.mockBuffer.filter((s) =>
-        s.startsWith("node.express.router.response_total:")
-      );
-      expect(responseCounts).toHaveLength(2);
-      expect(responseCounts[0]).toMatch(/\bresponse_code:404\b/);
-      expect(responseCounts[1]).toMatch(/\bresponse_code:404\b/);
-    } else {
-      // @ts-expect-error They typings are missing `aggregator`.
-      const buffer: any[] = Object.values(dogMetrics.aggregator.buffer);
-      const responseCounts = buffer.filter(
-        (m) => m.key === "node.express.router.response_total"
-      );
-      expect(responseCounts).toHaveLength(1);
-      expect(responseCounts[0]).toHaveProperty("value", 2);
-    }
+    // Submitted 2 response_total metrics.
+    const responseCounts = callsForMetric(
+      incrementMock,
+      "node.express.router.response_total"
+    );
+    expect(responseCounts).toHaveLength(2);
+    expect(responseCounts[0][2]).toContain("response_code:404");
+    expect(responseCounts[1][2]).toContain("response_code:404");
   });
 });
