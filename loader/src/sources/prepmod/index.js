@@ -302,7 +302,7 @@ function parseSchedule(schedule) {
         data.hasNonCovidProducts = true;
       } else {
         warn(
-          "Unparseable product extension",
+          `Unparseable product "${extension?.valueCoding?.display}"`,
           {
             scheduleId: schedule.id,
             extension,
