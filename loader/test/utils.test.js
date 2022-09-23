@@ -237,6 +237,7 @@ describe("matchVaccineProduct", () => {
     [v.moderna, "Moderna COVID-19 Vaccine"],
     [v.moderna, "Moderna Booster COVID-19 Vaccine"],
     [v.moderna, "Moderna COVID-19 Vaccine/Booster (Ages 18+)"],
+    [v.moderna, "Moderna COVID-19 Vaccine (Ages 12+)"],
 
     [v.modernaBa4Ba5, "Moderna COVID-19 Vaccine (Ages 12+)/Bivalent Booster (Ages 18+)"],
     [v.modernaBa4Ba5, "Moderna COVID-19, Bivalent Booster (Ages 18+)"],
