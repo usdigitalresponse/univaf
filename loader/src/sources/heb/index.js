@@ -23,15 +23,52 @@ const { assertSchema } = require("../../schema-validation");
 const API_URL =
   "https://heb-ecom-covid-vaccine.hebdigital-prd.com/vaccine_locations.json";
 
-// Maps H-E-B product names to our product names.
-const PRODUCT_NAMES = {
-  pfizer: VaccineProduct.pfizer,
-  moderna: VaccineProduct.moderna,
-  // NOTE: the naming progression for Moderna is different than Pfizer.
-  pediatric_moderna: VaccineProduct.modernaAge0_5,
-  janssen: VaccineProduct.janssen,
-  pediatric_pfizer: VaccineProduct.pfizerAge5_11,
-  ultra_pediatric_pfizer: VaccineProduct.pfizerAge0_4,
+// The way this works is a little funky. Locations list an array of
+// `availableImmunizations`, which are strings, and map to the keys here.
+// Locations also list slot groups, which each list a `manufacturer`.
+// These objects join the values of those fields to our internal product types.
+const IMMUNIZATION_TYPES = {
+  Flu: {
+    manufacturer: null,
+    product: null,
+  },
+  "COVID-19 Pfizer": {
+    manufacturer: "pfizer",
+    product: VaccineProduct.pfizer,
+  },
+  "COVID-19 Pediatric_Pfizer": {
+    manufacturer: "pediatric_pfizer",
+    product: VaccineProduct.pfizerAge5_11,
+  },
+  "COVID-19 Pfizer_Updated_Booster": {
+    manufacturer: "pfizer",
+    product: VaccineProduct.pfizerBa4Ba5,
+  },
+  "COVID-19 Moderna_Updated_Booster": {
+    manufacturer: "moderna",
+    product: VaccineProduct.modernaBa4Ba5,
+  },
+  "COVID-19 Moderna": {
+    manufacturer: "moderna",
+    product: VaccineProduct.moderna,
+  },
+  "COVID-19 Pediatric_Moderna": {
+    manufacturer: "pediatric_moderna",
+    product: VaccineProduct.modernaAge0_5,
+  },
+  "COVID-19 Novavax": {
+    // We haven't seen a "manufacturer" field with this, so it's a guess.
+    manufacturer: "novavax",
+    product: VaccineProduct.novavax,
+  },
+  "COVID-19 Ultra_Pediatric_Pfizer": {
+    manufacturer: "ultra_pediatric_pfizer",
+    product: VaccineProduct.pfizerAge0_4,
+  },
+  "COVID-19 Janssen": {
+    manufacturer: "janssen",
+    product: VaccineProduct.janssen,
+  },
 };
 
 const warn = createWarningLogger("heb");
@@ -80,7 +117,7 @@ async function getData(states) {
       });
       return formatted;
     })
-    .filter((location) => states.includes(location.state));
+    .filter((location) => states.includes(location?.state));
 }
 
 function formatAvailability(openSlots) {
@@ -92,33 +129,71 @@ function formatAvailability(openSlots) {
 }
 
 /**
- * H-E-B includes "other" products in their list
- * of available vaccine types. Likely a flu vaccine /
- * not relevant for covid vaccine scheduling.
+ * Given an array of slot detail objects and the immunizations available at a
+ * location, produce an array of product types that are available.
+ *
+ * This is a little complex, some locations have an `availableImmunizations`
+ * array of strings that identify the products on offer. Many (not all)
+ * locations with open slots also have a `slotDetails` array of objects, where
+ * each entry lists the available slot count for a given `manufacturer`. The
+ * manufacturer isn't really a manufacturer, but just an older, slightly more
+ * generic way of identifying the product (critically, it does not differ
+ * between original and bivalent vaccines). If a variety of vaccines can be
+ * given a slot, the manufacturer is "multiple". If the slots are for non-COVID
+ * vaccines, the manufacturer is "other". If `availableImmunizations` is set,
+ * this maps the manufacturer for each slot to the values in that list. If not,
+ * this maps the manufacturer to the whole set of known values.
+ *
+ * @param {any[]} [slots]
+ * @param {string[]} [availableImmunizations]
+ * @returns {string[]}
  */
-function formatAvailableProducts(raw) {
-  if (!raw) return undefined;
+function formatAvailableProducts(slots, availableImmunizations) {
+  if (!slots) return undefined;
 
-  const formatted = raw
-    .map((value) => {
-      const productType = value.manufacturer.toLowerCase();
-      const formatted = PRODUCT_NAMES[productType];
-      // "other" denotes non-COVID vaccines, like the flu vaccine.
-      // "multiple" denotes more than one possible vaccine in a time slot.
-      // Unfortunately, there doesn't seem to be a way to get details without
-      // making an additional call for each location, which we don't want to
-      // do. On the other hand, we can get usually get the list of products from
-      // the CDC, so this is probably OK.
-      if (productType !== "other" && productType !== "multiple" && !formatted) {
-        warn(`Unknown product type`, value.manufacturer, true);
-      }
-      if (value.openAppointmentSlots > 0) {
+  // Convert the location-level availableImmunizations field to a list of
+  // objects with manufacturer and product code mappings.
+  let availableTypes;
+  if (availableImmunizations?.length) {
+    availableTypes = availableImmunizations
+      .map((key) => {
+        if (!Object.hasOwn(IMMUNIZATION_TYPES, key)) {
+          warn(`Unknown immunization type: ${key}`);
+        } else if (IMMUNIZATION_TYPES[key].product) {
+          return IMMUNIZATION_TYPES[key];
+        }
+      })
+      .filter(Boolean);
+  }
+
+  const formatted = slots
+    .flatMap((slot) => {
+      const manufacturer = slot.manufacturer.toLowerCase();
+      if (manufacturer === "other" || slot.openAppointmentSlots <= 0) {
+        // "other" denotes non-COVID vaccines, like the flu.
+        return [];
+      } else if (manufacturer === "multiple") {
+        return availableTypes.map((type) => type.product);
+      } else {
+        const types = availableTypes || Object.values(IMMUNIZATION_TYPES);
+        const formatted = types
+          .filter((type) => type.manufacturer === manufacturer)
+          .map((type) => type.product);
+
+        if (!formatted.length) {
+          if (availableTypes) {
+            warn(`No available products match manufacturer: "${manufacturer}"`);
+          } else {
+            warn(`Unknown manufacturer: "${manufacturer}"`);
+          }
+        }
+
         return formatted;
       }
     })
     .filter(Boolean);
 
-  return formatted.length ? formatted : undefined;
+  return formatted.length ? [...new Set(formatted)] : undefined;
 }
 
 // API data for each location should look like this. The schema is fairly strict
@@ -165,6 +240,11 @@ const hebLocationSchema = {
         additionalProperties: false,
       },
     },
+    availableImmunizations: {
+      type: "array",
+      nullable: true,
+      items: { type: "string", minLength: 1 },
+    },
   },
   additionalProperties: false,
 };
@@ -199,7 +279,10 @@ function formatLocation(data, checkedAt, validAt) {
       is_public: true,
       available: formatAvailability(data.openAppointmentSlots),
       available_count: data.openAppointmentSlots,
-      products: formatAvailableProducts(data.slotDetails),
+      products: formatAvailableProducts(
+        data.slotDetails,
+        data.availableImmunizations
+      ),
     },
   };
 }

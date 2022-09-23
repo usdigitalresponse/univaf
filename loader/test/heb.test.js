@@ -46,6 +46,11 @@ describe("H-E-B", () => {
       latitude: 29.47069,
       fluUrl: "",
       city: "SAN ANTONIO",
+      availableImmunizations: [
+        "COVID-19 Janssen",
+        "COVID-19 Moderna_Updated_Booster",
+        "COVID-19 Pfizer_Updated_Booster",
+      ],
     });
 
     expect(formatted).toEqual({
@@ -70,7 +75,7 @@ describe("H-E-B", () => {
         checked_at: expectDatetimeString(),
         is_public: true,
         available_count: 76,
-        products: ["jj", "moderna", "pfizer"],
+        products: ["jj", "moderna_ba4_ba5", "pfizer_ba4_ba5"],
       },
     });
   });
