@@ -80,7 +80,7 @@ async function getData(states) {
       });
       return formatted;
     })
-    .filter((location) => states.includes(location.state));
+    .filter((location) => states.includes(location?.state));
 }
 
 function formatAvailability(openSlots) {
