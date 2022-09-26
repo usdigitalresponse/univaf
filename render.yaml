@@ -240,7 +240,7 @@ envVarGroups:
   - name: "Server Environment"
     envVars:
       - key: NODE_VERSION
-        value: "16.17.0"
+        value: "16.17.1"
       - key: NODE_ENV
         value: production
       - key: API_KEYS
@@ -259,7 +259,7 @@ envVarGroups:
   - name: "Loader Environment"
     envVars:
       - key: NODE_VERSION
-        value: "16.17.0"
+        value: "16.17.1"
       - key: NODE_ENV
         value: production
       - key: API_URL
