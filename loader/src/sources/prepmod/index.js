@@ -267,6 +267,10 @@ const nonCovidProductName = new RegExp(
     raw`\btdap\b`,
     raw`\bPCV(\d+)?\b`,
     raw`\bPPSV(\d+)?\b`,
+    // In all cases we've seen, this occurs on schedules that list other actual
+    // vaccine names as well. We'll pick up the true products from the other
+    // extensions in the schedule.
+    raw`multi\s*-\s*vaccine`,
   ].join("|"),
   "i"
 );
