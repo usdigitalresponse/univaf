@@ -143,20 +143,15 @@ function formatLocation(host, validTime, locationInfo) {
 const nonAddressLinePattern =
   /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+(\d{5}(-\d{4})?|USA)\s*$/;
 
-// A lot of locations seem to have multiple address lines squished into one,
-// often using ", " or " | " or " / " as a separator. (" - " is common, too,
-// but is often used legitimately, e.g. in some road names.)
-const maybeAddressLineBreaks = /\s*,\s+|\s+[|/]\s+/g;
 // These are things that are *definitey* line breaks, as opposed to the above,
 // which are more fuzzy and should be surfaced for human review.
 const addressLineBreaks = new RegExp(
   [
-    // Actual line breaks
+    // Actual line breaks! :)
     String.raw`\s*\n\s*`,
-    // Things that might be line breaks if followed by a suite or unit number.
-    String.raw`(?:${maybeAddressLineBreaks.source})(?=(?:suite|ste\.?|unit)\s+#?\d+)`,
-    // " - " is a delimiter if followed by a suite or unit number, too.
-    String.raw`\s+-\s+(?=(?:suite|ste\.?|unit)\s+#?\d+)`,
+    // Things we've seen that appear seem safe to treat as line breaks.
+    // Spaces on both sides are important! These may not be breaks without them.
+    String.raw`\s+[|/]\s+`,
   ].join("|"),
   "ig"
 );
@@ -179,27 +174,8 @@ function formatAddress(rawAddress) {
     // Split on things we are sure are line breaks.
     .flatMap((line) => line.split(addressLineBreaks).map((x) => x.trim()));
 
-  // Fixes that we may want to review for correctness.
-  const extraCleanLines = cleanLines.flatMap((line) =>
-    line.split(maybeAddressLineBreaks).map((x) => x.trim())
-  );
-
-  // If we changed things above, log a warning so we know about it. This code
-  // is still a little speculative, so this will help us evaluate whether it's
-  // behaving correctly. Once we are more certain, this can be removed.
-  if (!isDeepStrictEqual(cleanLines, extraCleanLines)) {
-    warn(
-      `Poorly formatted address lines: ${JSON.stringify(rawAddress.line)}`,
-      {
-        original: JSON.stringify(rawAddress.line),
-        formatted: JSON.stringify(extraCleanLines),
-      },
-      true
-    );
-  }
-
   return {
-    address_lines: extraCleanLines,
+    address_lines: cleanLines,
     city: rawAddress.city,
     state: rawAddress.state,
     postal_code: rawAddress.postalCode,

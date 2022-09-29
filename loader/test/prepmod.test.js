@@ -622,8 +622,7 @@ describe("PrepMod API", () => {
     );
     expect(result).toHaveProperty("address_lines", [
       "Some High School",
-      "123 Example Rd.",
-      "Ste. 313",
+      "123 Example Rd., Ste. 313",
     ]);
     expect(result).toHaveProperty("city", "Somewheresville");
     expect(result).toHaveProperty("state", "SC");
