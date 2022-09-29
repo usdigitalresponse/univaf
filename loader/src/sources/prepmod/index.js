@@ -6,7 +6,6 @@
  * contact at least one (and sometimes several) hosts in each state.
  */
 
-const { isDeepStrictEqual } = require("node:util");
 const { ApiClient } = require("../../api-client");
 const {
   EXTENSIONS,
