@@ -127,7 +127,7 @@ services:
       bin/univaf-loader.js cvsSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
     # Common options used for all crons. (Other configs use `<<` to repeat this
     # cron job's configuration and override the above, non-common values.)
-    plan: starter
+    plan: "starter plus"
     type: cron
     env: node
     region: oregon
