@@ -11,7 +11,6 @@ module "cvs_smart_loader" {
   name          = "cvs-smart-api"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "cvsSmart"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
@@ -82,7 +81,6 @@ module "walgreens_loader" {
 
   name          = "walgreensSmart"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "walgreensSmart"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -98,7 +96,6 @@ module "kroger_loader" {
 
   name          = "krogerSmart"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "krogerSmart"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -114,7 +111,6 @@ module "albertsons_loader" {
 
   name          = "albertsons"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "albertsons"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -130,7 +126,6 @@ module "hyvee_loader" {
 
   name          = "hyvee"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "hyvee"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -146,7 +141,6 @@ module "heb_loader" {
 
   name          = "heb"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "heb"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -162,7 +156,6 @@ module "washington_doh_loader" {
 
   name          = "waDoh"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   loader_source = "waDoh"
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
@@ -179,28 +172,10 @@ module "cdc_loader" {
   name          = "cdcApi"
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   loader_source = "cdcApi"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_key
   sentry_dsn    = var.loader_sentry_dsn
   schedule      = "cron(0 0,12 * * ? *)"
-  cluster_arn   = aws_ecs_cluster.main.arn
-  role          = aws_iam_role.ecs_task_execution_role.arn
-  subnets       = aws_subnet.public.*.id
-}
-
-module "vts_geo_loader" {
-  source = "./modules/loader"
-
-  name          = "vtsGeo"
-  enabled       = false
-  loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-  loader_source = "vtsGeo"
-  command       = ["--states", "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"]
-  api_url       = "http://${aws_alb.main.dns_name}"
-  api_key       = var.api_key
-  sentry_dsn    = var.loader_sentry_dsn
-  schedule      = "cron(1 1 1 1 ? 1970)"
   cluster_arn   = aws_ecs_cluster.main.arn
   role          = aws_iam_role.ecs_task_execution_role.arn
   subnets       = aws_subnet.public.*.id
