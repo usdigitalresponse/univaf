@@ -124,10 +124,10 @@ services:
     schedule: "0/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js cvsSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js cvsSmart --send --compact
     # Common options used for all crons. (Other configs use `<<` to repeat this
     # cron job's configuration and override the above, non-common values.)
-    plan: starter
+    plan: "starter plus"
     type: cron
     env: node
     region: oregon
@@ -178,56 +178,56 @@ services:
     schedule: "0/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js riteAidScraper --send --compact --states "CA,CO,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"
+      bin/univaf-loader.js riteAidScraper --send --compact
 
   - <<: *loader-config
     name: "Loader: Walgreens SMART"
     schedule: "2/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js walgreensSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js walgreensSmart --send --compact
 
   - <<: *loader-config
     name: "Loader: Kroger SMART"
     schedule: "4/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js krogerSmart --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js krogerSmart --send --compact
 
   - <<: *loader-config
     name: "Loader: Albertsons"
     schedule: "6/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js albertsons --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js albertsons --send --compact
 
   - <<: *loader-config
     name: "Loader: HyVee"
     schedule: "8/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js hyvee --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js hyvee --send --compact
 
   - <<: *loader-config
     name: "Loader: H-E-B"
     schedule: "1/10 * * * *" # Every 10 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js heb --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js heb --send --compact
 
   - <<: *loader-config
     name: "Loader: WA Dept. of Health"
     schedule: "3/5 * * * *" # Every 5 minutes
     startCommand: |
       cd loader
-      bin/univaf-loader.js waDoh --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js waDoh --send --compact
 
   - <<: *loader-config
     name: "Loader: CDC Open Data API"
     schedule: "0 0,12 * * *" # Twice a day
     startCommand: |
       cd loader
-      bin/univaf-loader.js cdcApi --send --compact --states "AL,AK,AZ,AR,CA,CO,CT,DE,DC,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,MH,PR,VI"
+      bin/univaf-loader.js cdcApi --send --compact
 
   - <<: *loader-config
     name: "Loader: PrepMod"
