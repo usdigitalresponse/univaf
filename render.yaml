@@ -118,6 +118,7 @@ services:
         value: "us-west-2"
 
   # Loaders -----------------------------------------------------------------
+  # These scheduled jobs run the loader with one source each.
   # NOTE: This first loader also defines properties for re-use by the others.
   - &loader-config
     name: "Loader: CVS SMART"
