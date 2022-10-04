@@ -36,7 +36,7 @@
     "lodash": "^4.17.21",
     "luxon": "^3.0.4",
     "queue": "^6.0.2",
-    "yargs": "^17.5.1"
+    "yargs": "^17.6.0"
   },
   "jest": {
     "setupFilesAfterEnv": [
