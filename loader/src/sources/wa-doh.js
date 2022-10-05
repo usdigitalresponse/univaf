@@ -145,6 +145,7 @@ function toLocationType(apiValue) {
   if (text === "clinic") return LocationType.clinic;
   else if (text === "pharmacy") return LocationType.pharmacy;
   else if (text === "store") return LocationType.pharmacy;
+  else if (text === "") return LocationType.pharmacy;
 
   warn(`Unknown location type "${apiValue}"`);
   return LocationType.pharmacy;
@@ -197,11 +198,23 @@ function formatLocation(data) {
   // store number (it appears to be an ID in appointment-plus). However,
   // the store contact e-mail DOES have the store number. :P
   if (provider === "costco") {
-    const storeEmailMatch = data.email.match(/^w0*(\d+)phm@/i);
+    const storeEmailMatch = data.email?.match(/^w0*(?<number>\d+)phm@/i);
+    const storeNameMatch = data.locationName?.match(/#(?<number>\d+)/);
     if (storeEmailMatch) {
-      external_ids.push(["costco", storeEmailMatch[1]]);
+      external_ids.push(["costco", storeEmailMatch.groups.number]);
+    } else if (storeNameMatch) {
+      external_ids.push(["costco", storeNameMatch.groups.number]);
     } else {
-      warn(`Unable to determine Costco store number for "${data.locationid}"`);
+      warn(
+        `Unable to determine Costco store number for "${data.locationId}"`,
+        {
+          locationId: data.locationId,
+          locationName: data.locationName,
+          state: data.state,
+          rawDataSourceName: data.rawDataSourceName,
+        },
+        true
+      );
     }
   }
 
@@ -309,8 +322,10 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
         // data for.
         if (
           state === "WA" &&
-          item.rawDataSourceName !== "CostcoLocationsFn" &&
-          item.rawDataSourceName !== "CostcoVaccineAvailabilityFn"
+          !(
+            item.locationName?.toLowerCase()?.includes("costco") ||
+            item.departmentName?.toLowerCase()?.includes("costco")
+          )
         ) {
           continue;
         }
