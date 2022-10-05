@@ -329,6 +329,10 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
     }
   }
 
+  if (!results.length) {
+    warn("No locations were found. Something has probably gone wrong.");
+  }
+
   return results;
 }
 
