@@ -300,7 +300,7 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
     for await (const page of queryState(state)) {
       for (const item of page) {
         // Skip known bad location entries.
-        if (INVALID_LOCATIONS.includes(item.locationId)) return;
+        if (INVALID_LOCATIONS.includes(item.locationId)) continue;
 
         // Skip non-Costco data from WA for now. (We will probably want to
         // turn this back on eventually.)
