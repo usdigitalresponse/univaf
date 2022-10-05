@@ -557,7 +557,7 @@ module.exports = {
     if (/astra\s*zeneca/.test(text)) {
       return isBa4Ba5 ? undefined : VaccineProduct.astraZeneca;
     } else if (text.includes("moderna")) {
-      if (/ages?\s+(12|18)( and up|\s*\+)/i.test(text)) {
+      if (/ages?\s+(12|18)( (years )?and up|\s*\+)/i.test(text)) {
         return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
         return isBa4Ba5 ? undefined : VaccineProduct.modernaAge0_5;
@@ -573,7 +573,7 @@ module.exports = {
     } else if (/nova\s*vax/.test(text)) {
       return isBa4Ba5 ? undefined : VaccineProduct.novavax;
     } else if (text.includes("comirnaty") || text.includes("pfizer")) {
-      if (/ages?\s+12( and up|\s*\+)/i.test(text)) {
+      if (/ages?\s+12( (years )?and up|\s*\+)/i.test(text)) {
         return isBa4Ba5 ? VaccineProduct.pfizerBa4Ba5 : VaccineProduct.pfizer;
       } else if (/ages?\s+5|\b5\s?(-|through)\s?11\b/i.test(text)) {
         return isBa4Ba5
