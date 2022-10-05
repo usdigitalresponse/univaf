@@ -550,9 +550,9 @@ components:
           description: |
             List of vaccine products available on this date. Not present if not
             known. Current possible values include: `moderna`, `moderna_ba4_ba5`,
-            `moderna_age_6_11`, `moderna_age_0_5`, `pfizer`, `pfizer_ba4_ba5`,
-            `pfizer_age_5_11`, `pfizer_ba4_ba5_age_5_11`, `pfizer_age_0_4`,
-            `jj`, `sanofi`.
+            `moderna_age_6_11`, `moderna_ba4_ba5_age_6_11`, `moderna_age_0_5`,
+            `pfizer`, `pfizer_ba4_ba5`, `pfizer_age_5_11`,
+            `pfizer_ba4_ba5_age_5_11`, `pfizer_age_0_4`, `jj`, `sanofi`.
         dose:
           type: string
           description: |
@@ -603,9 +603,9 @@ components:
           description: |
             List of vaccine products available for this slot. Not present if not
             known. Current possible values include: `moderna`, `moderna_ba4_ba5`,
-            `moderna_age_6_11`, `moderna_age_0_5`, `pfizer`, `pfizer_ba4_ba5`,
-            `pfizer_age_5_11`, `pfizer_ba4_ba5_age_5_11`, `pfizer_age_0_4`,
-            `jj`, `sanofi`.
+            `moderna_age_6_11`, `moderna_ba4_ba5_age_6_11`, `moderna_age_0_5`,
+            `pfizer`, `pfizer_ba4_ba5`, `pfizer_age_5_11`,
+            `pfizer_ba4_ba5_age_5_11`, `pfizer_age_0_4`, `jj`, `sanofi`.
         dose:
           type: string
           description: |
@@ -668,9 +668,9 @@ components:
           description: |
             List of vaccine products available. Not present if not known.
             Current possible values include: `moderna`, `moderna_ba4_ba5`,
-            `moderna_age_6_11`, `moderna_age_0_5`, `pfizer`, `pfizer_ba4_ba5`,
-            `pfizer_age_5_11`, `pfizer_ba4_ba5_age_5_11`, `pfizer_age_0_4`,
-            `jj`, `sanofi`.
+            `moderna_age_6_11`, `moderna_ba4_ba5_age_6_11`, `moderna_age_0_5`,
+            `pfizer`, `pfizer_ba4_ba5`, `pfizer_age_5_11`,
+            `pfizer_ba4_ba5_age_5_11`, `pfizer_age_0_4`, `jj`, `sanofi`.
         doses:
           type: array
           items:
