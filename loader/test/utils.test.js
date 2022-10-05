@@ -238,9 +238,11 @@ describe("matchVaccineProduct", () => {
     [v.moderna, "Moderna Booster COVID-19 Vaccine"],
     [v.moderna, "Moderna COVID-19 Vaccine/Booster (Ages 18+)"],
     [v.moderna, "Moderna COVID-19 Vaccine (Ages 12+)"],
+    [v.moderna, "Moderna (Spikevax), ages 12 years and up"],
 
     [v.modernaBa4Ba5, "Moderna COVID-19 Vaccine (Ages 12+)/Bivalent Booster (Ages 18+)"],
     [v.modernaBa4Ba5, "Moderna COVID-19, Bivalent Booster (Ages 18+)"],
+    [v.modernaBa4Ba5, "Moderna bivalent booster, ages 12 years and up"],
 
     [v.modernaAge6_11, "Moderna COVID-19 Vaccine (ages 6-11 Primary, 18+ Booster)"],
     [v.modernaAge6_11, "Moderna Pediatric COVID-19 Vaccine (Ages 6 through 11)"],
@@ -256,6 +258,7 @@ describe("matchVaccineProduct", () => {
 
     [v.pfizerBa4Ba5, "Pfizer-BioNTech COVID-19 Vaccine/Bivalent Booster (Ages 12+)"],
     [v.pfizerBa4Ba5, "Pfizer COVID-19, Bivalent Booster (Ages 12+)"],
+    [v.pfizerBa4Ba5, "Pfizer-BioNTech bivalent booster, ages 12 years and up"],
 
     [v.pfizerAge5_11, "Pediatric-Pfizer (5-11)"],
     [v.pfizerAge5_11, "Pfizer COVID-19 Vaccine (Ages 5-11)"],
