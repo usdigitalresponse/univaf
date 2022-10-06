@@ -44,6 +44,10 @@ const IMMUNIZATION_TYPES = {
     manufacturer: "pfizer",
     product: VaccineProduct.pfizerBa4Ba5,
   },
+  "COVID-19 Pediatric_Pfizer_Updated_Booster": {
+    manufacturer: "pediatric_pfizer",
+    product: VaccineProduct.pfizerBa4Ba5Age5_11,
+  },
   "COVID-19 Moderna_Updated_Booster": {
     manufacturer: "moderna",
     product: VaccineProduct.modernaBa4Ba5,
@@ -55,6 +59,10 @@ const IMMUNIZATION_TYPES = {
   "COVID-19 Pediatric_Moderna": {
     manufacturer: "pediatric_moderna",
     product: VaccineProduct.modernaAge0_5,
+  },
+  "COVID-19 Pediatric_Moderna_Updated_Booster": {
+    manufacturer: "pediatric_moderna",
+    product: VaccineProduct.modernaBa4Ba5Age6_11,
   },
   "COVID-19 Novavax": {
     // We haven't seen a "manufacturer" field with this, so it's a guess.

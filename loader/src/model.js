@@ -35,6 +35,7 @@ const VaccineProduct = {
   moderna: "moderna",
   modernaBa4Ba5: "moderna_ba4_ba5",
   modernaAge6_11: "moderna_age_6_11",
+  modernaBa4Ba5Age6_11: "moderna_ba4_ba5_age_6_11",
   modernaAge0_5: "moderna_age_0_5",
   novavax: "novavax",
   pfizer: "pfizer",

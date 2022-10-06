@@ -4,6 +4,7 @@ export type VaccineCode =
   | "moderna"
   | "moderna_ba4_ba5"
   | "moderna_age_6_11"
+  | "moderna_ba4_ba5_age_6_11"
   | "moderna_age_0_5"
   | "novavax"
   | "pfizer"
@@ -20,6 +21,7 @@ export const CVX_CODES: { [code in VaccineCode]: number } = {
   moderna: 207,
   moderna_ba4_ba5: 229,
   moderna_age_6_11: 227,
+  moderna_ba4_ba5_age_6_11: 229,
   moderna_age_0_5: 228,
   novavax: 211,
   pfizer: 208,
@@ -36,6 +38,8 @@ export const PRODUCT_NAMES: { [code in VaccineCode]: string } = {
   moderna: "Moderna",
   moderna_ba4_ba5: "Moderna (for Omicron BA.4/BA.5)",
   moderna_age_6_11: "Moderna Pediatric (Ages 6-11)",
+  moderna_ba4_ba5_age_6_11:
+    "Moderna Pediatric (Ages 6-11, for Omicron BA.4/BA.5)",
   moderna_age_0_5: "Moderna Pediatric (Ages 0-5)",
   novavax: "NovaVax",
   pfizer: "Pfizer",
@@ -55,6 +59,7 @@ export const MINIMUM_PRODUCT_AGES: { [code in VaccineCode]: number } = {
   // only authorized for 18+.
   moderna_ba4_ba5: 18 * 12,
   moderna_age_6_11: 6 * 12,
+  moderna_ba4_ba5_age_6_11: 6 * 12,
   moderna_age_0_5: 6,
   novavax: 18 * 12,
   pfizer: 12 * 12,
