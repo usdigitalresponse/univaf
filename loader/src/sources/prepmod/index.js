@@ -265,8 +265,12 @@ const nonCovidProductName = new RegExp(
     raw`monkeypox`,
     raw`jynneos`,
     raw`\btdap\b`,
+    // Pneumococcal Conjugate Vaccine
     raw`\bPCV(\d+)?\b`,
+    // Pneumococcal Polysaccharide Vaccine
     raw`\bPPSV(\d+)?\b`,
+    // Measles, Mumps, Rubella Vaccine
+    raw`\bMMRV??\b`,
     // In all cases we've seen, this occurs on schedules that list other actual
     // vaccine names as well. We'll pick up the true products from the other
     // extensions in the schedule.
