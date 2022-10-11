@@ -3,6 +3,11 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
+variable "az_count" {
+  description = "Number of AZs to cover (within the chosen region)"
+  default     = 2
+}
+
 variable "ssl_certificate_arn" {
   description = "To enable HTTPS, the ARN of an SSL certificate created with ACM in us-east-1"
   default     = ""
