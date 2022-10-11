@@ -28,6 +28,26 @@ variable "data_snapshot_s3_bucket" {
   default     = "univaf-data-snapshots"
 }
 
+variable "db_user" {
+  description = "The database user"
+  default     = "univaf"
+}
+
+variable "db_password" {
+  description = "The password for the database instance, filled via Terraform"
+  sensitive   = true
+}
+
+variable "db_instance" {
+  description = "The instance type for the DB. Reference: https://aws.amazon.com/rds/instance-types/"
+  default     = "db.t4g.small"
+}
+
+variable "db_size" {
+  description = "The storage size for the DB (in Gigabytes)"
+  default     = 30
+}
+
 # These AWS variables are present to clean up warnings in terraform
 variable "AWS_SECRET_ACCESS_KEY" {
   default = ""
