@@ -557,7 +557,7 @@ module.exports = {
     if (/astra\s*zeneca/.test(text)) {
       return isBa4Ba5 ? undefined : VaccineProduct.astraZeneca;
     } else if (text.includes("moderna")) {
-      if (/ages?\s+(12|18)( (years )?and up|\s*\+)/i.test(text)) {
+      if (/ages?\s+(6|12|18)( (years )?and up|\s*\+)/i.test(text)) {
         return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
         return isBa4Ba5 ? undefined : VaccineProduct.modernaAge0_5;
