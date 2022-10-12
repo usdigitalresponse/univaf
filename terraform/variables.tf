@@ -49,7 +49,7 @@ variable "db_size" {
 }
 
 variable "api_keys" {
-  description = "List of valid API keys for posting data to the API service"
+  description = "List of valid API keys for posting data to the API service. The loaders will use the first key."
   type        = list(string)
 }
 
@@ -89,8 +89,32 @@ variable "api_sentry_traces_sample_rate" {
   }
 }
 
+variable "loader_sentry_dsn" {
+  description = "The Sentry.io DSN to use for the loaders"
+  default     = ""
+  sensitive   = true
+}
+
 variable "datadog_api_key" {
   description = "API key for sending metrics to Datadog"
+  sensitive   = true
+}
+
+variable "njvss_aws_key_id" {
+  sensitive = true
+}
+
+variable "njvss_aws_secret_key" {
+  sensitive = true
+}
+
+variable "rite_aid_api_url" {
+  description = "The Rite Aid API URL"
+  default     = "https://api.riteaid.com/digital/Covid19-Vaccine/ProviderDetails"
+}
+
+variable "rite_aid_api_key" {
+  description = "The Rite Aid API Key"
   sensitive   = true
 }
 
