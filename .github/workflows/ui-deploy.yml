@@ -30,7 +30,7 @@ jobs:
             ~/.cache
           key: ${{ runner.os }}-npm-v1-${{ hashFiles('main/server/package-lock.json', 'main/loader/package-lock.json', 'main/ui/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1
+            ${{ runner.oss }}-npm-v1
             ${{ runner.os }}-npm-
 
       - name: Install dependencies
