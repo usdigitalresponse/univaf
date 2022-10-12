@@ -103,15 +103,16 @@ async function run(options) {
         // TODO: should any errors result in an error being returned?
         console.error(`Error in "${report.name}":`, report.error, "\n");
         Sentry.captureException(report.error);
-        process.exitCode = 90;
+        process.exitCode = 91;
       } else {
         successCount++;
       }
     }
     if (successCount === 0) {
-      process.exitCode = 1;
+      process.exitCode = 92;
     }
   } catch (error) {
+    process.exitCode = 90;
     console.error(`Error: ${error}`);
     Sentry.captureException(error);
   } finally {
@@ -133,6 +134,11 @@ function main() {
         programs for processing. Informational messages are available on STDERR.
 
         Supported sources: ${Object.getOwnPropertyNames(sources).join(", ")}
+
+        Exit codes:
+        - 90: An unhandled error occurred.
+        - 91: Errors occurred while processing some loaded data.
+        - 92: No data was loaded or errors occurred for *all* loaded data.
       `.trim(),
       builder: (yargs) =>
         yargs
