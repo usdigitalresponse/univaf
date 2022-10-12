@@ -17,7 +17,7 @@
  */
 locals {
   env_vars = merge(
-    { ENV = "production", NODE_ENV = "production" },
+    { ENV = "production", NODE_ENV = "production", SENTRY_ENVIRONMENT = "ecs" },
     var.env_vars
   )
 
