@@ -243,11 +243,11 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   )
   enabled     = true
   price_class = "PriceClass_100" # North America
-  aliases = [
+  aliases = compact([
     var.domain_name,
-    aws_route53_record.api_www_domain_record.fqdn,
-    aws_route53_record.api_render_domain_record.fqdn
-  ]
+    length(aws_route53_record.api_www_domain_record) > 0 ? aws_route53_record.api_www_domain_record[0].fqdn : "",
+    length(aws_route53_record.api_render_domain_record) > 0 ? aws_route53_record.api_render_domain_record[0].fqdn : ""
+  ])
   http_version = "http2and3"
 
   origin {
@@ -301,11 +301,11 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
   )
   enabled     = true
   price_class = "PriceClass_100" # North America
-  aliases = [
+  aliases = compact([
     var.domain_name,
-    aws_route53_record.api_www_domain_record.fqdn,
-    aws_route53_record.api_render_domain_record.fqdn
-  ]
+    length(aws_route53_record.api_www_domain_record) > 0 ? aws_route53_record.api_www_domain_record[0].fqdn : "",
+    length(aws_route53_record.api_ecs_domain_record) > 0 ? aws_route53_record.api_ecs_domain_record[0].fqdn : ""
+  ])
   http_version = "http2and3"
 
   origin {
