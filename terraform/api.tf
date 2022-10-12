@@ -42,12 +42,17 @@ resource "aws_route53_record" "api_render_domain_record" {
 
 # Specifically points to the deployment on ECS
 resource "aws_route53_record" "api_ecs_domain_record" {
-  count   = var.domain_name != "" ? 1 : 0
+  count = var.domain_name != "" ? 1 : 0
+
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = "ecs"
-  type    = "CNAME"
-  records = [var.domain_name]
-  ttl     = 300
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.univaf_api_ecs[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api_ecs[0].hosted_zone_id
+    evaluate_target_health = false
+  }
 }
 
 # Daily Data Snapshot ---------------------------------------------------------
@@ -243,11 +248,11 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   )
   enabled     = true
   price_class = "PriceClass_100" # North America
-  aliases = compact([
+  aliases = [
     var.domain_name,
     "www.${var.domain_name}",
     "render.${var.domain_name}"
-  ])
+  ]
   http_version = "http2and3"
 
   origin {
@@ -301,15 +306,13 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
   )
   enabled     = true
   price_class = "PriceClass_100" # North America
-  aliases = compact([
-    var.domain_name,
-    length(aws_route53_record.api_www_domain_record) > 0 ? aws_route53_record.api_www_domain_record[0].fqdn : "",
-    length(aws_route53_record.api_ecs_domain_record) > 0 ? aws_route53_record.api_ecs_domain_record[0].fqdn : ""
-  ])
+  aliases = [
+    "ecs.${var.domain_name}"
+  ]
   http_version = "http2and3"
 
   origin {
-    origin_id   = var.domain_name
+    origin_id   = "ecs.${var.domain_name}"
     domain_name = aws_alb.main.dns_name
 
     custom_origin_config {
@@ -323,7 +326,7 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = var.domain_name
+    target_origin_id       = "ecs.${var.domain_name}"
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     max_ttl                = 3600
