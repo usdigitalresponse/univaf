@@ -27,6 +27,28 @@ resource "aws_route53_record" "api_www_domain_record" {
   ttl     = 300
 }
 
+# Specifically points to the deployment on Render
+resource "aws_route53_record" "api_render_domain_record" {
+  count = (
+    var.domain_name != ""
+    && var.api_remote_domain_name != "" ? 1 : 0
+  )
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "render"
+  type    = "CNAME"
+  records = [var.domain_name]
+  ttl     = 300
+}
+
+# Specifically points to the deployment on ECS
+resource "aws_route53_record" "api_ecs_domain_record" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "ecs"
+  type    = "CNAME"
+  records = [var.domain_name]
+  ttl     = 300
+}
 
 # Daily Data Snapshot ---------------------------------------------------------
 
@@ -219,9 +241,13 @@ resource "aws_cloudfront_distribution" "univaf_api" {
     && var.ssl_certificate_arn != ""
     && var.api_remote_domain_name != "" ? 1 : 0
   )
-  enabled      = true
-  price_class  = "PriceClass_100" # North America
-  aliases      = [var.domain_name, "www.${var.domain_name}"]
+  enabled     = true
+  price_class = "PriceClass_100" # North America
+  aliases = [
+    var.domain_name,
+    aws_route53_record.api_www_domain_record.fqdn,
+    aws_route53_record.api_render_domain_record.fqdn
+  ]
   http_version = "http2and3"
 
   origin {
@@ -233,6 +259,64 @@ resource "aws_cloudfront_distribution" "univaf_api" {
       https_port             = 443
       origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
       origin_protocol_policy = var.api_remote_domain_name != "" ? "https-only" : "http-only"
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = var.domain_name
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    max_ttl                = 3600
+
+    forwarded_values {
+      headers      = ["Host", "Origin"]
+      query_string = true
+
+      cookies {
+        forward = "none"
+      }
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn = var.ssl_certificate_arn
+    ssl_support_method  = "sni-only"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+}
+
+# Use CloudFront as a caching layer in front of the API server that's running
+# in ECS. Enabled only if var.domain, and var.ssl_certificate_arn are provided.
+resource "aws_cloudfront_distribution" "univaf_api_ecs" {
+  count = (
+    var.domain_name != ""
+    && var.ssl_certificate_arn != "" ? 1 : 0
+  )
+  enabled     = true
+  price_class = "PriceClass_100" # North America
+  aliases = [
+    var.domain_name,
+    aws_route53_record.api_www_domain_record.fqdn,
+    aws_route53_record.api_render_domain_record.fqdn
+  ]
+  http_version = "http2and3"
+
+  origin {
+    origin_id   = var.domain_name
+    domain_name = aws_alb.main.dns_name
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
+      origin_protocol_policy = "http-only"
     }
   }
 
