@@ -245,8 +245,8 @@ resource "aws_cloudfront_distribution" "univaf_api" {
   price_class = "PriceClass_100" # North America
   aliases = compact([
     var.domain_name,
-    length(aws_route53_record.api_www_domain_record) > 0 ? aws_route53_record.api_www_domain_record[0].fqdn : "",
-    length(aws_route53_record.api_render_domain_record) > 0 ? aws_route53_record.api_render_domain_record[0].fqdn : ""
+    "www.${var.domain_name}",
+    "render.${var.domain_name}"
   ])
   http_version = "http2and3"
 
