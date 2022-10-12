@@ -91,4 +91,12 @@ resource "aws_ecs_task_definition" "main" {
   cpu                      = var.cpu
   memory                   = var.memory
   container_definitions    = local.encoded_containers
+
+  # TODO: see about running on ARM for less power consumption. I *think* we
+  # need to build the images with:
+  #   docker buildx build --platform linux/amd64,linux/arm64 ...other-args...
+  # runtime_platform {
+  #   operating_system_family = "LINUX"
+  #   cpu_architecture        = "ARM64"
+  # }
 }

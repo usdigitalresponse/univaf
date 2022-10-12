@@ -182,9 +182,10 @@ jobs:
       - name: Build ${{ matrix.repository }}
         run: |
           IMAGE_NAME="dev/${ECR_REPOSITORY}:${IMAGE_TAG}"
-          docker build \
-            -t "${IMAGE_NAME}" \
-            -f ${{ matrix.dockerfile }} \
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --tag "${IMAGE_NAME}" \
+            --file "${{ matrix.dockerfile }}" \
             --build-arg RELEASE="${IMAGE_TAG}" \
             ${{ matrix.build_path }}
 
