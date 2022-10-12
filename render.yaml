@@ -253,7 +253,7 @@ envVarGroups:
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
-        value: production
+        value: render
       - key: DB_POOL_SIZE_AVAILABILITY
         value: "5"
 
@@ -272,4 +272,4 @@ envVarGroups:
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
-        value: production
+        value: render
