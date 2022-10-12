@@ -9,7 +9,7 @@ variable "loader_source" {
 
 variable "command" {
   description = "The arguments to the univaf-loader command"
-  default = []
+  default     = []
 }
 
 variable "api_url" {
@@ -36,7 +36,7 @@ variable "role" {
 
 variable "schedule" {
   description = "The expression to schedule at (see https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-schedule-expressions.html)"
-  default = "rate(5 minutes)"
+  default     = "rate(5 minutes)"
 }
 
 variable "cluster_arn" {
@@ -55,4 +55,14 @@ variable "enabled" {
   description = "Whether the task should actually run as scheduled"
   type        = bool
   default     = true
+}
+
+variable "datadog_enabled" {
+  description = "Should datadog be enabled for this task"
+  default     = false
+}
+
+variable "datadog_api_key" {
+  description = "The datadog api key to be used for this container"
+  default     = ""
 }

@@ -21,6 +21,9 @@ module "loader_task" {
     API_KEY    = var.api_key
     SENTRY_DSN = var.sentry_dsn
   }, var.env_vars)
+
+  datadog_enabled = var.datadog_enabled
+  datadog_api_key = var.datadog_api_key
 }
 
 # Set up CloudWatch group and log stream and retain logs for 30 days
