@@ -95,6 +95,8 @@ resource "aws_ecs_task_definition" "main" {
   # TODO: see about running on ARM for less power consumption. I *think* we
   # need to build the images with:
   #   docker buildx build --platform linux/amd64,linux/arm64 ...other-args...
+  # See also some tips in:
+  #   https://blog.thesparktree.com/docker-multi-arch-github-actions
   # runtime_platform {
   #   operating_system_family = "LINUX"
   #   cpu_architecture        = "ARM64"

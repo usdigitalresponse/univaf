@@ -183,7 +183,6 @@ jobs:
         run: |
           IMAGE_NAME="dev/${ECR_REPOSITORY}:${IMAGE_TAG}"
           docker buildx build \
-            --platform linux/amd64,linux/arm64 \
             --tag "${IMAGE_NAME}" \
             --file "${{ matrix.dockerfile }}" \
             --build-arg RELEASE="${IMAGE_TAG}" \
