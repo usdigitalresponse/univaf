@@ -57,6 +57,9 @@ module "source_loader" {
   env_vars     = lookup(each.value, "env_vars", {})
   loader_image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
 
+  datadog_enabled = true
+  datadog_api_key = var.datadog_api_key
+
   cluster_arn = aws_ecs_cluster.main.arn
   role        = aws_iam_role.ecs_task_execution_role.arn
   subnets     = aws_subnet.private.*.id
