@@ -17,10 +17,27 @@ locals {
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
       }
     },
-
-    waDoh = { schedule = "rate(5 minutes)" }
-
-    # FIXME: fill in definitions for additional loaders if this works
+    waDoh          = { schedule = "cron(3/5 * * * ? *)" }
+    cvsSmart       = { schedule = "cron(0/10 * * * ? *)" }
+    walgreensSmart = { schedule = "cron(2/10 * * * ? *)" }
+    krogerSmart    = { schedule = "cron(4/10 * * * ? *)" }
+    albertsons     = { schedule = "cron(6/10 * * * ? *)" }
+    hyvee          = { schedule = "cron(8/10 * * * ? *)" }
+    heb            = { schedule = "cron(1/10 * * * ? *)" }
+    cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
+    riteAidScraper = { schedule = "cron(0/10 * * * ? *)" }
+    riteAidApi = {
+      schedule = "cron(0/30 * * * ? *)"
+      command  = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
+      env_vars = {
+        RITE_AID_URL = var.rite_aid_api_url
+        RITE_AID_KEY = var.rite_aid_api_key
+      }
+    }
+    prepmod = {
+      schedule = "cron(9/10 * * * ? *)"
+      command  = ["--states", "AK,WA", "--hide-missing-locations"]
+    }
   }
 }
 
@@ -32,6 +49,7 @@ module "source_loader" {
   name          = each.key
   schedule      = each.value.schedule
   loader_source = each.key
+  command       = lookup(each.value, "command", [])
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_keys[0]
   sentry_dsn    = var.loader_sentry_dsn
