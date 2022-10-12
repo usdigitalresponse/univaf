@@ -7,6 +7,7 @@ const config = require("./config");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
 const allStates = require("./states.json");
+const { configureMetricsClient } = require("./metrics");
 
 Sentry.init({ release: config.version });
 
@@ -20,7 +21,7 @@ async function runSources(targets, handler, options) {
       ? source.checkAvailability(handler, options)
       : Promise.reject(new Error(`Unknown source: "${name}"`));
     return run
-      .then((results) => ({ name, error: null, ...results }))
+      .then((results) => ({ name, error: null, results }))
       .catch((error) => ({ name, error, results: [] }));
   });
 
@@ -54,6 +55,10 @@ function createDatabaseSender() {
  */
 async function run(options) {
   Sentry.setContext("CLI Arguments", { ...options });
+  const metricsClient = configureMetricsClient({
+    globalTags: [`sources:${options.sources.join("/")}`],
+  });
+  metricsClient.increment("loader.jobs.count");
 
   let handler;
   if (options.send) {
@@ -73,11 +78,17 @@ async function run(options) {
       }
       const results = await updateQueue.whenDone();
       console.warn(`Sent ${results.length} updates`);
+      let sendStale = 0;
+      let sendErrors = 0;
       for (const saveResult of results) {
         if (saveResult.error || saveResult.success === false) {
           // Out-of-date data is not a problem worth alerting.
-          if (saveResult.error?.code === "out_of_date") continue;
+          if (saveResult.error?.code === "out_of_date") {
+            sendStale++;
+            continue;
+          }
 
+          sendErrors++;
           const data = saveResult.sent;
           const message = `Error sending: ${
             saveResult.error?.message || "unknown reason"
@@ -95,27 +106,33 @@ async function run(options) {
           });
         }
       }
+
+      metricsClient.distribution("loader.jobs.send_total", results.length);
+      metricsClient.distribution("loader.jobs.send_stale", sendStale);
+      metricsClient.distribution("loader.jobs.send_errors", sendErrors);
     }
 
     let successCount = 0;
     for (const report of reports) {
       if (report.error) {
-        // TODO: should any errors result in an error being returned?
         console.error(`Error in "${report.name}":`, report.error, "\n");
         Sentry.captureException(report.error);
-        process.exitCode = 90;
+        process.exitCode = 91;
       } else {
         successCount++;
       }
     }
     if (successCount === 0) {
-      process.exitCode = 1;
+      process.exitCode = 92;
     }
   } catch (error) {
+    process.exitCode = 90;
     console.error(`Error: ${error}`);
     Sentry.captureException(error);
   } finally {
-    console.error(`Completed in ${(Date.now() - startTime) / 1000} seconds.`);
+    const duration = (Date.now() - startTime) / 1000;
+    console.error(`Completed in ${duration} seconds.`);
+    metricsClient.distribution("loader.jobs.duration", duration);
   }
 }
 
@@ -133,6 +150,11 @@ function main() {
         programs for processing. Informational messages are available on STDERR.
 
         Supported sources: ${Object.getOwnPropertyNames(sources).join(", ")}
+
+        Exit codes:
+        - 90: An unhandled error occurred.
+        - 91: An error occurred in one of the requested sources.
+        - 92: An error occurred in all of the requested sources.
       `.trim(),
       builder: (yargs) =>
         yargs

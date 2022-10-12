@@ -15,11 +15,31 @@ const version =
 
 const userAgent = `univaf-loader/${version} (+https://github.com/usdigitalresponse/univaf)`;
 
+/**
+ * Get the infrastructure platform the process is running in, if possible. If
+ * the platform is unknown, returns an empty string.
+ * @returns {"render" | "ecs" | ""}
+ */
+function getPlatform() {
+  if (process.env.RENDER) {
+    return "render";
+  } else if (
+    process.env.ECS_CONTAINER_METADATA_URI ||
+    process.env.ECS_CONTAINER_METADATA_URI_V4
+  ) {
+    return "ecs";
+  } else {
+    return "";
+  }
+}
+
 module.exports = {
   apiUrl: process.env.API_URL,
   apiKey: process.env.API_KEY,
   apiConcurrency: parseInt(process.env.API_CONCURRENCY) || 0,
   debug: !!process.env.DEBUG,
+  getPlatform,
+  isTest: process.env.NODE_ENV?.toLowerCase() === "test",
   version,
   userAgent,
 };
