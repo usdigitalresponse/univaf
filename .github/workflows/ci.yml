@@ -200,8 +200,8 @@ jobs:
               --format '{{ .VirtualSize }}' \
               "${IMAGE_NAME}"
           )
-          SIZE_MB=$(($SIZE / 1024 / 1024))
-          echo "Built image \`${IMAGE_NAME}\`: ${SIZE_MB} MB" >> $GITHUB_STEP_SUMMARY
+          SIZE_MB=$((SIZE / 1024 / 1024))
+          echo "Built image \`${IMAGE_NAME}\`: ${SIZE_MB} MB" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
@@ -221,8 +221,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker tag dev/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag "dev/$ECR_REPOSITORY:$IMAGE_TAG" "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   deploy:
     if: github.ref == 'refs/heads/main'
