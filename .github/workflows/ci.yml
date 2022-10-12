@@ -152,9 +152,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: cschleiden/actions-linter@v1
-        with:
-          workflows: '[".github/workflows/*.yaml", ".github/workflows/*.yml"]'
+      - name: Lint workflow files
+        run: |
+          # Install actionlint
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          # Install matcher for GitHub line annotations
+          curl 'https://raw.githubusercontent.com/rhysd/actionlint/main/.github/actionlint-matcher.json' > actionlint-matcher.json
+          echo "::add-matcher::./actionlint-matcher.json"
+
+          ./actionlint
 
   build_docker:
     needs:
@@ -194,8 +200,8 @@ jobs:
               --format '{{ .VirtualSize }}' \
               "${IMAGE_NAME}"
           )
-          SIZE_MB=$(($SIZE / 1024 / 1024))
-          echo "Built image \`${IMAGE_NAME}\`: ${SIZE_MB} MB" >> $GITHUB_STEP_SUMMARY
+          SIZE_MB=$((SIZE / 1024 / 1024))
+          echo "Built image \`${IMAGE_NAME}\`: ${SIZE_MB} MB" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
@@ -215,8 +221,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker tag dev/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag "dev/$ECR_REPOSITORY:$IMAGE_TAG" "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   deploy:
     if: github.ref == 'refs/heads/main'
