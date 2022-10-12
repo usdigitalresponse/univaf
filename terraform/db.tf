@@ -16,8 +16,7 @@ module "db" {
   vpc_id     = aws_vpc.main.id
   subnet_ids = aws_subnet.private[*].id
   ingress_allow_security_groups = compact([
-    # TODO: allow access from ECS once we've set it up again.
-    # aws_security_group.ecs_tasks.id,
+    aws_security_group.ecs_tasks.id,
     aws_security_group.bastion_security_group.id
   ])
 }
