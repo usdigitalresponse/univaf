@@ -37,7 +37,7 @@ module "source_loader" {
   api_url       = "http://${aws_alb.main.dns_name}"
   api_key       = var.api_keys[0]
   sentry_dsn    = var.loader_sentry_dsn
-  env_vars      = each.value.env_vars
+  env_vars      = coalesce(each.value.env_vars, {})
   loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
 
   cluster_arn = aws_ecs_cluster.main.arn
