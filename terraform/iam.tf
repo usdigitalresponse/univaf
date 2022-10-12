@@ -2,10 +2,8 @@
 
 # Use this role for things that need to execute tasks in the ECS cluster.
 resource "aws_iam_role" "ecs_task_execution_role" {
-  # TODO: clean this up if it turns out we don't really need a variable here
   # TODO: consider using jsonencode and/or `inline_policy` blocks to put policy
   #       definitions inline: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role
-  # name               = var.ecs_task_execution_role_name
   name               = "univaf-ecs-task-execution"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_role.json
 }
