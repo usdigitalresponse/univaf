@@ -28,6 +28,16 @@ variable "data_snapshot_s3_bucket" {
   default     = "univaf-data-snapshots"
 }
 
+variable "data_snapshot_aws_key_id" {
+  description = "AWS access key ID for writing to the data snapshot S3 bucket"
+  sensitive   = true
+}
+
+variable "data_snapshot_aws_secret_key" {
+  description = "AWS secret key for writing to the data snapshot S3 bucket"
+  sensitive   = true
+}
+
 variable "db_user" {
   description = "The database user"
   default     = "univaf"
