@@ -28,19 +28,52 @@ resource "aws_route53_record" "api_www_domain_record" {
 }
 
 
-# These log groups and streams are associated with a tasks that no longer run,
-# but we are preserving the logs for a little while longer.
+# Daily Data Snapshot ---------------------------------------------------------
+
+module "daily_data_snapshot_task" {
+  source = "./modules/task"
+
+  name    = "daily-data-snapshot"
+  image   = "${aws_ecr_repository.server_repository.repository_url}:${var.api_release_version}"
+  command = ["node", "scripts/availability_dump.js", "--write-to-s3", "--clear-log"]
+  role    = aws_iam_role.ecs_task_execution_role.arn
+
+  env_vars = {
+    DB_HOST                 = module.db.host
+    DB_NAME                 = module.db.db_name
+    DB_USERNAME             = var.db_user
+    DB_PASSWORD             = var.db_password
+    SENTRY_DSN              = var.api_sentry_dsn
+    DATA_SNAPSHOT_S3_BUCKET = var.data_snapshot_s3_bucket
+    AWS_ACCESS_KEY_ID       = var.data_snapshot_aws_key_id
+    AWS_SECRET_ACCESS_KEY   = var.data_snapshot_aws_secret_key
+    AWS_DEFAULT_REGION      = var.aws_region
+  }
+}
+
+module "daily_data_snapshot_schedule" {
+  source = "./modules/schedule"
+
+  name            = module.daily_data_snapshot_task.name
+  schedule        = "cron(0 1 * * ? *)"
+  role            = aws_iam_role.ecs_task_execution_role.arn
+  cluster_arn     = aws_ecs_cluster.main.arn
+  subnets         = aws_subnet.private.*.id
+  security_groups = [aws_security_group.ecs_tasks.id]
+  task_arn        = module.daily_data_snapshot_task.arn
+}
+
 resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
-  name              = "/ecs/daily-data-snapshot"
+  name              = "/ecs/${module.daily_data_snapshot_task.name}"
   retention_in_days = 30
 
   tags = {
-    Name = "daily-data-snapshot"
+    Name = module.daily_data_snapshot_task.name
   }
 }
 
 resource "aws_cloudwatch_log_stream" "data_snapshot_log_stream" {
-  name           = "daily-data-snapshot-log-stream"
+  name           = "${module.daily_data_snapshot_task.name}-log-stream"
   log_group_name = aws_cloudwatch_log_group.data_snapshot_log_group.name
 }
 
