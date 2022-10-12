@@ -50,11 +50,12 @@ module "source_loader" {
   schedule      = each.value.schedule
   loader_source = each.key
   command       = lookup(each.value, "command", [])
-  api_url       = "http://${aws_alb.main.dns_name}"
-  api_key       = var.api_keys[0]
-  sentry_dsn    = var.loader_sentry_dsn
-  env_vars      = lookup(each.value, "env_vars", {})
-  loader_image  = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
+  # NOTE: loaders go directly to the API service load balancer, not CloudFront.
+  api_url      = "http://${aws_alb.main.dns_name}"
+  api_key      = var.api_keys[0]
+  sentry_dsn   = var.loader_sentry_dsn
+  env_vars     = lookup(each.value, "env_vars", {})
+  loader_image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
 
   cluster_arn = aws_ecs_cluster.main.arn
   role        = aws_iam_role.ecs_task_execution_role.arn
