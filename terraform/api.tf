@@ -109,8 +109,7 @@ module "api_task" {
 
   name  = "api"
   image = "${aws_ecr_repository.server_repository.repository_url}:${var.api_release_version}"
-  # FIXME: it's possible this isn't required (it's *technically* not)
-  # role = aws_iam_role.ecs_task_execution_role.arn
+  role  = aws_iam_role.ecs_task_execution_role.arn
   # Only certain CPU/Memory combinations are allowed. See:
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size
   cpu    = var.api_cpu
