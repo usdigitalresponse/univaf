@@ -1,4 +1,7 @@
-# s3.tf
+# S3 Buckets
+#
+# The API server stores historical logs and daily snapshots of the databse in
+# S3 for later analysis. This data, like the API is publicly accessible.
 
 resource "aws_s3_bucket" "data_snapshots" {
   bucket = "univaf-data-snapshots"
@@ -24,6 +27,7 @@ resource "aws_s3_bucket_policy" "data_snapshots" {
   })
 }
 
+# Alternative deployments that are being tested write to this bucket instead.
 resource "aws_s3_bucket" "render_test_data_snapshots" {
   bucket = "univaf-render-test-data-snapshots"
 }

@@ -1,14 +1,20 @@
 # Data Loaders
 #
-# Each laoder run as a script on a schedule. They are responsible for loading
-# data from a particular type of source (e.g. the CVS SMART Scheduling Links
-# API, the PrepMod API), reformatting that data for UNIVAF, and posting it to
-# the server's `/update` endpoint to be saved.
+# The loader is a script that reads data from various sources (e.g. Walgreens,
+# PrepMod, the CDC), transforms the data into UNIVAF's format, and sends it to
+# the API server to store in the database. These are basically ETL jobs.
+#
+# To run it on ECS, we define a separate task that runs the loader for each
+# data source on a given schedule (it's possible to run multiple sources at
+# once, but keeping them as separate tasks makes management a little easier).
+# Some sources have additional CLI options or environment variables (e.g. API
+# keys relevant to that source).
 
 locals {
-  # Sets up the unique fields for each loader. The keys of this map are the
+  # Define the unique parts of each task. The keys of this map are the
   # source names (e.g. the argument to the loader script indicating which
-  # source to pull), and the value can contain a `schedule` and `env_vars`.
+  # source to load), and the value is a map with other task arguments that
+  # should be set specially for that source.
   loader = {
     njvss = {
       schedule = "rate(5 minutes)"
