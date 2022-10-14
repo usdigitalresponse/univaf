@@ -93,14 +93,3 @@ moved {
   from = module.source_loader.module.loader_task
   to   = module.source_loader
 }
-
-moved {
-  from = module.source_loader.aws_cloudwatch_log_group.log_group
-  to   = module.source_loader.module.loader_task.aws_cloudwatch_log_group.log_group
-}
-
-moved {
-  from = module.source_loader.aws_cloudwatch_log_stream.log_stream
-  to   = module.source_loader.module.loader_task.aws_cloudwatch_log_stream.log_stream
-}
-
