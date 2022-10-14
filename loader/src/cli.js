@@ -107,9 +107,9 @@ async function run(options) {
         }
       }
 
-      metrics.gauge("loader.jobs.send_total", results.length);
-      metrics.gauge("loader.jobs.send_stale", sendStale);
-      metrics.gauge("loader.jobs.send_errors", sendErrors);
+      metrics.increment("loader.jobs.send.total", results.length);
+      metrics.increment("loader.jobs.send.stale", sendStale);
+      metrics.increment("loader.jobs.send.errors", sendErrors);
     }
 
     let successCount = 0;
@@ -132,7 +132,7 @@ async function run(options) {
   } finally {
     const duration = (Date.now() - startTime) / 1000;
     console.error(`Completed in ${duration} seconds.`);
-    metrics.gauge("loader.jobs.duration", duration);
+    metrics.gauge("loader.jobs.duration_seconds", duration);
 
     await new Promise((resolve, reject) => {
       metrics.flush(resolve, reject);
