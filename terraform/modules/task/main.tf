@@ -21,6 +21,8 @@ locals {
     var.env_vars
   )
 
+  log_group_name = "/ecs/${var.name}"
+
   datadog_container_def = {
     name  = "datadog-agent"
     image = "datadog/agent:latest"
@@ -59,7 +61,7 @@ locals {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = "/ecs/${var.name}"
+        "awslogs-group"         = local.log_group_name
         "awslogs-region"        = var.aws_region
         "awslogs-stream-prefix" = "ecs"
       }
@@ -101,4 +103,19 @@ resource "aws_ecs_task_definition" "main" {
   #   operating_system_family = "LINUX"
   #   cpu_architecture        = "ARM64"
   # }
+}
+
+# Set up CloudWatch group and log stream and retain logs for 30 days
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = local.log_group_name
+  retention_in_days = 30
+
+  tags = {
+    Name = var.name
+  }
+}
+
+resource "aws_cloudwatch_log_stream" "log_stream" {
+  name           = "${var.name}-log-stream"
+  log_group_name = aws_cloudwatch_log_group.log_group.name
 }

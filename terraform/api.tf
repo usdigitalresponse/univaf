@@ -42,20 +42,6 @@ module "api_task" {
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
 
-resource "aws_cloudwatch_log_group" "api_log_group" {
-  name              = "/ecs/api"
-  retention_in_days = 30
-
-  tags = {
-    Name = "api"
-  }
-}
-
-resource "aws_cloudwatch_log_stream" "api_log_stream" {
-  name           = "api-log-stream"
-  log_group_name = aws_cloudwatch_log_group.api_log_group.name
-}
-
 # The service's load balancer.
 resource "aws_alb" "main" {
   name                       = "api-load-balancer"
@@ -182,18 +168,4 @@ module "daily_data_snapshot_schedule" {
   subnets         = aws_subnet.private.*.id
   security_groups = [aws_security_group.ecs_tasks.id]
   task_arn        = module.daily_data_snapshot_task.arn
-}
-
-resource "aws_cloudwatch_log_group" "data_snapshot_log_group" {
-  name              = "/ecs/${module.daily_data_snapshot_task.name}"
-  retention_in_days = 30
-
-  tags = {
-    Name = module.daily_data_snapshot_task.name
-  }
-}
-
-resource "aws_cloudwatch_log_stream" "data_snapshot_log_stream" {
-  name           = "${module.daily_data_snapshot_task.name}-log-stream"
-  log_group_name = aws_cloudwatch_log_group.data_snapshot_log_group.name
 }
