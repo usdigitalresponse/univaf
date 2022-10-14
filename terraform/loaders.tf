@@ -48,25 +48,44 @@ locals {
 }
 
 module "source_loader" {
+  source   = "./modules/task"
   for_each = local.loader
 
-  source = "./modules/loader"
+  name    = each.key
+  command = concat(lookup(each.value, "command", []), [each.key])
+  env_vars = merge({
+    # NOTE: loaders go directly to the API load balancer, not CloudFront.
+    API_URL    = "http://${aws_alb.main.dns_name}"
+    API_KEY    = var.api_keys[0]
+    DD_API_KEY = var.datadog_api_key
+    SENTRY_DSN = var.loader_sentry_dsn
+  }, lookup(each.value, "env_vars", {}))
+  image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
 
-  name          = each.key
-  schedule      = each.value.schedule
-  loader_source = each.key
-  command       = lookup(each.value, "command", [])
-  # NOTE: loaders go directly to the API service load balancer, not CloudFront.
-  api_url    = "http://${aws_alb.main.dns_name}"
-  api_key    = var.api_keys[0]
-  sentry_dsn = var.loader_sentry_dsn
-  env_vars = merge(
-    { DD_API_KEY = var.datadog_api_key },
-    lookup(each.value, "env_vars", {})
-  )
-  loader_image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-
-  cluster_arn = aws_ecs_cluster.main.arn
-  role        = aws_iam_role.ecs_task_execution_role.arn
-  subnets     = aws_subnet.private.*.id
+  # Only certain CPU/Memory combinations are allowed. See:
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size
+  cpu    = 256
+  memory = 512
 }
+
+module "source_loader_schedule" {
+  source   = "./modules/schedule"
+  for_each = local.loader
+
+  schedule        = "cron(0 1 * * ? *)"
+  task            = module.source_loader[each.key]
+  cluster_arn     = aws_ecs_cluster.main.arn
+  subnets         = aws_subnet.private.*.id
+  security_groups = [aws_security_group.ecs_tasks.id]
+}
+
+moved {
+  from = module.source_loader.aws_cloudwatch_log_group.log_group
+  to   = module.source_loader.module.loader_task.aws_cloudwatch_log_group.log_group
+}
+
+moved {
+  from = module.source_loader.aws_cloudwatch_log_stream.log_stream
+  to   = module.source_loader.module.loader_task.aws_cloudwatch_log_stream.log_stream
+}
+
