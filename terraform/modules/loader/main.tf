@@ -26,6 +26,16 @@ module "loader_task" {
   datadog_api_key = var.datadog_api_key
 }
 
+moved {
+  from = aws_cloudwatch_log_group.log_group
+  to   = module.loader_task.aws_cloudwatch_log_group.log_group
+}
+
+moved {
+  from = aws_cloudwatch_log_stream.log_stream
+  to   = module.loader_task.aws_cloudwatch_log_stream.log_stream
+}
+
 module "loader_schedule" {
   count  = var.enabled ? 1 : 0
   source = "../../modules/schedule"
