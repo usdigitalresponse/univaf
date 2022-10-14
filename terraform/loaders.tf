@@ -80,6 +80,21 @@ module "source_loader_schedule" {
 }
 
 moved {
+  from = module.source_loader.module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule.aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader.module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule.aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader.module.loader_task
+  to   = module.source_loader
+}
+
+moved {
   from = module.source_loader.aws_cloudwatch_log_group.log_group
   to   = module.source_loader.module.loader_task.aws_cloudwatch_log_group.log_group
 }
