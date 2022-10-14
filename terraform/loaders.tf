@@ -80,16 +80,301 @@ module "source_loader_schedule" {
 }
 
 moved {
-  from = module.source_loader.module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
-  to   = module.source_loader_schedule.aws_cloudwatch_event_rule.schedule
+  from = module.source_loader["njvss"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["njvss"].aws_cloudwatch_event_rule.schedule
 }
 
 moved {
-  from = module.source_loader.module.loader_schedule[0].aws_cloudwatch_event_target.run_task
-  to   = module.source_loader_schedule.aws_cloudwatch_event_target.run_task
+  from = module.source_loader["njvss"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["njvss"].aws_cloudwatch_event_target.run_task
 }
 
 moved {
-  from = module.source_loader.module.loader_task
-  to   = module.source_loader
+  from = module.source_loader["njvss"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["njvss"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["njvss"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["njvss"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["njvss"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["njvss"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["waDoh"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["waDoh"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["waDoh"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["waDoh"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["waDoh"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["waDoh"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["waDoh"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["waDoh"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["waDoh"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["waDoh"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["cvsSmart"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["cvsSmart"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["cvsSmart"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["cvsSmart"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["cvsSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["cvsSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["cvsSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["cvsSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["cvsSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["cvsSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["walgreensSmart"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["walgreensSmart"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["walgreensSmart"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["walgreensSmart"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["walgreensSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["walgreensSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["walgreensSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["walgreensSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["walgreensSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["walgreensSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["krogerSmart"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["krogerSmart"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["krogerSmart"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["krogerSmart"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["krogerSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["krogerSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["krogerSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["krogerSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["krogerSmart"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["krogerSmart"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["albertsons"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["albertsons"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["albertsons"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["albertsons"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["albertsons"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["albertsons"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["albertsons"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["albertsons"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["albertsons"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["albertsons"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["hyvee"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["hyvee"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["hyvee"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["hyvee"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["hyvee"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["hyvee"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["hyvee"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["hyvee"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["hyvee"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["hyvee"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["heb"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["heb"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["heb"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["heb"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["heb"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["heb"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["heb"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["heb"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["heb"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["heb"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["cdcApi"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["cdcApi"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["cdcApi"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["cdcApi"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["cdcApi"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["cdcApi"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["cdcApi"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["cdcApi"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["cdcApi"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["cdcApi"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["riteAidScraper"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["riteAidScraper"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["riteAidScraper"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["riteAidScraper"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["riteAidScraper"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["riteAidScraper"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["riteAidScraper"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["riteAidScraper"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["riteAidScraper"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["riteAidScraper"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["riteAidApi"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["riteAidApi"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["riteAidApi"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["riteAidApi"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["riteAidApi"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["riteAidApi"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["riteAidApi"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["riteAidApi"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["riteAidApi"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["riteAidApi"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["prepmod"].module.loader_schedule[0].aws_cloudwatch_event_rule.schedule
+  to   = module.source_loader_schedule["prepmod"].aws_cloudwatch_event_rule.schedule
+}
+
+moved {
+  from = module.source_loader["prepmod"].module.loader_schedule[0].aws_cloudwatch_event_target.run_task
+  to   = module.source_loader_schedule["prepmod"].aws_cloudwatch_event_target.run_task
+}
+
+moved {
+  from = module.source_loader["prepmod"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["prepmod"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["prepmod"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["prepmod"].aws_ecs_task_definition.main
+}
+
+moved {
+  from = module.source_loader["prepmod"].module.loader_task.aws_ecs_task_definition.main
+  to   = module.source_loader["prepmod"].aws_ecs_task_definition.main
 }
