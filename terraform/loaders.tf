@@ -51,14 +51,14 @@ module "source_loader" {
   loader_source = each.key
   command       = lookup(each.value, "command", [])
   # NOTE: loaders go directly to the API service load balancer, not CloudFront.
-  api_url      = "http://${aws_alb.main.dns_name}"
-  api_key      = var.api_keys[0]
-  sentry_dsn   = var.loader_sentry_dsn
-  env_vars     = lookup(each.value, "env_vars", {})
+  api_url    = "http://${aws_alb.main.dns_name}"
+  api_key    = var.api_keys[0]
+  sentry_dsn = var.loader_sentry_dsn
+  env_vars = merge(
+    { DD_API_KEY = var.datadog_api_key },
+    lookup(each.value, "env_vars", {})
+  )
   loader_image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
-
-  datadog_enabled = true
-  datadog_api_key = var.datadog_api_key
 
   cluster_arn = aws_ecs_cluster.main.arn
   role        = aws_iam_role.ecs_task_execution_role.arn

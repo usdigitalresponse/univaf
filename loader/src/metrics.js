@@ -1,4 +1,4 @@
-const { StatsD } = require("hot-shots");
+const { init, gauge, increment, histogram, flush } = require("datadog-metrics");
 const { getPlatform, isTest } = require("./config");
 
 const globalTags = [];
@@ -6,33 +6,27 @@ if (getPlatform()) {
   globalTags.push(`platform:${getPlatform()}`);
 }
 
-let metricsClient;
+const apiKey = process.env.DD_API_KEY;
 
-function configureMetricsClient(options = {}) {
-  const _oldClient = metricsClient;
+const nullReporter = {
+  report(_metrics, onSuccess) {
+    if (onSuccess) onSuccess();
+  },
+};
 
-  metricsClient = new StatsD({
+function configureMetrics(options = {}) {
+  init({
+    apiKey,
     ...options,
-    globalTags: [...new Set(globalTags.concat(options.globalTags || []))],
-    mock: typeof options.mock === "boolean" ? options.mock : isTest,
+    defaultTags: [...new Set(globalTags.concat(options.defaultTags || []))],
+    reporter: isTest || !apiKey ? nullReporter : undefined,
   });
-
-  if (_oldClient) {
-    _oldClient.close();
-  }
-
-  return metricsClient;
-}
-
-function getMetricsClient() {
-  if (!metricsClient) {
-    configureMetricsClient();
-  }
-
-  return metricsClient;
 }
 
 module.exports = {
-  configureMetricsClient,
-  getMetricsClient,
+  configureMetrics,
+  gauge,
+  increment,
+  histogram,
+  flush,
 };

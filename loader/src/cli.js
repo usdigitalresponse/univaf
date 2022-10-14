@@ -7,7 +7,7 @@ const config = require("./config");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
 const allStates = require("./states.json");
-const { configureMetricsClient } = require("./metrics");
+const metrics = require("./metrics");
 
 Sentry.init({ release: config.version });
 
@@ -55,10 +55,10 @@ function createDatabaseSender() {
  */
 async function run(options) {
   Sentry.setContext("CLI Arguments", { ...options });
-  const metricsClient = configureMetricsClient({
-    globalTags: [`sources:${options.sources.join("/")}`],
+  metrics.configureMetrics({
+    defaultTags: [`sources:${options.sources.join("/")}`],
   });
-  metricsClient.increment("loader.jobs.count");
+  metrics.increment("loader.jobs.count");
 
   let handler;
   if (options.send) {
@@ -107,9 +107,9 @@ async function run(options) {
         }
       }
 
-      metricsClient.distribution("loader.jobs.send_total", results.length);
-      metricsClient.distribution("loader.jobs.send_stale", sendStale);
-      metricsClient.distribution("loader.jobs.send_errors", sendErrors);
+      metrics.gauge("loader.jobs.send_total", results.length);
+      metrics.gauge("loader.jobs.send_stale", sendStale);
+      metrics.gauge("loader.jobs.send_errors", sendErrors);
     }
 
     let successCount = 0;
@@ -132,7 +132,13 @@ async function run(options) {
   } finally {
     const duration = (Date.now() - startTime) / 1000;
     console.error(`Completed in ${duration} seconds.`);
-    metricsClient.distribution("loader.jobs.duration", duration);
+    metrics.gauge("loader.jobs.duration", duration);
+
+    await new Promise((resolve, reject) => {
+      metrics.flush(resolve, reject);
+    }).catch((error) => {
+      console.error("Error flushing metrics:", error);
+    });
   }
 }
 

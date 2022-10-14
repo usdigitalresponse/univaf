@@ -143,7 +143,6 @@ services:
       npm ci --production=true
     envVars:
       - fromGroup: "Loader Environment"
-      - *DD_AGENT_HOST
 
   - <<: *loader-config
     name: "Loader: NJVSS"
@@ -153,7 +152,6 @@ services:
       bin/univaf-loader.js njvss --send --compact
     envVars:
       - fromGroup: "Loader Environment"
-      - *DD_AGENT_HOST
       - key: NJVSS_AWS_KEY_ID
         sync: false
       - key: NJVSS_AWS_SECRET_KEY
@@ -168,7 +166,6 @@ services:
       bin/univaf-loader.js riteAidApi --send --compact --states "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"
     envVars:
       - fromGroup: "Loader Environment"
-      - *DD_AGENT_HOST
       - key: RITE_AID_URL
         sync: false
       - key: RITE_AID_KEY
@@ -273,3 +270,5 @@ envVarGroups:
         value: "0.01"
       - key: SENTRY_ENVIRONMENT
         value: render
+      - key: DD_API_KEY
+        sync: false
