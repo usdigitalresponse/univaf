@@ -72,7 +72,7 @@ module "source_loader_schedule" {
   source   = "./modules/schedule"
   for_each = local.loader
 
-  schedule        = "cron(0 1 * * ? *)"
+  schedule        = each.value.schedule
   task            = module.source_loader[each.key]
   cluster_arn     = aws_ecs_cluster.main.arn
   subnets         = aws_subnet.private.*.id
