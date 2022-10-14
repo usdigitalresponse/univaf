@@ -13,7 +13,6 @@ module "loader_task" {
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size
   cpu     = 256
   memory  = 512
-  port    = 3000
   command = concat(var.command, [var.loader_source])
 
   env_vars = merge({
