@@ -40,10 +40,8 @@ module "loader_schedule" {
   count  = var.enabled ? 1 : 0
   source = "../../modules/schedule"
 
-  name        = var.name
+  task        = module.loader_task
   schedule    = var.schedule
-  role        = var.role
   cluster_arn = var.cluster_arn
   subnets     = var.subnets
-  task_arn    = module.loader_task.arn
 }
