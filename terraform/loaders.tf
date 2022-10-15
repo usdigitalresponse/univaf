@@ -11,11 +11,16 @@
 # keys relevant to that source).
 
 locals {
-  # Define the unique parts of each task. The keys of this map are the
-  # source names (e.g. the argument to the loader script indicating which
-  # source to load), and the value is a map with other task arguments that
-  # should be set specially for that source.
-  loader = {
+  # Define the loader tasks. The keys name the task, and the values are a map
+  # that can have:
+  # - `schedule` (required) a `cron()` or `rate()` expression for when to run.
+  # - `env_vars` a map of extra environment variables to set.
+  # - `options` list of extra CLI options to pass to the loader.
+  # - `sources` list of sources to load. If not set, the key will be used.
+  #     For example, these listings are the same:
+  #       njvss = { schedule = "rate(5 minutes)" }
+  #       njvss = { schedule = "rate(5 minutes)", sources = ["njvss"] }
+  loaders = {
     njvss = {
       schedule = "rate(5 minutes)"
       env_vars = {
@@ -34,7 +39,7 @@ locals {
     riteAidScraper = { schedule = "cron(0/10 * * * ? *)" }
     riteAidApi = {
       schedule = "cron(0/30 * * * ? *)"
-      command  = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
+      options  = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
       env_vars = {
         RITE_AID_URL = var.rite_aid_api_url
         RITE_AID_KEY = var.rite_aid_api_key
@@ -42,17 +47,20 @@ locals {
     }
     prepmod = {
       schedule = "cron(9/10 * * * ? *)"
-      command  = ["--states", "AK,WA", "--hide-missing-locations"]
+      options  = ["--states", "AK,WA", "--hide-missing-locations"]
     }
   }
 }
 
 module "source_loader" {
   source   = "./modules/task"
-  for_each = local.loader
+  for_each = local.loaders
 
-  name    = each.key
-  command = concat(lookup(each.value, "command", []), [each.key])
+  name = each.key
+  command = concat(
+    lookup(each.value, "options", []),
+    lookup(each.value, "sources", [each.key]),
+  )
   env_vars = merge({
     # NOTE: loaders go directly to the API load balancer, not CloudFront.
     API_URL    = "http://${aws_alb.main.dns_name}"
@@ -71,7 +79,7 @@ module "source_loader" {
 
 module "source_loader_schedule" {
   source   = "./modules/schedule"
-  for_each = local.loader
+  for_each = local.loaders
 
   schedule        = each.value.schedule
   task            = module.source_loader[each.key]
