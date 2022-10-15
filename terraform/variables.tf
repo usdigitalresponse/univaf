@@ -55,7 +55,7 @@ variable "db_instance" {
 
 variable "db_size" {
   description = "The storage size for the DB (in Gigabytes)"
-  default     = 30
+  default     = 48
 }
 
 variable "api_keys" {
