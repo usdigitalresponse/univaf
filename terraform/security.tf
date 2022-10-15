@@ -5,8 +5,8 @@
 
 # ALB Security Group: Edit to restrict access to the API Server
 resource "aws_security_group" "lb" {
-  name        = "cb-load-balancer-security-group"
-  description = "controls access to the API server load balancer"
+  name        = "univaf-api-load-balancer-security-group"
+  description = "Controls access to the API server load balancer"
   vpc_id      = aws_vpc.main.id
 
   ingress {
@@ -34,8 +34,8 @@ resource "aws_security_group" "lb" {
 # Traffic to the tasks/services in the ECS cluster should only come from the
 # load balancer.
 resource "aws_security_group" "ecs_tasks" {
-  name        = "cb-ecs-tasks-security-group"
-  description = "allow inbound access only from the load balancer"
+  name        = "univaf-ecs-tasks-security-group"
+  description = "Allow inbound access only from the load balancer"
   vpc_id      = aws_vpc.main.id
 
   ingress {
