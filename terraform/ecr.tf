@@ -1,3 +1,9 @@
+# ECR (Elastic Container Registry)
+#
+# All our code is run as tasks on ECS, which means they need repositories to
+# store the container images. Images are built and published to these
+# repositories by GitHub Actions.
+
 resource "aws_ecr_repository" "server_repository" {
   name                 = "univaf-server"
   image_tag_mutability = "IMMUTABLE"

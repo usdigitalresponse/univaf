@@ -1,4 +1,8 @@
-
+# Database on RDS
+#
+# The application's database is managed through RDS. The definition here
+# provides a nice roll-up of settings that are important to manage. See the
+# `rds` module for all the guts of how this is implemented in detail.
 module "db" {
   source = "./modules/rds"
 
