@@ -61,6 +61,7 @@ module "source_loader" {
     SENTRY_DSN = var.loader_sentry_dsn
   }, lookup(each.value, "env_vars", {}))
   image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
+  role  = aws_iam_role.ecs_task_execution_role.arn
 
   # Only certain CPU/Memory combinations are allowed. See:
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size
