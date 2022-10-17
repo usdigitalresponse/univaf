@@ -6,7 +6,6 @@
  * contact at least one (and sometimes several) hosts in each state.
  */
 
-const { isDeepStrictEqual } = require("node:util");
 const { ApiClient } = require("../../api-client");
 const {
   EXTENSIONS,
@@ -138,25 +137,69 @@ function formatLocation(host, validTime, locationInfo) {
   };
 }
 
+const streetTypes = [
+  "ave",
+  "avenue",
+  "dr",
+  "drive",
+  "rd",
+  "road",
+  "st",
+  "street",
+  "blvd",
+  "boulevard",
+  "ln",
+  "lane",
+  "cir",
+  "circle",
+  "ct",
+  "court",
+  "cor",
+  "corner",
+  "pl",
+  "place",
+  "plz",
+  "plaza",
+  "way",
+  "pkw?y",
+  "parkway",
+  "cswy",
+  "causeway",
+  "xing",
+  "crssng",
+  "crossing",
+  "sq",
+  "square",
+  "trl?",
+  "trail",
+].join("|");
+
 // Attempts to match "<city>, <state abbreviation> <zip>" so it can be removed
 // from the address lines.
 const nonAddressLinePattern =
   /(^\s*|,\s+)[A-Za-z\s]+,\s+[A-Z]{2}\s*,?\s+(\d{5}(-\d{4})?|USA)\s*$/;
 
 // A lot of locations seem to have multiple address lines squished into one,
-// often using ", " or " | " or " / " as a separator. (" - " is common, too,
-// but is often used legitimately, e.g. in some road names.)
-const maybeAddressLineBreaks = /\s*,\s+|\s+[|/]\s+/g;
+// often using ", " or " - ".
+const maybeAddressLineBreaks = /\s*,\s+|\s+-\s+/g;
 // These are things that are *definitey* line breaks, as opposed to the above,
 // which are more fuzzy and should be surfaced for human review.
 const addressLineBreaks = new RegExp(
   [
-    // Actual line breaks
+    // Actual line breaks! :)
     String.raw`\s*\n\s*`,
-    // Things that might be line breaks if followed by a suite or unit number.
-    String.raw`(?:${maybeAddressLineBreaks.source})(?=(?:suite|ste\.?|unit)\s+#?\d+)`,
-    // " - " is a delimiter if followed by a suite or unit number, too.
-    String.raw`\s+-\s+(?=(?:suite|ste\.?|unit)\s+#?\d+)`,
+    // Things that have always been line breaks in practice, and seem safe to
+    // assume will be so in the future. (Note: the spaces on both sides are
+    // important! We've seen them not act as breaks without those.)
+    String.raw`\s+[|/]\s+`,
+    // Things that might be line breaks if followed by an unambiguous separate
+    // line, like:
+    // ...a suite/unit/building number
+    String.raw`(?:${maybeAddressLineBreaks.source})(?=(?:suite|ste\.?|unit|bldg|building)\s+#?\d+)`,
+    // ...or by a PO Box
+    String.raw`(?:${maybeAddressLineBreaks.source})(?=p\.?o\.? box #?\d+)`,
+    // ...or by "123 something road/street/etc."
+    String.raw`(?:${maybeAddressLineBreaks.source})(?=\d+\s+\w+[\w\s]+\s+(?:${streetTypes})\b)`,
   ].join("|"),
   "ig"
 );
@@ -179,27 +222,8 @@ function formatAddress(rawAddress) {
     // Split on things we are sure are line breaks.
     .flatMap((line) => line.split(addressLineBreaks).map((x) => x.trim()));
 
-  // Fixes that we may want to review for correctness.
-  const extraCleanLines = cleanLines.flatMap((line) =>
-    line.split(maybeAddressLineBreaks).map((x) => x.trim())
-  );
-
-  // If we changed things above, log a warning so we know about it. This code
-  // is still a little speculative, so this will help us evaluate whether it's
-  // behaving correctly. Once we are more certain, this can be removed.
-  if (!isDeepStrictEqual(cleanLines, extraCleanLines)) {
-    warn(
-      `Poorly formatted address lines: ${JSON.stringify(rawAddress.line)}`,
-      {
-        original: JSON.stringify(rawAddress.line),
-        formatted: JSON.stringify(extraCleanLines),
-      },
-      true
-    );
-  }
-
   return {
-    address_lines: extraCleanLines,
+    address_lines: cleanLines,
     city: rawAddress.city,
     state: rawAddress.state,
     postal_code: rawAddress.postalCode,
