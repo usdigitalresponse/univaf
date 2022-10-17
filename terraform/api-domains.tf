@@ -25,8 +25,8 @@ resource "aws_route53_record" "api_domain_record" {
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.univaf_api[0].domain_name
-    zone_id                = aws_cloudfront_distribution.univaf_api[0].hosted_zone_id
+    name                   = aws_cloudfront_distribution.univaf_api_ecs[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api_ecs[0].hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -51,9 +51,13 @@ resource "aws_route53_record" "api_render_domain_record" {
   )
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = "render"
-  type    = "CNAME"
-  records = [var.domain_name]
-  ttl     = 300
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.univaf_api_render[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api_render[0].hosted_zone_id
+    evaluate_target_health = false
+  }
 }
 
 # The `ecs.` subdomain.
@@ -78,7 +82,7 @@ resource "aws_route53_record" "api_ecs_domain_record" {
 # Use CloudFront as a caching layer in front of the remote API server (Render
 # does not provide a built-in one). Enabled only if var.domain,
 # var.api_remote_domain and var.ssl_certificate_arn are provided.
-resource "aws_cloudfront_distribution" "univaf_api" {
+resource "aws_cloudfront_distribution" "univaf_api_render" {
   count = (
     var.domain_name != ""
     && var.ssl_certificate_arn != ""
@@ -133,6 +137,11 @@ resource "aws_cloudfront_distribution" "univaf_api" {
       restriction_type = "none"
     }
   }
+}
+
+moved {
+  from = aws_cloudfront_distribution.univaf_api
+  to   = aws_cloudfront_distribution.univaf_api_render
 }
 
 # Use CloudFront as a caching layer in front of the API server that's running
