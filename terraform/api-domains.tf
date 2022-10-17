@@ -96,7 +96,7 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
   http_version = "http2and3"
 
   origin {
-    origin_id   = var.domain_name
+    origin_id   = "render.${var.domain_name}"
     domain_name = var.api_remote_domain_name
 
     custom_origin_config {
@@ -110,7 +110,7 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = var.domain_name
+    target_origin_id       = "render.${var.domain_name}"
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     max_ttl                = 3600
