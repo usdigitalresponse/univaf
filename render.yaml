@@ -42,13 +42,13 @@ services:
   - name: API Server
     region: oregon
     type: web
-    plan: standard
+    plan: starter plus
     env: node
     repo: "https://github.com/usdigitalresponse/univaf.git"
     branch: main
     scaling:
       minInstances: 1
-      maxInstances: 4
+      maxInstances: 2
       targetMemoryPercent: 60 # optional if targetCPUPercent is set
       targetCPUPercent: 70 # optional if targetMemory is set
     buildFilter:
