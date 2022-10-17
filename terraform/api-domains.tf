@@ -139,11 +139,6 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
   }
 }
 
-moved {
-  from = aws_cloudfront_distribution.univaf_api
-  to   = aws_cloudfront_distribution.univaf_api_render
-}
-
 # Use CloudFront as a caching layer in front of the API server that's running
 # in ECS. Enabled only if var.domain, and var.ssl_certificate_arn are provided.
 resource "aws_cloudfront_distribution" "univaf_api_ecs" {
