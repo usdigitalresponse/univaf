@@ -91,8 +91,6 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
   enabled     = true
   price_class = "PriceClass_100" # North America
   aliases = [
-    var.domain_name,
-    "www.${var.domain_name}",
     "render.${var.domain_name}"
   ]
   http_version = "http2and3"
@@ -149,6 +147,8 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
   enabled     = true
   price_class = "PriceClass_100" # North America
   aliases = [
+    var.domain_name,
+    "www.${var.domain_name}",
     "ecs.${var.domain_name}"
   ]
   http_version = "http2and3"
