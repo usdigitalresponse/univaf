@@ -102,7 +102,7 @@ Follow this process when making any changes in terraform that may affect another
 
 Most of our services in AWS are in VPCs without public access, so if you need to log directly into a server, the database, or something else, you’ll need to do it through the [bastion server][bastion-server]. You can SSH into the bastion from a computer on the public internet, and from there run any commands that need access to our internal services, like using `psql` to log directly into the database.
 
-In general, you should try to find a way to do most tasks that doesn't require manual intervention through the bastion, but it’s there when you absolutely need it or when there’s an emergency.
+In general, you should try to find a more automatic or managed way to do most tasks (by running a task on ECS, using a database migration file, etc.) instead of manual intervention through the bastion, but it’s there when you absolutely need it or when there’s an emergency.
 
 Please see another maintainer or the AWS console for the bastion’s IP address, SSH keys, etc.
 
