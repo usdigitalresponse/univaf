@@ -1,5 +1,6 @@
 const Queue = require("queue");
 const config = require("./config");
+const metrics = require("./metrics");
 const { httpClient } = require("./utils");
 
 const DEFAULT_CONCURRENCY = 10;
@@ -77,6 +78,8 @@ class ApiClient {
       body.sent = data;
       body.statusCode = response.statusCode;
     }
+
+    metrics.increment("loader.jobs.send.retries", response.retryCount);
 
     return body;
   }

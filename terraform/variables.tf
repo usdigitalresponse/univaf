@@ -74,12 +74,12 @@ variable "api_health_check_path" {
 
 variable "api_cpu" {
   description = "CPU units to provision for each API service instance (1 vCPU = 1024 CPU units) - Allowed values: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size"
-  default     = 512
+  default     = 1024
 }
 
 variable "api_memory" {
   description = "Memory to provision for each API service instance (in MiB) - Allowed values: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size"
-  default     = 1024
+  default     = 2048
 }
 
 variable "api_sentry_dsn" {
