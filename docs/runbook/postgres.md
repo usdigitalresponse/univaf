@@ -9,23 +9,28 @@
 
 ## Overview
 
-The application is currently backed by a single PostgreSQL database server managed through Render. You can view metrics or logs and get a login URL for `psql` in Render’s web dashboard (https://dashboard.render.com/).
+The application is currently backed by a single PostgreSQL database server managed through AWS RDS. View the web console at: https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2
+
+We have "performance insights" turned on, and you can navigate to it from the web console to see overall database load statistics and information about common or slow-performing queries.
 
 
 ## Backups
 
-Render is configured to save daily snapshots of the database, which you can browse in the web dashboard. For details on backups and restoring, see the Render docs: https://render.com/docs/databases#backups.
+RDS is configured to save daily snapshots of the database, which you can browse at https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2#snapshots-list:tab=automated.
+
+
+### Restoring From a Snapshot
+
+When viewing the list of snapshots in the RDS web console, you can create a new database from one of the snapshots by selecting it and then choosing "restore snapshot" from the "actions" dropdown at the top of the list (or from the "actions" dropdown on the top-right of a snapshot's details page). You’ll then walk through the steps of setting a name, instance class, VPC, and other basic properties of the database. In most cases, you’ll want them to be the same as or similar to the database you are restoring a snapshot of, so use that database instance in the console as a reference.
+
+*Note that you can’t restore directly to an existing database instance.* That means that, if you are switching to the backup data, you’ll need to create the new database from the snapshot, update and apply our Terraform configurations to point any relevant services to the new database, and then retire the old database (probably through Terraform again).
 
 
 ## Logging in with `psql`
 
-When troubleshooting issues, you might need to log directly into the database and run commands with `psql`. The database doesn’t accept connections from the public web, so you’ll have to log from a shell in Render’s data center instead of directly from your own computer. There are a couple ways to do this:
+When troubleshooting issues, you might need to log directly into the database and run commands with `psql`. The database doesn’t accept connections from the public web, so you’ll have to log into the bastion server first, then run  `psql` from there.
 
-1. You can start a shell session in your browser by opening Render’s web dashboard, clicking on a service or cron job, and clicking on “shell” in the sidebar.
-
-    ![Render Web Shell](../_assets/render-web-shell.png)
-
-2. Alternatively, you can SSH into a Render service by following the directions at https://render.com/docs/ssh.
+To log into the bastion server, see ["bastion server" in the runbook README][bastion-server].
 
 Please take special care when logging directly into the production database; you’re working with live data!
 
@@ -36,7 +41,7 @@ Please take special care when logging directly into the production database; you
 
 If you really need raw SQL data, then the most straightforward way to do this is with `pg_dump`:
 
-1. Log into a server inside Render’s datacenter first, [as described above](#logging-in-with-psql). For this situation, you may want to create a whole new temporary service with an attached disk to log into, since the database dump may be large.
+1. Log into the bastion server first, [as described above](#logging-in-with-psql).
 
 2. Once you are logged into a shell with access to the database, dump a copy with `pg_dump`. In most cases, you’ll want to skip the `availability_log` table, since it is extremely large. If you need to keep it, try to do your copying work immediately after the “Daily Data Snapshot” job runs so you have the least excess data to worry about.
 
@@ -71,7 +76,7 @@ If you really need raw SQL data, then the most straightforward way to do this is
 
 If you’ve made a copy of the database with `pg_dump`, you can restore it into an empty database with `psql`:
 
-1. Log into a server inside Render’s datacenter first, [as described above](#logging-in-with-psql).
+1. Log into the bastion server first, [as described above](#logging-in-with-psql).
 
 2. Put that data in the new database! From your shell session:
 
@@ -84,7 +89,7 @@ If you’ve made a copy of the database with `pg_dump`, you can restore it into 
 
 ## Understanding Table Sizes
 
-Render doesn’t provide great tools for taking a detailed look at the database, and if you are running low on disk space or need to understand what’s taking up resources, you may need to log in with `psql` and run some queries.
+RDS doesn’t provide great tools for taking a detailed look at the database, and if you are running low on disk space or need to understand what’s taking up resources, you may need to log in with `psql` and run some queries.
 
 The following query can be pretty helpful in understanding basic size information about tables:
 
@@ -119,40 +124,11 @@ If a table gets too big and you need to save disk space on the database server, 
 
 ## Resizing the Database
 
-**Upgrading:** If you need more disk space, memory, or processing power, you can upgrade the databases plan by editing `render.yaml`. Once a change to that file lands on the `main` branch, the database will be upgraded.
+In most cases, AWS allows you to adjust the type of server the database is running on with very minimal downtime. All you should need to do here is adjust the `db_instance` or `db_size` variables in the Terraform files.
 
-**Downgrading:** You can’t currently downgrade to a lower plan for databases in Render right now, so if you want to shrink the database, you’ll have to create a new one and copy the data over from the previous database.
-
-1. Consider planning a maintenance timeframe to do this work. Things could go wrong and you might incur some downtime! The next two steps can be done ahead of time, but everything after will involve making significant changes and potentially pausing some services.
-
-2. Create the new database in Render’s web console (NOT in `render.yaml` — the web console is the only place you can set up DataDog integration). Choose the plan you want and add DataDog credentials so we can get metrics on it.
-
-3. Add the new database to `render.yaml` (don’t remove the old one yet!). If the `name` and other fields in the YAML file match up with what you created manually, Render should automatically link the entry in the YAML file to the new database.
-
-    - When merging these updates into the `main` branch, check the `Blueprints` and `Dashboard` tabs in Render’s web console to make sure it hasn’t created a third database.
-    - If you run into problems, you may have to *disconnect* the blueprint and set it up again from scratch (disconnecting won’t remove or alter any services, so that is a messy, but reasonably safe operation).
-        1. In the Blueprints tab on Render’s web console, click on the UNIVAF Services blueprint.
-        2. Click on the settings entry in the sidebar.
-        3. Click “Disconnect Blueprint.”
-        4. In the Blueprints tab again, click the “New Blueprint Instance” button.
-        5. Select the UNIVAF repo.
-        6. It should ask you to verify that it’s linking up the right existing services to the entries in the blueprint (`render.yaml`) file. Make sure everything is good, and tell it to go!
-
-4. Once the above steps are done, wait until a low usage time, or your planned maintenance window to do the rest of the work. Suspend all the loaders (so they stop writing new data; anything new after the next step will be lost until you are done). *Consider* suspending the API Server, although that’s not necessarily required.
-
-5. Follow the directions under [“Copying the Database”](#copying-the-database) to use `pg_dump` to make a copy of the existing database. You’ll probably want to follow the approach that skips the `availability_log` table.
-
-6. Put that data in the new database! Follow the directions under [“Restoring a Database Dump”](#restoring-a-database-dump).
-
-7. Update all the services in the `render.yaml` file that pull their DB connection values from the old database, and change them to use the new database. Merge the changes to `main` and let the services re-deploy.
-
-8. Turn the API Server back on and make sure it’s able to connect to the database and query data.
-
-9. Turn all the loaders back on.
-
-10. Remove the old database entry from `render.yaml`. Note this won’t actually suspend or remove the database. It just stops it from being managed by the file.
-
-11. In Render’s web console, suspend or remove the old database as appropriate.
+However, there is still *some* downtime when you do this (and, of course, the possibility for things to go massively wrong).
+1. Plan ahead, and ideally do it outside normal usage hours in North America.
+2. Consider taking a manual database snapshot in the AWS console beforehand, so you can restore from it if there are problems.
 
 
 [issue-208]: https://github.com/usdigitalresponse/univaf/issues/208
