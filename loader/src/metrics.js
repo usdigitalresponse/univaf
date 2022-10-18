@@ -28,6 +28,10 @@ function configureMetrics(options = {}) {
   });
 }
 
+// Automatically configure for the current environment. `configureMetrics()`
+// can be called again by other code to override this.
+configureMetrics();
+
 module.exports = {
   configureMetrics,
   gauge,
