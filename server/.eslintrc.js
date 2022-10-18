@@ -21,4 +21,5 @@ module.exports = {
     // for; they need `require()` support.
     "@typescript-eslint/no-var-requires": "off",
   },
+  ignorePatterns: ["dist", "coverage", "scratch.*"],
 };
