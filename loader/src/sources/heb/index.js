@@ -181,7 +181,7 @@ function formatAvailableProducts(slots, availableImmunizations) {
         // "other" denotes non-COVID vaccines, like the flu.
         return [];
       } else if (manufacturer === "multiple") {
-        return availableTypes.map((type) => type.product);
+        return availableTypes?.map((type) => type.product) || [];
       } else {
         const types = availableTypes || Object.values(IMMUNIZATION_TYPES);
         const formatted = types
