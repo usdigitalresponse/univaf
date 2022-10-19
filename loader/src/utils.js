@@ -16,7 +16,7 @@ const ADDRESS_PATTERN =
 
 // Common abbreviations in addresses and their expanded, full English form.
 // These are used to match similar addresses. For example:
-//   For example: "600 Ocean Hwy" and "600 Ocean Highway"
+//   "600 Ocean Hwy" and "600 Ocean Highway"
 // They're always used in lower-case text where punctuation has been removed.
 // In some cases, the replacements *remove* the abbreviation entirely to enable
 // better loose matching (usually for road types, like "road" vs. "street").
