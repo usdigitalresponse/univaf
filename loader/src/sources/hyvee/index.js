@@ -34,10 +34,12 @@ const VACCINE_NAMES = {
   // Moderna 12-17 is the same product as 12+ or 18+. This is a little messy,
   // since technically these might be separate appointment slots for teens.
   "Moderna (12-17)": VaccineProduct.moderna,
+  "Pediatric Moderna Bivalent (6-12)": VaccineProduct.modernaBa4Ba5Age6_11,
   "Pediatric-Moderna (3-5)": VaccineProduct.modernaAge0_5,
   "Pfizer-BioNTech": VaccineProduct.pfizer,
   "Pfizer Bivalent": VaccineProduct.pfizerBa4Ba5,
   "Pediatric-Pfizer (5-11)": VaccineProduct.pfizerAge5_11,
+  "Pediatric Pfizer Bivalent (5-11)": VaccineProduct.pfizerBa4Ba5Age5_11,
   "Pediatric-Pfizer (under 5)": VaccineProduct.pfizerAge0_4,
   Janssen: VaccineProduct.janssen,
   Novavax: VaccineProduct.novavax,
