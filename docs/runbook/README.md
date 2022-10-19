@@ -60,15 +60,15 @@ Please get in touch with a project lead for access to any of these systems.
 
 **Most production code runs as Docker containers in ECS tasks.** Deploying new code requires two steps:
 
-    1. Building and uploading Docker images to AWS ECR (Elastic Container Registry).
-        - GitHub Actions does this automatically on every push the `main` branch. See the [`ci` workflow][workflow-ci] for details and see the [logs in the "actions" tab][workflow-ci-runs]).
+1. Building and uploading Docker images to AWS ECR (Elastic Container Registry).
+    - GitHub Actions does this automatically on every push the `main` branch. See the [`ci` workflow][workflow-ci] for details and see the [logs in the "actions" tab][workflow-ci-runs]).
 
-        - Images are tagged with the hash of the git commit they were built from, e.g. `univaf-server:bd2834bdc6dc09f5e925a407f883e838130ae5bc` is the API server image built from commit `bd2834bdc6dc09f5e925a407f883e838130ae5bc`. *(NOTE: we used to publish a `latest` tag, but no longer do so.)*
+    - Images are tagged with the hash of the git commit they were built from, e.g. `univaf-server:bd2834bdc6dc09f5e925a407f883e838130ae5bc` is the API server image built from commit `bd2834bdc6dc09f5e925a407f883e838130ae5bc`. *(NOTE: we used to publish a `latest` tag, but no longer do so.)*
 
-    2. Updating AWS to use the images from step 1 using Terraform.
-        - GitHub Actions automatically runs the `scripts/deploy_infra.sh` script after publishing images. It updates the Terraform configuration to use the new images and commits the result.
+2. Updating AWS to use the images from step 1 using Terraform.
+    - GitHub Actions automatically runs the `scripts/deploy_infra.sh` script after publishing images. It updates the Terraform configuration to use the new images and commits the result.
 
-        - Terraform Cloud automatically picks up the change and updates ECS configurations to use the new images.
+    - Terraform Cloud automatically picks up the change and updates ECS configurations to use the new images.
 
 **AWS configuration changes deploy automatically via Terraform Cloud.** Every time a new commit that changes Terraform files lands on the `main` branch, Terraform Cloud will deploy. It will also *plan* a deployment (and tell you what it would create/update/destroy) every time you push to a Pull Request branch (this will show up as a “check” at the bottom of a PR).
 
