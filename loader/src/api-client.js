@@ -63,15 +63,22 @@ class ApiClient {
       throw new TypeError("`options` must be an object");
     }
 
-    const response = await this._request({
-      method: "POST",
-      url: "/api/edge/update",
-      searchParams: options,
-      json: data,
-      throwHttpErrors: false,
-    });
+    // FIXME: determine if this is actually needed!
+    // Wrap this call in a try/catch; it seems like retries are not not
+    // happening when setting the `throwHttpErrors` to false.
+    let response;
+    try {
+      response = await this._request({
+        method: "POST",
+        url: "/api/edge/update",
+        searchParams: options,
+        json: data,
+      });
+    } catch (error) {
+      response = error.response;
+    }
 
-    const body = response.body;
+    const body = response?.body ?? {};
     // TODO: should probably always include success in response on API side?
     if (body.error || body.success === false) {
       body.success = false;
