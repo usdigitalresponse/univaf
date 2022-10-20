@@ -15,16 +15,18 @@ class ApiClient {
     return new ApiClient(config.apiUrl, config.apiKey);
   }
 
-  constructor(url, key) {
+  constructor(url, key, httpOptions) {
     if (!url || !key) throw new Error("You must set an API URL and key");
 
     if (url.endsWith("/")) url = url.slice(0, -1);
     this.url = url;
     this.key = key;
+    this.httpOptions = httpOptions;
   }
 
   async _request(options) {
     return httpClient({
+      ...this.httpOptions,
       ...options,
       url: new URL(options.url, this.url).href,
       headers: { "x-api-key": this.key, ...options.headers },
@@ -63,30 +65,30 @@ class ApiClient {
       throw new TypeError("`options` must be an object");
     }
 
-    // FIXME: determine if this is actually needed!
-    // Wrap this call in a try/catch; it seems like retries are not not
-    // happening when setting the `throwHttpErrors` to false.
-    let response;
-    try {
-      response = await this._request({
-        method: "POST",
-        url: "/api/edge/update",
-        searchParams: options,
-        json: data,
-      });
-    } catch (error) {
-      response = error.response;
-    }
+    const response = await this._request({
+      method: "POST",
+      url: "/api/edge/update",
+      searchParams: options,
+      json: data,
+      throwHttpErrors: false,
+      retry: {
+        // POST is not retried by default, so we need to explicitly opt in.
+        methods: ["POST"],
+        // Retry for gateway-related status codes (i.e. this request probably
+        // never made it from a load balancer/cache/etc. to the server).
+        statusCodes: [502, 503, 504, 521, 522, 524],
+      },
+    });
 
-    const body = response?.body ?? {};
+    const body = response.body;
     // TODO: should probably always include success in response on API side?
     if (body.error || body.success === false) {
       body.success = false;
       body.sent = data;
-      body.statusCode = response.statusCode;
+      body.statusCode = response?.statusCode ?? 600;
     }
 
-    metrics.increment("loader.jobs.send.retries", response?.retryCount ?? 0);
+    metrics.increment("loader.jobs.send.retries", response.retryCount);
 
     return body;
   }
