@@ -50,6 +50,57 @@ describe("API Client", () => {
         },
       });
     });
+
+    it("retries for gateway errors", async () => {
+      const scope = nock(MOCK_HOST)
+        .post("/api/edge/update")
+        .reply(502, "Bad times on this web server!")
+        // Second reply is a success
+        .post("/api/edge/update")
+        .reply(200, {
+          data: {
+            location: { action: "created" },
+            availability: { action: "created" },
+          },
+        });
+
+      const client = new ApiClient(MOCK_HOST, "abc");
+      const result = await client.sendUpdate({ id: 1 });
+      expect(result).toEqual({
+        data: {
+          location: { action: "created" },
+          availability: { action: "created" },
+        },
+      });
+
+      scope.done();
+    });
+
+    it("retries for network errors", async () => {
+      const scope = nock(MOCK_HOST)
+        .post("/api/edge/update")
+        .delay(800)
+        .reply(200, { not: "the right response" })
+        // Second reply is a success
+        .post("/api/edge/update")
+        .reply(200, {
+          data: {
+            location: { action: "created" },
+            availability: { action: "created" },
+          },
+        });
+
+      const client = new ApiClient(MOCK_HOST, "abc", { timeout: 500 });
+      const result = await client.sendUpdate({ id: 1 });
+      expect(result).toEqual({
+        data: {
+          location: { action: "created" },
+          availability: { action: "created" },
+        },
+      });
+
+      scope.done();
+    });
   });
 
   describe("UpdateQueue", () => {
