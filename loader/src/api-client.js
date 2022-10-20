@@ -86,7 +86,7 @@ class ApiClient {
       body.statusCode = response.statusCode;
     }
 
-    metrics.increment("loader.jobs.send.retries", response.retryCount);
+    metrics.increment("loader.jobs.send.retries", response?.retryCount ?? 0);
 
     return body;
   }
