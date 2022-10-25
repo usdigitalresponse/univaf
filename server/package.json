@@ -65,7 +65,7 @@
     "@types/jest": "29.2.0",
     "@types/lodash": "4.14.186",
     "@types/luxon": "^3.0.2",
-    "@types/node": "16.11.64",
+    "@types/node": "16.11.68",
     "@types/pg": "^8.6.5",
     "@typescript-eslint/eslint-plugin": "5.41.0",
     "@typescript-eslint/parser": "5.41.0",
