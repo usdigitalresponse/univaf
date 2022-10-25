@@ -32,6 +32,10 @@ const IMMUNIZATION_TYPES = {
     manufacturer: null,
     product: null,
   },
+  Senior_Flu: {
+    manufacturer: null,
+    product: null,
+  },
   "COVID-19 Pfizer": {
     manufacturer: "pfizer",
     product: VaccineProduct.pfizer,
