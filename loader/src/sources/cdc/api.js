@@ -228,7 +228,7 @@ function getWalmartId(location) {
   // When the number is not in loc_store_no, it may be formatted like above
   // (10-NNN) or without the "10-" prefix.
   const numberInName = location.loc_name.match(
-    /^(?:Walmart|Sam['\u2019]?s Club) [^#\d]*#?(?:10-)?(\d+)$/i
+    /^(?:Walmart|Sam['\u2019]?s Club) [^#\d]*#?\s?(?:10-)?(\d+)$/i
   );
   if (numberInName) {
     return unpadNumber(numberInName[1]);
