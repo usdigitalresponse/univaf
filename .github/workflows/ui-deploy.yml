@@ -20,7 +20,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.18.0
+          node-version: 16.18.1
 
       - name: Cache Dependencies
         uses: actions/cache@v3
