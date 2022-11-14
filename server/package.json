@@ -31,7 +31,7 @@
     "lint": "eslint --ext .js,.ts ."
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.204.0",
+    "@aws-sdk/client-s3": "^3.210.0",
     "@aws-sdk/lib-storage": "^3.210.0",
     "@sentry/node": "^7.17.4",
     "@sentry/tracing": "^7.17.4",
