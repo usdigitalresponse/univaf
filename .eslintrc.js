@@ -16,6 +16,9 @@ module.exports = {
       },
     ],
     "prefer-const": ["error", { destructuring: "all" }],
+
+    // Will be part of eslint:recommended in ESlint 9, so we can remove then.
+    "no-new-native-nonconstructor": ["error"],
   },
 
   overrides: [
