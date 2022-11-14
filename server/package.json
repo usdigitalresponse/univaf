@@ -35,7 +35,7 @@
     "@aws-sdk/lib-storage": "^3.204.0",
     "@sentry/node": "^7.17.4",
     "@sentry/tracing": "^7.17.4",
-    "ajv": "^8.11.0",
+    "ajv": "^8.11.2",
     "ajv-formats": "^2.1.1",
     "ajv-keywords": "^5.1.0",
     "body-parser": "^1.20.0",
