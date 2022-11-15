@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { db, createLocation, updateAvailability } from "../src/db";
 import { availabilityDb } from "../src/availability-log";

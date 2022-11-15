@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import { URL } from "url";
 import app from "../src/app";
 import { useServerForTests } from "./support/server-testing";

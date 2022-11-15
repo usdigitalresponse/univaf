@@ -1,5 +1,8 @@
 // TODO: this is a copy of `expectDatetimeString` in loader/test/support/index`;
 // the implementatoins should be shared.
+
+import { expect } from "@jest/globals";
+
 /**
  * Declare that a value should be a complete W3C-style ISO 8601 datetime
  * string. (e.g. "2021-03-13T05:53:20.123Z")

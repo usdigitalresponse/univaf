@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";
 import { getApiKeys } from "../src/config";
