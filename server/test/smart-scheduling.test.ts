@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import type { AddressInfo } from "net";
 import { DateTime } from "luxon";
 import { ndjsonParse } from "./support/lib";

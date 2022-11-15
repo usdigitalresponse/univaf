@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import { expectDatetimeString, ndjsonParse } from "./support/lib";
 import { installTestDatabaseHooks } from "./support/database-testing";
 import { useServerForTests } from "./support/server-testing";
