@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "univaf-loader",
   "version": "0.1.0",
   "description": "Scripts that find COVID-19 vaccine appointment availability from various sources",

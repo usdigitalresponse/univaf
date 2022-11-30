@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "univaf-server",
   "version": "0.1.0",
   "description": "An API server that stores and provides COVID-19 vaccine appointment availability data.",
