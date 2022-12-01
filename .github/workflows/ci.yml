@@ -161,10 +161,12 @@ jobs:
         # these particular combinations.
         include:
           - repository: univaf-server
+            target: server
             dockerfile: "./server/Dockerfile"
             build_path: "./server"
 
           - repository: univaf-loader
+            target: loader
             dockerfile: "./loader/Dockerfile"
             build_path: "./loader"
     env:
@@ -178,9 +180,9 @@ jobs:
           IMAGE_NAME="dev/${ECR_REPOSITORY}:${IMAGE_TAG}"
           docker buildx build \
             --tag "${IMAGE_NAME}" \
-            --file "${{ matrix.dockerfile }}" \
+            --target "${{ matrix.target }}" \
             --build-arg RELEASE="${IMAGE_TAG}" \
-            ${{ matrix.build_path }}
+            .
 
           # Report image info
           SIZE=$(
