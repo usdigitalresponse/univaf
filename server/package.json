@@ -53,6 +53,7 @@
     "luxon": "^3.1.0",
     "pg": "^8.8.0",
     "pg-query-stream": "^4.2.4",
+    "univaf-common": ">=0.1.0",
     "winston": "3.8.2",
     "yargs": "^17.6.2"
   },

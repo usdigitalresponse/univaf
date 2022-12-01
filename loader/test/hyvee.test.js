@@ -1,8 +1,8 @@
+const { states: stateData } = require("univaf-common");
 const { checkAvailability, formatLocation } = require("../src/sources/hyvee");
 const { Available, LocationType } = require("../src/model");
 const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
-const stateData = require("../src/states.json");
 
 // Mock utils so we can track logs.
 jest.mock("../src/utils");

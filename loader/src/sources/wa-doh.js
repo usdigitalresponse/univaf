@@ -2,6 +2,7 @@
 // they have API access. (In practice, this is pretty much only Costco.)
 
 const assert = require("node:assert/strict");
+const { states: allStates } = require("univaf-common");
 const { Available, LocationType } = require("../model");
 const {
   httpClient,
@@ -10,7 +11,6 @@ const {
   DEFAULT_STATES,
 } = require("../utils");
 const { assertValidGraphQl } = require("../exceptions");
-const allStates = require("../states.json");
 
 /** @typedef {import("../model").VaccineProduct} VaccineProduct */
 

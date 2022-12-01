@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 import type { AddressInfo } from "net";
 import { DateTime } from "luxon";
-import { ndjsonParse } from "./support/lib";
+import { parseJsonLines } from "univaf-common/utils";
 import {
   createRandomLocation,
   installTestDatabaseHooks,
@@ -52,7 +52,7 @@ describe("GET /smart-scheduling/locations/states/:state.ndjson", () => {
 
     res = await context.client.get(url, { responseType: "text" });
     expect(res.statusCode).toBe(200);
-    const data = ndjsonParse(res.body);
+    const data = parseJsonLines(res.body);
     expect(data).toHaveLength(1);
   });
 });
@@ -71,7 +71,7 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
 
     res = await context.client.get(url, { responseType: "text" });
     expect(res.statusCode).toBe(200);
-    const data = ndjsonParse(res.body);
+    const data = parseJsonLines(res.body);
     expect(data).toHaveLength(1);
   });
 
@@ -93,7 +93,7 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
       });
       const response = await context.client<any[]>(
         `smart-scheduling/schedules/states/${location.state}.ndjson`,
-        { parseJson: ndjsonParse }
+        { parseJson: parseJsonLines }
       );
 
       expect(response.body[0].extension).toContainEqual({
@@ -114,7 +114,7 @@ describe("GET /smart-scheduling/schedules/states/:state.ndjson", () => {
     const url = `smart-scheduling/schedules/states/${location.state}.ndjson`;
     const response = await context.client.get(url, { responseType: "text" });
     expect(response.statusCode).toBe(200);
-    const data = ndjsonParse(response.body);
+    const data = parseJsonLines(response.body);
 
     expect(data[0].extension).toContainEqual({
       url: "http://fhir-registry.smarthealthit.org/StructureDefinition/vaccine-product",
@@ -168,7 +168,7 @@ describe("GET /smart-scheduling/slots/states/:state.ndjson", () => {
     const url = `smart-scheduling/slots/states/${location.state}.ndjson`;
     const response = await context.client.get(url, { responseType: "text" });
     expect(response.statusCode).toBe(200);
-    const data = ndjsonParse(response.body);
+    const data = parseJsonLines(response.body);
     expect(data).toHaveLength(2);
     expect(data[0]).toHaveProperty("status", "free");
     expect(data[1]).toHaveProperty("status", "busy");
@@ -195,7 +195,7 @@ describe("GET /smart-scheduling/slots/states/:state.ndjson", () => {
     const url = `smart-scheduling/slots/states/${location.state}.ndjson`;
     const response = await context.client.get(url, { responseType: "text" });
     expect(response.statusCode).toBe(200);
-    const data = ndjsonParse(response.body);
+    const data = parseJsonLines(response.body);
     expect(data).toHaveLength(2);
 
     expect(data[0]).toHaveProperty("status", "free");

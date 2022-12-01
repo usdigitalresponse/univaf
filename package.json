@@ -9,6 +9,7 @@
   "author": "USDR",
   "license": "MIT",
   "workspaces": [
+    "common",
     "loader",
     "server",
     "ui"

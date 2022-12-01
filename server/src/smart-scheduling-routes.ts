@@ -9,6 +9,7 @@
 
 import { Request, Response } from "express";
 import { DateTime } from "luxon";
+import { states } from "univaf-common";
 import { getPrimaryHost } from "./config";
 import { getRequestHost } from "./utils";
 import * as db from "./db";
@@ -18,7 +19,6 @@ import {
   SlotRecord,
   CapacityRecord,
 } from "./interfaces";
-import states from "./states.json";
 import { CVX_CODES, PRODUCT_NAMES, VaccineCode } from "./vaccines";
 
 const BOOKING_DEEP_LINK =

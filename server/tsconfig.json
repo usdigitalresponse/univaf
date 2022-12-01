@@ -4,11 +4,6 @@
     "outDir": "dist",
     "baseUrl": "."
   },
-  "include": [
-    "src/**/*",
-    "src/states.json",
-    "scripts/**/*",
-    "test/**/*",
-    "knexfile.js"
-  ]
+  "include": ["src/**/*", "scripts/**/*", "test/**/*", "knexfile.js"],
+  "references": [{ "path": "../common" }]
 }
