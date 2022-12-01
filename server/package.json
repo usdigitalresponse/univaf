@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf dist node_modules",
-    "build-ts": "tsc",
+    "build-ts": "tsc --build",
     "build": "npm run build-ts",
     "debug": "npm run build && npm run watch-debug",
     "serve": "node dist/src/server.js",
@@ -22,7 +22,7 @@
     "watch-node": "nodemon dist/src/server.js",
     "watch-node-debug": "nodemon --inspect dist/src/server.js",
     "watch-test": "npm run test -- --watchAll",
-    "watch-ts": "tsc -w",
+    "watch-ts": "tsc --build --watch",
     "db:seed": "npm run build && node dist/scripts/seed-database.js",
     "knex": "knex",
     "migrate": "knex migrate:latest",
