@@ -80,6 +80,7 @@ jobs:
         env:
           NOCK_BACK_MODE: lockdown
         run: |
+          npm run build --workspace common
           npm run test --workspace loader
 
       # TODO: We should write some tests :(
