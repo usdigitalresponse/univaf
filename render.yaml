@@ -55,10 +55,9 @@ services:
       paths:
         - server/**
     buildCommand: |
-      cd server
       npm ci --production=false
-      npm run build
-      npm prune --production
+      npm run build --workspace server
+      npm prune --omit=dev
     startCommand: "cd server && npm run migrate && node ./dist/src/server.js"
     healthCheckPath: "/health"
     domains:
@@ -95,10 +94,9 @@ services:
       paths:
         - server/**
     buildCommand: |
-      cd server
       npm ci --production=false
-      npm run build
-      npm prune --production
+      npm run build --workspace server
+      npm prune --omit=dev
     startCommand: |
       cd server
       node scripts/availability_dump.js --write-to-s3 --clear-log
@@ -139,7 +137,6 @@ services:
       paths:
         - loader/**
     buildCommand: |
-      cd loader
       npm ci --production=true
     envVars:
       - fromGroup: "Loader Environment"
