@@ -7,6 +7,8 @@ UNIVAF is a system for gathering vaccination appointment availability informatio
 
 While currently focused on COVID-19 vaccinations, we hope the code and infrastructure here might be easily repurposed in the future for other kinds of everyday vaccinations (e.g. flu vaccines) or for future health emergencies.
 
+UNIVAF is built in Node.js and TypeScript.
+
 **Table of Contents**
 
 - [Project Structure](#project-structure)
@@ -19,7 +21,7 @@ While currently focused on COVID-19 vaccinations, we hope the code and infrastru
 
 ## Project Structure
 
-This project is broken up into three major components:
+This project is broken up into three major components, each in a separate directory:
 
 1. **`server`** is a small API server that wraps a Postgres database. Various scrapers and API clients can `POST` appointment data to it, and consumers can `GET` data from it. It’s currently accessible in production at https://getmyvax.org/.
 
@@ -28,6 +30,8 @@ This project is broken up into three major components:
 3. **`ui`** is a demo frontend to display the data. It’s not especially fancy, and is meant more as a display of what can be done or a starter for states/community groups to build their own sites.
 
 At the top level of this repo, you’ll also find some other useful directories:
+
+- **`common`** is shared library code that is used by both the server and loader components.
 
 - **`docs`** contains additional project documentation, infrastructure guidance, and incident reports.
 
@@ -58,20 +62,17 @@ $ postgres@127:postgres> \l                      # list the databases (optional)
 +-----------+----------+------------+------------+------------+-----------------------+
 ```
 
-Next, seed the database
-
-```bash
-$ source ./server/.env # if you haven't already, source the env vars (you may need to modify these!)
-$ make seed
-```
-
-Finally run the server!
+Next, seed the database and run the server (see below)!
 
 
 ### Starting the API server
 
+
+
 ```bash
+$ npm install
 $ cd ./server/
+$ npm run db:seed       # `db:seed` will populate the database with example data for local development
 $ npm run watch         # `watch` will auto-recompile typescript
 $ npm run test          # `test` will run the various jest tests
 $ open http://localhost:3000/providers
@@ -82,8 +83,8 @@ $ open http://localhost:3000/providers
 To install, run `npm install` in the loader directory:
 
 ```bash
-$ cd ./loader
 $ npm install
+$ cd ./loader
 ```
 
 Then load data from any supported sources by running `bin/univaf-loader` with a list of the sources you want to load data from:
@@ -140,8 +141,8 @@ Options:
 To install, run `npm install` in the ui directory:
 
 ```bash
-$ cd ./ui
 $ npm install
+$ cd ./ui
 ```
 
 The UI needs an API server to load data from. By default, it will use `http://localhost:3000`, but if you want to use a different server, set the `DATA_URL` environment variable.
