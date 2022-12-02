@@ -57,6 +57,13 @@ jobs:
         run: |
           npm ci
 
+      - name: Run common tests
+        if: ${{ always() }}
+        env:
+          NOCK_BACK_MODE: lockdown
+        run: |
+          npm run test --workspace common
+
       - name: Run server tests
         if: ${{ always() }}
         run: |
