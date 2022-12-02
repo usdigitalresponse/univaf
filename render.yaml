@@ -137,7 +137,9 @@ services:
       paths:
         - loader/**
     buildCommand: |
-      npm ci --production=true
+      npm ci --production=false
+      npm run build --workspace common
+      npm prune --omit=dev
     envVars:
       - fromGroup: "Loader Environment"
 

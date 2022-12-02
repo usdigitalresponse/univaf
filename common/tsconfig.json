@@ -5,7 +5,6 @@
     "outDir": "dist",
     "declarationMap": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
     "checkJs": true
   },
   "include": ["./src/**/*", "./src/states.json"]

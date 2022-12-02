@@ -1,9 +1,7 @@
 /**
  * Parse a Newline-Delimited JSON (NDJSON) document.
- * @param {string} text
- * @returns {Array<any>}
  */
-function parseJsonLines(text) {
+export function parseJsonLines(text: string): any[] {
   return text
     .split("\n")
     .filter(Boolean)
@@ -18,5 +16,3 @@ function parseJsonLines(text) {
       }
     });
 }
-
-module.exports = { parseJsonLines };

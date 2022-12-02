@@ -1,5 +1,5 @@
-const { describe, it, expect } = require("@jest/globals");
-const { parseJsonLines } = require("../src/utils");
+import { describe, it, expect } from "@jest/globals";
+import { parseJsonLines } from "../src/utils";
 
 describe("parseJsonLines", () => {
   it("returns an array of parsed objects", () => {
