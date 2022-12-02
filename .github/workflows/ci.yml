@@ -131,23 +131,17 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
-          eslint_dir: server/
-          eslint_args: . ../loader/ ../ui/
           eslint_extensions: js,ts
           prettier: true
-          prettier_dir: server/
-          prettier_args: . ../loader/ ../ui/
 
       - name: Lint JS Code (without GitHub checks)
         if: github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name != github.repository
         run: |
-          cd server
-          echo "ESLint:"
-          npx eslint --ext 'js,ts' . ../loader/ ../ui/
+          npx eslint --ext 'js,ts' .
           echo "--------------------------------------------------------------"
           echo "Prettier:"
-          npx prettier --check . ../loader/ ../ui/
+          npx prettier --check .
 
   lint_workflows:
     runs-on: ubuntu-latest
