@@ -28,13 +28,14 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v2-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-npm-v2-${{ hashFiles('main/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-v2
             ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: |
+          cd main
           npm ci
 
       - name: Build UI
