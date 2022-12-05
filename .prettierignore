@@ -5,6 +5,7 @@ dist
 coverage
 scratch.*
 *.md
+terraform
 
 **/fixtures/**/*.json
 **/__fixtures__/**/*.json

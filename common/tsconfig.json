@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "declarationMap": true,
+    "declaration": true,
+    "checkJs": true
+  },
+  "include": ["./src/**/*", "./src/states.json"]
+}

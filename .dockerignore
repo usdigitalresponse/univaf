@@ -4,3 +4,11 @@
 .github
 scratch.*
 node_modules
+dist
+tmp
+terraform
+.env
+.env.*
+docs
+./scripts
+./ui

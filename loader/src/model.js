@@ -24,45 +24,12 @@ const LocationType = {
   mobileClinic: "MOBILE_CLINIC",
 };
 
-/**
- * Types of vaccine products a location might offer.
- * @readonly
- * @enum {string}
- */
-const VaccineProduct = {
-  astraZeneca: "astra_zeneca",
-  janssen: "jj",
-  moderna: "moderna",
-  modernaBa4Ba5: "moderna_ba4_ba5",
-  modernaAge6_11: "moderna_age_6_11",
-  modernaBa4Ba5Age6_11: "moderna_ba4_ba5_age_6_11",
-  modernaAge0_5: "moderna_age_0_5",
-  novavax: "novavax",
-  pfizer: "pfizer",
-  pfizerBa4Ba5: "pfizer_ba4_ba5",
-  pfizerAge5_11: "pfizer_age_5_11",
-  pfizerBa4Ba5Age5_11: "pfizer_ba4_ba5_age_5_11",
-  pfizerAge0_4: "pfizer_age_0_4",
-  sanofi: "sanofi",
-};
-
-/**
- * `VaccineProduct` values that are for children.
- * @readonly
- */
-const PediatricVaccineProducts = new Set([
-  VaccineProduct.pfizerAge5_11,
-  VaccineProduct.modernaAge6_11,
-]);
-
-/**
- * `VaccineProduct` values that are for very young children.
- * @readonly
- */
-const EarlyPediatricVaccineProducts = new Set([
-  VaccineProduct.pfizerAge0_4,
-  VaccineProduct.modernaAge0_5,
-]);
+// FIXME: temporary mappings now that we have common code.
+const {
+  VACCINE_PRODUCTS: VaccineProduct,
+  PEDIATRIC_PRODUCTS: PediatricVaccineProducts,
+  EARLY_PEDIATRIC_PRODUCTS: EarlyPediatricVaccineProducts,
+} = require("univaf-common/vaccines");
 
 module.exports = {
   Available,

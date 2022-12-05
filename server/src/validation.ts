@@ -2,6 +2,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import addTransform from "ajv-keywords/dist/keywords/transform";
 import addInstanceof from "ajv-keywords/dist/keywords/instanceof";
+import { states } from "univaf-common";
 import { ValueError } from "./exceptions";
 import {
   Availability,
@@ -10,7 +11,6 @@ import {
   CapacityRecord,
   ProviderLocationInput,
 } from "./interfaces";
-import states from "./states.json";
 import assert from "assert";
 
 const AVAILABLE_OPTIONS = new Set(Object.values(Availability));

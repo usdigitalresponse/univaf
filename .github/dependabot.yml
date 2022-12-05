@@ -11,17 +11,7 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "npm"
-    directory: "/loader"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "npm"
-    directory: "/server"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "npm"
-    directory: "/ui"
+    directory: "/"
     schedule:
       interval: "weekly"
 

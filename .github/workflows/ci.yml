@@ -48,25 +48,32 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
+          key: ${{ runner.os }}-npm-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1
+            ${{ runner.os }}-npm-v2
             ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: |
-          cd server
           npm ci
-          cd ../loader
-          npm ci
-          cd ../ui
-          npm ci
+
+      - name: Run common tests
+        if: ${{ always() }}
+        env:
+          NOCK_BACK_MODE: lockdown
+        run: |
+          npm run test --workspace common
+
+      # A build version of common will be needed for loader/server tests.
+      - name: Build common package
+        if: ${{ always() }}
+        run: |
+          npm run build --workspace common
 
       - name: Run server tests
         if: ${{ always() }}
         run: |
-          cd server
-          npm run test
+          npm run test --workspace server
         env:
           DB_HOST: localhost
           DB_PORT: 5432
@@ -79,8 +86,7 @@ jobs:
         env:
           NOCK_BACK_MODE: lockdown
         run: |
-          cd loader
-          npm run test
+          npm run test --workspace loader
 
       # TODO: We should write some tests :(
       - name: Build UI
@@ -106,18 +112,13 @@ jobs:
           path: |
             ~/.npm
             ~/.cache
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('server/package-lock.json', 'loader/package-lock.json', 'ui/package-lock.json') }}
+          key: ${{ runner.os }}-npm-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1
+            ${{ runner.os }}-npm-v2
             ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: |
-          cd server
-          npm ci
-          cd ../loader
-          npm ci
-          cd ../ui
           npm ci
 
       # We have ESLint and Prettier installed separately in each subproject,
@@ -130,23 +131,17 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
-          eslint_dir: server/
-          eslint_args: . ../loader/ ../ui/
           eslint_extensions: js,ts
           prettier: true
-          prettier_dir: server/
-          prettier_args: . ../loader/ ../ui/
 
       - name: Lint JS Code (without GitHub checks)
         if: github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name != github.repository
         run: |
-          cd server
-          echo "ESLint:"
-          npx eslint --ext 'js,ts' . ../loader/ ../ui/
+          npx eslint --ext 'js,ts' .
           echo "--------------------------------------------------------------"
           echo "Prettier:"
-          npx prettier --check . ../loader/ ../ui/
+          npx prettier --check .
 
   lint_workflows:
     runs-on: ubuntu-latest
@@ -173,10 +168,12 @@ jobs:
         # these particular combinations.
         include:
           - repository: univaf-server
+            target: server
             dockerfile: "./server/Dockerfile"
             build_path: "./server"
 
           - repository: univaf-loader
+            target: loader
             dockerfile: "./loader/Dockerfile"
             build_path: "./loader"
     env:
@@ -190,9 +187,9 @@ jobs:
           IMAGE_NAME="dev/${ECR_REPOSITORY}:${IMAGE_TAG}"
           docker buildx build \
             --tag "${IMAGE_NAME}" \
-            --file "${{ matrix.dockerfile }}" \
+            --target "${{ matrix.target }}" \
             --build-arg RELEASE="${IMAGE_TAG}" \
-            ${{ matrix.build_path }}
+            .
 
           # Report image info
           SIZE=$(

@@ -2,11 +2,11 @@
 
 const Sentry = require("@sentry/node");
 const yargs = require("yargs");
+const { states: allStates } = require("univaf-common");
 const { ApiClient } = require("./api-client");
 const config = require("./config");
 const { sources } = require("./index");
 const { oneLine } = require("./utils");
-const allStates = require("./states.json");
 const metrics = require("./metrics");
 
 Sentry.init({ release: config.version });

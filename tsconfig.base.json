@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // We require Node.js 18.x, so we can rely on recent ECMAScript support.
+    // See also https://github.com/tsconfig/bases for recommended values.
+    "lib": ["es2022"],
+    "target": "es2022",
+
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "allowJs": true,
+    "composite": true
+  }
+}
