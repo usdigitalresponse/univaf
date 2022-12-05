@@ -14,13 +14,12 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # In monorepos/multi-package-workspaces like ours, Dependabot does not
+    # correctly update the lockfile unless this is explicitly set.
+    # See: https://github.com/dependabot/dependabot-core/issues/5226
+    versioning-strategy: increase
 
   - package-ecosystem: "docker"
-    directory: "/loader"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/server"
+    directory: "/"
     schedule:
       interval: "weekly"
