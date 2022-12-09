@@ -491,6 +491,9 @@ const ndcLookup = {
   [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
   [normalizeNdc("59267-0565-02")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
 
+  [normalizeNdc("59267-0609-02")]: VaccineProduct.pfizerBa4Ba5Age0_4, // sale
+  [normalizeNdc("59267-0609-01")]: VaccineProduct.pfizerBa4Ba5Age0_4, // use
+
   [normalizeNdc("59676-0580-05")]: VaccineProduct.janssen, // use
   [normalizeNdc("59676-0580-15")]: VaccineProduct.janssen, // sale
 
@@ -523,6 +526,9 @@ const ndcLookup = {
   // It's designed for ages 6+, but as of 2022-09-02 only authorized for 18+.
   [normalizeNdc("80777-0282-05")]: VaccineProduct.modernaBa4Ba5, // use
   [normalizeNdc("80777-0282-99")]: VaccineProduct.modernaBa4Ba5, // sale
+
+  [normalizeNdc("80777-283-99")]: VaccineProduct.modernaBa4Ba5Age0_5, // sale
+  [normalizeNdc("80777-283-02")]: VaccineProduct.modernaBa4Ba5Age0_5, // use
 
   [normalizeNdc("49281-0618-78")]: VaccineProduct.sanofi, // use
   [normalizeNdc("49281-0618-20")]: VaccineProduct.sanofi, // sale

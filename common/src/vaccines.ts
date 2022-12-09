@@ -15,12 +15,14 @@ export type VaccineCode =
   | "moderna_age_6_11"
   | "moderna_ba4_ba5_age_6_11"
   | "moderna_age_0_5"
+  | "moderna_ba4_ba5_age_0_5"
   | "novavax"
   | "pfizer"
   | "pfizer_ba4_ba5"
   | "pfizer_age_5_11"
   | "pfizer_ba4_ba5_age_5_11"
   | "pfizer_age_0_4"
+  | "pfizer_ba4_ba5_age_0_4"
   | "sanofi";
 
 /**
@@ -36,12 +38,14 @@ export const VACCINE_PRODUCTS = {
   modernaAge6_11: "moderna_age_6_11",
   modernaBa4Ba5Age6_11: "moderna_ba4_ba5_age_6_11",
   modernaAge0_5: "moderna_age_0_5",
+  modernaBa4Ba5Age0_5: "moderna_ba4_ba5_age_0_5",
   novavax: "novavax",
   pfizer: "pfizer",
   pfizerBa4Ba5: "pfizer_ba4_ba5",
   pfizerAge5_11: "pfizer_age_5_11",
   pfizerBa4Ba5Age5_11: "pfizer_ba4_ba5_age_5_11",
   pfizerAge0_4: "pfizer_age_0_4",
+  pfizerBa4Ba5Age0_4: "pfizer_ba4_ba5_age_0_4",
   sanofi: "sanofi",
 } satisfies { [index: string]: VaccineCode };
 
@@ -74,12 +78,14 @@ export const CVX_CODES: { [code in VaccineCode]: number } = {
   moderna_age_6_11: 227,
   moderna_ba4_ba5_age_6_11: 229,
   moderna_age_0_5: 228,
+  moderna_ba4_ba5_age_0_5: 230,
   novavax: 211,
   pfizer: 208,
   pfizer_ba4_ba5: 300,
   pfizer_age_5_11: 218,
   pfizer_ba4_ba5_age_5_11: 301,
   pfizer_age_0_4: 219,
+  pfizer_ba4_ba5_age_0_4: 302,
   sanofi: 225,
 };
 
@@ -93,6 +99,8 @@ export const PRODUCT_NAMES: { [code in VaccineCode]: string } = {
   moderna_ba4_ba5_age_6_11:
     "Moderna Pediatric (Ages 6-11, for Omicron BA.4/BA.5)",
   moderna_age_0_5: "Moderna Pediatric (Ages 0-5)",
+  moderna_ba4_ba5_age_0_5:
+    "Moderna Pediatric (Ages 0-5, for Omicron BA.4/BA.5)",
   novavax: "NovaVax",
   pfizer: "Pfizer",
   pfizer_ba4_ba5: "Pfizer (for Omicron BA.4/BA.5)",
@@ -100,6 +108,7 @@ export const PRODUCT_NAMES: { [code in VaccineCode]: string } = {
   pfizer_ba4_ba5_age_5_11:
     "Pfizer Pediatric (Ages 5-11, for Omicron BA.4/BA.5)",
   pfizer_age_0_4: "Pfizer Pediatric (Ages 0-4)",
+  pfizer_ba4_ba5_age_0_4: "Pfizer Pediatric (Ages 0-4, for Omicron BA.4/BA.5)",
   sanofi: "Sanofi Pasteur",
 };
 
@@ -114,12 +123,14 @@ export const MINIMUM_PRODUCT_AGES: { [code in VaccineCode]: number } = {
   moderna_age_6_11: 6 * 12,
   moderna_ba4_ba5_age_6_11: 6 * 12,
   moderna_age_0_5: 6,
+  moderna_ba4_ba5_age_0_5: 6,
   novavax: 18 * 12,
   pfizer: 12 * 12,
   pfizer_ba4_ba5: 12 * 12,
   pfizer_age_5_11: 5 * 12,
   pfizer_ba4_ba5_age_5_11: 5 * 12,
   pfizer_age_0_4: 6,
+  pfizer_ba4_ba5_age_0_4: 6,
   sanofi: 18 * 12,
 };
 
