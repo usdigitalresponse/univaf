@@ -539,9 +539,13 @@ module.exports = {
       if (/ages?\s+(6|12|18)( (years )?and up|\s*\+)/i.test(text)) {
         return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
-        return isBa4Ba5 ? undefined : VaccineProduct.modernaAge0_5;
+        return isBa4Ba5
+          ? VaccineProduct.modernaBa4Ba5Age0_5
+          : VaccineProduct.modernaAge0_5;
       } else if (/ages? 6\s?(-|through)\s?11/i.test(text)) {
-        return isBa4Ba5 ? undefined : VaccineProduct.modernaAge6_11;
+        return isBa4Ba5
+          ? VaccineProduct.modernaBa4Ba5Age6_11
+          : VaccineProduct.modernaAge6_11;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
         // trigger warnings so we can address it.
@@ -559,7 +563,9 @@ module.exports = {
           ? VaccineProduct.pfizerBa4Ba5Age5_11
           : VaccineProduct.pfizerAge5_11;
       } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
-        return isBa4Ba5 ? undefined : VaccineProduct.pfizerAge0_4;
+        return isBa4Ba5
+          ? VaccineProduct.pfizerBa4Ba5Age0_4
+          : VaccineProduct.pfizerAge0_4;
       } else if (/ped|child|age/i.test(text)) {
         // Possibly a pediatric variation we haven't seen, so return nothing to
         // trigger warnings so we can address it.
