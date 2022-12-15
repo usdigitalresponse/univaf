@@ -56,6 +56,14 @@ const IMMUNIZATION_TYPES = {
     manufacturer: "ultra_pediatric_pfizer",
     product: VaccineProduct.pfizerAge0_4,
   },
+  "COVID-19 Ultra_Pediatric_Pfizer_Updated_Booster": {
+    manufacturer: "ultra_pediatric_pfizer",
+    product: VaccineProduct.pfizerBa4Ba5Age0_4,
+  },
+  "COVID-19 Ultra_Pediatric_Pfizer_Updated_Dose3": {
+    manufacturer: "ultra_pediatric_pfizer",
+    product: VaccineProduct.pfizerBa4Ba5Age0_4,
+  },
   "COVID-19 Moderna": {
     manufacturer: "moderna",
     product: VaccineProduct.moderna,
