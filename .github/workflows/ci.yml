@@ -208,8 +208,9 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx-setup
         uses: docker/setup-buildx-action@v2
-        # with:
-        #   install: true
+        with:
+          # install: true
+          buildkitd-flags: --debug
 
       - name: Build ${{ matrix.repository }}
         uses: docker/build-push-action@v3
