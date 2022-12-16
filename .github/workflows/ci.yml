@@ -195,7 +195,9 @@ jobs:
             RELEASE=${{ env.IMAGE_TAG }}
           tags: "${{ env.IMAGE_NAME }}"
           push: false
+          # Make output available to Docker CLI for later commands.
           load: true
+          # Read/write layers to the GitHub Actions cache.
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
