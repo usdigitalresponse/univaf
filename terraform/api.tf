@@ -136,7 +136,7 @@ resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
 
   # Add a condition requiring a secret header only if there's a secret to check.
   dynamic "condition" {
-    for_each = var.api_cloudfront_secret ? [1] : []
+    for_each = var.api_cloudfront_secret != "" ? [1] : []
     content {
       http_header {
         http_header_name = var.api_cloudfront_secret_header_name
