@@ -200,7 +200,9 @@ jobs:
 
       - name: Inspect Incoming Cache
         run: |
-          ls -la /tmp/.buildx-cache
+          ls -lah /tmp/.buildx-cache
+          jq /tmp/.buildx-cache/index.json
+          ls -lah /tmp/.buildx-cache/*
 
       # Sets up a docker driver that supports caching.
       - name: Set up Docker Buildx
@@ -235,7 +237,9 @@ jobs:
 
       - name: Inspect Outgoing Cache
         run: |
-          ls -la /tmp/.buildx-cache
+          ls -lah /tmp/.buildx-cache
+          jq /tmp/.buildx-cache/index.json
+          ls -lah /tmp/.buildx-cache/*
 
       - name: Report Image Details
         run: |
