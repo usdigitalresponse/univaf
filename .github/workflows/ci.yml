@@ -192,11 +192,11 @@ jobs:
           path: /tmp/.buildx-cache
           # Use the commit SHA in the key since there's no file that makes sense
           # to hash for a unique key.
-          key: ${{ runner.os }}-buildx-${{ github.ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-${{ github.ref }}-${{ github.sha }}
-            ${{ runner.os }}-buildx-${{ github.ref }}-
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
+            ${{ runner.os }}-buildx-${{ matrix.target }}-${{ github.ref }}-
+            ${{ runner.os }}-buildx-${{ matrix.target }}-
 
       - name: Inspect Incoming Cache
         run: |
@@ -208,9 +208,9 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx-setup
         uses: docker/setup-buildx-action@v2
-        with:
-          # install: true
-          buildkitd-flags: --debug
+        # with:
+        #   # install: true
+        #   buildkitd-flags: --debug
 
       - name: Build ${{ matrix.repository }}
         uses: docker/build-push-action@v3
