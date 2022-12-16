@@ -198,12 +198,11 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.target }}-${{ github.ref }}-
             ${{ runner.os }}-buildx-${{ matrix.target }}-
 
-      - name: Inspect Incoming Cache
-        run: |
-          ls -lah /tmp/.buildx-cache
-          cat /tmp/.buildx-cache/index.json | jq
-          ls -lah /tmp/.buildx-cache/blobs/sha256
-
+      # - name: Inspect Incoming Cache
+      #   run: |
+      #     ls -lah /tmp/.buildx-cache
+      #     cat /tmp/.buildx-cache/index.json | jq
+      #     ls -lah /tmp/.buildx-cache/blobs/sha256
       # Sets up a docker driver that supports caching.
       - name: Set up Docker Buildx
         id: buildx-setup
