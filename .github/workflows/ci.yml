@@ -195,6 +195,20 @@ jobs:
             RELEASE=${{ env.IMAGE_TAG }}
           tags: "${{ env.IMAGE_NAME }}"
           push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max,compression=zstd
+
+      # This is ugly, but we build again with caches (so it shouldn't really
+      # build) and use `load: true` to make the output usable with Docker CLI.
+      - name: Build ${{ matrix.repository }}
+        uses: docker/build-push-action@v3
+        with:
+          target: "${{ matrix.target }}"
+          context: .
+          build-args: |
+            RELEASE=${{ env.IMAGE_TAG }}
+          tags: "${{ env.IMAGE_NAME }}"
+          push: false
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max,compression=zstd
