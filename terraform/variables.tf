@@ -14,7 +14,7 @@ variable "ssl_certificate_arn" {
 }
 
 variable "ssl_certificate_arn_api_internal" {
-  description = "The ARN of an SSL certificate in ACM to use for the API services load balancer (must be in us-east-1)"
+  description = "The ARN of an SSL certificate in ACM to use for the API services load balancer (cerificate must be in the same region as the `aws_region` variable)"
   default     = ""
 }
 
