@@ -189,7 +189,19 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache
+          path: /tmp/.buildx-cache-base
+          # Use the commit SHA in the key since there's no file that makes sense
+          # to hash for a unique key.
+          key: ${{ runner.os }}-buildx-base-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-base-${{ github.ref }}-${{ github.sha }}
+            ${{ runner.os }}-buildx-base-${{ github.ref }}-
+            ${{ runner.os }}-buildx-base-
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache-${{ matrix.target }}
           # Use the commit SHA in the key since there's no file that makes sense
           # to hash for a unique key.
           key: ${{ runner.os }}-buildx-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
@@ -211,6 +223,24 @@ jobs:
         #   # install: true
         #   buildkitd-flags: --debug
 
+      - name: Build base
+        uses: docker/build-push-action@v3
+        with:
+          context: "."
+          tags: "dev/univaf-base:latest"
+          target: "base"
+          build-args: |
+            RELEASE=${{ env.IMAGE_TAG }}
+          # The caching mechanism will add a new copy of the cache to the
+          # destination directory, so we write the cache out to a new, clean
+          # directory and then overwrite the old cache directory with it after.
+          # (See next action.)
+          cache-from: "type=local,src=/tmp/.buildx-cache-base"
+          cache-to: "type=local,dest=/tmp/.buildx-cache-base-new,mode=max"
+          push: false
+          # Make the image available to Docker CLI commands in the next steps.
+          load: true
+
       - name: Build ${{ matrix.repository }}
         uses: docker/build-push-action@v3
         with:
@@ -223,22 +253,26 @@ jobs:
           # destination directory, so we write the cache out to a new, clean
           # directory and then overwrite the old cache directory with it after.
           # (See next action.)
-          cache-from: "type=local,src=/tmp/.buildx-cache"
-          cache-to: "type=local,dest=/tmp/.buildx-cache-new,mode=max,compression=zstd"
+          cache-from: |
+            type=local,src=/tmp/.buildx-cache-base
+            type=local,src=/tmp/.buildx-cache-${{ matrix.target }}
+          cache-to: "type=local,dest=/tmp/.buildx-cache-${{ matrix.target }}-new,mode=max"
           push: false
           # Make the image available to Docker CLI commands in the next steps.
           load: true
 
       - name: Overwrite Old Cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          rm -rf /tmp/.buildx-cache-base
+          mv /tmp/.buildx-cache-base-new /tmp/.buildx-cache-base
+          rm -rf /tmp/.buildx-cache-${{ matrix.target }}
+          mv /tmp/.buildx-cache-${{ matrix.target }}-new /tmp/.buildx-cache-${{ matrix.target }}
 
-      - name: Inspect Outgoing Cache
-        run: |
-          ls -lah /tmp/.buildx-cache
-          cat /tmp/.buildx-cache/index.json | jq
-          ls -lah /tmp/.buildx-cache/blobs/sha256
+      # - name: Inspect Outgoing Cache
+      #   run: |
+      #     ls -lah /tmp/.buildx-cache
+      #     cat /tmp/.buildx-cache/index.json | jq
+      #     ls -lah /tmp/.buildx-cache/blobs/sha256
 
       - name: Report Image Details
         run: |
