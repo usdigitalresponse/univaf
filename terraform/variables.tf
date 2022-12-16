@@ -67,7 +67,6 @@ variable "api_cloudfront_secret" {
   description = "A secret key that must be sent as a header to the API load balancer in order to access it. Used to keep the load balancer from being accessed except by CloudFront. (optional)"
   type        = string
   sensitive   = true
-  default     = ""
 }
 
 variable "api_cloudfront_secret_header_name" {

@@ -88,21 +88,14 @@ resource "aws_alb_listener" "front_end_https" {
   ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
   certificate_arn   = var.ssl_certificate_arn_api_internal
 
-  # Other rules below will forward if the request is OK.
   default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Access Denied"
-      status_code  = "403"
-    }
+    target_group_arn = aws_alb_target_group.api.arn
+    type             = "forward"
   }
 }
 
 resource "aws_alb_listener_rule" "redirect_www" {
   listener_arn = aws_alb_listener.front_end.arn
-  priority     = 10
 
   condition {
     host_header {
@@ -118,37 +111,6 @@ resource "aws_alb_listener_rule" "redirect_www" {
       port        = "443"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
-    }
-  }
-}
-
-# If a special secret is required for access (i.e. to allow only CloudFront and
-# not any request directly from the public internet), check it before forwarding
-# to the API service.
-resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
-  listener_arn = aws_alb_listener.front_end_https.arn
-  priority     = 20
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.api.arn
-  }
-
-  # Add a condition requiring a secret header only if there's a secret to check.
-  dynamic "condition" {
-    for_each = var.api_cloudfront_secret != "" ? [1] : []
-    content {
-      http_header {
-        http_header_name = var.api_cloudfront_secret_header_name
-        values           = [var.api_cloudfront_secret]
-      }
-    }
-  }
-
-  # There must be >= 1 condition; this is a no-op in case there's no secret.
-  condition {
-    host_header {
-      values = ["*"]
     }
   }
 }
