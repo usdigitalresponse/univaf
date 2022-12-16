@@ -80,6 +80,20 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
+# Redirect all traffic from the ALB to the target group
+resource "aws_alb_listener" "front_end_https" {
+  load_balancer_arn = aws_alb.main.id
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
+  certificate_arn   = var.ssl_certificate_arn_api_internal
+
+  default_action {
+    target_group_arn = aws_alb_target_group.api.arn
+    type             = "forward"
+  }
+}
+
 resource "aws_alb_listener_rule" "redirect_www" {
   listener_arn = aws_alb_listener.front_end.arn
 

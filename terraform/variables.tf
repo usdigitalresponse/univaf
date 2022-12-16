@@ -13,6 +13,11 @@ variable "ssl_certificate_arn" {
   default     = ""
 }
 
+variable "ssl_certificate_arn_api_internal" {
+  description = "The ARN of an SSL certificate in ACM to use for the API services load balancer (must be in us-east-1)"
+  default     = ""
+}
+
 variable "domain_name" {
   description = "The domain name to use for HTTPS traffic"
   default     = ""
