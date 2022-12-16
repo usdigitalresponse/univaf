@@ -190,8 +190,8 @@ jobs:
         with:
           install: true
 
-      # When using a driver that supports caching (see above), you have to use
-      # `--load` to make the built image/layers available to the Docker CLI.
+      # When using a different driver (see above), you have to use `--load` to
+      # make the built image/layers available to the Docker CLI.
       - name: Build ${{ matrix.repository }}
         run: |
           docker buildx build \
