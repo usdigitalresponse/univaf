@@ -186,20 +186,30 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # - name: Build ${{ matrix.repository }}
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     target: "${{ matrix.target }}"
+      #     context: .
+      #     build-args: |
+      #       RELEASE=${{ env.IMAGE_TAG }}
+      #     tags: "${{ env.IMAGE_NAME }}"
+      #     push: false
+      #     # Make output available to Docker CLI for later commands.
+      #     load: true
+      #     # Read/write layers to the GitHub Actions cache.
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
       - name: Build ${{ matrix.repository }}
-        uses: docker/build-push-action@v3
-        with:
-          target: "${{ matrix.target }}"
-          context: .
-          build-args: |
-            RELEASE=${{ env.IMAGE_TAG }}
-          tags: "${{ env.IMAGE_NAME }}"
-          push: false
-          # Make output available to Docker CLI for later commands.
-          load: true
-          # Read/write layers to the GitHub Actions cache.
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        run: |
+          docker buildx build \
+            --tag "${IMAGE_NAME}" \
+            --target "${{ matrix.target }}" \
+            --build-arg RELEASE="${IMAGE_TAG}" \
+            --load \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max \
+            .
 
       - name: Report Image Details
         run: |
