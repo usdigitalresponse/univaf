@@ -219,7 +219,6 @@ jobs:
           target: "${{ matrix.target }}"
           build-args: |
             RELEASE=${{ env.IMAGE_TAG }}
-          # builder: "${{ steps.buildx-setup.outputs.name }}"
           # The caching mechanism will add a new copy of the cache to the
           # destination directory, so we write the cache out to a new, clean
           # directory and then overwrite the old cache directory with it after.
