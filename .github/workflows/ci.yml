@@ -190,19 +190,19 @@ jobs:
         with:
           install: true
 
-      # When using a different driver (see above), you have to use `--load` to
-      # make the built image/layers available to the Docker CLI.
       - name: Build ${{ matrix.repository }}
-        run: |
-          docker buildx build \
-            --tag "${IMAGE_NAME}" \
-            --target "${{ matrix.target }}" \
-            --build-arg RELEASE="${IMAGE_TAG}" \
-            --builder "${{ steps.buildx-setup.outputs.name }}" \
-            --load \
-            --cache-from type=gha,mode=max \
-            --cache-to type=gha,mode=max \
-            .
+        uses: docker/build-push-action@v3
+        with:
+          context: "."
+          builder: "${{ steps.buildx-setup.outputs.name }}"
+          target: "${{ matrix.target }}"
+          build-args: |
+            RELEASE=${{ env.IMAGE_TAG }}
+          push: false
+          load: true
+          tags: "${{ env.IMAGE_NAME }}"
+          cache-from: "type=gha,mode=max"
+          cache-to: "type=gha,mode=max"
 
       - name: Report Image Details
         run: |
