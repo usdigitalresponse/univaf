@@ -183,23 +183,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Sets up a docker driver that supports caching.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # - name: Build ${{ matrix.repository }}
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     target: "${{ matrix.target }}"
-      #     context: .
-      #     build-args: |
-      #       RELEASE=${{ env.IMAGE_TAG }}
-      #     tags: "${{ env.IMAGE_NAME }}"
-      #     push: false
-      #     # Make output available to Docker CLI for later commands.
-      #     load: true
-      #     # Read/write layers to the GitHub Actions cache.
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
+      # When using a driver that supports caching (see above), you have to use
+      # `--load` to make the built image/layers available to the Docker CLI.
       - name: Build ${{ matrix.repository }}
         run: |
           docker buildx build \
