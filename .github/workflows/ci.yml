@@ -198,6 +198,10 @@ jobs:
             ${{ runner.os }}-buildx-${{ github.ref }}-
             ${{ runner.os }}-buildx-
 
+      - name: Inspect Incoming Cache
+        run: |
+          ls -la /tmp/.buildx-cache
+
       # Sets up a docker driver that supports caching.
       - name: Set up Docker Buildx
         id: buildx-setup
@@ -228,6 +232,10 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Inspect Outgoing Cache
+        run: |
+          ls -la /tmp/.buildx-cache
 
       - name: Report Image Details
         run: |
