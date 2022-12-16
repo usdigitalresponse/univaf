@@ -63,6 +63,17 @@ variable "db_size" {
   default     = 48
 }
 
+variable "api_cloudfront_secret" {
+  description = "A secret key that must be sent as a header to the API load balancer in order to access it. Used to keep the load balancer from being accessed except by CloudFront. (optional)"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_cloudfront_secret_header_name" {
+  description = "Name of the HTTP header to send `api_cloudfront_secret` in."
+  default     = "X-Secret-Access-Key"
+}
+
 variable "api_keys" {
   description = "List of valid API keys for posting data to the API service. The loaders will use the first key."
   type        = list(string)
