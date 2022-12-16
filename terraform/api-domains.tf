@@ -171,13 +171,18 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
 
   origin {
     origin_id   = "ecs.${var.domain_name}"
-    domain_name = aws_alb.main.dns_name
+    domain_name = "api.internal.${var.domain_name}"
+
+    custom_header {
+      name  = var.api_cloudfront_secret_header_name
+      value = var.api_cloudfront_secret
+    }
 
     custom_origin_config {
       http_port              = 80
       https_port             = 443
       origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = "https-only"
     }
   }
 
