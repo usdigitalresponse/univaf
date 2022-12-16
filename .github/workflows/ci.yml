@@ -186,7 +186,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build ${{ matrix.repository }}
+      # We have two *nearly* identical Docker build steps here because writing
+      # cached layers does not appear to be compatible with making the build
+      # output available to the Docker CLI for further commands.
+      # - The first build step does the actual build and reads/writes caches.
+      # - The second build step uses `load: true` to make its output available
+      #   to future Docker CLI commands. It's pretty quick, since it winds up
+      #   reading everything from the cache produced by the first build step.
+      - name: Build and Cache ${{ matrix.repository }}
         uses: docker/build-push-action@v3
         with:
           target: "${{ matrix.target }}"
@@ -198,9 +205,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max,compression=zstd
 
-      # This is ugly, but we build again with caches (so it shouldn't really
-      # build) and use `load: true` to make the output usable with Docker CLI.
-      - name: Build ${{ matrix.repository }}
+      - name: Load Cached Image ${{ matrix.repository }}
         uses: docker/build-push-action@v3
         with:
           target: "${{ matrix.target }}"
