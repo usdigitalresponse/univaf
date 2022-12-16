@@ -183,6 +183,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # The docker action should have the ability to cache directly to the
+      # GitHub Actions cache without an explicit cache action like this, but we
+      # have not been able to get it to work.
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-buildx-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ github.ref }}-${{ github.sha }}
+            ${{ runner.os }}-buildx-${{ github.ref }}-
+            ${{ runner.os }}-buildx-
+
       # Sets up a docker driver that supports caching.
       - name: Set up Docker Buildx
         id: buildx-setup
@@ -199,11 +213,20 @@ jobs:
           build-args: |
             RELEASE=${{ env.IMAGE_TAG }}
           builder: "${{ steps.buildx-setup.outputs.name }}"
-          cache-from: "type=gha,mode=max"
-          cache-to: "type=gha,mode=max"
+          # The caching mechanism will add a new copy of the cache to the
+          # destination directory, so we write the cache out to a new, clean
+          # directory and then overwrite the old cache directory with it after.
+          # (See next action.)
+          cache-from: "type=local,src=/tmp/.buildx-cache"
+          cache-to: "type=local,dest=/tmp/.buildx-cache-new,mode=max,compression=zstd"
           push: false
           # Make the image available to Docker CLI commands in the next steps.
           load: true
+
+      - name: Overwrite Old Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Report Image Details
         run: |
