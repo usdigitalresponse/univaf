@@ -194,15 +194,16 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: "."
-          builder: "${{ steps.buildx-setup.outputs.name }}"
+          tags: "${{ env.IMAGE_NAME }}"
           target: "${{ matrix.target }}"
           build-args: |
             RELEASE=${{ env.IMAGE_TAG }}
-          push: false
-          load: true
-          tags: "${{ env.IMAGE_NAME }}"
+          builder: "${{ steps.buildx-setup.outputs.name }}"
           cache-from: "type=gha,mode=max"
           cache-to: "type=gha,mode=max"
+          push: false
+          # Make the image available to Docker CLI commands in the next steps.
+          load: true
 
       - name: Report Image Details
         run: |
