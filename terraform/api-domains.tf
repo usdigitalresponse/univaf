@@ -41,6 +41,22 @@ resource "aws_route53_record" "api_www_domain_record" {
   ttl     = 300
 }
 
+# The `api.internal` subdomain. Used for the API service's load balancer so it
+# can be secured with HTTPS.
+resource "aws_route53_record" "api_load_balancer_domain_record" {
+  count = var.domain_name != "" ? 1 : 0
+
+  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+  name    = "api.internal"
+  type    = "A"
+
+  alias {
+    name                   = aws_alb.main.dns_name
+    zone_id                = aws_alb.main.zone_id
+    evaluate_target_health = false
+  }
+}
+
 # The `render.` subdomain.
 # This specifically points to the deployment on Render and should be deleted
 # when we tear down that deployment.
