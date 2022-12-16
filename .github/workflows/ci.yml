@@ -202,14 +202,14 @@ jobs:
         run: |
           ls -lah /tmp/.buildx-cache
           cat /tmp/.buildx-cache/index.json | jq
-          ls -lah /tmp/.buildx-cache/*
+          ls -lah /tmp/.buildx-cache/blobs/sha256
 
       # Sets up a docker driver that supports caching.
       - name: Set up Docker Buildx
         id: buildx-setup
         uses: docker/setup-buildx-action@v2
-        with:
-          install: true
+        # with:
+        #   install: true
 
       - name: Build ${{ matrix.repository }}
         uses: docker/build-push-action@v3
@@ -219,7 +219,7 @@ jobs:
           target: "${{ matrix.target }}"
           build-args: |
             RELEASE=${{ env.IMAGE_TAG }}
-          builder: "${{ steps.buildx-setup.outputs.name }}"
+          # builder: "${{ steps.buildx-setup.outputs.name }}"
           # The caching mechanism will add a new copy of the cache to the
           # destination directory, so we write the cache out to a new, clean
           # directory and then overwrite the old cache directory with it after.
@@ -239,7 +239,7 @@ jobs:
         run: |
           ls -lah /tmp/.buildx-cache
           cat /tmp/.buildx-cache/index.json | jq
-          ls -lah /tmp/.buildx-cache/*
+          ls -lah /tmp/.buildx-cache/blobs/sha256
 
       - name: Report Image Details
         run: |
