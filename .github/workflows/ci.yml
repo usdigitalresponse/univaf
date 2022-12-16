@@ -192,7 +192,7 @@ jobs:
           target: "${{ matrix.target }}"
           context: .
           build-args: |
-            RELEASE="${{ env.IMAGE_TAG }}"
+            RELEASE=${{ env.IMAGE_TAG }}
           tags: "${{ env.IMAGE_NAME }}"
           push: false
           load: true
