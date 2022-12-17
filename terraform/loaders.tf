@@ -66,7 +66,7 @@ module "source_loader" {
   env_vars = merge({
     # NOTE: loaders go directly to the API load balancer, not CloudFront.
     API_URL = (
-      local.api_internal_domain
+      local.api_internal_domain != ""
       ? "https://${local.api_internal_domain}"
       : "http://${aws_alb.main.dns_name}"
     )
