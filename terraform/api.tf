@@ -75,8 +75,13 @@ resource "aws_alb_listener" "front_end" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.api.arn
-    type             = "forward"
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 
@@ -88,9 +93,15 @@ resource "aws_alb_listener" "front_end_https" {
   ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
   certificate_arn   = var.ssl_certificate_arn_api_internal
 
+  # Other rules below will forward if the request is OK.
   default_action {
-    target_group_arn = aws_alb_target_group.api.arn
-    type             = "forward"
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Access Denied"
+      status_code  = "403"
+    }
   }
 }
 
@@ -143,6 +154,24 @@ resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
   condition {
     source_ip {
       values = ["0.0.0.0/0"]
+    }
+  }
+}
+
+# Allow requests in if they have a valid API key.
+resource "aws_lb_listener_rule" "api_forward_if_api_key" {
+  listener_arn = aws_alb_listener.front_end_https.arn
+  priority     = 30
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.api.arn
+  }
+
+  condition {
+    http_header {
+      http_header_name = "x-api-key"
+      values           = var.api_keys
     }
   }
 }

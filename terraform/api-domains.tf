@@ -9,6 +9,15 @@
 # (e.g. Render.com) as its origin. If there's an external origin, it's defined
 # by the `api_remote_domain_name` variable.
 
+locals {
+  api_internal_subdomain = "api.internal"
+  api_internal_domain = (
+    var.domain_name != ""
+    ? "${local.api_internal_subdomain}.${var.domain_name}"
+    : ""
+  )
+}
+
 # Domains ---------------------------------------------------------------------
 
 data "aws_route53_zone" "domain_zone" {
@@ -47,7 +56,7 @@ resource "aws_route53_record" "api_load_balancer_domain_record" {
   count = var.domain_name != "" ? 1 : 0
 
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = "api.internal"
+  name    = local.api_internal_subdomain
   type    = "A"
 
   alias {
@@ -171,7 +180,7 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
 
   origin {
     origin_id   = "ecs.${var.domain_name}"
-    domain_name = "api.internal.${var.domain_name}"
+    domain_name = local.api_internal_domain
 
     custom_header {
       name  = var.api_cloudfront_secret_header_name

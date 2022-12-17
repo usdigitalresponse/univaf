@@ -56,6 +56,8 @@ module "source_loader" {
   source   = "./modules/task"
   for_each = local.loaders
 
+  depends_on = [aws_alb.main]
+
   name = each.key
   command = concat(
     lookup(each.value, "options", []),
@@ -63,7 +65,11 @@ module "source_loader" {
   )
   env_vars = merge({
     # NOTE: loaders go directly to the API load balancer, not CloudFront.
-    API_URL    = "http://${aws_alb.main.dns_name}"
+    API_URL = (
+      local.api_internal_domain != ""
+      ? "https://${local.api_internal_domain}"
+      : "http://${aws_alb.main.dns_name}"
+    )
     API_KEY    = var.api_keys[0]
     DD_API_KEY = var.datadog_api_key
     SENTRY_DSN = var.loader_sentry_dsn
