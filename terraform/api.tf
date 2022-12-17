@@ -159,7 +159,7 @@ resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
 }
 
 # Allow requests in if they have a valid API key.
-resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
+resource "aws_lb_listener_rule" "api_forward_if_api_key" {
   listener_arn = aws_alb_listener.front_end_https.arn
   priority     = 30
 
