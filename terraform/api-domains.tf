@@ -141,7 +141,7 @@ resource "aws_cloudfront_distribution" "univaf_api_render" {
     max_ttl                = 3600
 
     forwarded_values {
-      headers      = ["Host", "Origin"]
+      headers      = ["Host", "Origin", "Authorization", "x-api-key"]
       query_string = true
 
       cookies {
@@ -204,7 +204,7 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
     max_ttl                = 3600
 
     forwarded_values {
-      headers      = ["Host", "Origin"]
+      headers      = ["Host", "Origin", "Authorization", "x-api-key"]
       query_string = true
 
       cookies {
