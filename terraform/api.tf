@@ -158,6 +158,24 @@ resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
   }
 }
 
+# Allow requests in if they have a valid API key.
+resource "aws_lb_listener_rule" "api_forward_if_secret_header" {
+  listener_arn = aws_alb_listener.front_end_https.arn
+  priority     = 30
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.api.arn
+  }
+
+  condition {
+    http_header {
+      http_header_name = "x-api-key"
+      values           = var.api_keys
+    }
+  }
+}
+
 # This service definition keeps the API server task running, connects it to the
 # load balancer, and manages multiple instances. (The actual scaling policies
 # are in a separate file.)
