@@ -37,11 +37,13 @@ const VACCINE_NAMES = {
   "Pediatric Moderna Bivalent (6-12)": VaccineProduct.modernaBa4Ba5Age6_11,
   "Pediatric-Moderna (3-5)": VaccineProduct.modernaAge0_5,
   "Pediatric Moderna Bivalent 3-5": VaccineProduct.modernaBa4Ba5Age0_5,
+  "Pediatric Moderna Bivalent (3-5)": VaccineProduct.modernaBa4Ba5Age0_5,
   "Pfizer-BioNTech": VaccineProduct.pfizer,
   "Pfizer Bivalent": VaccineProduct.pfizerBa4Ba5,
   "Pediatric-Pfizer (5-11)": VaccineProduct.pfizerAge5_11,
   "Pediatric Pfizer Bivalent (5-11)": VaccineProduct.pfizerBa4Ba5Age5_11,
   "Pediatric-Pfizer (under 5)": VaccineProduct.pfizerAge0_4,
+  "Pediatric-Pfizer Bivalent (under 5)": VaccineProduct.pfizerBa4Ba5Age0_4,
   Janssen: VaccineProduct.janssen,
   Novavax: VaccineProduct.novavax,
 };
