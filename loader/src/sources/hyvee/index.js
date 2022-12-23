@@ -44,6 +44,7 @@ const VACCINE_NAMES = {
   "Pediatric Pfizer Bivalent (5-11)": VaccineProduct.pfizerBa4Ba5Age5_11,
   "Pediatric-Pfizer (under 5)": VaccineProduct.pfizerAge0_4,
   "Pediatric-Pfizer Bivalent (under 5)": VaccineProduct.pfizerBa4Ba5Age0_4,
+  "Pediatric Pfizer Bivalent 3-4": VaccineProduct.pfizerBa4Ba5Age0_4,
   Janssen: VaccineProduct.janssen,
   Novavax: VaccineProduct.novavax,
 };
