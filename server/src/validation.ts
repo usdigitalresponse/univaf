@@ -389,7 +389,7 @@ export function validateAvailabilityInput(data: any): AvailabilityInput {
   return data;
 }
 
-let stateLookup: Map<string, typeof states[number]>;
+let stateLookup: Map<string, (typeof states)[number]>;
 
 /**
  * Get the correct state abbreviation given the full name or some type of
@@ -399,7 +399,7 @@ let stateLookup: Map<string, typeof states[number]>;
 export function validateState(input: string): string {
   if (!stateLookup) {
     stateLookup = new Map();
-    const referenceKeys: Array<keyof typeof states[number]> = [
+    const referenceKeys: Array<keyof (typeof states)[number]> = [
       "name",
       "iso",
       "usps",
