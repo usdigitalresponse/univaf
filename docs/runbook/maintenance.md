@@ -5,17 +5,27 @@ Things to keep in mind or do in the course of general maintenance.
 
 ## Dependency Updates/Dependabot
 
-We currently use [Dependabot][] to keep our dependencies up to date. It’ll automatically create pull requests once a week for dependencies that are out of date. Usually, handling these is straightforward: as long as the tests and other checks pass, review the changelog for the dependency (usually Dependabot will include it in the PR description) and make sure nothing else should change (deprecated features we might be using, etc.).
+We use [Dependabot][], which will automatically create pull requests once a week that update out-of-date dependencies. When reviewing these PRs:
 
-- If things are all clear, go ahead and merge.
+- Some dependencies should not be updated by themselves or need special handling. See the next sections for a list of those dependencies and how to deal with them.
+
+- Check the changelog/release notes! (Dependabot usually includes this info in the PR description.)
+
+    Look for deprecated features we are using or new features we *should* be using, or any special notes that might indicate the update needs special review. If there is anything, add more commits to the PR that make the relevant updates in our codebase. Please also add a comment to the PR describing why/what things in our codebase needed updating.
+
+- If the tests and checks are all clear, go ahead and merge.
+
 - If not, either…
     - Add more commits to the PR with other things that need to be fixed to keep using the dependency correctly and then merge. If you do this, note any major changes you made as a comment in the PR.
-    - If there’s a regresssion or bug in the dependency that isn’t worth or can’t be worked around reject the PR by adding a comment describing the reason (if there’s a bug in the dependency’s bug tracker, link it!) and close the PR (or include `@dependabot close` in your comment) to tell Dependabot to ignore that specific release.
 
-        If the reason for not updating the dependency is more complex and won’t be fixed in the current major or minor release, you can also use the `@dependabot ignore this <type> version` command to tell Dependabot to close the PR and not create new ones for certain types of releases.
+    - If there’s a regresssion or bug in the dependency that isn’t worth or can’t be worked around, reject the PR by adding a comment describing the reason (if there’s a bug in the dependency’s bug tracker, link it!) and close the PR (or include `@dependabot close` in your comment) to tell Dependabot to ignore that specific release.
 
 
-However, **some dependencies are designed to be updated _together_, and shouldn’t be merged as independent PRs.** Often the individual PRs won’t pass tests in this case, but sometimes they still do (tests might not cover something, or that particular set of releases just happens to work together, but not by design). In these cases, you’ll need to add another commit to the PR that updates the related dependencies by tweaking the relevant `package.json` files and running `npm install` to update the lockfile. For an example, see [PR #1233][issue-1233].
+### Some Updates Need to Be Grouped
+
+Some dependencies are designed to be updated _together_, and shouldn’t be merged as independent PRs.
+
+Often the individual PRs won’t pass tests in this case, but sometimes they still do (tests might not cover something, or that particular set of releases just happens to work together, but not by design). In these cases, you’ll need to add another commit to the PR that updates the related dependencies by tweaking the relevant `package.json` files and running `npm install` to update the lockfile. For an example, see [PR #1233][issue-1233].
 
 After you merge a PR that you’ve updated to include multiple dependencies, Dependabot will automatically close any existing independent PRs for the other dependencies you added.
 
@@ -26,7 +36,7 @@ As of January 2023, dependencies that should be grouped include:
 - `@babel/*` (not usually required to be grouped, but sometimes is).
 - `ts-jest` usually needs updating when `jest` has a major release and sometimes for minor releases (but not patch releases). Check out the [ts-jest docs][ts-jest-docs] for details on how to choose the correct version to work with `jest`.
 
-Dependabot does this automatically when `xyz` and `@types/<xyz>` both have updates. There are several open issues tracking versions of this issue for other types of grouped dependencies, which you can subscribe to if you want:
+Obviously you shouldn’t have to do this! Dependabot already groups `xyz` and `@types/<xyz>` updates automatically. There are several open issues tracking versions of this issue for other types of grouped dependencies, which you can subscribe to if you want:
 - https://github.com/dependabot/dependabot-core/issues/1296
 - https://github.com/dependabot/dependabot-core/issues/6008
 
