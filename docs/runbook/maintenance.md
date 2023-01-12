@@ -5,27 +5,31 @@ Things to keep in mind or do in the course of general maintenance.
 
 ## Dependency Updates/Dependabot
 
-We use [Dependabot][], which will automatically create pull requests once a week that update out-of-date dependencies. When reviewing these PRs:
+We use [Dependabot][], which automatically creates pull requests once a week that update out-of-date dependencies. When reviewing these PRs:
 
 - Some dependencies should not be updated by themselves or need special handling. See the next sections for a list of those dependencies and how to deal with them.
 
-- Check the changelog/release notes! (Dependabot usually includes this info in the PR description.)
+- Check the changelog/release notes! Dependabot usually includes this info in the PR description. Look for:
 
-    Look for deprecated features we are using or new features we *should* be using, or any special notes that might indicate the update needs special review. If there is anything, add more commits to the PR that make the relevant updates in our codebase. Please also add a comment to the PR describing why/what things in our codebase needed updating.
+    - Deprecated or removed features we are using and that need to change.
+    - New features we should be using.
+    - Other notes on complex situations, changes Node.js version requirements, etc.
+
+    Where reasonable, add commits to the PR that change our codebase to address the above issues. If that’s especially complex, open an issue instead that describes what needs to be done so we can track it.
 
 - If the tests and checks are all clear, go ahead and merge.
 
 - If not, either…
-    - Add more commits to the PR with other things that need to be fixed to keep using the dependency correctly and then merge. If you do this, note any major changes you made as a comment in the PR.
+    - Add more commits to the PR that resolve the issue. If you do this, note any major changes you made as a comment in the PR.
 
-    - If there’s a regresssion or bug in the dependency that isn’t worth or can’t be worked around, reject the PR by adding a comment describing the reason (if there’s a bug in the dependency’s bug tracker, link it!) and close the PR (or include `@dependabot close` in your comment) to tell Dependabot to ignore that specific release.
+    - If there’s a regresssion or bug in the dependency that isn’t worth working around or can’t be worked around, reject the PR by adding a comment describing the reason with links to any relevant issues in the dependency’s bug tracker. Then close the PR (or include `@dependabot close` in your comment) to tell Dependabot to ignore that specific release.
 
 
 ### Some Updates Need to Be Grouped
 
 Some dependencies are designed to be updated _together_, and shouldn’t be merged as independent PRs.
 
-Often the individual PRs won’t pass tests in this case, but sometimes they still do (tests might not cover something, or that particular set of releases just happens to work together, but not by design). In these cases, you’ll need to add another commit to the PR that updates the related dependencies by tweaking the relevant `package.json` files and running `npm install` to update the lockfile. For an example, see [PR #1233][issue-1233].
+Often the individual PRs won’t pass tests, but sometimes they do (tests might not cover something, or that particular set of releases just happens to work together, but not by design). In either case, you should add another commit to the PR that updates the related dependencies by tweaking the relevant `package.json` files and running `npm install` to update the lockfile. For an example, see [PR #1233][issue-1233].
 
 After you merge a PR that you’ve updated to include multiple dependencies, Dependabot will automatically close any existing independent PRs for the other dependencies you added.
 
