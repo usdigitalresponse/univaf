@@ -4,11 +4,11 @@
   "variable": {
     "api_release_version": {
       "description": "API Release Version",
-      "default": "47024460f935787a20616f8d4fbc156d00368cae"
+      "default": "80c47fdbfb90f6a4d21cdcd5143f1d8b83c8168f"
     },
     "loader_release_version": {
       "description": "Loader Release Version",
-      "default": "47024460f935787a20616f8d4fbc156d00368cae"
+      "default": "80c47fdbfb90f6a4d21cdcd5143f1d8b83c8168f"
     }
   }
 }
