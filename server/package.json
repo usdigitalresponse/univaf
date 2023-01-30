@@ -52,7 +52,7 @@
     "lodash": "4.17.21",
     "luxon": "^3.2.1",
     "pg": "^8.8.0",
-    "pg-query-stream": "^4.2.4",
+    "pg-query-stream": "^4.3.0",
     "univaf-common": ">=0.1.0",
     "winston": "3.8.2",
     "yargs": "^17.6.2"
