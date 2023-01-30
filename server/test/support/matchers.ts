@@ -1,4 +1,3 @@
-import { isDeepStrictEqual } from "node:util";
 import { expect } from "@jest/globals";
 import type { MatcherFunction } from "expect";
 
@@ -40,17 +39,9 @@ const toEqualUnordered: MatcherFunction<[expected: unknown]> = function (
     throw new Error(`Expected value (${expected}) was not iterable`);
   }
 
-  // `this.equals` is only available when a matcher is used in a
-  // non-asymmetric context (that is, `expect(x).toEqualUnordered(y)`, but not
-  // `expect.toEqualUnordered(y)`). So we implement our own comparison.
-  // That is, we can't do:
-  //   let pass = this.equals(receivedItems, expectedItems);
-  //
-  // Sadly, this also means we can't have nested asymmetic matchers. :(
-  // See: https://github.com/facebook/jest/issues/8295
   const receivedItems = [...received].sort();
   const expectedItems = [...expected].sort();
-  const pass = isDeepStrictEqual(receivedItems, expectedItems);
+  const pass = this.equals(receivedItems, expectedItems);
 
   return {
     pass,
