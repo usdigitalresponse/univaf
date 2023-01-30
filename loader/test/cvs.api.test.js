@@ -12,14 +12,12 @@ jest.mock("../src/utils");
 describe("CVS API", () => {
   const API_URL = "http://api.cvs.com/";
 
-  let _env = {};
   beforeEach(() => {
-    _env = Object.assign({}, process.env);
-    process.env.CVS_API_URL = API_URL;
+    jest.replaceProperty(process, "env", { CVS_API_URL: API_URL });
   });
 
   afterEach(() => {
-    Object.assign(process.env, _env);
+    jest.restoreAllMocks();
   });
 
   it("throws an error if there are no credentials", async () => {
