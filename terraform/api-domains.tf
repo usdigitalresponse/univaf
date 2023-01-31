@@ -262,9 +262,10 @@ module "univaf_data_snaphsots_cdn" {
   version = "0.86.0"
 
   origin_bucket = aws_s3_bucket.data_snapshots.bucket
-  # FIXME: If `dns_alias_enabled` is true, this will create DNS records (nice!)
-  # And we should set `aliases` instead of `external_aliases`.
-  # dns_alias_enabled               = true
+  # FIXME: If `aliases` are DNS records this will create; `external_aliases`
+  # are ones it will not. Both are merged together to create a list of valid
+  # aliases for the distribution.
+  dns_alias_enabled = true
   # aliases                         = [local.data_snapshots_domain]
   external_aliases                  = [local.data_snapshots_domain]
   parent_zone_name                  = var.domain_name
@@ -275,7 +276,7 @@ module "univaf_data_snaphsots_cdn" {
   # certificate to include the domain for this.
   # acm_certificate_arn = var.ssl_certificate_arn
 
-  allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS"]
+  allowed_methods = ["GET", "HEAD", "OPTIONS"]
   cached_methods  = ["GET", "HEAD", "OPTIONS"]
 }
 
@@ -315,7 +316,7 @@ module "univaf_data_snaphsots_cdn" {
 #   default_cache_behavior {
 #     # Writes need to be authorized and go through the normal S3 API;
 #     # Disallow "DELETE", "PATCH", "POST", "PUT" in CloudFront.
-#     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS"]
+#     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
 #     cached_methods         = ["GET", "HEAD", "OPTIONS"]
 #     target_origin_id       = local.data_snapshots_origin_id
 #     viewer_protocol_policy = "redirect-to-https"
