@@ -256,6 +256,18 @@ locals {
   data_snapshots_origin_id = "s3_data_snapshots_origin"
 }
 
+resource "aws_cloudfront_origin_access_control" "univaf_data_snaphsots_access" {
+  count = (
+    var.domain_name != ""
+    && var.ssl_certificate_arn != "" ? 1 : 0
+  )
+  name                              = "univaf_data_snaphsots_access"
+  description                       = "Access control for data snapshots S3 bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "univaf_data_snapshots" {
   count = (
     var.domain_name != ""
@@ -268,12 +280,9 @@ resource "aws_cloudfront_distribution" "univaf_data_snapshots" {
   http_version    = "http2and3"
 
   origin {
-    domain_name = aws_s3_bucket.data_snapshots.bucket_regional_domain_name
-    origin_id   = local.data_snapshots_origin_id
-    # origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path
-    }
+    domain_name              = aws_s3_bucket.data_snapshots.bucket_regional_domain_name
+    origin_id                = local.data_snapshots_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.univaf_data_snaphsots_access[0].id
   }
 
   default_cache_behavior {
