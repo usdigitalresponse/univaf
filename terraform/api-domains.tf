@@ -269,12 +269,11 @@ module "univaf_data_snaphsots_cdn" {
   # aliases                         = [local.data_snapshots_domain]
   external_aliases                  = [local.data_snapshots_domain]
   parent_zone_name                  = var.domain_name
+  acm_certificate_arn               = var.ssl_certificate_arn
   cloudfront_access_logging_enabled = false
   default_ttl                       = 60 * 60 * 24 * 7 # 1 Week
 
-  # FIXME: need to set up a certificate or this, or expand the existing
-  # certificate to include the domain for this.
-  # acm_certificate_arn = var.ssl_certificate_arn
+
 
   allowed_methods = ["GET", "HEAD", "OPTIONS"]
   cached_methods  = ["GET", "HEAD", "OPTIONS"]
