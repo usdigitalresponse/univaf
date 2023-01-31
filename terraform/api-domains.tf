@@ -75,20 +75,20 @@ resource "aws_route53_record" "api_load_balancer_domain_record" {
   }
 }
 
-# Serves archived, historical data from S3 via CloudFront.
-resource "aws_route53_record" "data_snapshots_domain_record" {
-  count = var.domain_name != "" ? 1 : 0
+# # Serves archived, historical data from S3 via CloudFront.
+# resource "aws_route53_record" "data_snapshots_domain_record" {
+#   count = var.domain_name != "" ? 1 : 0
 
-  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = local.data_snapshots_domain
-  type    = "A"
+#   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
+#   name    = local.data_snapshots_domain
+#   type    = "A"
 
-  alias {
-    name                   = module.univaf_data_snaphsots_cdn[0].cf_domain_name
-    zone_id                = module.univaf_data_snaphsots_cdn[0].cf_hosted_zone_id
-    evaluate_target_health = false
-  }
-}
+#   alias {
+#     name                   = module.univaf_data_snaphsots_cdn[0].cf_domain_name
+#     zone_id                = module.univaf_data_snaphsots_cdn[0].cf_hosted_zone_id
+#     evaluate_target_health = false
+#   }
+# }
 
 # The `render.` subdomain.
 # This specifically points to the deployment on Render and should be deleted
@@ -265,16 +265,14 @@ module "univaf_data_snaphsots_cdn" {
   # FIXME: If `aliases` are DNS records this will create; `external_aliases`
   # are ones it will not. Both are merged together to create a list of valid
   # aliases for the distribution.
-  dns_alias_enabled = true
-  # aliases                         = [local.data_snapshots_domain]
-  external_aliases                  = [local.data_snapshots_domain]
+  dns_alias_enabled                 = true
+  aliases                           = [local.data_snapshots_domain]
   parent_zone_name                  = var.domain_name
   acm_certificate_arn               = var.ssl_certificate_arn
   cloudfront_access_logging_enabled = false
   default_ttl                       = 60 * 60 * 24 * 7 # 1 Week
 
-
-
+  http_version    = "http2and3"
   allowed_methods = ["GET", "HEAD", "OPTIONS"]
   cached_methods  = ["GET", "HEAD", "OPTIONS"]
 }
