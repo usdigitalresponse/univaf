@@ -261,10 +261,13 @@ module "univaf_data_snaphsots_cdn" {
   source  = "cloudposse/cloudfront-s3-cdn/aws"
   version = "0.86.0"
 
-  origin_bucket     = aws_s3_bucket.data_snapshots.bucket
-  aliases           = [local.data_snapshots_domain]
-  dns_alias_enabled = true
-  parent_zone_name  = var.domain_name
+  origin_bucket = aws_s3_bucket.data_snapshots.bucket
+  aliases       = [local.data_snapshots_domain]
+  # FIXME: don't need to create DNS; dns_alias_enabled does it for us
+  # dns_alias_enabled                   = true
+  parent_zone_name                  = var.domain_name
+  cloudfront_access_logging_enabled = false
+  default_ttl                       = 60 * 60 * 24 * 7 # 1 Week
 
   # FIXME: need to set up a certificate or this, or expand the existing
   # certificate to include the domain for this.
