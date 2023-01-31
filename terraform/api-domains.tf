@@ -262,9 +262,11 @@ module "univaf_data_snaphsots_cdn" {
   version = "0.86.0"
 
   origin_bucket = aws_s3_bucket.data_snapshots.bucket
-  aliases       = [local.data_snapshots_domain]
-  # FIXME: don't need to create DNS; dns_alias_enabled does it for us
-  # dns_alias_enabled                   = true
+  # FIXME: If `dns_alias_enabled` is true, this will create DNS records (nice!)
+  # And we should set `aliases` instead of `external_aliases`.
+  # dns_alias_enabled               = true
+  # aliases                         = [local.data_snapshots_domain]
+  external_aliases                  = [local.data_snapshots_domain]
   parent_zone_name                  = var.domain_name
   cloudfront_access_logging_enabled = false
   default_ttl                       = 60 * 60 * 24 * 7 # 1 Week
@@ -272,6 +274,9 @@ module "univaf_data_snaphsots_cdn" {
   # FIXME: need to set up a certificate or this, or expand the existing
   # certificate to include the domain for this.
   # acm_certificate_arn = var.ssl_certificate_arn
+
+  allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS"]
+  cached_methods  = ["GET", "HEAD", "OPTIONS"]
 }
 
 # locals {
@@ -315,8 +320,7 @@ module "univaf_data_snaphsots_cdn" {
 #     target_origin_id       = local.data_snapshots_origin_id
 #     viewer_protocol_policy = "redirect-to-https"
 #     min_ttl                = 0
-#     # FIXME: determine appropriate long cache lifetime, since this data
-#     # is theoretically immutable.
+#     default_ttl            = 60 * 60 * 24 * 7 # 1 Week
 #     max_ttl = 3600
 
 #     forwarded_values {
