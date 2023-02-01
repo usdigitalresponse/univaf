@@ -64,8 +64,9 @@ async function fetchRawData() {
   const response = await httpClient(API_URL, {
     method: "POST",
     responseType: "json",
-    timeout: 60000,
-    retry: 0,
+    timeout: 60_000,
+    // POST does not get retried by default.
+    retry: { methods: ["POST"] },
     json: {
       operationName: "SearchPharmaciesNearPointWithCovidVaccineAvailability",
       variables: {
@@ -87,7 +88,7 @@ async function fetchRawData() {
                 isCovidVaccineAvailable
                 availableCovidVaccineManufacturers {
                   covidVaccineManufacturerId
-                  manufacturerName
+                  vaccineName
                   doseTypes
                   isSingleDose
                   __typename
@@ -180,11 +181,11 @@ function formatLocation(data, checkedAt) {
 
 function formatProducts(vaccineData) {
   const products = vaccineData.availableCovidVaccineManufacturers
-    .filter((product) => product.manufacturerName !== "Flu Vaccine")
+    .filter((product) => product.vaccineName !== "Flu Vaccine")
     .map((product) => {
-      const result = VACCINE_NAMES[product.manufacturerName];
+      const result = VACCINE_NAMES[product.vaccineName];
       if (!result) {
-        warn(`Unknown product type "${product.manufacturerName}"`);
+        warn(`Unknown product type "${product.vaccineName}"`);
       }
       return result;
     });
