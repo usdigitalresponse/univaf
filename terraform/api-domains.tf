@@ -270,11 +270,14 @@ module "univaf_data_snaphsots_cdn" {
   parent_zone_name                  = var.domain_name
   acm_certificate_arn               = var.ssl_certificate_arn
   cloudfront_access_logging_enabled = false
-  default_ttl                       = 60 * 60 * 24 * 7 # 1 Week
 
   http_version    = "http2and3"
   allowed_methods = ["GET", "HEAD", "OPTIONS"]
   cached_methods  = ["GET", "HEAD", "OPTIONS"]
+  # By default, CORS headers are forwarded, but we don't really care about them
+  # since the bucket is not operating in "website" mode.
+  forward_header_values = []
+  default_ttl           = 60 * 60 * 24 * 7 # 1 Week
 }
 
 # locals {
