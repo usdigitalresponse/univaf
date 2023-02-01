@@ -13,6 +13,19 @@ resource "aws_s3_bucket_acl" "data_snapshots_acl" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "data_snapshots" {
+  bucket = aws_s3_bucket.data_snapshots.id
+
+  rule {
+    id     = "Delete old incomplete multipart uploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
+    }
+  }
+}
+
 # Alternative deployments that are being tested write to this bucket instead.
 resource "aws_s3_bucket" "render_test_data_snapshots" {
   bucket = "univaf-render-test-data-snapshots"
@@ -36,4 +49,17 @@ resource "aws_s3_bucket_policy" "render_test_data_snapshots" {
       Resource  = "${aws_s3_bucket.render_test_data_snapshots.arn}/*"
     }]
   })
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "data_snapshots" {
+  bucket = aws_s3_bucket.render_test_data_snapshots.id
+
+  rule {
+    id     = "Delete old incomplete multipart uploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
+    }
+  }
 }
