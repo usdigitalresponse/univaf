@@ -1,7 +1,8 @@
 # S3 Buckets
 #
-# The API server stores historical logs and daily snapshots of the databse in
-# S3 for later analysis. This data, like the API is publicly accessible.
+# The API server stores historical logs and daily snapshots of the database in
+# S3 for later analysis. It is publicly available via CloudFront, which reads
+# from the bucket.
 
 resource "aws_s3_bucket" "data_snapshots" {
   bucket = "univaf-data-snapshots"
