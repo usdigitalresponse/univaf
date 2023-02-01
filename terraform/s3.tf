@@ -51,7 +51,7 @@ resource "aws_s3_bucket_policy" "render_test_data_snapshots" {
   })
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "data_snapshots" {
+resource "aws_s3_bucket_lifecycle_configuration" "render_test_data_snapshots" {
   bucket = aws_s3_bucket.render_test_data_snapshots.id
 
   rule {
