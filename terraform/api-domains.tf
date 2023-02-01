@@ -10,15 +10,24 @@
 # by the `api_remote_domain_name` variable.
 
 locals {
+  # The domain of the API service's load balancer (not for public use).
   api_internal_subdomain = "api.internal"
   api_internal_domain = (
     var.domain_name != ""
     ? "${local.api_internal_subdomain}.${var.domain_name}"
     : ""
   )
+
+  # Domain at which to serve archived, historical data (stored in S3).
+  data_snapshots_subdomain = "archives"
+  data_snapshots_domain = (
+    var.domain_name != ""
+    ? "${local.data_snapshots_subdomain}.${var.domain_name}"
+    : ""
+  )
 }
 
-# Domains ---------------------------------------------------------------------
+# Domain DNS Recods -----------------------------------------------------------
 
 data "aws_route53_zone" "domain_zone" {
   count = var.domain_name != "" ? 1 : 0
@@ -223,4 +232,31 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
       restriction_type = "none"
     }
   }
+}
+
+# Provide a protective caching layer and a nice domain name for the S3 bucket
+# with historical data. (Allowing direct public access can get expensive.)
+# Docs: https://github.com/cloudposse/terraform-aws-cloudfront-s3-cdn
+module "univaf_data_snaphsots_cdn" {
+  count = (
+    var.domain_name != ""
+    && var.ssl_certificate_arn != "" ? 1 : 0
+  )
+  source  = "cloudposse/cloudfront-s3-cdn/aws"
+  version = "0.86.0"
+
+  origin_bucket                     = aws_s3_bucket.data_snapshots.bucket
+  dns_alias_enabled                 = true
+  aliases                           = [local.data_snapshots_domain]
+  parent_zone_id                    = data.aws_route53_zone.domain_zone[0].zone_id
+  acm_certificate_arn               = var.ssl_certificate_arn
+  cloudfront_access_logging_enabled = false
+
+  default_ttl     = 60 * 60 * 24 * 7 # 1 Week
+  http_version    = "http2and3"
+  allowed_methods = ["GET", "HEAD", "OPTIONS"]
+  cached_methods  = ["GET", "HEAD", "OPTIONS"]
+  # By default, CORS headers are forwarded, but we don't really care about them
+  # since the bucket is not operating in "website" mode.
+  forward_header_values = []
 }
