@@ -251,7 +251,6 @@ module "univaf_data_snaphsots_cdn" {
   parent_zone_id                    = data.aws_route53_zone.domain_zone[0].zone_id
   acm_certificate_arn               = var.ssl_certificate_arn
   cloudfront_access_logging_enabled = false
-  override_origin_bucket_policy     = false
 
   default_ttl     = 60 * 60 * 24 * 7 # 1 Week
   http_version    = "http2and3"
