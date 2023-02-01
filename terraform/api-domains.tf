@@ -75,21 +75,6 @@ resource "aws_route53_record" "api_load_balancer_domain_record" {
   }
 }
 
-# # Serves archived, historical data from S3 via CloudFront.
-# resource "aws_route53_record" "data_snapshots_domain_record" {
-#   count = var.domain_name != "" ? 1 : 0
-
-#   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-#   name    = local.data_snapshots_domain
-#   type    = "A"
-
-#   alias {
-#     name                   = module.univaf_data_snaphsots_cdn[0].cf_domain_name
-#     zone_id                = module.univaf_data_snaphsots_cdn[0].cf_hosted_zone_id
-#     evaluate_target_health = false
-#   }
-# }
-
 # The `render.` subdomain.
 # This specifically points to the deployment on Render and should be deleted
 # when we tear down that deployment.
@@ -249,101 +234,29 @@ resource "aws_cloudfront_distribution" "univaf_api_ecs" {
   }
 }
 
-# Use CloudFront to provide a protective caching layer and a nice domain anme
-# in front of the S3 bucket with historical data. (Allowing direct public
-# access can get expensive.)
+# Provide a protective caching layer and a nice domain name for the S3 bucket
+# with historical data. (Allowing direct public access can get expensive.)
+# Docs: https://github.com/cloudposse/terraform-aws-cloudfront-s3-cdn
 module "univaf_data_snaphsots_cdn" {
   count = (
     var.domain_name != ""
     && var.ssl_certificate_arn != "" ? 1 : 0
   )
-
   source  = "cloudposse/cloudfront-s3-cdn/aws"
   version = "0.86.0"
 
-  origin_bucket = aws_s3_bucket.data_snapshots.bucket
-  # FIXME: If `aliases` are DNS records this will create; `external_aliases`
-  # are ones it will not. Both are merged together to create a list of valid
-  # aliases for the distribution.
+  origin_bucket                     = aws_s3_bucket.data_snapshots.bucket
   dns_alias_enabled                 = true
   aliases                           = [local.data_snapshots_domain]
-  parent_zone_name                  = var.domain_name
+  parent_zone_id                    = data.aws_route53_zone.domain_zone[0].zone_id
   acm_certificate_arn               = var.ssl_certificate_arn
   cloudfront_access_logging_enabled = false
 
+  default_ttl     = 60 * 60 * 24 * 7 # 1 Week
   http_version    = "http2and3"
   allowed_methods = ["GET", "HEAD", "OPTIONS"]
   cached_methods  = ["GET", "HEAD", "OPTIONS"]
   # By default, CORS headers are forwarded, but we don't really care about them
   # since the bucket is not operating in "website" mode.
   forward_header_values = []
-  default_ttl           = 60 * 60 * 24 * 7 # 1 Week
 }
-
-# locals {
-#   data_snapshots_origin_id = "s3_data_snapshots_origin"
-# }
-
-# resource "aws_cloudfront_origin_access_control" "univaf_data_snaphsots_access" {
-#   count = (
-#     var.domain_name != ""
-#     && var.ssl_certificate_arn != "" ? 1 : 0
-#   )
-#   name                              = "univaf_data_snaphsots_access"
-#   description                       = "Access control for data snapshots S3 bucket"
-#   origin_access_control_origin_type = "s3"
-#   signing_behavior                  = "always"
-#   signing_protocol                  = "sigv4"
-# }
-
-# resource "aws_cloudfront_distribution" "univaf_data_snapshots" {
-#   count = (
-#     var.domain_name != ""
-#     && var.ssl_certificate_arn != "" ? 1 : 0
-#   )
-#   enabled         = true
-#   is_ipv6_enabled = true
-#   price_class     = "PriceClass_100" # North America
-#   aliases         = [local.data_snapshots_domain]
-#   http_version    = "http2and3"
-
-#   origin {
-#     domain_name              = aws_s3_bucket.data_snapshots.bucket_regional_domain_name
-#     origin_id                = local.data_snapshots_origin_id
-#     origin_access_control_id = aws_cloudfront_origin_access_control.univaf_data_snaphsots_access[0].id
-#   }
-
-#   default_cache_behavior {
-#     # Writes need to be authorized and go through the normal S3 API;
-#     # Disallow "DELETE", "PATCH", "POST", "PUT" in CloudFront.
-#     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-#     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-#     target_origin_id       = local.data_snapshots_origin_id
-#     viewer_protocol_policy = "redirect-to-https"
-#     min_ttl                = 0
-#     default_ttl            = 60 * 60 * 24 * 7 # 1 Week
-#     max_ttl = 3600
-
-#     forwarded_values {
-#       query_string = false
-
-#       cookies {
-#         forward = "none"
-#       }
-#     }
-#   }
-
-#   viewer_certificate {
-#     # FIXME: need to set up a certificate or this, or expand the existing
-#     # certificate to include the domain for this.
-#     cloudfront_default_certificate = true
-#     # acm_certificate_arn = var.ssl_certificate_arn
-#     # ssl_support_method  = "sni-only"
-#   }
-
-#   restrictions {
-#     geo_restriction {
-#       restriction_type = "none"
-#     }
-#   }
-# }
