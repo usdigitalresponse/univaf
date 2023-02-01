@@ -251,6 +251,7 @@ module "univaf_data_snaphsots_cdn" {
   parent_zone_id                    = data.aws_route53_zone.domain_zone[0].zone_id
   acm_certificate_arn               = var.ssl_certificate_arn
   cloudfront_access_logging_enabled = false
+  override_origin_bucket_policy     = false
 
   default_ttl     = 60 * 60 * 24 * 7 # 1 Week
   http_version    = "http2and3"
@@ -259,4 +260,13 @@ module "univaf_data_snaphsots_cdn" {
   # By default, CORS headers are forwarded, but we don't really care about them
   # since the bucket is not operating in "website" mode.
   forward_header_values = []
+
+  # HACK: this module creates bad values if you don't explicitly set one or
+  # more of namespace, environment, stage, name, or attributes.
+  # Basically, Cloud Posse modules generate an internal ID from the above,
+  # and that ID is used for lots of things. Bad stuff happens if it is empty.
+  # This issue is marked as closed, but is not actually solved:
+  # https://github.com/cloudposse/terraform-aws-cloudfront-s3-cdn/issues/151
+  namespace = "cp"
+  name      = "univaf_data_snaphsots_cdn"
 }
