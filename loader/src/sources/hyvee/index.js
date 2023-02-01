@@ -87,7 +87,7 @@ async function fetchRawData() {
                 isCovidVaccineAvailable
                 availableCovidVaccineManufacturers {
                   covidVaccineManufacturerId
-                  manufacturerName
+                  vaccineName
                   doseTypes
                   isSingleDose
                   __typename
@@ -180,11 +180,11 @@ function formatLocation(data, checkedAt) {
 
 function formatProducts(vaccineData) {
   const products = vaccineData.availableCovidVaccineManufacturers
-    .filter((product) => product.manufacturerName !== "Flu Vaccine")
+    .filter((product) => product.vaccineName !== "Flu Vaccine")
     .map((product) => {
-      const result = VACCINE_NAMES[product.manufacturerName];
+      const result = VACCINE_NAMES[product.vaccineName];
       if (!result) {
-        warn(`Unknown product type "${product.manufacturerName}"`);
+        warn(`Unknown product type "${product.vaccineName}"`);
       }
       return result;
     });
