@@ -64,8 +64,9 @@ async function fetchRawData() {
   const response = await httpClient(API_URL, {
     method: "POST",
     responseType: "json",
-    timeout: 60000,
-    retry: 0,
+    timeout: 60_000,
+    // POST does not get retried by default.
+    retry: { methods: ["POST"] },
     json: {
       operationName: "SearchPharmaciesNearPointWithCovidVaccineAvailability",
       variables: {
