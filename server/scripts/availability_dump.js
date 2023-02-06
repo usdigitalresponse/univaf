@@ -103,7 +103,7 @@ async function getAllBucketObjects(options) {
  * stream might emit data in small chunks, while the next stream in a pipeline
  * works more efficiently with larger chunks, or chunks of a given size.
  *
- * In practice, we use this for gzipping, since gzip stream work most
+ * In practice, we use this for gzipping, since gzip streams work most
  * efficiently if data comes in chunks of at least 32 kB (this actually makes
  * a pretty big difference).
  *
