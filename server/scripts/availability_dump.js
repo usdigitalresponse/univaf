@@ -163,15 +163,36 @@ function getProviderLocationsStream() {
   );
 }
 
-function getAvailabilityLogStream(date) {
+/**
+ * Create a Knex query for availability logs on a given date.
+ * @param {luxon.DateTime} date
+ * @returns {knex.Knex<KnexType<any, unknown[]>}
+ */
+function availabilityLogQueryForDate(date) {
   return db("availability_log")
     .select("*")
     .where("checked_at", ">", formatDate(date))
     .andWhere("checked_at", "<=", formatDate(date.plus({ days: 1 })))
-    .orderBy("checked_at", "asc")
+    .orderBy("checked_at", "asc");
+}
+
+function getAvailabilityLogStream(date) {
+  return availabilityLogQueryForDate(date)
     .stream()
     .pipe(removeNullPropertiesStream())
     .pipe(JSONStream.stringify(false));
+}
+
+/**
+ * Determine whether there are availability logs in the DB for a given date.
+ * @param {luxon.DateTime} date
+ * @returns {Promise<boolean>}
+ */
+async function availabilityLogsExist(date) {
+  // A limit(1) query is much lighter on the DB that count(*), which *always*
+  // performs a table scan, even if there is a relevant index.
+  const results = await availabilityLogQueryForDate(date).limit(1);
+  return results.length > 0;
 }
 
 async function getAvailabilityLogRunDates(upToDate) {
@@ -285,6 +306,12 @@ async function main() {
 
   const logRunDates = await getAvailabilityLogRunDates(runDate);
   for (const logRunDate of logRunDates) {
+    const logsExist = await availabilityLogsExist(logRunDate);
+    if (!logsExist) {
+      writeLog(`no logs for ${pathFor("availability_log", logRunDate)}`);
+      continue;
+    }
+
     writeLog(`writing ${pathFor("availability_log", logRunDate)}`);
     await writeStream(
       stream.compose(
