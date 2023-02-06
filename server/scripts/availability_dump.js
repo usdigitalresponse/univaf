@@ -70,11 +70,40 @@ function removeNullPropertiesStream() {
 }
 
 /**
+ * Get a set with the names of all the objects in an S3 bucket. This paginates
+ * through all results from the S3 API and may make many requests.
+ * @param {import("@aws-sdk/client-s3").ListObjectsV2CommandInput} options
+ * @returns {Set<string>}
+ */
+async function getAllBucketObjects(options) {
+  const objects = new Set();
+
+  let requestOptions = options;
+  while (requestOptions) {
+    const res = await s3.listObjectsV2(requestOptions);
+    for (const object of res.Contents) {
+      objects.add(object.Key);
+    }
+
+    if (res.NextContinuationToken) {
+      requestOptions = {
+        ...requestOptions,
+        ContinuationToken: res.NextContinuationToken,
+      };
+    } else {
+      requestOptions = null;
+    }
+  }
+
+  return objects;
+}
+
+/**
  * A stream that emits buffers of a given size (in bytes). Useful when an input
  * stream might emit data in small chunks, while the next stream in a pipeline
  * works more efficiently with larger chunks, or chunks of a given size.
  *
- * In practice, we use this for gzipping, since gzip stream work most
+ * In practice, we use this for gzipping, since gzip streams work most
  * efficiently if data comes in chunks of at least 32 kB (this actually makes
  * a pretty big difference).
  *
@@ -163,23 +192,43 @@ function getProviderLocationsStream() {
   );
 }
 
-function getAvailabilityLogStream(date) {
+/**
+ * Create a Knex query for availability logs on a given date.
+ * @param {luxon.DateTime} date
+ * @returns {knex.Knex<any, unknown[]>}
+ */
+function availabilityLogQueryForDate(date) {
   return db("availability_log")
     .select("*")
     .where("checked_at", ">", formatDate(date))
     .andWhere("checked_at", "<=", formatDate(date.plus({ days: 1 })))
-    .orderBy("checked_at", "asc")
+    .orderBy("checked_at", "asc");
+}
+
+function getAvailabilityLogStream(date) {
+  return availabilityLogQueryForDate(date)
     .stream()
     .pipe(removeNullPropertiesStream())
     .pipe(JSONStream.stringify(false));
 }
 
+/**
+ * Determine whether there are availability logs in the DB for a given date.
+ * @param {luxon.DateTime} date
+ * @returns {Promise<boolean>}
+ */
+async function availabilityLogsExist(date) {
+  // A limit(1) query is much lighter on the DB that count(*), which *always*
+  // performs a table scan, even if there is a relevant index.
+  const results = await availabilityLogQueryForDate(date).limit(1);
+  return results.length > 0;
+}
+
 async function getAvailabilityLogRunDates(upToDate) {
-  const res = await s3.listObjectsV2({
+  const existingPaths = await getAllBucketObjects({
     Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
     Prefix: "availability_log/",
   });
-  const existingPaths = new Set(res.Contents.map((f) => f.Key));
 
   const dateRange = eachDayOfInterval({
     start: FIRST_RUN_DATE,
@@ -285,6 +334,12 @@ async function main() {
 
   const logRunDates = await getAvailabilityLogRunDates(runDate);
   for (const logRunDate of logRunDates) {
+    const logsExist = await availabilityLogsExist(logRunDate);
+    if (!logsExist) {
+      writeLog(`no logs for ${pathFor("availability_log", logRunDate)}`);
+      continue;
+    }
+
     writeLog(`writing ${pathFor("availability_log", logRunDate)}`);
     await writeStream(
       stream.compose(
