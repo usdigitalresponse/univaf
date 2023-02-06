@@ -195,7 +195,7 @@ function getProviderLocationsStream() {
 /**
  * Create a Knex query for availability logs on a given date.
  * @param {luxon.DateTime} date
- * @returns {knex.Knex<KnexType<any, unknown[]>}
+ * @returns {knex.Knex<any, unknown[]>}
  */
 function availabilityLogQueryForDate(date) {
   return db("availability_log")
