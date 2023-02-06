@@ -26,6 +26,13 @@ resource "aws_s3_bucket_lifecycle_configuration" "data_snapshots" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "data_snapshots" {
+  bucket = aws_s3_bucket.data_snapshots.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 # Alternative deployments that are being tested write to this bucket instead.
 resource "aws_s3_bucket" "render_test_data_snapshots" {
   bucket = "univaf-render-test-data-snapshots"
@@ -61,5 +68,12 @@ resource "aws_s3_bucket_lifecycle_configuration" "render_test_data_snapshots" {
     abort_incomplete_multipart_upload {
       days_after_initiation = 1
     }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "render_test_data_snapshots" {
+  bucket = aws_s3_bucket.render_test_data_snapshots.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
