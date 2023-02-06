@@ -70,6 +70,35 @@ function removeNullPropertiesStream() {
 }
 
 /**
+ * Get a set with the names of all the objects in an S3 bucket. This paginates
+ * through all results from the S3 API and may make many requests.
+ * @param {import("@aws-sdk/client-s3").ListObjectsV2CommandInput} options
+ * @returns {Set<string>}
+ */
+async function getAllBucketObjects(options) {
+  const objects = new Set();
+
+  let requestOptions = options;
+  while (requestOptions) {
+    const res = await s3.listObjectsV2(requestOptions);
+    for (const object of res.Contents) {
+      objects.add(object.Key);
+    }
+
+    if (res.NextContinuationToken) {
+      requestOptions = {
+        ...requestOptions,
+        ContinuationToken: res.NextContinuationToken,
+      };
+    } else {
+      requestOptions = null;
+    }
+  }
+
+  return objects;
+}
+
+/**
  * A stream that emits buffers of a given size (in bytes). Useful when an input
  * stream might emit data in small chunks, while the next stream in a pipeline
  * works more efficiently with larger chunks, or chunks of a given size.
@@ -196,11 +225,10 @@ async function availabilityLogsExist(date) {
 }
 
 async function getAvailabilityLogRunDates(upToDate) {
-  const res = await s3.listObjectsV2({
+  const existingPaths = await getAllBucketObjects({
     Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
     Prefix: "availability_log/",
   });
-  const existingPaths = new Set(res.Contents.map((f) => f.Key));
 
   const dateRange = eachDayOfInterval({
     start: FIRST_RUN_DATE,
