@@ -29,7 +29,7 @@
     "@turf/distance": "^6.5.0",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
-    "csv-parse": "^5.3.3",
+    "csv-parse": "^5.3.4",
     "datadog-metrics": "^0.10.2",
     "get-stream": "^6.0.1",
     "got": "^11.8.6",
