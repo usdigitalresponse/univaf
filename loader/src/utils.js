@@ -3,7 +3,7 @@ const nodeUtil = require("util");
 const Sentry = require("@sentry/node");
 const got = require("got");
 const config = require("./config");
-const { ParseError } = require("./exceptions");
+const { ParseError, assertValidGraphQl } = require("./exceptions");
 const { VaccineProduct } = require("./model");
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
@@ -482,6 +482,66 @@ module.exports = {
     headers: { "User-Agent": config.userAgent },
     timeout: 2.5 * 60 * 1000, // 2.5 minutes
   }),
+
+  /**
+   * Query a GraphQL endpoint for data. This fills in a few GraphQL-specific
+   * request options, validates responses and throws nice GraphQL exceptions,
+   * and allows you to specify retry conditions for GraphQL errors (which often
+   * don't have HTTP error codes).
+   * @param {string} url
+   * @param {Object} options
+   * @param {string} options.query The actual GraphQL query.
+   * @param {string} [options.operationName] Name of GraphQL operation.
+   * @param {any} [options.variables] variables to pass to the GraphQL query.
+   * @param {(error: GraphQlError) => boolean} [options.retryIf] Returns true
+   *        or false indicating whether a GraphQlError should be retried. This
+   *        is only called when the GraphQL API returns error information.
+   *        Otherwise, the semantics of the `retry` option are followed (retry
+   *        most network errors and 5xx HTTP errors, but not 4xx errors).
+   * @param {import("got").OptionsOfJSONResponseBody} [options.httpOptions]
+   * @returns {ReturnType<import("got").GotRequestFunction>}
+   */
+  async queryGraphQl(
+    url,
+    { query, operationName, variables, retryIf, ...httpOptions }
+  ) {
+    // By default, don't retry
+    retryIf ||= (_error) => false;
+
+    let nextOptions = {
+      method: "POST",
+      responseType: "json",
+      json: {
+        operationName,
+        variables,
+        query,
+      },
+      timeout: 60_000,
+      throwHttpErrors: false,
+      ...httpOptions,
+      retry: { methods: ["POST"], ...httpOptions.retry },
+    };
+
+    while (nextOptions) {
+      const response = await module.exports.httpClient(url, nextOptions);
+
+      try {
+        assertValidGraphQl(response);
+        return response;
+      } catch (error) {
+        const remaining =
+          response.request.options.retry.limit - response.retryCount;
+        if (remaining > 0 && error.details.errors && retryIf(error)) {
+          nextOptions = {
+            ...nextOptions,
+            retry: { ...nextOptions.retry, limit: remaining - 1 },
+          };
+        } else {
+          throw error;
+        }
+      }
+    }
+  },
 
   /**
    * Remove key/value pairs from an object using a filter function. Effectively

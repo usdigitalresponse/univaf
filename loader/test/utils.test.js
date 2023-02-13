@@ -1,8 +1,10 @@
 const nock = require("nock");
-const { ParseError } = require("../src/exceptions");
+const { RequestError } = require("got");
+const { ParseError, GraphQlError } = require("../src/exceptions");
 const { VaccineProduct } = require("../src/model");
 const {
   httpClient,
+  queryGraphQl,
   splitOnce,
   filterObject,
   unpadNumber,
@@ -57,6 +59,97 @@ describe("httpClient", () => {
     //   - "univaf-loader/abc123"
     //   - "univaf-loader/0.1.0 <whatever>"
     expect(userAgent).toMatch(/^univaf-loader\/[\w.]+(\s|$)/);
+  });
+});
+
+describe("queryGraphQl", () => {
+  const baseQuery = {
+    query: "<no a real query>",
+    retry: {
+      calculateDelay: ({ computedValue }) => (computedValue > 0 ? 1 : 0),
+    },
+  };
+
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
+  it("does not retry successful requests", async () => {
+    const responder = nock("https://example.com")
+      .post("/")
+      .reply(200, { data: [{ ok: "yes" }] });
+
+    let retryChecks = 0;
+    const response = await queryGraphQl("https://example.com/", {
+      ...baseQuery,
+      retryIf(_error) {
+        retryChecks++;
+        return true;
+      },
+    });
+    expect(response).toHaveProperty("retryCount", 0);
+    expect(retryChecks).toEqual(0);
+    responder.done();
+  });
+
+  it("consults retryIf for GraphQl errors", async () => {
+    const responder = nock("https://example.com")
+      .post("/")
+      .times(3)
+      .reply(200, { errors: [{ message: "Oh no" }] });
+
+    let retryChecks = 0;
+    await expect(
+      queryGraphQl("https://example.com/", {
+        ...baseQuery,
+        retryIf(error) {
+          retryChecks++;
+          return /oh no/i.test(error.message);
+        },
+      })
+    ).rejects.toThrow(GraphQlError);
+    expect(retryChecks).toEqual(2);
+    responder.done();
+  });
+
+  it("retries automatically on 5xx errors", async () => {
+    const responder = nock("https://example.com")
+      .post("/")
+      .times(3)
+      .reply(500, { errors: [{ message: "Oh no" }] });
+
+    let retryChecks = 0;
+    await expect(
+      queryGraphQl("https://example.com/", {
+        ...baseQuery,
+        retryIf(_error) {
+          retryChecks++;
+          return true;
+        },
+      })
+    ).rejects.toThrow(GraphQlError);
+    expect(retryChecks).toEqual(0);
+    responder.done();
+  });
+
+  it("retries automatically on network errors", async () => {
+    const responder = nock("https://example.com")
+      .post("/")
+      .times(3)
+      .replyWithError({ code: "ECONNRESET" });
+
+    let retryChecks = 0;
+    await expect(
+      queryGraphQl("https://example.com/", {
+        ...baseQuery,
+        retryIf(_error) {
+          retryChecks++;
+          return true;
+        },
+      })
+    ).rejects.toThrow(RequestError);
+    expect(retryChecks).toEqual(0);
+    responder.done();
   });
 });
 

@@ -18,6 +18,7 @@ const assert = require("node:assert/strict");
 const Sentry = require("@sentry/node");
 const {
   httpClient,
+  queryGraphQl,
   createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
@@ -61,61 +62,55 @@ const warn = createWarningLogger("hyvee");
  * @returns {Promise<any[]>}
  */
 async function fetchRawData() {
-  const response = await httpClient(API_URL, {
-    method: "POST",
-    responseType: "json",
-    timeout: 60_000,
-    // POST does not get retried by default.
-    retry: { methods: ["POST"] },
-    json: {
-      operationName: "SearchPharmaciesNearPointWithCovidVaccineAvailability",
-      variables: {
-        radius: 5000,
-        latitude: 39.8283,
-        longitude: -98.5795,
-      },
-      query: `
-        query SearchPharmaciesNearPointWithCovidVaccineAvailability($latitude: Float!, $longitude: Float!, $radius: Int! = 10) {
-          searchPharmaciesNearPoint(latitude: $latitude, longitude: $longitude, radius: $radius) {
-            distance
-            location {
-              locationId
-              name
-              nickname
-              phoneNumber
-              businessCode
-              covidVaccineTimeSlotAndManufacturerAvailability {
-                isCovidVaccineAvailable
-                availableCovidVaccineManufacturers {
-                  covidVaccineManufacturerId
-                  vaccineName
-                  doseTypes
-                  isSingleDose
-                  __typename
-                }
-                __typename
-              }
-              covidVaccineEligibilityTerms
-              address {
-                line1
-                line2
-                city
-                state
-                zip
-                latitude
-                longitude
+  const response = await queryGraphQl(API_URL, {
+    // This API frequently returns GraphQL errors with "Internal Server Error".
+    // We should try again in that case; it's equivalent to a 500 HTTP status.
+    retryIf: (error) => /Internal Server Error/i.test(error.message),
+    operationName: "SearchPharmaciesNearPointWithCovidVaccineAvailability",
+    variables: {
+      radius: 5000,
+      latitude: 39.8283,
+      longitude: -98.5795,
+    },
+    query: `
+      query SearchPharmaciesNearPointWithCovidVaccineAvailability($latitude: Float!, $longitude: Float!, $radius: Int! = 10) {
+        searchPharmaciesNearPoint(latitude: $latitude, longitude: $longitude, radius: $radius) {
+          distance
+          location {
+            locationId
+            name
+            nickname
+            phoneNumber
+            businessCode
+            covidVaccineTimeSlotAndManufacturerAvailability {
+              isCovidVaccineAvailable
+              availableCovidVaccineManufacturers {
+                covidVaccineManufacturerId
+                vaccineName
+                doseTypes
+                isSingleDose
                 __typename
               }
               __typename
             }
+            covidVaccineEligibilityTerms
+            address {
+              line1
+              line2
+              city
+              state
+              zip
+              latitude
+              longitude
+              __typename
+            }
             __typename
           }
+          __typename
         }
-      `,
-    },
+      }
+    `,
   });
-
-  assertValidGraphQl(response);
 
   const result = response.body?.data?.searchPharmaciesNearPoint;
   assert.ok(
