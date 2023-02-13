@@ -93,7 +93,7 @@ describe("Washington DoH API", () => {
   it("should throw GraphQlError with detailed error info", async () => {
     nock(API_URL_BASE)
       .post(API_URL_PATH)
-      .reply(500, {
+      .reply(400, {
         errors: [
           {
             message: 'Expected type Int!, found "hello".',
@@ -111,6 +111,7 @@ describe("Washington DoH API", () => {
     );
     expect(error).toBeInstanceOf(GraphQlError);
     expect(error.message).toContain("Expected type Int!");
+    expect(error.codes).toContain("GRAPHQL_VALIDATION_FAILED");
   });
 
   it("identifies Pfizer adult and pediatric vaccines", () => {
