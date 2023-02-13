@@ -1,6 +1,6 @@
 const nock = require("nock");
 const { RequestError } = require("got");
-const { ParseError, GraphQlError } = require("../src/exceptions");
+const { ParseError, GraphQlError, HttpApiError } = require("../src/exceptions");
 const { VaccineProduct } = require("../src/model");
 const {
   httpClient,
@@ -149,6 +149,17 @@ describe("queryGraphQl", () => {
       })
     ).rejects.toThrow(RequestError);
     expect(retryChecks).toEqual(0);
+    responder.done();
+  });
+
+  it("throws an HTTP error for non-GraphQL error responses", async () => {
+    const responder = nock("https://example.com")
+      .post("/")
+      .reply(400, "The is not a GraphQL-formatted error!");
+
+    await expect(
+      queryGraphQl("https://example.com/", baseQuery)
+    ).rejects.toThrow(HttpApiError);
     responder.done();
   });
 });

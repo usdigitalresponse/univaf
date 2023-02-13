@@ -78,12 +78,15 @@ class GraphQlError extends HttpApiError {
 
 /**
  * If the HTTP response represents a GraphQL error, throws an instance of
- * `GraphQlError` with relevant information.
+ * `GraphQlError` with relevant information. If it is an HTTP error without
+ * GraphQL-formatted errors, throws an instance of `HttpApiError`.
  * @param {HttpResponse} response
  */
 function assertValidGraphQl(response) {
-  if (response.statusCode >= 400 || response.body?.errors) {
+  if (Array.isArray(response.body?.errors)) {
     throw new GraphQlError(response);
+  } else if (response.statusCode >= 400) {
+    throw new HttpApiError(response);
   }
 }
 

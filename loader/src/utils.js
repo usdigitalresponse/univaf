@@ -3,7 +3,11 @@ const nodeUtil = require("util");
 const Sentry = require("@sentry/node");
 const got = require("got");
 const config = require("./config");
-const { ParseError, assertValidGraphQl } = require("./exceptions");
+const {
+  GraphQlError,
+  ParseError,
+  assertValidGraphQl,
+} = require("./exceptions");
 const { VaccineProduct } = require("./model");
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
@@ -531,7 +535,7 @@ module.exports = {
       } catch (error) {
         const remaining =
           response.request.options.retry.limit - response.retryCount;
-        if (remaining > 0 && error.details.errors && retryIf(error)) {
+        if (remaining > 0 && error instanceof GraphQlError && retryIf(error)) {
           nextOptions = {
             ...nextOptions,
             retry: { ...nextOptions.retry, limit: remaining - 1 },
