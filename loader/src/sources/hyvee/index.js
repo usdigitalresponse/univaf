@@ -17,13 +17,11 @@
 const assert = require("node:assert/strict");
 const Sentry = require("@sentry/node");
 const {
-  httpClient,
   queryGraphQl,
   createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
-const { assertValidGraphQl } = require("../../exceptions");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
 const BOOKING_URL = "https://www.hy-vee.com/my-pharmacy/covid-vaccine-consent";

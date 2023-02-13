@@ -10,7 +10,6 @@ const {
   createWarningLogger,
   DEFAULT_STATES,
 } = require("../utils");
-const { assertValidGraphQl } = require("../exceptions");
 
 /** @typedef {import("../model").VaccineProduct} VaccineProduct */
 
