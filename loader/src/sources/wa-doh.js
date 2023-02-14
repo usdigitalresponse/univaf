@@ -5,12 +5,11 @@ const assert = require("node:assert/strict");
 const { states: allStates } = require("univaf-common");
 const { Available, LocationType } = require("../model");
 const {
-  httpClient,
+  queryGraphQl,
   matchVaccineProduct,
   createWarningLogger,
   DEFAULT_STATES,
 } = require("../utils");
-const { assertValidGraphQl } = require("../exceptions");
 
 /** @typedef {import("../model").VaccineProduct} VaccineProduct */
 
@@ -93,22 +92,15 @@ async function* queryState(state) {
   const pageSize = 200;
 
   while (true) {
-    const response = await httpClient({
-      method: "POST",
-      url: API_URL,
-      responseType: "json",
-      throwHttpErrors: false,
-      json: {
-        query: LOCATIONS_QUERY,
-        variables: {
-          searchInput: {
-            state,
-            paging: { pageNum, pageSize },
-          },
+    const response = await queryGraphQl(API_URL, {
+      query: LOCATIONS_QUERY,
+      variables: {
+        searchInput: {
+          state,
+          paging: { pageNum, pageSize },
         },
       },
     });
-    assertValidGraphQl(response);
 
     const data = response.body?.data?.searchLocations;
     assert.ok(
