@@ -237,7 +237,7 @@ envVarGroups:
   - name: "Server Environment"
     envVars:
       - key: NODE_VERSION
-        value: "18.13.0"
+        value: "18.14.1"
       - key: NODE_ENV
         value: production
       - key: API_KEYS
@@ -256,7 +256,7 @@ envVarGroups:
   - name: "Loader Environment"
     envVars:
       - key: NODE_VERSION
-        value: "18.13.0"
+        value: "18.14.1"
       - key: NODE_ENV
         value: production
       - key: API_URL
