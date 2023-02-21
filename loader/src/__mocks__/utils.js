@@ -2,7 +2,7 @@
 const originalModule = jest.requireActual("../utils");
 
 const warningLoggers = {};
-const warnings = [];
+let warnings = [];
 
 const mock = {
   ...originalModule,
@@ -21,6 +21,10 @@ const mock = {
   // Only for use in tests: get a list of all warnings that were logged.
   __getWarnings() {
     return warnings;
+  },
+
+  __mockClear() {
+    warnings = [];
   },
 };
 
