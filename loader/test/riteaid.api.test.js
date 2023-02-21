@@ -21,16 +21,18 @@ function createMockApiLocation() {
 
 describe("Rite Aid Source", () => {
   const API_URL = "https://api.riteaid.com/test";
+  let processMock;
 
   beforeEach(() => {
-    jest.replaceProperty(process, "env", {
+    processMock = jest.replaceProperty(process, "env", {
       RITE_AID_URL: API_URL,
       RITE_AID_KEY: "test",
     });
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    processMock.restore();
+    utils.__mockClear();
     nock.cleanAll();
   });
 
