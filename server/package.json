@@ -55,7 +55,7 @@
     "pg-query-stream": "^4.3.0",
     "univaf-common": ">=0.1.0",
     "winston": "3.8.2",
-    "yargs": "^17.7.0"
+    "yargs": "^17.7.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.4.3",
