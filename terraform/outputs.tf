@@ -9,5 +9,9 @@ output "cloudfront_hostname_ecs" {
 }
 
 output "cloudfront_hostname_render" {
-  value = aws_cloudfront_distribution.univaf_api_render[0].domain_name
+  value = (
+    var.api_remote_domain_name != ""
+    ? aws_cloudfront_distribution.univaf_api_render[0].domain_name
+    : ""
+  )
 }
