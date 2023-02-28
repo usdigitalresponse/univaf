@@ -1,9 +1,13 @@
+const { promisify } = require("node:util");
+const { gzip } = require("node:zlib");
 const Queue = require("queue");
 const config = require("./config");
 const metrics = require("./metrics");
 const { httpClient } = require("./utils");
 
 const DEFAULT_CONCURRENCY = 10;
+
+const gzipString = promisify(gzip);
 
 class ApiClient {
   static fromEnv() {
@@ -65,11 +69,16 @@ class ApiClient {
       throw new TypeError("`options` must be an object");
     }
 
+    const postBody = await gzipString(Buffer.from(JSON.stringify(data)));
     const response = await this._request({
       method: "POST",
       url: "/api/edge/update",
       searchParams: options,
-      json: data,
+      body: postBody,
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Encoding": "gzip",
+      },
       throwHttpErrors: false,
       retry: {
         // POST is not retried by default, so we need to explicitly opt in.
