@@ -83,6 +83,20 @@ module "source_loader" {
   memory = 512
 }
 
+resource "aws_security_group" "ecs_loader_tasks" {
+  name        = "univaf-ecs-loader-tasks-security-group"
+  description = "No inbound access for loaders in default VPC"
+  vpc_id      = aws_default_vpc.default.id
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
 module "source_loader_schedule" {
   source   = "./modules/schedule"
   for_each = local.loaders
@@ -94,5 +108,5 @@ module "source_loader_schedule" {
   # Gateway charges. (The are a lot!)
   # subnets         = aws_subnet.private.*.id
   subnets         = aws_default_subnet.public.*.id
-  security_groups = [aws_security_group.ecs_tasks.id]
+  security_groups = [aws_security_group.ecs_loader_tasks.id]
 }
