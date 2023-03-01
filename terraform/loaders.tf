@@ -87,9 +87,12 @@ module "source_loader_schedule" {
   source   = "./modules/schedule"
   for_each = local.loaders
 
-  schedule        = each.value.schedule
-  task            = module.source_loader[each.key]
-  cluster_arn     = aws_ecs_cluster.main.arn
-  subnets         = aws_subnet.private.*.id
+  schedule    = each.value.schedule
+  task        = module.source_loader[each.key]
+  cluster_arn = aws_ecs_cluster.main.arn
+  # TODO: This is a test of whether using the default subnets reduces our NAT
+  # Gateway charges. (The are a lot!)
+  # subnets         = aws_subnet.private.*.id
+  subnets         = aws_default_subnet.public.*.id
   security_groups = [aws_security_group.ecs_tasks.id]
 }

@@ -42,6 +42,17 @@ resource "aws_route" "internet_access" {
   gateway_id             = aws_internet_gateway.gw.id
 }
 
+# TODO: This is part of a test with gateway pricing for loaders. Remove when
+# done or add more complete documentation.
+resource "aws_default_subnet" "public" {
+  count             = var.az_count
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "Default subnet for ${data.aws_availability_zones.available.names[count.index]}"
+  }
+}
+
 
 # Private Network -------------------------------------------------------------
 
