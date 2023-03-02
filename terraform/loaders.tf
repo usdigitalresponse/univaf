@@ -83,10 +83,12 @@ module "source_loader" {
   memory = 512
 }
 
+# Loaders need to load lots of data from the public internet, and so have public
+# IP addresses. This SG prevents external systems from accessing them.
 resource "aws_security_group" "ecs_loader_tasks" {
   name        = "univaf-ecs-loader-tasks-security-group"
-  description = "No inbound access for loaders in default VPC"
-  vpc_id      = aws_default_vpc.default.id
+  description = "No inbound access at all, in univaf-vpc"
+  vpc_id      = aws_vpc.main.id
 
   egress {
     protocol    = "-1"
@@ -96,7 +98,6 @@ resource "aws_security_group" "ecs_loader_tasks" {
   }
 }
 
-
 module "source_loader_schedule" {
   source   = "./modules/schedule"
   for_each = local.loaders
@@ -104,9 +105,8 @@ module "source_loader_schedule" {
   schedule    = each.value.schedule
   task        = module.source_loader[each.key]
   cluster_arn = aws_ecs_cluster.main.arn
-  # TODO: This is a test of whether using the default subnets reduces our NAT
-  # Gateway charges. (The are a lot!)
-  # subnets         = aws_subnet.private.*.id
-  subnets         = aws_default_subnet.public.*.id
+  # Loaders do a lot of traffic getting data from external sources on the public
+  # internet, so they run in our "public" network with an internet gateway.
+  subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.ecs_loader_tasks.id]
 }
