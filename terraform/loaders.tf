@@ -83,8 +83,8 @@ module "source_loader" {
   memory = 512
 }
 
-# Loaders need to load lots of data from the public internet, and so have public
-# IP addresses. This SG prevents external systems from accessing them.
+# FIXME: remove when no longer in use!
+# (Transitioning to `aws_security_group.cron_job_tasks`)
 resource "aws_security_group" "loader_tasks" {
   name        = "univaf-loader-tasks-security-group"
   description = "No inbound access at all, in univaf-vpc"
@@ -108,5 +108,5 @@ module "source_loader_schedule" {
   # Loaders do a lot of traffic getting data from external sources on the public
   # internet, so they run in our "public" network with an internet gateway.
   subnets         = aws_subnet.public.*.id
-  security_groups = [aws_security_group.loader_tasks.id]
+  security_groups = [aws_security_group.cron_job_tasks.id]
 }
