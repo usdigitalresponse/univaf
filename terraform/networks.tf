@@ -2,8 +2,8 @@
 #
 # This creates one VPC for all services, with one public and one private subnet
 # in each availability zone (how many zones comes from the `az_count` variable).
-# Services that don't need to be reachable from the public internet (database,
-# loaders, etc.) run in the private networks.
+# Services that don't need to be reachable from the public internet
+# (e.g. the database) run in the private networks.
 
 # Fetch AZs in the current region
 data "aws_availability_zones" "available" {}
@@ -19,6 +19,10 @@ resource "aws_vpc" "main" {
 
 # Public Network --------------------------------------------------------------
 
+# The "public" subnets have an internet gateway and automatically assign public
+# IP addresses to any services in them. Services here can reach out to the
+# internet and things on the internet can reach them, so anything running in
+# these subnets should be protected with narrowly-focused security groups.
 resource "aws_subnet" "public" {
   count                   = var.az_count
   cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, var.az_count + count.index)
@@ -45,6 +49,9 @@ resource "aws_route" "internet_access" {
 
 # Private Network -------------------------------------------------------------
 
+# The "private" subnets do not automatically assign services public IPs and do
+# not have any gateway to the public internet. Only other services in our VPC
+# (any subnet) can communicate with things in it.
 resource "aws_subnet" "private" {
   count             = var.az_count
   cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
@@ -54,37 +61,4 @@ resource "aws_subnet" "private" {
   tags = {
     Name = "univaf-private-${count.index}"
   }
-}
-
-# Each subnet needs a NAT gateway with an elastic IP so services get internet
-# connectivity.
-resource "aws_eip" "gw" {
-  count      = var.az_count
-  vpc        = true
-  depends_on = [aws_internet_gateway.gw]
-}
-
-resource "aws_nat_gateway" "gw" {
-  count         = var.az_count
-  subnet_id     = element(aws_subnet.public.*.id, count.index)
-  allocation_id = element(aws_eip.gw.*.id, count.index)
-}
-
-# Route non-local traffic through the NAT gateway to the internet
-resource "aws_route_table" "private" {
-  count  = var.az_count
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(aws_nat_gateway.gw.*.id, count.index)
-  }
-}
-
-# Explicitly associate the newly created route tables to the private subnets.
-# (Otherwise they't default to the main route table.)
-resource "aws_route_table_association" "private" {
-  count          = var.az_count
-  subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = element(aws_route_table.private.*.id, count.index)
 }
