@@ -83,21 +83,6 @@ module "source_loader" {
   memory = 512
 }
 
-# FIXME: remove when no longer in use!
-# (Transitioning to `aws_security_group.cron_job_tasks`)
-resource "aws_security_group" "loader_tasks" {
-  name        = "univaf-loader-tasks-security-group"
-  description = "No inbound access at all, in univaf-vpc"
-  vpc_id      = aws_vpc.main.id
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 module "source_loader_schedule" {
   source   = "./modules/schedule"
   for_each = local.loaders
