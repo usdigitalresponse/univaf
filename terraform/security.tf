@@ -31,8 +31,8 @@ resource "aws_security_group" "lb" {
   }
 }
 
-# Traffic to the tasks/services in the ECS cluster should only come from the
-# load balancer.
+# FIXME: remove this when no longer in use!
+# (Transitioning to `aws_security_group.api_server_tasks`)
 resource "aws_security_group" "ecs_tasks" {
   name        = "univaf-ecs-tasks-security-group"
   description = "Allow inbound access only from the load balancer"
@@ -44,6 +44,44 @@ resource "aws_security_group" "ecs_tasks" {
     to_port         = var.api_port
     security_groups = [aws_security_group.lb.id]
   }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Traffic to the tasks that run the the API server in ECS should only accept
+# traffic from the load balancer; the public internet and other resources in AWS
+# should not be able to route directly to them.
+resource "aws_security_group" "api_server_tasks" {
+  name        = "univaf-api-server-tasks-security-group"
+  description = "Allow inbound access only from the load balancer"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.api_port
+    to_port         = var.api_port
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Cron Job-like tasks on ECS may need to reach out to other services to load
+# things, but nothing else should be initiating communication with them.
+resource "aws_security_group" "cron_job_tasks" {
+  name        = "univaf-cron-job-tasks-security-group"
+  description = "No inbound access, in univaf-vpc, for ECS Cron Jobs"
+  vpc_id      = aws_vpc.main.id
 
   egress {
     protocol    = "-1"

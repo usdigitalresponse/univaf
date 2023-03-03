@@ -193,8 +193,8 @@ resource "aws_ecs_service" "api_service" {
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    subnets          = aws_subnet.private.*.id
+    security_groups  = [aws_security_group.api_server_tasks.id]
+    subnets          = aws_subnet.public.*.id
     assign_public_ip = true
   }
 
@@ -240,6 +240,6 @@ module "daily_data_snapshot_schedule" {
   schedule        = "cron(0 1 * * ? *)"
   task            = module.daily_data_snapshot_task
   cluster_arn     = aws_ecs_cluster.main.arn
-  subnets         = aws_subnet.private.*.id
-  security_groups = [aws_security_group.ecs_tasks.id]
+  subnets         = aws_subnet.public.*.id
+  security_groups = [aws_security_group.cron_job_tasks.id]
 }
