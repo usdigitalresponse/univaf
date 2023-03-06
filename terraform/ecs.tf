@@ -8,9 +8,11 @@
 resource "aws_ecs_cluster" "main" {
   name = "univaf-cluster"
 
+  # Container Insights is *very* expensive for our configuration, but can be
+  # useful to turn on if granular metrics on cron job resource usage is needed.
   setting {
     name  = "containerInsights"
-    value = "enabled"
+    value = "disabled"
   }
 }
 
