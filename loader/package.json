@@ -46,6 +46,7 @@
     "reporters": [
       "default",
       "github-actions"
-    ]
+    ],
+    "randomize": true
   }
 }
