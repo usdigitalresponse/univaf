@@ -33,6 +33,8 @@ module "api_task" {
     DB_NAME                   = module.db.db_name
     DB_USERNAME               = var.db_user
     DB_PASSWORD               = var.db_password
+    DB_POOL_SIZE_DATA         = var.api_db_pool_size_data
+    DB_POOL_SIZE_AVAILABILITY = var.api_db_pool_size_availability
     API_KEYS                  = join(",", var.api_keys)
     SENTRY_DSN                = var.api_sentry_dsn
     SENTRY_TRACES_SAMPLE_RATE = format("%.2f", var.api_sentry_traces_sample_rate)
@@ -225,7 +227,6 @@ module "daily_data_snapshot_task" {
     DB_NAME                 = module.db.db_name
     DB_USERNAME             = var.db_user
     DB_PASSWORD             = var.db_password
-    DB_POOL_SIZE_DATA       = "15"
     SENTRY_DSN              = var.api_sentry_dsn
     DATA_SNAPSHOT_S3_BUCKET = var.data_snapshot_s3_bucket
     AWS_ACCESS_KEY_ID       = var.data_snapshot_aws_key_id
