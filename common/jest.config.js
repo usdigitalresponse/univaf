@@ -11,6 +11,7 @@ module.exports = {
   },
   testMatch: ["**/test/**/*.test.(ts|js)", "!**/dist/test/**/*"],
   testEnvironment: "node",
+  randomize: true,
   reporters: ["default", "github-actions"],
   coverageReporters: ["text", "html"],
 };
