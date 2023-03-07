@@ -108,7 +108,7 @@ resource "aws_alb_listener" "front_end_https" {
 }
 
 resource "aws_alb_listener_rule" "redirect_www" {
-  listener_arn = aws_alb_listener.front_end.arn
+  listener_arn = aws_alb_listener.front_end_https.arn
   priority     = 10
 
   condition {
