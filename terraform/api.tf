@@ -33,8 +33,8 @@ module "api_task" {
     DB_NAME                   = module.db.db_name
     DB_USERNAME               = var.db_user
     DB_PASSWORD               = var.db_password
-    DB_POOL_SIZE_DATA         = "${var.api_db_pool_size_data}"
-    DB_POOL_SIZE_AVAILABILITY = "${var.api_db_pool_size_availability}"
+    DB_POOL_SIZE_DATA         = format("%d", var.api_db_pool_size_data)
+    DB_POOL_SIZE_AVAILABILITY = format("%d", var.api_db_pool_size_availability)
     API_KEYS                  = join(",", var.api_keys)
     SENTRY_DSN                = var.api_sentry_dsn
     SENTRY_TRACES_SAMPLE_RATE = format("%.2f", var.api_sentry_traces_sample_rate)
