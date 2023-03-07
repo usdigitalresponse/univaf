@@ -99,6 +99,18 @@ variable "api_memory" {
   default     = 2048
 }
 
+variable "api_db_pool_size_data" {
+  description = "The maximum number of DB connection a single API server can hold for general usage."
+  type        = number
+  default     = 20
+}
+
+variable "api_db_pool_size_availability" {
+  description = "The maximum number of DB connection a single API server can hold for logging."
+  type        = number
+  default     = 10
+}
+
 variable "api_sentry_dsn" {
   description = "The Sentry.io DSN to use for the API service"
   default     = ""
