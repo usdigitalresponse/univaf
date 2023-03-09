@@ -1,3 +1,11 @@
+# Other resources that need access to the database *should* use this security
+# group (get its ID from the outputs). That way they depend on the DB, rather
+# than the other way around when using `var.ingress_allow_security_groups`.
+resource "aws_security_group" "db_access" {
+  name        = "${var.name}-rds-access-group"
+  description = "Grants access to DB '${var.name}'"
+  vpc_id      = var.vpc_id
+}
 
 resource "aws_security_group" "main" {
   name        = "${var.name}-rds"
@@ -5,10 +13,13 @@ resource "aws_security_group" "main" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port       = var.port
-    to_port         = var.port
-    protocol        = "TCP"
-    security_groups = var.ingress_allow_security_groups
+    from_port = var.port
+    to_port   = var.port
+    protocol  = "TCP"
+    security_groups = concat(
+      [aws_security_group.db_access.id],
+      var.ingress_allow_security_groups
+    )
   }
 
   ingress {

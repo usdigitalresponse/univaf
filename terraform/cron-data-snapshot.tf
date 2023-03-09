@@ -31,5 +31,5 @@ module "daily_data_snapshot_schedule" {
   task            = module.daily_data_snapshot_task
   cluster_arn     = aws_ecs_cluster.main.arn
   subnets         = aws_subnet.public.*.id
-  security_groups = [aws_security_group.cron_job_tasks.id]
+  security_groups = [aws_security_group.cron_job_tasks.id, module.db.access_group_id]
 }

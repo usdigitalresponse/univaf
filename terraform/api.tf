@@ -8,6 +8,59 @@
 # a task that runs on ECS (but just a task that runs to completion, not a
 # service that ECS keeps running).
 
+# Only HTTP(S) traffic should go through the API server's load balancer.
+resource "aws_security_group" "lb" {
+  name        = "univaf-api-load-balancer-security-group"
+  description = "Controls access to the API server load balancer"
+  vpc_id      = aws_vpc.main.id
+
+  # HTTP
+  ingress {
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # HTTPS
+  ingress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Traffic to the tasks that run the the API server in ECS should only accept
+# traffic from the load balancer; the public internet and other resources in AWS
+# should not be able to route directly to them.
+resource "aws_security_group" "api_server_tasks" {
+  name        = "univaf-api-server-tasks-security-group"
+  description = "Allow inbound access only from the load balancer"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.api_port
+    to_port         = var.api_port
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # API Service -----------------------------------------------------------------
 
 # The actual task that runs on ECS.
@@ -195,7 +248,7 @@ resource "aws_ecs_service" "api_service" {
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.api_server_tasks.id]
+    security_groups  = [aws_security_group.api_server_tasks.id, module.db.access_group_id]
     subnets          = aws_subnet.public.*.id
     assign_public_ip = true
   }
