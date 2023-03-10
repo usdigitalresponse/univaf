@@ -3,7 +3,7 @@
 # than the other way around when using `var.ingress_allow_security_groups`.
 resource "aws_security_group" "db_access" {
   name        = "${var.name}-rds-access-group"
-  description = "Grants access to DB '${var.name}'"
+  description = "Grants access to DB ${var.name}"
   vpc_id      = var.vpc_id
 }
 
