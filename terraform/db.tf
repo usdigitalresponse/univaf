@@ -20,6 +20,8 @@ module "db" {
   vpc_id     = aws_vpc.main.id
   subnet_ids = aws_subnet.private[*].id
   ingress_allow_security_groups = compact([
+    # FIXME: remove all but the bastion here once services are using the new
+    # output security group from the database.
     aws_security_group.api_server_tasks.id,
     aws_security_group.cron_job_tasks.id,
     aws_security_group.bastion_security_group.id

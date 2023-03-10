@@ -8,6 +8,59 @@
 # a task that runs on ECS (but just a task that runs to completion, not a
 # service that ECS keeps running).
 
+# Only HTTP(S) traffic should go through the API server's load balancer.
+resource "aws_security_group" "lb" {
+  name        = "univaf-api-load-balancer-security-group"
+  description = "Controls access to the API server load balancer"
+  vpc_id      = aws_vpc.main.id
+
+  # HTTP
+  ingress {
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # HTTPS
+  ingress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Traffic to the tasks that run the the API server in ECS should only accept
+# traffic from the load balancer; the public internet and other resources in AWS
+# should not be able to route directly to them.
+resource "aws_security_group" "api_server_tasks" {
+  name        = "univaf-api-server-tasks-security-group"
+  description = "Allow inbound access only from the load balancer"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.api_port
+    to_port         = var.api_port
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # API Service -----------------------------------------------------------------
 
 # The actual task that runs on ECS.
@@ -195,7 +248,7 @@ resource "aws_ecs_service" "api_service" {
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.api_server_tasks.id]
+    security_groups  = [aws_security_group.api_server_tasks.id, module.db.access_group_id]
     subnets          = aws_subnet.public.*.id
     assign_public_ip = true
   }
@@ -207,40 +260,4 @@ resource "aws_ecs_service" "api_service" {
   }
 
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role, module.api_task]
-}
-
-
-# Daily Data Snapshot ---------------------------------------------------------
-
-# The snapshot task runs once a day to archive the contents of the database and
-# update logs to S3 so others can do historical analysis.
-module "daily_data_snapshot_task" {
-  source = "./modules/task"
-
-  name    = "daily-data-snapshot"
-  image   = "${aws_ecr_repository.server_repository.repository_url}:${var.api_release_version}"
-  command = ["node", "scripts/availability_dump.js", "--write-to-s3", "--clear-log"]
-  role    = aws_iam_role.ecs_task_execution_role.arn
-
-  env_vars = {
-    DB_HOST                 = module.db.host
-    DB_NAME                 = module.db.db_name
-    DB_USERNAME             = var.db_user
-    DB_PASSWORD             = var.db_password
-    SENTRY_DSN              = var.api_sentry_dsn
-    DATA_SNAPSHOT_S3_BUCKET = var.data_snapshot_s3_bucket
-    AWS_ACCESS_KEY_ID       = var.data_snapshot_aws_key_id
-    AWS_SECRET_ACCESS_KEY   = var.data_snapshot_aws_secret_key
-    AWS_DEFAULT_REGION      = var.aws_region
-  }
-}
-
-module "daily_data_snapshot_schedule" {
-  source = "./modules/schedule"
-
-  schedule        = "cron(0 1 * * ? *)"
-  task            = module.daily_data_snapshot_task
-  cluster_arn     = aws_ecs_cluster.main.arn
-  subnets         = aws_subnet.public.*.id
-  security_groups = [aws_security_group.cron_job_tasks.id]
 }
