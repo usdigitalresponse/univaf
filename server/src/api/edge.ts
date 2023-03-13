@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import { ProviderLocation } from "../interfaces";
-import { finishSpan, startSpan, withSpan } from "../tracing";
+import { finishSpan, startSpan } from "../tracing";
 import { dogstatsd } from "../datadog";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";

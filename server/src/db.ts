@@ -19,7 +19,7 @@ import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 import { minimumAgeForProducts } from "./vaccines";
 import { dogstatsd } from "./datadog";
-import { callWithSpan, finishSpan, startSpan } from "./tracing";
+import { finishSpan, startSpan } from "./tracing";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
