@@ -243,11 +243,11 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
   const result: any = { location: { action: null } };
   const source = data?.source || data?.availability?.source;
 
+  // FIXME: need to make this a single PG operation or add locks around it. It's
+  // possible for two concurrent updates to both try and create a location.
   const updateLocationSpan = startSpan({ op: "updateLocation" });
   let location: ProviderLocation;
   // await withSpan({ op: "updateLocation" }, async () => {
-  // FIXME: need to make this a single PG operation or add locks around it. It's
-  // possible for two concurrent updates to both try and create a location.
   if (data.id && UUID_PATTERN.test(data.id)) {
     location = await db.getLocationById(data.id, { includePrivate: true });
   }
@@ -302,12 +302,12 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
       result.availability = operation;
     } catch (error) {
       if (error instanceof ApiError) {
-        sendError(res, error);
-        return false;
+        return sendError(res, error);
+        // return false;
       }
       if (error instanceof TypeError) {
-        sendError(res, error, 422);
-        return false;
+        return sendError(res, error, 422);
+        // return false;
       } else {
         throw error;
       }
