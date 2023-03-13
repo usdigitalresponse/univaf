@@ -5,12 +5,13 @@
  */
 
 import * as Sentry from "@sentry/node";
-import type { Span } from "@sentry/tracing";
+import type { Span, SpanStatusType } from "@sentry/tracing";
 import type { SpanContext } from "@sentry/types";
 export type { Span } from "@sentry/tracing";
 
 interface SpanOptions extends SpanContext {
   parentSpan?: Span;
+  timeout?: number;
 }
 
 /**
@@ -22,9 +23,19 @@ interface SpanOptions extends SpanContext {
  * Alternatively, can explicitly pass an actual span object to be the parent:
  * `startSpan({ parentSpan: yourSpan })`. In this case, the new span won't
  * automatically become the global "current" span.
+ *
+ * Spans created this way will be automatically canceled when their transaction
+ * finishes (Sentry will drop any unfinished spans). Alternatively, you can
+ * set `timeout` to a number of milliseconds, and the span will be canceled
+ * after that time (this should prevent you from accidentally leaving a span
+ * open forever). Canceled spans have a non-ok status set and a `cancel` tag
+ * with a reason.
+ *
+ * More on why spans need canceling:
+ * https://github.com/getsentry/sentry-javascript/issues/4165
  */
 export function startSpan(options: SpanOptions): Span {
-  let { parentSpan, ...spanOptions } = options;
+  let { parentSpan, timeout, ...spanOptions } = options;
 
   let scope;
   if (!parentSpan) {
@@ -44,6 +55,22 @@ export function startSpan(options: SpanOptions): Span {
     scope.setSpan(newSpan);
   }
 
+  if (timeout) {
+    setTimeout(() => {
+      cancelSpan(newSpan, "deadline_exceeded");
+    }, timeout).unref();
+  } else if (newSpan.transaction) {
+    // FIXME: newer Sentry has an event for this: "finishTransaction" emitted
+    // on the hub's client:
+    // - Code: https://github.com/getsentry/sentry-javascript/blob/ba99e7cdf725725e5a1b99e9d814353dbb3ae2b6/packages/core/src/tracing/transaction.ts#L144-L147
+    // - Feature: https://github.com/getsentry/sentry-javascript/issues/7262
+    const _finishTransaction = newSpan.transaction.finish;
+    newSpan.transaction.finish = function finish(...args) {
+      cancelSpan(newSpan, "cancelled", "did_not_finish");
+      return _finishTransaction.call(this, ...args);
+    };
+  }
+
   return newSpan;
 }
 
@@ -56,6 +83,7 @@ export function finishSpan(span: Span, timestamp?: number): void {
 
   let parent;
   if (span.parentSpanId) {
+    // FIXME: abstract this with a nice name, even though it's simple.
     parent = span.spanRecorder?.spans?.find(
       (s) => s.spanId === span.parentSpanId
     );
@@ -64,6 +92,22 @@ export function finishSpan(span: Span, timestamp?: number): void {
   const scope = Sentry.getCurrentHub().getScope();
   if (scope.getSpan() === span) {
     scope.setSpan(parent);
+  }
+}
+
+/**
+ * If a span is not finished, finish it and set its status and tags to indicate
+ * that it was canceled. If the span is already finished, do nothing.
+ */
+function cancelSpan(
+  span: Span,
+  status: SpanStatusType = "cancelled",
+  tag: string = status
+): void {
+  if (!span.endTimestamp) {
+    span.setStatus(status);
+    span.setTag("cancel", tag);
+    finishSpan(span);
   }
 }
 

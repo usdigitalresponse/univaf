@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import { ProviderLocation } from "../interfaces";
-import { withSpan } from "../tracing";
+import { finishSpan, startSpan, withSpan } from "../tracing";
 import { dogstatsd } from "../datadog";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
@@ -243,75 +243,79 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
   const result: any = { location: { action: null } };
   const source = data?.source || data?.availability?.source;
 
+  const updateLocationSpan = startSpan({ op: "updateLocation" });
   let location: ProviderLocation;
-  await withSpan({ op: "updateLocation" }, async () => {
-    // FIXME: need to make this a single PG operation or add locks around it. It's
-    // possible for two concurrent updates to both try and create a location.
-    if (data.id && UUID_PATTERN.test(data.id)) {
-      location = await db.getLocationById(data.id, { includePrivate: true });
+  // await withSpan({ op: "updateLocation" }, async () => {
+  // FIXME: need to make this a single PG operation or add locks around it. It's
+  // possible for two concurrent updates to both try and create a location.
+  if (data.id && UUID_PATTERN.test(data.id)) {
+    location = await db.getLocationById(data.id, { includePrivate: true });
+  }
+  if (!location && data.external_ids) {
+    location = await db.getLocationByExternalIds(data.external_ids, {
+      includePrivate: true,
+    });
+  }
+  if (!location) {
+    location = await db.createLocation(data, { source });
+    result.location.action = "created";
+  } else if (req.query.update_location) {
+    // Only update an existing location if explicitly requested to do so via
+    // querystring and if there is other data for it.
+    // (In most cases, we expect the DB will have manual updates that make it
+    // a better source of truth for locations than the source data, hence the
+    // need to opt in to updating here.)
+    const fields = Object.keys(data).filter((key) => key !== "availability");
+    if (fields.length > 1) {
+      await db.updateLocation(location, data, { source });
+      result.location.action = "updated";
     }
-    if (!location && data.external_ids) {
-      location = await db.getLocationByExternalIds(data.external_ids, {
-        includePrivate: true,
-      });
-    }
-    if (!location) {
-      location = await db.createLocation(data, { source });
-      result.location.action = "created";
-    } else if (req.query.update_location) {
-      // Only update an existing location if explicitly requested to do so via
-      // querystring and if there is other data for it.
-      // (In most cases, we expect the DB will have manual updates that make it
-      // a better source of truth for locations than the source data, hence the
-      // need to opt in to updating here.)
-      const fields = Object.keys(data).filter((key) => key !== "availability");
-      if (fields.length > 1) {
-        await db.updateLocation(location, data, { source });
-        result.location.action = "updated";
-      }
-    } else if (data.external_ids?.length) {
-      // Otherwise just update the external IDs. This ensures we track every
-      // relevant external ID we've seen for a location.
-      await db.addExternalIds(location.id, data.external_ids);
-    }
-  });
+  } else if (data.external_ids?.length) {
+    // Otherwise just update the external IDs. This ensures we track every
+    // relevant external ID we've seen for a location.
+    await db.addExternalIds(location.id, data.external_ids);
+  }
+  // });
+  finishSpan(updateLocationSpan);
 
   if (data.availability) {
-    const success = await withSpan({ op: "updateAvailability" }, async () => {
-      // Accommodate old formats that sources might still be sending.
-      // TODO: remove once loaders have all been migrated.
-      if (data.availability.updated_at) {
-        data.availability.valid_at = data.availability.updated_at;
-        delete data.availability.updated_at;
-      }
+    const updateAvailabilitySpan = startSpan({ op: "updateAvailability " });
+    // const success = await withSpan({ op: "updateAvailability" }, async () => {
+    // Accommodate old formats that sources might still be sending.
+    // TODO: remove once loaders have all been migrated.
+    if (data.availability.updated_at) {
+      data.availability.valid_at = data.availability.updated_at;
+      delete data.availability.updated_at;
+    }
 
-      promoteFromMeta(data.availability, "slots");
-      promoteFromMeta(data.availability, "capacity");
-      promoteFromMeta(data.availability, "available_count");
-      promoteFromMeta(data.availability, "products");
-      promoteFromMeta(data.availability, "doses");
+    promoteFromMeta(data.availability, "slots");
+    promoteFromMeta(data.availability, "capacity");
+    promoteFromMeta(data.availability, "available_count");
+    promoteFromMeta(data.availability, "products");
+    promoteFromMeta(data.availability, "doses");
 
-      try {
-        const operation = await db.updateAvailability(
-          location.id,
-          data.availability
-        );
-        result.availability = operation;
-      } catch (error) {
-        if (error instanceof ApiError) {
-          sendError(res, error);
-          return false;
-        }
-        if (error instanceof TypeError) {
-          sendError(res, error, 422);
-          return false;
-        } else {
-          throw error;
-        }
+    try {
+      const operation = await db.updateAvailability(
+        location.id,
+        data.availability
+      );
+      result.availability = operation;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        sendError(res, error);
+        return false;
       }
-      return true;
-    });
-    if (!success) return;
+      if (error instanceof TypeError) {
+        sendError(res, error, 422);
+        return false;
+      } else {
+        throw error;
+      }
+    }
+    // return true;
+    // });
+    // if (!success) return;
+    finishSpan(updateAvailabilitySpan);
   }
 
   if (
