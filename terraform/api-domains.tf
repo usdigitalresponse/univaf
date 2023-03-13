@@ -243,7 +243,7 @@ module "univaf_data_snaphsots_cdn" {
     && var.ssl_certificate_arn != "" ? 1 : 0
   )
   source  = "cloudposse/cloudfront-s3-cdn/aws"
-  version = "0.86.0"
+  version = "0.87.0"
 
   origin_bucket                     = aws_s3_bucket.data_snapshots.bucket
   dns_alias_enabled                 = true
