@@ -88,8 +88,11 @@ export async function createLocation(
   { source = "unknown" } = {}
 ): Promise<ProviderLocation> {
   const span = startSpan({ op: "validateLocationInput " });
-  data = validateLocationInput(data, true);
-  finishSpan(span);
+  try {
+    data = validateLocationInput(data, true);
+  } finally {
+    finishSpan(span);
+  }
   // data = callWithSpan(validateLocationInput, data, true);
 
   const now = new Date();
@@ -170,8 +173,11 @@ export async function updateLocation(
   { mergeSubfields = true, source = "unknown" } = {}
 ): Promise<void> {
   const span = startSpan({ op: "validateLocationInput " });
-  data = validateLocationInput(data);
-  finishSpan(span);
+  try {
+    data = validateLocationInput(data);
+  } finally {
+    finishSpan(span);
+  }
   // data = callWithSpan(validateLocationInput, data);
 
   const sqlData: any = { updated_at: new Date() };
@@ -592,8 +598,11 @@ export async function updateAvailability(
   data: AvailabilityInput
 ): Promise<{ action: string; locationId: string }> {
   const span = startSpan({ op: "validateAvailabilityInput " });
-  data = validateAvailabilityInput(data);
-  finishSpan(span);
+  try {
+    data = validateAvailabilityInput(data);
+  } finally {
+    finishSpan(span);
+  }
   // data = callWithSpan(validateAvailabilityInput, data);
   const {
     source,
