@@ -32,7 +32,7 @@ interface SpanOptions extends SpanContext {
  * with a reason.
  *
  * More on why spans need canceling:
- * https://github.com/getsentry/sentry-javascript/issues/4165
+ * https://github.com/getsentry/sentry-javascript/issues/4165#issuecomment-971424754
  */
 export function startSpan(options: SpanOptions): Span {
   let { parentSpan, timeout, ...spanOptions } = options;
