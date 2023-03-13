@@ -85,6 +85,7 @@ export function finishSpan(span: Span, timestamp?: number): void {
  * const id = await withSpan({ op: "saveData" }, async (span) => {
  *   const id = await saveData(data);
  *   await updateSomeRelatedRecord(id, otherData);
+ *   return id;
  * });
  */
 export function withSpan<T extends (span?: Span) => any>(
