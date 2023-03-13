@@ -59,7 +59,7 @@ export function startSpan(options: SpanOptions): Span {
     setTimeout(() => {
       cancelSpan(newSpan, "deadline_exceeded");
     }, timeout).unref();
-  } else if (newSpan.transaction) {
+  } else if (newSpan.transaction && newSpan.transaction !== newSpan) {
     // FIXME: newer Sentry has an event for this: "finishTransaction" emitted
     // on the hub's client:
     // - Code: https://github.com/getsentry/sentry-javascript/blob/ba99e7cdf725725e5a1b99e9d814353dbb3ae2b6/packages/core/src/tracing/transaction.ts#L144-L147
