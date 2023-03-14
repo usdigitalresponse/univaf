@@ -3,7 +3,6 @@ on:
     paths-ignore:
       - "docs/**"
       - "terraform/**"
-      - "render.yaml"
   push:
     branches:
       - main
