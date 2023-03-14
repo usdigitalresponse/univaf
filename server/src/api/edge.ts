@@ -247,7 +247,6 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
   // possible for two concurrent updates to both try and create a location.
   const updateLocationSpan = startSpan({ op: "updateLocation" });
   let location: ProviderLocation;
-  // await withSpan({ op: "updateLocation" }, async () => {
   if (data.id && UUID_PATTERN.test(data.id)) {
     location = await db.getLocationById(data.id, { includePrivate: true });
   }
@@ -275,12 +274,10 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     // relevant external ID we've seen for a location.
     await db.addExternalIds(location.id, data.external_ids);
   }
-  // });
   finishSpan(updateLocationSpan);
 
   if (data.availability) {
     const updateAvailabilitySpan = startSpan({ op: "updateAvailability " });
-    // const success = await withSpan({ op: "updateAvailability" }, async () => {
     // Accommodate old formats that sources might still be sending.
     // TODO: remove once loaders have all been migrated.
     if (data.availability.updated_at) {
@@ -303,18 +300,13 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     } catch (error) {
       if (error instanceof ApiError) {
         return sendError(res, error);
-        // return false;
       }
       if (error instanceof TypeError) {
         return sendError(res, error, 422);
-        // return false;
       } else {
         throw error;
       }
     }
-    // return true;
-    // });
-    // if (!success) return;
     finishSpan(updateAvailabilitySpan);
   }
 
