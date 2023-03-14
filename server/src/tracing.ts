@@ -49,6 +49,15 @@ Transaction.prototype._onFinish = function onFinish(
   return this._emitter.once("finish", listener);
 };
 
+function getParentSpan(span: Span) {
+  if (span.parentSpanId) {
+    return span.spanRecorder?.spans?.find(
+      (s) => s.spanId === span.parentSpanId
+    );
+  }
+  return null;
+}
+
 /**
  * Start a tracing span. The returned span should be explicitly ended with
  * `finishSpan`. The created span will be a child of whatever span is currently
@@ -112,16 +121,9 @@ export function finishSpan(span: Span, timestamp?: number): void {
 
   span.finish(timestamp);
 
-  let parent;
-  if (span.parentSpanId) {
-    // FIXME: abstract this with a nice name, even though it's simple.
-    parent = span.spanRecorder?.spans?.find(
-      (s) => s.spanId === span.parentSpanId
-    );
-  }
-
   const scope = Sentry.getCurrentHub().getScope();
   if (scope.getSpan() === span) {
+    const parent = getParentSpan(span);
     scope.setSpan(parent);
   }
 }
