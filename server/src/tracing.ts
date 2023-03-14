@@ -4,7 +4,9 @@
  * like OpenTelemetry.
  */
 
+import EventEmitter from "node:events";
 import * as Sentry from "@sentry/node";
+import { Transaction } from "@sentry/tracing";
 import type { Span, SpanStatusType } from "@sentry/tracing";
 import type { SpanContext } from "@sentry/types";
 export type { Span } from "@sentry/tracing";
@@ -13,6 +15,39 @@ interface SpanOptions extends SpanContext {
   parentSpan?: Span;
   timeout?: number;
 }
+
+// Monkey-patch Transaction to add an event to notify listeners (in our case,
+// child spans) when the transaction is finishing. This is super hacky.
+//
+// The most recent release of the Sentry SDK has a `finishTransaction` event
+// on the hub's client, but there are a lot of guard clauses anywhere the client
+// gets used internally, and I'm not sure how reliable it is for this use case.
+// We want to wrap up before the transaction finishes, not when a client that
+// may-or-may-not exist depending on configuring is finishing a transaction.
+// (Also, the transaction's `_hub` is a nullable private property, so it would
+// still be hacky to grab it and add a listener anyway.)
+interface PatchedTransaction extends Transaction {
+  _onFinish(listener: (...args: any[]) => void): void;
+  _emitter?: EventEmitter;
+}
+
+const _transactionFinish = Transaction.prototype.finish;
+Transaction.prototype.finish = function finish(
+  this: PatchedTransaction,
+  endTimestamp?: number
+) {
+  this._emitter?.emit("finish", this);
+  return _transactionFinish.call(this, endTimestamp);
+};
+
+// @ts-expect-error: _onFinish doesn't exist; we're adding it.
+Transaction.prototype._onFinish = function onFinish(
+  this: PatchedTransaction,
+  listener: (...args: any[]) => void
+) {
+  if (!this._emitter) this._emitter = new EventEmitter();
+  return this._emitter.once("finish", listener);
+};
 
 /**
  * Start a tracing span. The returned span should be explicitly ended with
@@ -59,16 +94,10 @@ export function startSpan(options: SpanOptions): Span {
     setTimeout(() => {
       cancelSpan(newSpan, "deadline_exceeded");
     }, timeout).unref();
-  } else if (newSpan.transaction && newSpan.transaction !== newSpan) {
-    // FIXME: newer Sentry has an event for this: "finishTransaction" emitted
-    // on the hub's client:
-    // - Code: https://github.com/getsentry/sentry-javascript/blob/ba99e7cdf725725e5a1b99e9d814353dbb3ae2b6/packages/core/src/tracing/transaction.ts#L144-L147
-    // - Feature: https://github.com/getsentry/sentry-javascript/issues/7262
-    const _finishTransaction = newSpan.transaction.finish;
-    newSpan.transaction.finish = function finish(...args) {
-      cancelSpan(newSpan, "cancelled", "did_not_finish");
-      return _finishTransaction.call(this, ...args);
-    };
+  } else if (newSpan.transaction !== newSpan) {
+    (newSpan.transaction as PatchedTransaction)?._onFinish(() =>
+      cancelSpan(newSpan, "cancelled", "did_not_finish")
+    );
   }
 
   return newSpan;
