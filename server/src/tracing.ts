@@ -104,13 +104,17 @@ export function finishSpan(span: Span, timestamp?: number): void {
 function cancelSpan(
   span: Span,
   status: SpanStatusType = "cancelled",
-  tag: string = status
+  tag: any = status
 ): void {
-  if (!span.endTimestamp) {
-    span.setStatus(status);
-    span.setTag("cancel", tag);
-    finishSpan(span);
+  if (span.endTimestamp) return;
+
+  if (typeof tag !== "string") {
+    tag = `error:${tag?.code || tag?.constructor?.name || "?"}`;
   }
+
+  span.setStatus(status);
+  span.setTag("cancel", tag);
+  finishSpan(span);
 }
 
 /**
@@ -145,12 +149,21 @@ export function withSpan<T extends (span?: Span) => any>(
   try {
     callbackResult = callback(span);
   } catch (error) {
-    finishSpan(span);
+    cancelSpan(span, "unknown_error", error);
     throw error;
   }
 
-  if ("then" in callbackResult && "finally" in callbackResult) {
-    return callbackResult.finally(() => finishSpan(span));
+  if ("then" in callbackResult) {
+    return callbackResult.then(
+      (result: any) => {
+        finishSpan(span);
+        return result;
+      },
+      (error: any) => {
+        cancelSpan(span, "internal_error", error);
+        throw error;
+      }
+    );
   } else {
     finishSpan(span);
     return callbackResult;
