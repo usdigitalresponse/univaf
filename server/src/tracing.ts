@@ -79,6 +79,8 @@ export function startSpan(options: SpanOptions): Span {
  * this span's parent (if it has a parent).
  */
 export function finishSpan(span: Span, timestamp?: number): void {
+  if (span.endTimestamp) return;
+
   span.finish(timestamp);
 
   let parent;
@@ -133,9 +135,10 @@ function cancelSpan(
  * });
  */
 export function withSpan<T extends (span?: Span) => any>(
-  options: SpanOptions,
+  options: SpanOptions | string,
   callback: T
 ): ReturnType<T> {
+  if (typeof options === "string") options = { op: options };
   const span = startSpan(options);
 
   let callbackResult;
@@ -152,36 +155,4 @@ export function withSpan<T extends (span?: Span) => any>(
     finishSpan(span);
     return callbackResult;
   }
-}
-
-/**
- * Wrap a function so that it is always called with a span (named the same as
- * the function). Keeps typings of the original function intact.
- *
- * @example
- * function privateDoSomeStuff(arg1, arg2) { ... }
- * export const doSomeStuff = wrapWithSpan(privateDoSomeStuff);
- */
-export function wrapWithSpan<T extends (...x: any) => any>(callable: T): T {
-  const options = { op: callable.name };
-  // @ts-expect-error Cannot figure out how to type this correctly. :(
-  return (...args: any) => withSpan<T>(options, () => callable(...args));
-}
-
-/**
- * Shortcut for `withSpan` if you are only wrapping a single function. Uses the
- * function's name as the span's name.
- *
- * @example
- * // This shortcut:
- * callWithSpan(someFunction, arg1, arg)
- * // Is equivalent to:
- * withSpan({ op: "someFunction" }, () => someFunction(arg1, arg2))
- */
-export function callWithSpan<T extends (...x: any) => any>(
-  callable: T,
-  ...args: Parameters<T>
-): ReturnType<T> {
-  // @ts-expect-error Cannot figure out how to type this correctly. :(
-  return withSpan({ op: callable.name }, () => callable(...args));
 }

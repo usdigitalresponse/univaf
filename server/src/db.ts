@@ -19,7 +19,7 @@ import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 import { minimumAgeForProducts } from "./vaccines";
 import { dogstatsd } from "./datadog";
-import { finishSpan, startSpan } from "./tracing";
+import { withSpan } from "./tracing";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
@@ -87,13 +87,7 @@ export async function createLocation(
   data: any,
   { source = "unknown" } = {}
 ): Promise<ProviderLocation> {
-  const span = startSpan({ op: "validateLocationInput " });
-  try {
-    data = validateLocationInput(data, true);
-  } finally {
-    finishSpan(span);
-  }
-  // data = callWithSpan(validateLocationInput, data, true);
+  data = withSpan("validate", () => validateLocationInput(data, true));
 
   const now = new Date();
   const sqlData: { [index: string]: string } = {
@@ -172,13 +166,7 @@ export async function updateLocation(
   data: any,
   { mergeSubfields = true, source = "unknown" } = {}
 ): Promise<void> {
-  const span = startSpan({ op: "validateLocationInput " });
-  try {
-    data = validateLocationInput(data);
-  } finally {
-    finishSpan(span);
-  }
-  // data = callWithSpan(validateLocationInput, data);
+  data = withSpan("validate", () => validateLocationInput(data));
 
   const sqlData: any = { updated_at: new Date() };
 
@@ -597,13 +585,7 @@ export async function updateAvailability(
   id: string,
   data: AvailabilityInput
 ): Promise<{ action: string; locationId: string }> {
-  const span = startSpan({ op: "validateAvailabilityInput " });
-  try {
-    data = validateAvailabilityInput(data);
-  } finally {
-    finishSpan(span);
-  }
-  // data = callWithSpan(validateAvailabilityInput, data);
+  data = withSpan("validate", () => validateAvailabilityInput(data));
   const {
     source,
     available = Availability.UNKNOWN,
