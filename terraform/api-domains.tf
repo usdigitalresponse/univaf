@@ -5,9 +5,9 @@
 # are managed here in code.
 #
 # The domains all point to CloudFront distributions for caching and DOS
-# protection, but the CloudFront distribution might use an external service
-# (e.g. Render.com) as its origin. If there's an external origin, it's defined
-# by the `api_remote_domain_name` variable.
+# protection. These are only turned on if there is also an SSL certificate
+# (set in the `ssl_certificate_arn` variable, and which also needs to be
+# created manually in the AWS console).
 
 locals {
   # The domain of the API service's load balancer (not for public use).
@@ -75,27 +75,9 @@ resource "aws_route53_record" "api_load_balancer_domain_record" {
   }
 }
 
-# The `render.` subdomain.
-# This specifically points to the deployment on Render and should be deleted
-# when we tear down that deployment.
-resource "aws_route53_record" "api_render_domain_record" {
-  count = (
-    var.domain_name != ""
-    && var.api_remote_domain_name != "" ? 1 : 0
-  )
-  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = "render"
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.univaf_api_render[0].domain_name
-    zone_id                = aws_cloudfront_distribution.univaf_api_render[0].hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
 # The `ecs.` subdomain.
-# This specifically points to the deployment on ECS (as opposed to Render).
+# This specifically points to the deployment on ECS (as opposed to a possible
+# external host).
 resource "aws_route53_record" "api_ecs_domain_record" {
   count = var.domain_name != "" ? 1 : 0
 
@@ -113,66 +95,8 @@ resource "aws_route53_record" "api_ecs_domain_record" {
 
 # CloudFront ------------------------------------------------------------------
 
-# Use CloudFront as a caching layer in front of the remote API server (Render
-# does not provide a built-in one). Enabled only if var.domain,
-# var.api_remote_domain and var.ssl_certificate_arn are provided.
-resource "aws_cloudfront_distribution" "univaf_api_render" {
-  count = (
-    var.domain_name != ""
-    && var.ssl_certificate_arn != ""
-    && var.api_remote_domain_name != "" ? 1 : 0
-  )
-  enabled     = true
-  price_class = "PriceClass_100" # North America
-  aliases = [
-    "render.${var.domain_name}"
-  ]
-  http_version = "http2and3"
-
-  origin {
-    origin_id   = "render.${var.domain_name}"
-    domain_name = var.api_remote_domain_name
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
-      origin_protocol_policy = var.api_remote_domain_name != "" ? "https-only" : "http-only"
-    }
-  }
-
-  default_cache_behavior {
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "render.${var.domain_name}"
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    max_ttl                = 3600
-
-    forwarded_values {
-      headers      = ["Host", "Origin", "Authorization", "x-api-key"]
-      query_string = true
-
-      cookies {
-        forward = "none"
-      }
-    }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn = var.ssl_certificate_arn
-    ssl_support_method  = "sni-only"
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-}
-
 # Use CloudFront as a caching layer in front of the API server that's running
-# in ECS. Enabled only if var.domain, and var.ssl_certificate_arn are provided.
+# in ECS. Enabled only if var.domain and var.ssl_certificate_arn are provided.
 resource "aws_cloudfront_distribution" "univaf_api_ecs" {
   count = (
     var.domain_name != ""
