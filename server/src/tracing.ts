@@ -23,7 +23,7 @@ interface SpanOptions extends SpanContext {
 // on the hub's client, but there are a lot of guard clauses anywhere the client
 // gets used internally, and I'm not sure how reliable it is for this use case.
 // We want to wrap up before the transaction finishes, not when a client that
-// may-or-may-not exist depending on configuring is finishing a transaction.
+// may-or-may-not exist depending on configuration is finishing a transaction.
 // (Also, the transaction's `_hub` is a nullable private property, so it would
 // still be hacky to grab it and add a listener anyway.)
 interface PatchedTransaction extends Transaction {
