@@ -116,7 +116,7 @@ export function startSpan(options: SpanOptions): Span {
   let scope;
   if (!parentSpan) {
     scope = Sentry.getCurrentHub().getScope();
-    parentSpan = scope.getSpan();
+    parentSpan = scope?.getSpan();
   }
 
   let newSpan: Span;
