@@ -1,7 +1,39 @@
 /**
  * Tools for instrumenting code with traces. This is mainly designed to support
- * Sentry's tracing features, but could be expanded support other approaches,
- * like OpenTelemetry.
+ * Sentry's tracing features, which don't always work as you'd expect. It could
+ * also be expanded support other approaches, like OpenTelemetry.
+ *
+ * A brief overview of the Sentry tracing model:
+ *
+ * Sentry can keep track of Transactions, which are the root of a tree of Spans
+ * (worth noting: Transactions *are* Spans). Spans are arbitrary sections of
+ * code you are tracking the performance of, and are sort of like function calls
+ * in a traditional performance profile.
+ *
+ * By default, Sentry keeps track of the "current" Span on each Hub (Hubs keep
+ * track of all the stateful stuff in Sentry like scopes and clients -- e.g. if
+ * you call `Sentry.captureException`, for example, that just gets forwarded to
+ * the current Hub for handling. To keep concurrent async things in their own
+ * lane, Sentry may create a different Hub for each async domain [for more on
+ * domains, check out the Node.js docs]). The Hub's current Span is really just
+ * a shortcut to make it easier to arbitrarily start a new span when you don't
+ * have a handle on its parent (so you don't have to pass context info around
+ * everywhere). You can have multiple Spans from the same Transaction or even
+ * multiple Transactions in parallel on the same Hub, but at that point you are
+ * on your own in terms of keeping track of the right parent spans for any new
+ * children; Sentry doesn't have a way to fork a Hub or async domain.
+ * (Side note: async domains are deprecated in Node; hopefully someday Sentry
+ * will upgrade to a newer approach and add better async management in general.)
+ *
+ * When it comes to HTTP servers (e.g. Express), Sentry's
+ * `Handlers.requestHandler` middleware creates a new domain and Hub for each
+ * request and `Handlers.requestHandler` middleware creates a new Transaction
+ * for each request. The Tracing Express *integration* (not the middleware)
+ * adds spans for each middleware in your app/routers (which is why you have to
+ * make sure the tracing middleware is one of the first middlewares, so it has
+ * created a transaction for the integration to use [it's not obvious why the
+ * Express integration doesn't just insert the tracing middleware at the bottom
+ * of the middleware stack for you ¯\_(ツ)_/¯]).
  */
 
 import EventEmitter from "node:events";
