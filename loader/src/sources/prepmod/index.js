@@ -295,6 +295,10 @@ const nonCovidProductName = new RegExp(
     raw`\bPPSV(\d+)?\b`,
     // Measles, Mumps, Rubella Vaccine
     raw`\bMMRV??\b`,
+    // Human Papillomavirus
+    raw`\bHPV\b`,
+    // Hepatitis A/B/C
+    raw`\bhepatitis\b`,
     // Chickenpox Vaccine
     raw`\b(varicella|chickenpox)\b`,
     // In all cases we've seen, this occurs on schedules that list other actual
