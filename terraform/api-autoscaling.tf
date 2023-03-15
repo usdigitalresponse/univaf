@@ -9,7 +9,7 @@ resource "aws_appautoscaling_target" "target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.api_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = 1
+  min_capacity       = 2
   max_capacity       = 4
 }
 
@@ -55,12 +55,13 @@ resource "aws_appautoscaling_policy" "down" {
 resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
   alarm_name          = "api_cpu_utilization_high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
+  datapoints_to_alarm = "1"
+  evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "75"
+  threshold           = "55"
 
   dimensions = {
     ClusterName = aws_ecs_cluster.main.name
@@ -74,12 +75,13 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
 resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
   alarm_name          = "api_cpu_utilization_low"
   comparison_operator = "LessThanOrEqualToThreshold"
+  datapoints_to_alarm = "2"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "30"
+  threshold           = "15"
 
   dimensions = {
     ClusterName = aws_ecs_cluster.main.name
