@@ -27,7 +27,7 @@ interface SpanOptions extends SpanContext {
 // (Also, the transaction's `_hub` is a nullable private property, so it would
 // still be hacky to grab it and add a listener anyway.)
 interface PatchedTransaction extends Transaction {
-  _onFinish(listener: (...args: any[]) => void): void;
+  onFinish(listener: (...args: any[]) => void): void;
   _emitter?: EventEmitter;
 }
 
@@ -40,13 +40,13 @@ Transaction.prototype.finish = function finish(
   return _transactionFinish.call(this, endTimestamp);
 };
 
-// @ts-expect-error: _onFinish doesn't exist; we're adding it.
-Transaction.prototype._onFinish = function onFinish(
+// @ts-expect-error: onFinish doesn't exist; we're adding it.
+Transaction.prototype.onFinish = function onFinish(
   this: PatchedTransaction,
   listener: (...args: any[]) => void
 ) {
   if (!this._emitter) this._emitter = new EventEmitter();
-  return this._emitter.once("finish", listener);
+  this._emitter.once("finish", listener);
 };
 
 function getParentSpan(span: Span) {
@@ -104,7 +104,7 @@ export function startSpan(options: SpanOptions): Span {
       cancelSpan(newSpan, "deadline_exceeded");
     }, timeout).unref();
   } else if (newSpan.transaction !== newSpan) {
-    (newSpan.transaction as PatchedTransaction)?._onFinish(() =>
+    (newSpan.transaction as PatchedTransaction)?.onFinish(() =>
       cancelSpan(newSpan, "cancelled", "did_not_finish")
     );
   }
