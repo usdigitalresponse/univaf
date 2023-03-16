@@ -29,8 +29,16 @@ locals {
       }
     },
     waDoh          = { schedule = "cron(3/5 * * * ? *)" }
-    cvsSmart       = { schedule = "cron(0/10 * * * ? *)" }
-    walgreensSmart = { schedule = "cron(2/10 * * * ? *)" }
+    cvsSmart       = {
+      schedule = "cron(0/10 * * * ? *)"
+      # Lower concurrency since this sends so many updates.
+      env_vars = { API_CONCURRENCY = "5" }
+    }
+    walgreensSmart = {
+      schedule = "cron(2/10 * * * ? *)"
+      # Lower concurrency since this sends so many updates.
+      env_vars = { API_CONCURRENCY = "5" }
+    }
     krogerSmart    = { schedule = "cron(4/10 * * * ? *)" }
     albertsons     = { schedule = "cron(6/10 * * * ? *)" }
     hyvee          = { schedule = "cron(8/10 * * * ? *)" }
