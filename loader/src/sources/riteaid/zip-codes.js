@@ -143,12 +143,42 @@ const zipCodesCoveringDynamicAreas = {
   MA: [{ radius: 85, zips: ["01075", "02332"] }],
   // FIXME: Needs real values. Should result in ~40 stores.
   MD: [{ radius: 100, zips: ["21722", "21613"] }],
-  // FIXME: Needs real values. Should result in ~249 stores.
-  // Radius garners too many results in some locations.
   MI: [
+    { radius: 100, zips: ["49770", "49103", "49431"] },
     {
-      radius: 100,
-      zips: ["49961", "49817", "49716", "48625", "48371", "49004"],
+      radius: 25,
+      zips: [
+        "48105",
+        "48116",
+        "48144",
+        "48173",
+        "48811",
+        "48768",
+        "48867",
+        "48915",
+        "48640",
+        "48658",
+        "48763",
+        "49221",
+        "49202",
+        "48040",
+        "48471",
+      ],
+    },
+    {
+      radius: 10,
+      zips: [
+        "48067",
+        "48080",
+        "48095",
+        "48044",
+        "48371",
+        "48462",
+        "48326",
+        "48503",
+        "48444",
+        "48446",
+      ],
     },
   ],
   NH: [{ radius: 100, zips: ["03293"] }],
