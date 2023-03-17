@@ -28,8 +28,8 @@ locals {
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
       }
     },
-    waDoh          = { schedule = "cron(3/5 * * * ? *)" }
-    cvsSmart       = {
+    waDoh = { schedule = "cron(3/5 * * * ? *)" }
+    cvsSmart = {
       schedule = "cron(0/10 * * * ? *)"
       # Lower concurrency since this sends so many updates.
       env_vars = { API_CONCURRENCY = "5" }
@@ -44,12 +44,7 @@ locals {
     hyvee          = { schedule = "cron(8/10 * * * ? *)" }
     heb            = { schedule = "cron(1/10 * * * ? *)" }
     cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
-    riteAidScraper = {
-      schedule = "cron(0/10 * * * ? *)"
-      # FIXME: a bunch of states are broken in the scraper right now. Remove
-      # this narrow list when the unlisted states are fixed.
-      options = ["--states", "CA,CT,DE,ID,MA,MI,NH,NJ,NV,NY,OH,OR,PA,VT,WA"]
-    }
+    riteAidScraper = { schedule = "cron(0/10 * * * ? *)" }
     riteAidApi = {
       schedule = "cron(0/30 * * * ? *)"
       env_vars = {

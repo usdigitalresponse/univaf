@@ -141,8 +141,10 @@ const zipCodesCoveringDynamicAreas = {
   DE: [{ radius: 100, zips: ["19962"] }],
   ID: [{ radius: 100, zips: ["83843", "83714", "83814"] }],
   MA: [{ radius: 85, zips: ["01075", "02332"] }],
-  // FIXME: Needs real values. Should result in ~40 stores.
-  MD: [{ radius: 100, zips: ["21722", "21613"] }],
+  MD: [
+    { radius: 55, zips: ["21202"] },
+    { radius: 25, zips: ["21613", "21811", "21851"] },
+  ],
   MI: [
     { radius: 100, zips: ["49770", "49103", "49431"] },
     {
@@ -303,9 +305,7 @@ const zipCodesCoveringDynamicAreas = {
       zips: ["19007"],
     },
   ],
-  // FIXME: Needs real values. Should result in ~64 stores.
-  // Radius garners too many results in some locations.
-  VA: [{ radius: 100, zips: ["24270", "24043", "23936", "23168", "22039"] }],
+  VA: [{ radius: 100, zips: ["23188", "24440"] }],
   VT: [{ radius: 100, zips: ["05077"] }],
   WA: [
     { radius: 100, zips: ["98841", "99201", "99354"] },
