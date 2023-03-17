@@ -48,6 +48,8 @@ const VACCINE_IDS = {
   "13-PREF-115": VaccineProduct.janssen, // J&J Adult Dose 1
   // "46-PREF-115": VaccineProduct.janssen, // J&J Adult Booster 1
   "47-PREF-122": VaccineProduct.pfizerAge5_11, // Pfizer Pediatric Dose 1
+  "95-PREF-125": VaccineProduct.modernaBa4Ba5,
+  "96-PREF-126": VaccineProduct.pfizerBa4Ba5,
 };
 
 // Same as above, but where the keys are just the number at the front. These
