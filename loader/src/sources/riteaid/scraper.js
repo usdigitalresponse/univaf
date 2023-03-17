@@ -165,7 +165,7 @@ const riteAidLocationSchema = {
     milesFromCenter: { type: "number", minimum: 0 },
     totalSlotCount: { type: "integer", minimum: 0 },
     totalAvailableSlots: { type: "integer", minimum: 0 },
-    firstAvailableSlot: { type: "string", format: "date", nullable: true },
+    firstAvailableSlot: { type: "string", format: "date-time", nullable: true },
     specialServiceKeys: { type: "array", items: { type: "string" } },
     availableSlots: {
       type: "array",
