@@ -207,8 +207,25 @@ const zipCodesCoveringDynamicAreas = {
   ],
   // FIXME: Needs real values. Should result in ~271 stores.
   NY: [{ radius: 100, zips: ["14145", "13057", "12986", "12526", "11717"] }],
-  // FIXME: Needs real values. Should result in ~195 stores.
-  OH: [{ radius: 100, zips: ["45814", "43160", "45724", "44650"] }],
+  OH: [
+    { radius: 55, zips: ["45750", "45690", "45833", "43907", "43050"] },
+    {
+      radius: 25,
+      zips: [
+        "44231",
+        "44281",
+        "44041",
+        "44089",
+        "44103",
+        "44883",
+        "45345",
+        "45505",
+        "44507",
+        "43452",
+        "43551",
+      ],
+    },
+  ],
   OR: [
     {
       radius: 100,
