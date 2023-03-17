@@ -27,7 +27,7 @@ const {
   getLocationName,
   RITE_AID_STATES,
 } = require("./common");
-const { zipCodesCovering100Miles } = require("./zip-codes");
+const { zipCodesCoveringDynamicAreas } = require("./zip-codes");
 
 // Load slot-level data in chunks of this many stores at a time.
 const SLOT_QUERY_CHUNK_SIZE = 25;
@@ -99,8 +99,8 @@ async function queryZipCode(zip, radius = 100, stores = null) {
 }
 
 async function* queryState(state, rateLimit = null, summaryOnly = false) {
-  const zipCodes = zipCodesCovering100Miles[state];
-  if (!zipCodes) {
+  const zipCodeSets = zipCodesCoveringDynamicAreas[state];
+  if (!zipCodeSets) {
     throw new Error(`There are no known zip codes to query in "${state}"`);
   }
 
@@ -108,34 +108,37 @@ async function* queryState(state, rateLimit = null, summaryOnly = false) {
   // and will get a lot of repeat results across queries. Be careful to filter
   // those out.
   const seenStores = new Set();
-  for (const zipCode of zipCodes) {
-    if (rateLimit) await rateLimit.ready();
+  for (const radiusSet of zipCodeSets) {
+    const radius = radiusSet.radius;
+    for (const zipCode of radiusSet.zips) {
+      if (rateLimit) await rateLimit.ready();
 
-    const body = await queryZipCode(zipCode);
+      const body = await queryZipCode(zipCode, radius);
 
-    // If there are no results, `body.data.stores` is `null`.
-    const stores = body.data.stores || [];
-    const newStores = [];
-    for (const item of stores) {
-      if (!seenStores.has(item.storeNumber) && item.state === state) {
-        seenStores.add(item.storeNumber);
-        newStores.push(item.storeNumber);
+      // If there are no results, `body.data.stores` is `null`.
+      const stores = body.data.stores || [];
+      const newStores = [];
+      for (const item of stores) {
+        if (!seenStores.has(item.storeNumber) && item.state === state) {
+          seenStores.add(item.storeNumber);
+          newStores.push(item.storeNumber);
+        }
       }
-    }
 
-    if (summaryOnly) {
-      yield* newStores;
-      continue;
-    }
+      if (summaryOnly) {
+        yield* newStores;
+        continue;
+      }
 
-    // A query by zip code only returns a list of stores. You need to make the
-    // same query again but with a list of store numbers to get actual
-    // appointment slots.
-    for (let i = 0; i < newStores.length; i += SLOT_QUERY_CHUNK_SIZE) {
-      const chunk = newStores.slice(i, i + SLOT_QUERY_CHUNK_SIZE);
-      const fullData = await queryZipCode(zipCode, 100, chunk);
-      for (const item of fullData.data.stores || []) {
-        yield item;
+      // A query by zip code only returns a list of stores. You need to make the
+      // same query again but with a list of store numbers to get actual
+      // appointment slots.
+      for (let i = 0; i < newStores.length; i += SLOT_QUERY_CHUNK_SIZE) {
+        const chunk = newStores.slice(i, i + SLOT_QUERY_CHUNK_SIZE);
+        const fullData = await queryZipCode(zipCode, 100, chunk);
+        for (const item of fullData.data.stores || []) {
+          yield item;
+        }
       }
     }
   }
