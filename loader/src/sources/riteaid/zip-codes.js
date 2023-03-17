@@ -241,8 +241,37 @@ const zipCodesCoveringDynamicAreas = {
       ],
     },
   ],
-  // FIXME: Needs real values. Should result in ~487 stores.
-  PA: [{ radius: 100, zips: ["17814", "15860", "15549", "19330"] }],
+  PA: [
+    {
+      radius: 55,
+      zips: ["17815", "17032", "18848", "16601", "15834", "16354"],
+    },
+    {
+      radius: 25,
+      zips: [
+        "19320",
+        "17201",
+        "18436",
+        "18701",
+        "18073",
+        "18360",
+        "15237",
+        "15314",
+        "15425",
+        "15626",
+        "16226",
+        "16037",
+      ],
+    },
+    {
+      radius: 10,
+      zips: ["18940", "19064", "19141"],
+    },
+    {
+      radius: 8,
+      zips: ["19007"],
+    },
+  ],
   // FIXME: Needs real values. Should result in ~64 stores.
   // Radius garners too many results in some locations.
   VA: [{ radius: 100, zips: ["24270", "24043", "23936", "23168", "22039"] }],
