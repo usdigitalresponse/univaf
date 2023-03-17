@@ -18,7 +18,7 @@ const basicLocation = {
   customDisplayName: "UNKNOWN",
   address: "1426 Mt. Ephraim Avenue",
   city: "Camden",
-  state: "NJ",
+  state: "CT",
   zipcode: "8104",
   timeZone: "EST",
   fullZipCode: "8104-1549",
@@ -44,7 +44,7 @@ describe("Rite Aid Scraper", () => {
 
   it.nock("should output valid data", async () => {
     const result = await checkAvailability(() => {}, {
-      states: ["NJ"],
+      states: ["CT"],
       rateLimit: 0,
     });
     expect(result).toContainItemsMatchingSchema(locationSchema);
@@ -145,7 +145,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["NJ"] });
+    const result = await checkAvailability(() => {}, { states: ["CT"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
@@ -155,7 +155,7 @@ describe("Rite Aid Scraper", () => {
         external_ids: [["rite_aid", "3455"]],
         address_lines: ["1426 Mt. Ephraim Avenue"],
         city: "Camden",
-        state: "NJ",
+        state: "CT",
         postal_code: "08104",
         position: {
           latitude: 39.9295,
@@ -287,7 +287,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["NJ"] });
+    const result = await checkAvailability(() => {}, { states: ["CT"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0].availability.slots).toEqual([
       {
@@ -339,7 +339,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["NJ"] });
+    const result = await checkAvailability(() => {}, { states: ["CT"] });
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toHaveProperty("0.availability.available", Available.no);
   });
@@ -354,7 +354,7 @@ describe("Rite Aid Scraper", () => {
     });
 
     await expect(
-      checkAvailability(() => {}, { states: ["NJ"] })
+      checkAvailability(() => {}, { states: ["CT"] })
     ).rejects.toThrow("Something went wrong");
   });
 
@@ -392,7 +392,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["NJ"] });
+    const result = await checkAvailability(() => {}, { states: ["CT"] });
     expect(result).toHaveProperty("0.external_ids", [
       ["rite_aid", "6958"],
       ["bartell", "58"],

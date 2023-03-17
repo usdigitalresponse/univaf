@@ -4,7 +4,6 @@ const { HttpApiError } = require("../../exceptions");
 // States in which Rite Aid has stores.
 const RITE_AID_STATES = [
   "CA",
-  "CO",
   "CT",
   "DE",
   "ID",

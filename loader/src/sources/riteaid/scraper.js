@@ -8,6 +8,7 @@
  * cover the entirety of a given state.
  */
 
+const assert = require("node:assert/strict");
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
@@ -26,7 +27,7 @@ const {
   getLocationName,
   RITE_AID_STATES,
 } = require("./common");
-const { zipCodesCovering100Miles } = require("./zip-codes");
+const { zipCodesCoveringDynamicAreas } = require("./zip-codes");
 
 // Load slot-level data in chunks of this many stores at a time.
 const SLOT_QUERY_CHUNK_SIZE = 25;
@@ -47,6 +48,8 @@ const VACCINE_IDS = {
   "13-PREF-115": VaccineProduct.janssen, // J&J Adult Dose 1
   // "46-PREF-115": VaccineProduct.janssen, // J&J Adult Booster 1
   "47-PREF-122": VaccineProduct.pfizerAge5_11, // Pfizer Pediatric Dose 1
+  "95-PREF-125": VaccineProduct.modernaBa4Ba5,
+  "96-PREF-126": VaccineProduct.pfizerBa4Ba5,
 };
 
 // Same as above, but where the keys are just the number at the front. These
@@ -57,6 +60,8 @@ const VACCINE_IDS_SHORT = mapKeys(VACCINE_IDS, (_, key) => key.split("-")[0]);
 const warn = createWarningLogger("riteAidScraper");
 
 async function queryZipCode(zip, radius = 100, stores = null) {
+  const maximumResultCount = 100;
+
   const response = await httpClient({
     url: API_URL,
     searchParams: {
@@ -65,9 +70,7 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       vaccineIds: Object.keys(VACCINE_IDS).join(","),
       // This must be set, but `false` is a superset of `true`.
       showAllStoresWithAvailibility: false,
-      // There is no obvious paging mechanism, but this seems to work, and is
-      // probably big enough to cover any 100 mile radius query.
-      count: 1000,
+      count: maximumResultCount,
       // Must be set.
       fetchMechanismVersion: 2,
       // Optional: if a list of store numbers is set, the returned data will
@@ -78,18 +81,26 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       loadMoreFlag: true,
     },
     responseType: "json",
+    throwHttpErrors: false,
   });
 
   if (response.body.Status !== "SUCCESS") {
     throw new RiteAidApiError(response);
   }
 
+  // This internal API returns only up to N locations and has no pagination.
+  // If we get the maximum number of results back, we're probably missing data.
+  assert.ok(
+    response.body.data.stores?.length < maximumResultCount,
+    `Query for zip code ${zip} had too many results`
+  );
+
   return response.body;
 }
 
 async function* queryState(state, rateLimit = null, summaryOnly = false) {
-  const zipCodes = zipCodesCovering100Miles[state];
-  if (!zipCodes) {
+  const zipCodeSets = zipCodesCoveringDynamicAreas[state];
+  if (!zipCodeSets) {
     throw new Error(`There are no known zip codes to query in "${state}"`);
   }
 
@@ -97,34 +108,37 @@ async function* queryState(state, rateLimit = null, summaryOnly = false) {
   // and will get a lot of repeat results across queries. Be careful to filter
   // those out.
   const seenStores = new Set();
-  for (const zipCode of zipCodes) {
-    if (rateLimit) await rateLimit.ready();
+  for (const radiusSet of zipCodeSets) {
+    const radius = radiusSet.radius;
+    for (const zipCode of radiusSet.zips) {
+      if (rateLimit) await rateLimit.ready();
 
-    const body = await queryZipCode(zipCode);
+      const body = await queryZipCode(zipCode, radius);
 
-    // If there are no results, `body.data.stores` is `null`.
-    const stores = body.data.stores || [];
-    const newStores = [];
-    for (const item of stores) {
-      if (!seenStores.has(item.storeNumber) && item.state === state) {
-        seenStores.add(item.storeNumber);
-        newStores.push(item.storeNumber);
+      // If there are no results, `body.data.stores` is `null`.
+      const stores = body.data.stores || [];
+      const newStores = [];
+      for (const item of stores) {
+        if (!seenStores.has(item.storeNumber) && item.state === state) {
+          seenStores.add(item.storeNumber);
+          newStores.push(item.storeNumber);
+        }
       }
-    }
 
-    if (summaryOnly) {
-      yield* newStores;
-      continue;
-    }
+      if (summaryOnly) {
+        yield* newStores;
+        continue;
+      }
 
-    // A query by zip code only returns a list of stores. You need to make the
-    // same query again but with a list of store numbers to get actual
-    // appointment slots.
-    for (let i = 0; i < newStores.length; i += SLOT_QUERY_CHUNK_SIZE) {
-      const chunk = newStores.slice(i, i + SLOT_QUERY_CHUNK_SIZE);
-      const fullData = await queryZipCode(zipCode, 100, chunk);
-      for (const item of fullData.data.stores || []) {
-        yield item;
+      // A query by zip code only returns a list of stores. You need to make the
+      // same query again but with a list of store numbers to get actual
+      // appointment slots.
+      for (let i = 0; i < newStores.length; i += SLOT_QUERY_CHUNK_SIZE) {
+        const chunk = newStores.slice(i, i + SLOT_QUERY_CHUNK_SIZE);
+        const fullData = await queryZipCode(zipCode, 100, chunk);
+        for (const item of fullData.data.stores || []) {
+          yield item;
+        }
       }
     }
   }
@@ -156,7 +170,7 @@ const riteAidLocationSchema = {
     milesFromCenter: { type: "number", minimum: 0 },
     totalSlotCount: { type: "integer", minimum: 0 },
     totalAvailableSlots: { type: "integer", minimum: 0 },
-    firstAvailableSlot: { type: "string", format: "date", nullable: true },
+    firstAvailableSlot: { type: "string", format: "date-time", nullable: true },
     specialServiceKeys: { type: "array", items: { type: "string" } },
     availableSlots: {
       type: "array",
