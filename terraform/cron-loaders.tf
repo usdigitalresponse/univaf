@@ -48,7 +48,7 @@ locals {
       schedule = "cron(0/10 * * * ? *)"
       # FIXME: a bunch of states are broken in the scraper right now. Remove
       # this narrow list when the unlisted states are fixed.
-      options = ["--states", "CT,DE,MA,NH,NJ,NV,OR,VT"]
+      options = ["--states", "CT,DE,ID,MA,NH,NJ,NV,OR,VT,WA"]
     }
     riteAidApi = {
       schedule = "cron(0/30 * * * ? *)"
