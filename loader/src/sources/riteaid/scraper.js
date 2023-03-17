@@ -8,6 +8,7 @@
  * cover the entirety of a given state.
  */
 
+const assert = require("node:assert/strict");
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
@@ -57,6 +58,8 @@ const VACCINE_IDS_SHORT = mapKeys(VACCINE_IDS, (_, key) => key.split("-")[0]);
 const warn = createWarningLogger("riteAidScraper");
 
 async function queryZipCode(zip, radius = 100, stores = null) {
+  const maximumResultCount = 100;
+
   const response = await httpClient({
     url: API_URL,
     searchParams: {
@@ -65,9 +68,7 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       vaccineIds: Object.keys(VACCINE_IDS).join(","),
       // This must be set, but `false` is a superset of `true`.
       showAllStoresWithAvailibility: false,
-      // There is no obvious paging mechanism, but this seems to work, and is
-      // probably big enough to cover any 100 mile radius query.
-      count: 1000,
+      count: maximumResultCount,
       // Must be set.
       fetchMechanismVersion: 2,
       // Optional: if a list of store numbers is set, the returned data will
@@ -78,11 +79,19 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       loadMoreFlag: true,
     },
     responseType: "json",
+    throwHttpErrors: false,
   });
 
   if (response.body.Status !== "SUCCESS") {
     throw new RiteAidApiError(response);
   }
+
+  // This internal API returns only up to N locations and has no pagination.
+  // If we get the maximum number of results back, we're probably missing data.
+  assert.ok(
+    response.body.data.stores?.length < maximumResultCount,
+    `Query for zip code ${zip} had too many results`
+  );
 
   return response.body;
 }
