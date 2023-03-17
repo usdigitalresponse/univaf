@@ -47,7 +47,6 @@ locals {
     riteAidScraper = { schedule = "cron(0/10 * * * ? *)" }
     riteAidApi = {
       schedule = "cron(0/30 * * * ? *)"
-      options  = ["--states", "CA,CT,DE,ID,MA,MD,MI,NH,NJ,NV,NY,OH,OR,PA,VA,VT,WA"]
       env_vars = {
         RITE_AID_URL = var.rite_aid_api_url
         RITE_AID_KEY = var.rite_aid_api_key
