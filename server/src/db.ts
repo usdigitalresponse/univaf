@@ -240,12 +240,10 @@ export async function listLocations({
     }
 
     const locationIds = result.rows.map((r: any) => r.id);
-    const externalIds = await getExternalIdsByLocation(locationIds);
-    const availabilities = await getCurrentAvailabilityByLocation(
-      locationIds,
-      includePrivate,
-      sources
-    );
+    const [externalIds, availabilities] = await Promise.all([
+      getExternalIdsByLocation(locationIds),
+      getCurrentAvailabilityByLocation(locationIds, includePrivate, sources),
+    ]);
 
     return withSpan("joinRelatedRecords", () =>
       result.rows.map((row: any) => {

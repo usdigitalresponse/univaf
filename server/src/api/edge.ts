@@ -87,7 +87,7 @@ export async function listStream(
   // big result sets.
   let started = false;
   const startTime = Date.now();
-  const resultsIterator = await db.iterateLocationBatches({
+  const resultsIterator = db.iterateLocationBatches({
     includePrivate,
     where,
     values,
