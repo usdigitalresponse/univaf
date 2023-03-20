@@ -216,7 +216,7 @@ export function withSpan<T extends (span?: Span) => any>(
     throw error;
   }
 
-  if ("then" in callbackResult) {
+  if (callbackResult && "then" in callbackResult) {
     return callbackResult.then(
       (result: any) => {
         finishSpan(span);
