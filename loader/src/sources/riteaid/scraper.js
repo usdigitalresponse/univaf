@@ -27,7 +27,7 @@ const {
   getLocationName,
   RITE_AID_STATES,
 } = require("./common");
-const { zipCodesCoveringDynamicAreas } = require("./zip-codes");
+const { zipCodesCoveringAllRiteAids } = require("./zip-codes");
 
 // Load slot-level data in chunks of this many stores at a time.
 const SLOT_QUERY_CHUNK_SIZE = 25;
@@ -99,7 +99,7 @@ async function queryZipCode(zip, radius = 100, stores = null) {
 }
 
 async function* queryState(state, rateLimit = null, summaryOnly = false) {
-  const zipCodeSets = zipCodesCoveringDynamicAreas[state];
+  const zipCodeSets = zipCodesCoveringAllRiteAids[state];
   if (!zipCodeSets) {
     throw new Error(`There are no known zip codes to query in "${state}"`);
   }
