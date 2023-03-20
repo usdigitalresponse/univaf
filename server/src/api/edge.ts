@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import { ProviderLocation } from "../interfaces";
-import { finishSpan, startSpan } from "../tracing";
+import { finishSpan, startSpan, withSpan } from "../tracing";
 import { dogstatsd } from "../datadog";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
@@ -153,9 +153,11 @@ export const list = async (req: AppRequest, res: Response): Promise<void> => {
     .next();
   const batch = result.value || { locations: [], next: null };
 
-  res.json({
-    links: Pagination.createLinks(req, { next: batch.next }),
-    data: batch.locations,
+  withSpan("writeJson", () => {
+    res.json({
+      links: Pagination.createLinks(req, { next: batch.next }),
+      data: batch.locations,
+    });
   });
 };
 
@@ -189,7 +191,7 @@ export const getById = async (req: AppRequest, res: Response): Promise<any> => {
   if (!provider) {
     return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
-    return res.json({ data: provider });
+    return withSpan("writeJson", () => res.json({ data: provider }));
   }
 };
 
@@ -346,8 +348,10 @@ export const listAvailability = async (
   const data = await dbQuery;
   const lastItem = data.at(-1);
 
-  response.json({
-    links: Pagination.createLinks(request, { next: lastItem?.id }),
-    data,
+  withSpan("writeJson", () => {
+    response.json({
+      links: Pagination.createLinks(request, { next: lastItem?.id }),
+      data,
+    });
   });
 };
