@@ -19,6 +19,7 @@ import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
 import { minimumAgeForProducts } from "./vaccines";
 import { dogstatsd } from "./datadog";
+import { startSpan, finishSpan, withSpan } from "./tracing";
 
 // When locations are queried in batches (e.g. when iterating over extremely
 // large result sets), query this many records at a time.
@@ -86,7 +87,7 @@ export async function createLocation(
   data: any,
   { source = "unknown" } = {}
 ): Promise<ProviderLocation> {
-  data = validateLocationInput(data, true);
+  data = withSpan("validate", () => validateLocationInput(data, true));
 
   const now = new Date();
   const sqlData: { [index: string]: string } = {
@@ -165,7 +166,8 @@ export async function updateLocation(
   data: any,
   { mergeSubfields = true, source = "unknown" } = {}
 ): Promise<void> {
-  data = validateLocationInput(data);
+  data = withSpan("validate", () => validateLocationInput(data));
+
   const sqlData: any = { updated_at: new Date() };
 
   for (let [key, value] of Object.entries(data)) {
@@ -204,65 +206,70 @@ export async function listLocations({
   values = [] as any[],
   sources = [] as string[],
 } = {}): Promise<ProviderLocation[]> {
-  let fields = providerLocationFields;
+  return withSpan("db.listLocations", async () => {
+    let fields = providerLocationFields;
 
-  if (includePrivate) {
-    fields = fields.concat(providerLocationPrivateFields);
-  } else {
-    where.push(`pl.is_public = true`);
-  }
+    if (includePrivate) {
+      fields = fields.concat(providerLocationPrivateFields);
+    } else {
+      where.push(`pl.is_public = true`);
+    }
 
-  // Reformat fields as select expressions to get the right data back.
-  fields = fields
-    .map((name) => `pl.${name}`)
-    .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
+    // Reformat fields as select expressions to get the right data back.
+    fields = fields
+      .map((name) => `pl.${name}`)
+      .map((name) => (name === "pl.position" ? selectSqlPoint(name) : name));
 
-  let result;
-  try {
-    result = await db.raw(
-      `
+    let result: any;
+    try {
+      result = await db.raw<any>(
+        `
       SELECT ${fields.join(", ")}
       FROM provider_locations pl
       ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
       ORDER BY pl.created_at ASC, pl.id ASC
       ${limit ? `LIMIT ${limit}` : ""}
       `,
-      values || []
-    );
-  } catch (error) {
-    // If it was just a malformed UUID, treat that like no results.
-    if (error.routine === "string_to_uuid") return [];
+        values || []
+      );
+    } catch (error) {
+      // If it was just a malformed UUID, treat that like no results.
+      if (error.routine === "string_to_uuid") return [];
 
-    throw error;
-  }
-
-  const locationIds = result.rows.map((r: any) => r.id);
-  const externalIds = await getExternalIdsByLocation(locationIds);
-  const availabilities = await getCurrentAvailabilityByLocation(
-    locationIds,
-    includePrivate,
-    sources
-  );
-
-  return result.rows.map((row: any) => {
-    row.external_ids = externalIds[row.id] || [];
-    row.availability = availabilities.get(row.id);
-
-    if (row.availability) {
-      delete row.availability.id;
-      delete row.availability.location_id;
-      delete row.availability.is_public;
-      delete row.availability.rank;
-
-      if (row.minimum_age_months != null && row.availability.products?.length) {
-        row.availability.minimum_eligible_age_months = Math.max(
-          row.minimum_age_months,
-          minimumAgeForProducts(row.availability.products)
-        );
-      }
+      throw error;
     }
 
-    return row;
+    const locationIds = result.rows.map((r: any) => r.id);
+    const [externalIds, availabilities] = await Promise.all([
+      getExternalIdsByLocation(locationIds),
+      getCurrentAvailabilityByLocation(locationIds, includePrivate, sources),
+    ]);
+
+    return withSpan("joinRelatedRecords", () =>
+      result.rows.map((row: any) => {
+        row.external_ids = externalIds[row.id] || [];
+        row.availability = availabilities.get(row.id);
+
+        if (row.availability) {
+          delete row.availability.id;
+          delete row.availability.location_id;
+          delete row.availability.is_public;
+          delete row.availability.rank;
+
+          if (
+            row.minimum_age_months != null &&
+            row.availability.products?.length
+          ) {
+            row.availability.minimum_eligible_age_months = Math.max(
+              row.minimum_age_months,
+              minimumAgeForProducts(row.availability.products)
+            );
+          }
+        }
+
+        return row;
+      })
+    );
   });
 }
 
@@ -546,6 +553,7 @@ export async function getCurrentAvailabilityByLocation(
     })
     .orderBy(["location_id", { column: "valid_at", order: "desc" }]);
 
+  const mergeSpan = startSpan({ op: "mergeAvailabilities" });
   const result = new Map<string, LocationAvailability>();
   const groups = new Map<string, LocationAvailability[]>();
   for (const row of rows) {
@@ -557,6 +565,7 @@ export async function getCurrentAvailabilityByLocation(
   for (const [id, rows] of groups.entries()) {
     result.set(id, mergeAvailabilities(rows));
   }
+  finishSpan(mergeSpan);
 
   return result;
 }
@@ -583,7 +592,7 @@ export async function updateAvailability(
   id: string,
   data: AvailabilityInput
 ): Promise<{ action: string; locationId: string }> {
-  data = validateAvailabilityInput(data);
+  data = withSpan("validate", () => validateAvailabilityInput(data));
   const {
     source,
     available = Availability.UNKNOWN,
@@ -606,6 +615,7 @@ export async function updateAvailability(
     .where({ location_id: id, source })
     .first();
 
+  const changeSpan = startSpan({ op: "determineChanges" });
   let result;
   let changed_at;
   if (existingAvailability) {
@@ -669,6 +679,7 @@ export async function updateAvailability(
         };
       }
     }
+    finishSpan(changeSpan);
 
     loggableUpdate = { source, ...updateData };
     const rowCount = await updateQuery.update(updateData);

@@ -1,6 +1,8 @@
 "use strict";
 
 import { Request, Response } from "express";
+import { ProviderLocation } from "../interfaces";
+import { finishSpan, startSpan, withSpan } from "../tracing";
 import { dogstatsd } from "../datadog";
 import * as db from "../db";
 import { ApiError, AuthorizationError } from "../exceptions";
@@ -85,7 +87,7 @@ export async function listStream(
   // big result sets.
   let started = false;
   const startTime = Date.now();
-  const resultsIterator = await db.iterateLocationBatches({
+  const resultsIterator = db.iterateLocationBatches({
     includePrivate,
     where,
     values,
@@ -151,9 +153,11 @@ export const list = async (req: AppRequest, res: Response): Promise<void> => {
     .next();
   const batch = result.value || { locations: [], next: null };
 
-  res.json({
-    links: Pagination.createLinks(req, { next: batch.next }),
-    data: batch.locations,
+  withSpan("writeJson", () => {
+    res.json({
+      links: Pagination.createLinks(req, { next: batch.next }),
+      data: batch.locations,
+    });
   });
 };
 
@@ -187,7 +191,7 @@ export const getById = async (req: AppRequest, res: Response): Promise<any> => {
   if (!provider) {
     return sendError(res, `No provider location with ID '${id}'`, 404);
   } else {
-    return res.json({ data: provider });
+    return withSpan("writeJson", () => res.json({ data: provider }));
   }
 };
 
@@ -243,7 +247,8 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
 
   // FIXME: need to make this a single PG operation or add locks around it. It's
   // possible for two concurrent updates to both try and create a location.
-  let location;
+  const updateLocationSpan = startSpan({ op: "updateLocation" });
+  let location: ProviderLocation;
   if (data.id && UUID_PATTERN.test(data.id)) {
     location = await db.getLocationById(data.id, { includePrivate: true });
   }
@@ -271,8 +276,10 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
     // relevant external ID we've seen for a location.
     await db.addExternalIds(location.id, data.external_ids);
   }
+  finishSpan(updateLocationSpan);
 
   if (data.availability) {
+    const updateAvailabilitySpan = startSpan({ op: "updateAvailability " });
     // Accommodate old formats that sources might still be sending.
     // TODO: remove once loaders have all been migrated.
     if (data.availability.updated_at) {
@@ -302,6 +309,7 @@ export const update = async (req: AppRequest, res: Response): Promise<any> => {
         throw error;
       }
     }
+    finishSpan(updateAvailabilitySpan);
   }
 
   if (
@@ -340,8 +348,10 @@ export const listAvailability = async (
   const data = await dbQuery;
   const lastItem = data.at(-1);
 
-  response.json({
-    links: Pagination.createLinks(request, { next: lastItem?.id }),
-    data,
+  withSpan("writeJson", () => {
+    response.json({
+      links: Pagination.createLinks(request, { next: lastItem?.id }),
+      data,
+    });
   });
 };
