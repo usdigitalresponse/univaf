@@ -63,7 +63,7 @@
     "@types/compression": "1.7.2",
     "@types/cors": "^2.8.13",
     "@types/errorhandler": "1.5.0",
-    "@types/eslint": "8.21.2",
+    "@types/eslint": "8.21.3",
     "@types/express": "4.17.17",
     "@types/lodash": "4.14.191",
     "@types/luxon": "^3.2.0",
