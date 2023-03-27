@@ -4,6 +4,7 @@
  */
 
 const { parseJsonLines } = require("univaf-common/utils");
+const { states: allStates } = require("univaf-common");
 const { httpClient, filterObject, oneLine } = require("./utils");
 
 const MANIFEST_CACHE_TIME = 5 * 60 * 1000;
@@ -45,6 +46,11 @@ const PRODUCTS_BY_CVX_CODE = {
   227: "moderna_age_6_11",
   228: "moderna_age_0_5",
 };
+
+const VALID_STATES = allStates.map((s) => s.usps).filter(Boolean);
+const STATE_FILENAME_PATTERN = new RegExp(
+  String.raw`/(?<state>${VALID_STATES.join("|")})(?:\.ndjson)?(?:\?|$)`
+);
 
 // Use symbols to link slots -> schedules -> locations to avoid circular
 // references when serializing or logging data.
@@ -116,20 +122,22 @@ class SmartSchedulingLinksApi {
     return this.manifest.data;
   }
 
-  async *listItems(type, states) {
+  async getManifestEntries(type, states) {
     const manifest = await this.getManifest();
-    for (const item of manifest.output) {
-      if (item.type === type) {
-        if (matchStates(states, item.extension?.state)) {
-          const response = await httpClient({
-            ...this.httpOptions,
-            url: item.url,
-          });
-          for (const record of parseJsonLines(response.body)) {
-            record[sourceReference] = item;
-            yield record;
-          }
-        }
+    return manifest.output
+      .filter((entry) => type === entry.type)
+      .filter((entry) => matchStates(states, this.#getEntryStates(entry)));
+  }
+
+  async *listItems(type, states) {
+    for (const entry of await this.getManifestEntries(type, states)) {
+      const response = await httpClient({
+        ...this.httpOptions,
+        url: entry.url,
+      });
+      for (const record of parseJsonLines(response.body)) {
+        record[sourceReference] = entry;
+        yield record;
       }
     }
   }
@@ -144,6 +152,15 @@ class SmartSchedulingLinksApi {
 
   async *listSlots(states) {
     yield* this.listItems("Slot", states);
+  }
+
+  #getEntryStates(manifestEntry) {
+    let states = manifestEntry.extension?.state;
+
+    // If the state extension isn't used, infer it from the URL.
+    states ||= manifestEntry.url.match(STATE_FILENAME_PATTERN)?.groups?.state;
+
+    return states;
   }
 }
 
