@@ -135,7 +135,7 @@ async function* queryState(state, rateLimit = null, summaryOnly = false) {
       // appointment slots.
       for (let i = 0; i < newStores.length; i += SLOT_QUERY_CHUNK_SIZE) {
         const chunk = newStores.slice(i, i + SLOT_QUERY_CHUNK_SIZE);
-        const fullData = await queryZipCode(zipCode, 100, chunk);
+        const fullData = await queryZipCode(zipCode, radius, chunk);
         for (const item of fullData.data.stores || []) {
           yield item;
         }
