@@ -1,4 +1,5 @@
 const assert = require("assert").strict;
+const { unpadNumber } = require("../../utils");
 const { HttpApiError } = require("../../exceptions");
 
 // States in which Rite Aid has stores.
@@ -44,10 +45,10 @@ class RiteAidApiError extends HttpApiError {
  * @returns {[string, string][]}
  */
 function getExternalIds(storeNumber) {
-  const numberString = storeNumber.toString();
+  const numberString = unpadNumber(storeNumber.toString());
   const result = [["rite_aid", numberString]];
-  if (/69\d\d$/.test(numberString)) {
-    result.push(["bartell", numberString.slice(-2)]);
+  if (/^69\d\d$/.test(numberString)) {
+    result.push(["bartell", unpadNumber(numberString.slice(-2))]);
   }
   return result;
 }
