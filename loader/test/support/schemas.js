@@ -44,6 +44,7 @@ const capacitySchema = {
     unavailable_count: { type: "integer", minimum: 0 },
     products: productsSchema,
     dose: { type: "string" },
+    booking_url: { type: "string", format: "uri" },
   },
   required: ["date"],
   additionalProperties: false,
