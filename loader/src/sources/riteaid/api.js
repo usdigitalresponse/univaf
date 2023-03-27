@@ -7,6 +7,7 @@ const {
   parseUsPhoneNumber,
   httpClient,
   RateLimit,
+  formatZipCode,
 } = require("../../utils");
 const {
   assertSchema,
@@ -201,7 +202,7 @@ function formatStore(provider) {
     address_lines,
     city: provider.location.city,
     state: provider.location.state,
-    postal_code: provider.location.zipcode,
+    postal_code: formatZipCode(provider.location.zipcode),
     county,
     booking_phone:
       provider.contact.booking_phone &&

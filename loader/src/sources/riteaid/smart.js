@@ -9,6 +9,7 @@ const {
   unpadNumber,
   createWarningLogger,
   DEFAULT_STATES,
+  formatZipCode,
 } = require("../../utils");
 const {
   EXTENSIONS,
@@ -96,7 +97,7 @@ function formatLocation(locationInfo) {
     address_lines: smartLocation.address.line,
     city: smartLocation.address.city,
     state: smartLocation.address.state,
-    postal_code: smartLocation.address.postalCode,
+    postal_code: formatZipCode(smartLocation.address.postalCode),
     county:
       smartLocation.address.district &&
       titleCase(smartLocation.address.district),

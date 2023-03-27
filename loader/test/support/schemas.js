@@ -101,7 +101,9 @@ const locationSchema = {
     address_lines: { type: "array", items: { type: "string" } },
     city: { type: "string" },
     state: { type: "string" },
-    postal_code: { type: "string" },
+    // This pattern is only relevant to the USA, but we only deal with USA
+    // locations, so it's a useful integrity check.
+    postal_code: { type: "string", pattern: "\\d{5}(-\\d{4})?" },
     county: { type: "string" },
     position: {
       type: "object",
