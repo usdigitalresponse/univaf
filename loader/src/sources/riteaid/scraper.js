@@ -8,7 +8,6 @@
  * cover the entirety of a given state.
  */
 
-const assert = require("node:assert/strict");
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
