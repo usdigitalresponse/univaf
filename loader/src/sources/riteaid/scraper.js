@@ -8,7 +8,6 @@
  * cover the entirety of a given state.
  */
 
-const assert = require("node:assert/strict");
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
@@ -90,10 +89,24 @@ async function queryZipCode(zip, radius = 100, stores = null) {
 
   // This internal API returns only up to N locations and has no pagination.
   // If we get the maximum number of results back, we're probably missing data.
-  assert.ok(
-    response.body.data.stores?.length < maximumResultCount,
-    `Query for zip code ${zip} had too many results`
-  );
+  if (response.body.data.stores?.length >= maximumResultCount) {
+    // Track the results! We get this error in situations where it doesn't seem
+    // possible given the zip, radius, and all known Rite Aids.
+    const resultSummary = response.body.data.stores.map((store) => ({
+      store: store.storeNumber,
+      zip: store.zipcode,
+      miles: store.milesFromCenter,
+    }));
+    const farthest = resultSummary
+      .slice()
+      .sort((a, b) => a.miles - b.miles)
+      .at(-1);
+    warn(
+      `Query for zip code ${zip} had too many results`,
+      { radius, farthest, results: resultSummary },
+      true
+    );
+  }
 
   return response.body;
 }
