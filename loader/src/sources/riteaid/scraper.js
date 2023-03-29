@@ -8,6 +8,7 @@
  * cover the entirety of a given state.
  */
 
+const got = require("got");
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
@@ -25,6 +26,7 @@ const {
   getExternalIds,
   getLocationName,
   RITE_AID_STATES,
+  MINIMUM_403_RETRY_DELAY,
 } = require("./common");
 const { zipCodesCoveringAllRiteAids } = require("./zip-codes");
 
@@ -81,6 +83,18 @@ async function queryZipCode(zip, radius = 100, stores = null) {
     },
     responseType: "json",
     throwHttpErrors: false,
+    retry: {
+      // This endpoint occasionally produces 403 status codes. We think this is
+      // an anti-abuse measure, so we still want to retry, but with a longer
+      // than normal delay.
+      statusCodes: [...got.default.defaults.options.retry.statusCodes, 403],
+      calculateDelay({ error, computedValue }) {
+        if (error.response.statusCode === 403 && computedValue > 0) {
+          return Math.max(computedValue, MINIMUM_403_RETRY_DELAY);
+        }
+        return computedValue;
+      },
+    },
   });
 
   if (response.body.Status !== "SUCCESS") {
