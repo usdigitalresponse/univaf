@@ -1,3 +1,4 @@
+const got = require("got");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
@@ -113,6 +114,18 @@ async function queryState(state, rateLimit = null) {
     headers: { "Proxy-Authorization": "ldap " + RITE_AID_KEY },
     searchParams: { stateCode: state },
     responseType: "json",
+    retry: {
+      // This endpoint occasionally produces 403 status codes. We think this is
+      // an anti-abuse measure, so we still want to retry, but with a longer
+      // than normal delay.
+      statusCodes: [...got.default.defaults.options.retry.statusCodes, 403],
+      calculateDelay({ error, computedValue }) {
+        if (error.response.statusCode === 403 && computedValue > 0) {
+          return Math.max(computedValue, 10_000);
+        }
+        return computedValue;
+      },
+    },
   });
 
   if (response.body.Status !== "SUCCESS") {
