@@ -26,6 +26,7 @@ const {
   getExternalIds,
   getLocationName,
   RITE_AID_STATES,
+  MINIMUM_403_RETRY_DELAY,
 } = require("./common");
 const { zipCodesCoveringAllRiteAids } = require("./zip-codes");
 
@@ -89,7 +90,7 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       statusCodes: [...got.default.defaults.options.retry.statusCodes, 403],
       calculateDelay({ error, computedValue }) {
         if (error.response.statusCode === 403 && computedValue > 0) {
-          return Math.max(computedValue, 10_000);
+          return Math.max(computedValue, MINIMUM_403_RETRY_DELAY);
         }
         return computedValue;
       },

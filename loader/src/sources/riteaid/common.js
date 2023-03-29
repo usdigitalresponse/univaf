@@ -1,5 +1,6 @@
 const assert = require("assert").strict;
 const { HttpApiError } = require("../../exceptions");
+const { isTest } = require("../../config");
 
 // States in which Rite Aid has stores.
 const RITE_AID_STATES = [
@@ -21,6 +22,8 @@ const RITE_AID_STATES = [
   "VT",
   "WA",
 ];
+
+const MINIMUM_403_RETRY_DELAY = isTest ? 0 : 10_000;
 
 class RiteAidApiError extends HttpApiError {
   parse(response) {
@@ -78,6 +81,7 @@ function getLocationName(externalIds) {
 
 module.exports = {
   RITE_AID_STATES,
+  MINIMUM_403_RETRY_DELAY,
   RiteAidApiError,
   getExternalIds,
   getLocationName,

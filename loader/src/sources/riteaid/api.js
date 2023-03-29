@@ -19,6 +19,7 @@ const {
   RiteAidApiError,
   getExternalIds,
   getLocationName,
+  MINIMUM_403_RETRY_DELAY,
 } = require("./common");
 
 const warn = createWarningLogger("riteAidApi");
@@ -121,7 +122,7 @@ async function queryState(state, rateLimit = null) {
       statusCodes: [...got.default.defaults.options.retry.statusCodes, 403],
       calculateDelay({ error, computedValue }) {
         if (error.response.statusCode === 403 && computedValue > 0) {
-          return Math.max(computedValue, 10_000);
+          return Math.max(computedValue, MINIMUM_403_RETRY_DELAY);
         }
         return computedValue;
       },
