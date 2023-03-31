@@ -89,7 +89,7 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       // than normal delay.
       statusCodes: [...got.default.defaults.options.retry.statusCodes, 403],
       calculateDelay({ error, computedValue }) {
-        if (error.response.statusCode === 403 && computedValue > 0) {
+        if (error.response?.statusCode === 403 && computedValue > 0) {
           return Math.max(computedValue, MINIMUM_403_RETRY_DELAY);
         }
         return computedValue;
