@@ -1,6 +1,8 @@
 const assert = require("assert").strict;
+const got = require("got");
 const { HttpApiError } = require("../../exceptions");
 const { isTest } = require("../../config");
+const { httpClient } = require("../../utils");
 
 // States in which Rite Aid has stores.
 const RITE_AID_STATES = [
@@ -23,8 +25,6 @@ const RITE_AID_STATES = [
   "WA",
 ];
 
-const MINIMUM_403_RETRY_DELAY = isTest ? 0 : 10_000;
-
 class RiteAidApiError extends HttpApiError {
   parse(response) {
     assert.equal(typeof response.body, "object");
@@ -32,6 +32,29 @@ class RiteAidApiError extends HttpApiError {
     this.message = `${this.details.Status} ${this.details.ErrCde}: ${this.details.ErrMsg}`;
   }
 }
+
+const MINIMUM_403_RETRY_DELAY = isTest ? 0 : 30_000;
+
+/**
+ * A pre-configured Got instance with appropriate headers, etc. Crucially, this
+ * client retries on 403 status codes (auth errors), since Rite Aid seems to
+ * occasionally respond with those when our auth is actually valid.
+ * @type {import("got").GotRequestFunction}
+ */
+const riteAidHttpClient = httpClient.extend({
+  retry: {
+    // This endpoint occasionally produces 403 status codes. We think this is
+    // an anti-abuse measure, so we still want to retry, but fewer times and
+    // with a longer than normal delay.
+    statusCodes: [...got.default.defaults.options.retry.statusCodes, 403],
+    calculateDelay({ attemptCount, error, computedValue }) {
+      if (error.response?.statusCode === 403 && attemptCount < 2) {
+        return Math.max(computedValue, MINIMUM_403_RETRY_DELAY);
+      }
+      return computedValue;
+    },
+  },
+});
 
 /**
  * Get the external IDs for a given Rite Aid store number. Rite Aid has a
@@ -81,8 +104,8 @@ function getLocationName(externalIds) {
 
 module.exports = {
   RITE_AID_STATES,
-  MINIMUM_403_RETRY_DELAY,
   RiteAidApiError,
   getExternalIds,
   getLocationName,
+  riteAidHttpClient,
 };
