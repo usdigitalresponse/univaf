@@ -55,6 +55,7 @@ Sentry.init({
   // Sentry's session tracking keeps the process running, which causes tests to
   // hang. We don't really need session tracking, so turn it off.
   autoSessionTracking: false,
+  ignoreTransactions: ["/health", "/debugme"],
   integrations: [
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({ app }),
