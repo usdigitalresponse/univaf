@@ -38,7 +38,7 @@
 
 import EventEmitter from "node:events";
 import * as Sentry from "@sentry/node";
-import { Transaction } from "@sentry/core";
+import { Transaction, addTracingExtensions } from "@sentry/core";
 import type { Span, SpanStatusType } from "@sentry/core";
 import type { SpanContext } from "@sentry/types";
 export type { Span } from "@sentry/core";
@@ -112,6 +112,18 @@ function getParentSpan(span: Span) {
  */
 export function startSpan(options: SpanOptions): Span {
   let { parentSpan, timeout, ...spanOptions } = options;
+
+  // Ensure tracing extensions are installed. Normally, they only get
+  // automatically set up if certain integrations are added and the client is
+  // enabled, but if they aren't installed, transaction- and span-related
+  // methods return `undefined`. This makes the behavior of those methods
+  // predictable.
+  // Technically this only has to happen once, but we'd like to delay it until
+  // after Sentry has had a chance to be initialized normally, so this only
+  // takes effect as a last resort (it's idempotent).
+  // TODO: we should probably make it OK for span creation to return undefined
+  // and remove this.
+  addTracingExtensions();
 
   let scope;
   if (!parentSpan) {
