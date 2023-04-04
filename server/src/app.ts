@@ -3,7 +3,6 @@ import compression from "compression"; // compresses requests
 import cors from "cors";
 import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 import { RELEASE } from "./config";
 import {
   AppRequest,
@@ -58,7 +57,8 @@ Sentry.init({
   ignoreTransactions: ["/health", "/debugme"],
   integrations: [
     new Sentry.Integrations.Http({ tracing: true }),
-    new Tracing.Integrations.Express({ app }),
+    new Sentry.Integrations.Express({ app }),
+    ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
   ],
   release: RELEASE,
 });

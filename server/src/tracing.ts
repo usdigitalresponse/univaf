@@ -38,10 +38,10 @@
 
 import EventEmitter from "node:events";
 import * as Sentry from "@sentry/node";
-import { Transaction } from "@sentry/tracing";
-import type { Span, SpanStatusType } from "@sentry/tracing";
+import { Transaction } from "@sentry/core";
+import type { Span, SpanStatusType } from "@sentry/core";
 import type { SpanContext } from "@sentry/types";
-export type { Span } from "@sentry/tracing";
+export type { Span } from "@sentry/core";
 
 interface SpanOptions extends SpanContext {
   parentSpan?: Span;
