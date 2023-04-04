@@ -288,7 +288,9 @@ const nonCovidProductName = new RegExp(
     raw`^child and adolescent immunization`,
     raw`monkeypox`,
     raw`jynneos`,
-    raw`\btdap\b`,
+    // Diphtheria, Tetanus, & Pertussis. These two cover the same viruses, but
+    // are slightly different formulations for different people.
+    raw`\b(tdap|dtap)\b`,
     // Pneumococcal Conjugate Vaccine
     raw`\bPCV(\d+)?\b`,
     // Pneumococcal Polysaccharide Vaccine
@@ -301,6 +303,13 @@ const nonCovidProductName = new RegExp(
     raw`\bhepatitis\b`,
     // Chickenpox Vaccine
     raw`\b(varicella|chickenpox)\b`,
+    raw`\brotavirus\b`,
+    // Meningococcal Group B bacteria vaccine
+    raw`\bMenB\b`,
+    // Meningococcal conjugate vaccine
+    raw`\bMenACWY\b`,
+    // Haemophilus influenzae type b
+    raw`\bHib\b`,
     // In all cases we've seen, this occurs on schedules that list other actual
     // vaccine names as well. We'll pick up the true products from the other
     // extensions in the schedule.
