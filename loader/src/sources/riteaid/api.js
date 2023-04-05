@@ -5,6 +5,7 @@ const { Available, LocationType } = require("../../model");
 const {
   createWarningLogger,
   parseUsPhoneNumber,
+  httpClient,
   RateLimit,
 } = require("../../utils");
 const {
@@ -16,7 +17,6 @@ const {
   RiteAidApiError,
   getExternalIds,
   getLocationName,
-  riteAidHttpClient,
 } = require("./common");
 
 const warn = createWarningLogger("riteAidApi");
@@ -113,7 +113,7 @@ async function queryState(state, rateLimit = null) {
 
   if (rateLimit) await rateLimit.ready();
 
-  const response = await riteAidHttpClient({
+  const response = await httpClient({
     url: apiUrl,
     headers: { "Proxy-Authorization": "ldap " + apiKey },
     searchParams: { stateCode: state },

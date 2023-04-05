@@ -18,13 +18,13 @@ const {
   TIME_ZONE_OFFSET_STRINGS,
   createWarningLogger,
   parseUsPhoneNumber,
+  httpClient,
 } = require("../../utils");
 const {
   RiteAidApiError,
   getExternalIds,
   getLocationName,
   RITE_AID_STATES,
-  riteAidHttpClient,
 } = require("./common");
 const { zipCodesCoveringAllRiteAids } = require("./zip-codes");
 
@@ -61,7 +61,7 @@ const warn = createWarningLogger("riteAidScraper");
 async function queryZipCode(zip, radius = 100, stores = null) {
   const maximumResultCount = 100;
 
-  const response = await riteAidHttpClient({
+  const response = await httpClient({
     url: API_URL,
     searchParams: {
       address: zip,
