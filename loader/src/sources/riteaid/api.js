@@ -1,5 +1,4 @@
 const { DateTime } = require("luxon");
-const Sentry = require("@sentry/node");
 const geocoding = require("../../geocoding");
 const { ParseError } = require("../../exceptions");
 const { Available, LocationType } = require("../../model");
