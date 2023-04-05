@@ -1,3 +1,5 @@
+const { BaseError } = require("univaf-common/exceptions");
+
 /**
  * @typedef {object} HttpResponse
  * @property {number} statusCode
@@ -8,7 +10,7 @@
 /**
  * An error from an HTTP response.
  */
-class HttpApiError extends Error {
+class HttpApiError extends BaseError {
   /** @property {number} statusCode The HTTP status code of the response. */
 
   /**
@@ -90,7 +92,7 @@ function assertValidGraphQl(response) {
   }
 }
 
-class ParseError extends Error {}
+class ParseError extends BaseError {}
 
 module.exports = {
   GraphQlError,
