@@ -96,21 +96,27 @@ const riteAidLocationSchema = requireAllProperties({
   additionalProperties: false,
 });
 
-async function queryState(state, rateLimit = null) {
-  const RITE_AID_URL = process.env["RITE_AID_URL"];
-  const RITE_AID_KEY = process.env["RITE_AID_KEY"];
+function getRiteAidConfiguration() {
+  const apiUrl = process.env["RITE_AID_URL"];
+  const apiKey = process.env["RITE_AID_KEY"];
 
-  if (!RITE_AID_URL || !RITE_AID_KEY) {
+  if (!apiUrl || !apiKey) {
     throw new Error(
       "RITE_AID_URL and RITE_AID_KEY must be provided as environment variables"
     );
   }
 
+  return { apiUrl, apiKey };
+}
+
+async function queryState(state, rateLimit = null) {
+  const { apiUrl, apiKey } = getRiteAidConfiguration();
+
   if (rateLimit) await rateLimit.ready();
 
   const response = await riteAidHttpClient({
-    url: RITE_AID_URL,
-    headers: { "Proxy-Authorization": "ldap " + RITE_AID_KEY },
+    url: apiUrl,
+    headers: { "Proxy-Authorization": "ldap " + apiKey },
     searchParams: { stateCode: state },
     responseType: "json",
   });
@@ -265,6 +271,7 @@ async function checkAvailability(
   handler,
   { states = RITE_AID_STATES, rateLimit }
 ) {
+  getRiteAidConfiguration();
   const rateLimiter = new RateLimit(rateLimit || 1);
 
   let results = [];
@@ -277,17 +284,16 @@ async function checkAvailability(
     try {
       const rawData = await queryState(state, rateLimiter);
       for (const rawLocation of rawData) {
-        Sentry.withScope((scope) => {
-          scope.setContext("context", errorContext);
-          scope.setContext("location", { id: rawLocation.id });
-          try {
-            stores.push(formatStore(rawLocation));
-          } catch (error) {
-            warn(error);
-          }
-        });
+        try {
+          stores.push(formatStore(rawLocation));
+        } catch (error) {
+          warn(error, { ...errorContext, locationId: rawLocation.id }, true);
+        }
       }
     } catch (error) {
+      // Stop early on authentication errors. Future requests won't work.
+      if ([401, 403].includes(error.response?.statusCode)) throw error;
+
       warn(error, errorContext, true);
       continue;
     }
