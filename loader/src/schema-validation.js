@@ -1,7 +1,8 @@
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
+const { BaseError } = require("univaf-common/exceptions");
 
-class SchemaError extends Error {
+class SchemaError extends BaseError {
   static formatAjvError(error) {
     const value = JSON.stringify(error.data) || "undefined";
     return `${error.instancePath} ${error.message} (value: \`${value}\`)`;

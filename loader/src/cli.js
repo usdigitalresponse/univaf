@@ -116,7 +116,10 @@ async function run(options) {
     for (const report of reports) {
       if (report.error) {
         console.error(`Error in "${report.name}":`, report.error, "\n");
-        Sentry.captureException(report.error);
+        Sentry.withScope((scope) => {
+          scope.setContext("context", { source: report.name });
+          Sentry.captureException(report.error);
+        });
         process.exitCode = 91;
       } else {
         successCount++;
@@ -127,7 +130,7 @@ async function run(options) {
     }
   } catch (error) {
     process.exitCode = 90;
-    console.error(`Error: ${error}`);
+    console.error(error.toString());
     Sentry.captureException(error);
   } finally {
     const duration = (Date.now() - startTime) / 1000;

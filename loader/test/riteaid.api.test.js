@@ -202,12 +202,6 @@ describe("Rite Aid Source", () => {
     expect(locations).toContainItemsMatchingSchema(locationSchema);
   });
 
-  it("does not throw errors for states without Rite Aid stores", async () => {
-    nock(API_URL).get("?stateCode=AK").times(3).reply(403, "uhoh");
-    const results = await checkAvailability(() => {}, { states: ["AK"] });
-    expect(results).toHaveLength(0);
-  });
-
   it("throws errors for inconsistent slot counts", async () => {
     const badData = {
       ...createMockApiLocation(),

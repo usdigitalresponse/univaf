@@ -1,7 +1,9 @@
+import { BaseError } from "univaf-common/exceptions";
+
 /**
  * Error that is safe to surface externally (i.e. in an HTTP response).
  */
-export class ApiError extends Error {
+export class ApiError extends BaseError {
   httpStatus = 500;
   code?: string;
   extra?: any;

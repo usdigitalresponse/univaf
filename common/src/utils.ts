@@ -12,7 +12,9 @@ export function parseJsonLines(text: string): any[] {
         line = line.replace(/\t/g, "\\t");
         return JSON.parse(line);
       } catch (error) {
-        throw new SyntaxError(`Error parsing line ${index + 1}: ${line}`);
+        throw new SyntaxError(`Error parsing line ${index + 1}: ${line}`, {
+          cause: error,
+        });
       }
     });
 }
