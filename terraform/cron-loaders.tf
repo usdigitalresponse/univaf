@@ -28,25 +28,17 @@ locals {
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
       }
     },
-    waDoh = { schedule = "cron(3/5 * * * ? *)" }
-    cvsSmart = {
-      schedule = "cron(0/10 * * * ? *)"
-      # Lower concurrency since this sends so many updates.
-      env_vars = { API_CONCURRENCY = "5" }
-    }
-    walgreensSmart = {
-      schedule = "cron(2/10 * * * ? *)"
-      # Lower concurrency since this sends so many updates.
-      env_vars = { API_CONCURRENCY = "5" }
-    }
+    waDoh          = { schedule = "cron(3/5 * * * ? *)" }
+    cvsSmart       = { schedule = "cron(0/10 * * * ? *)" }
+    walgreensSmart = { schedule = "cron(2/10 * * * ? *)" }
     krogerSmart    = { schedule = "cron(4/10 * * * ? *)" }
     albertsons     = { schedule = "cron(6/10 * * * ? *)" }
     hyvee          = { schedule = "cron(8/10 * * * ? *)" }
     heb            = { schedule = "cron(1/10 * * * ? *)" }
     cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
-    riteAidScraper = { schedule = "cron(0/10 * * * ? *)" }
+    riteAidScraper = { schedule = "cron(5/30 * * * ? *)" }
     riteAidApi = {
-      schedule = "cron(0/30 * * * ? *)"
+      schedule = "cron(0/15 * * * ? *)"
       env_vars = {
         RITE_AID_URL = var.rite_aid_api_url
         RITE_AID_KEY = var.rite_aid_api_key
@@ -77,9 +69,10 @@ module "source_loader" {
       ? "https://${local.api_internal_domain}"
       : "http://${aws_alb.main.dns_name}"
     )
-    API_KEY    = var.api_keys[0]
-    DD_API_KEY = var.datadog_api_key
-    SENTRY_DSN = var.loader_sentry_dsn
+    API_KEY         = var.api_keys[0]
+    API_CONCURRENCY = "5"
+    DD_API_KEY      = var.datadog_api_key
+    SENTRY_DSN      = var.loader_sentry_dsn
   }, lookup(each.value, "env_vars", {}))
   image = "${aws_ecr_repository.loader_repository.repository_url}:${var.loader_release_version}"
   role  = aws_iam_role.ecs_task_execution_role.arn
