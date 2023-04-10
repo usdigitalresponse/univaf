@@ -1,7 +1,11 @@
+const { Readable } = require("node:stream");
+const nock = require("nock");
 const {
   valuesAsObject,
   getExtensions,
   formatExternalIds,
+  sourceReference,
+  SmartSchedulingLinksApi,
 } = require("../src/smart-scheduling-links");
 
 // Mock utils so we can track logs.
@@ -160,6 +164,64 @@ describe("smart-scheduling-links", () => {
         ["x", "1598055964"],
         ["http://example.com/unknown2", "abc"],
       ]);
+    });
+  });
+
+  describe("SmartSchedulingLinksApi", () => {
+    afterEach(() => {
+      nock.cleanAll();
+    });
+
+    it("only loads manifest entries for the requested states", async () => {
+      const manifest = {
+        transactionTime: "2021-05-17T16:41:05.534Z",
+        request: `http://example.com/manifest.json`,
+        output: [
+          {
+            type: "Location",
+            url: "http://example.com/l/test1.ndjson",
+            extension: { state: ["DE", "NJ"] },
+          },
+          {
+            type: "Location",
+            url: "http://example.com/l/test2.ndjson",
+            extension: { state: ["CA", "OR"] },
+          },
+
+          // Entries where the state is inferred instead of explicit.
+          { type: "Location", url: "http://example.com/l/NJ.ndjson" },
+          { type: "Location", url: "http://example.com/l/CA.ndjson" },
+
+          // Shuld always be loaded because the state is unknown.
+          { type: "Location", url: "http://example.com/l/test3.ndjson" },
+        ],
+        error: [],
+      };
+
+      nock("http://example.com").get("/manifest.json").reply(200, manifest);
+      nock("http://example.com")
+        .get("/l/test1.ndjson")
+        .reply(200, `{"source": "test1.ndjson"}`);
+      nock("http://example.com")
+        .get("/l/NJ.ndjson")
+        .reply(200, `{"source": "NJ.ndjson"}`);
+      nock("http://example.com")
+        .get("/l/test3.ndjson")
+        .reply(200, `{"source": "test3.ndjson"}`);
+
+      const client = new SmartSchedulingLinksApi(
+        "http://example.com/manifest.json"
+      );
+      const locations = await Readable.from(
+        client.listLocations(["NJ"])
+      ).toArray();
+
+      expect(locations).toEqual([
+        { source: "test1.ndjson", [sourceReference]: manifest.output[0] },
+        { source: "NJ.ndjson", [sourceReference]: manifest.output[2] },
+        { source: "test3.ndjson", [sourceReference]: manifest.output[4] },
+      ]);
+      expect(nock.isDone()).toBe(true);
     });
   });
 });

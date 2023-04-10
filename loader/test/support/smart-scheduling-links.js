@@ -25,7 +25,7 @@ function createSmartLocation(overrides) {
   const schedulesData = overrides?.schedules || [{}];
   delete overrides?.schedules;
 
-  const id = Math.random().toString().slice(2);
+  const id = overrides?.id ?? Math.random().toString().slice(2);
   const location = {
     id,
     resourceType: "Location",
