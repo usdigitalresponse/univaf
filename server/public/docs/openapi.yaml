@@ -19,7 +19,8 @@ info:
     Data is currently sourced from:
     - CVS Pharmacy (source names: `univaf-cvs-api`, `univaf-cvs-smart`)
     - Walgreens Pharmacy (source name: `univaf-walgreens-smart`)
-    - Rite Aid Pharmacy (source name: `univaf-rite-aid-api`)
+    - Rite Aid Pharmacy (source names: `univaf-rite-aid-api`,
+        `univaf-rite-aid-smart`, `univaf-rite-aid-scraper`)
     - Albertsons (source name: `univaf-albertsons`)
     - HyVee (source name: `univaf-hyvee`)
     - PrepMod (source name: `univaf-prepmod`)
