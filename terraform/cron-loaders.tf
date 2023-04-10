@@ -44,9 +44,9 @@ locals {
     hyvee          = { schedule = "cron(8/10 * * * ? *)" }
     heb            = { schedule = "cron(1/10 * * * ? *)" }
     cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
-    riteAidScraper = { schedule = "cron(0/10 * * * ? *)" }
+    riteAidScraper = { schedule = "cron(5/30 * * * ? *)" }
     riteAidApi = {
-      schedule = "cron(0/30 * * * ? *)"
+      schedule = "cron(0/15 * * * ? *)"
       env_vars = {
         RITE_AID_URL = var.rite_aid_api_url
         RITE_AID_KEY = var.rite_aid_api_key
