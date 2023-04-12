@@ -310,6 +310,8 @@ const nonCovidProductName = new RegExp(
     raw`\bMenACWY\b`,
     // Haemophilus influenzae type b
     raw`\bHib\b`,
+    // Polio
+    raw`\bPolio\b`,
     // In all cases we've seen, this occurs on schedules that list other actual
     // vaccine names as well. We'll pick up the true products from the other
     // extensions in the schedule.
