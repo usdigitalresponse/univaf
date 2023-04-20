@@ -37,8 +37,9 @@ locals {
     heb            = { schedule = "cron(1/10 * * * ? *)" }
     cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
     riteAidScraper = { schedule = "cron(5/30 * * * ? *)" }
-    # TODO: turn this on once a build that supports it is deployed.
-    # riteAidSmart   = { schedule = "cron(8/15 * * * ? *)" }
+    # TODO: Turn off riteAidApi. riteAidSmart + riteAidApi are running in
+    # parallel while testing riteAidSmart.
+    riteAidSmart = { schedule = "cron(8/15 * * * ? *)" }
     riteAidApi = {
       schedule = "cron(0/15 * * * ? *)"
       env_vars = {
