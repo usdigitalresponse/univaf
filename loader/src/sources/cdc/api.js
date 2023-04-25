@@ -488,7 +488,7 @@ const ndcLookup = {
   [normalizeNdc("59267-1404-01")]: VaccineProduct.pfizerBa4Ba5, // use, 1 dose vial
   [normalizeNdc("59267-1404-02")]: VaccineProduct.pfizerBa4Ba5, // sale, 1 dose vial
 
-  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
+  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerBa4Ba5Age5_11, // use
   [normalizeNdc("59267-0565-02")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
 
   [normalizeNdc("59267-0609-02")]: VaccineProduct.pfizerBa4Ba5Age0_4, // sale
