@@ -488,7 +488,7 @@ const ndcLookup = {
   [normalizeNdc("59267-1404-01")]: VaccineProduct.pfizerBa4Ba5, // use, 1 dose vial
   [normalizeNdc("59267-1404-02")]: VaccineProduct.pfizerBa4Ba5, // sale, 1 dose vial
 
-  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
+  [normalizeNdc("59267-0565-01")]: VaccineProduct.pfizerBa4Ba5Age5_11, // use
   [normalizeNdc("59267-0565-02")]: VaccineProduct.pfizerBa4Ba5Age5_11, // sale
 
   [normalizeNdc("59267-0609-02")]: VaccineProduct.pfizerBa4Ba5Age0_4, // sale
@@ -499,6 +499,8 @@ const ndcLookup = {
 
   [normalizeNdc("80631-0100-01")]: VaccineProduct.novavax, // sale
   [normalizeNdc("80631-0100-10")]: VaccineProduct.novavax, // use
+  [normalizeNdc("80631-0102-01")]: VaccineProduct.novavax, // sale
+  [normalizeNdc("80631-0102-10")]: VaccineProduct.novavax, // use
 
   // Moderna original & booster are the same product and use the same code, so
   // they aren't distinguishable here (booster is just a half doese).
