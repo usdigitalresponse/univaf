@@ -499,6 +499,8 @@ const ndcLookup = {
 
   [normalizeNdc("80631-0100-01")]: VaccineProduct.novavax, // sale
   [normalizeNdc("80631-0100-10")]: VaccineProduct.novavax, // use
+  [normalizeNdc("80631-0102-01")]: VaccineProduct.novavax, // sale
+  [normalizeNdc("80631-0102-10")]: VaccineProduct.novavax, // use
 
   // Moderna original & booster are the same product and use the same code, so
   // they aren't distinguishable here (booster is just a half doese).
