@@ -17,7 +17,7 @@ import { logger, logStackTrace } from "./logger";
 import * as Sentry from "@sentry/node";
 import * as availabilityLog from "./availability-log";
 import { isDeepStrictEqual } from "util";
-import { minimumAgeForProducts } from "./vaccines";
+import { minimumAgeForProducts } from "univaf-common/vaccines";
 import { dogstatsd } from "./datadog";
 import { startSpan, finishSpan, withSpan } from "./tracing";
 

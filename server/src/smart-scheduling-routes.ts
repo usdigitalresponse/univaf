@@ -10,6 +10,7 @@
 import { Request, Response } from "express";
 import { DateTime } from "luxon";
 import { states } from "univaf-common";
+import { CVX_CODES, PRODUCT_NAMES, VaccineCode } from "univaf-common/vaccines";
 import { getPrimaryHost } from "./config";
 import { getRequestHost } from "./utils";
 import * as db from "./db";
@@ -19,7 +20,6 @@ import {
   SlotRecord,
   CapacityRecord,
 } from "./interfaces";
-import { CVX_CODES, PRODUCT_NAMES, VaccineCode } from "./vaccines";
 
 const BOOKING_DEEP_LINK =
   "http://fhir-registry.smarthealthit.org/StructureDefinition/booking-deep-link";
