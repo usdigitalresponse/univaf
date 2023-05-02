@@ -32,7 +32,10 @@ locals {
     cvsSmart       = { schedule = "cron(0/10 * * * ? *)" }
     walgreensSmart = { schedule = "cron(2/10 * * * ? *)" }
     krogerSmart    = { schedule = "cron(4/10 * * * ? *)" }
-    albertsons     = { schedule = "cron(6/10 * * * ? *)" }
+    # FIXME: Albertsons needs a new scraper. The system the current one was
+    # written for has been abandoned by Albertsons, so all info in it is stale.
+    # See https://github.com/usdigitalresponse/univaf/issues/1460
+    # albertsons     = { schedule = "cron(6/10 * * * ? *)" }
     hyvee          = { schedule = "cron(8/10 * * * ? *)" }
     heb            = { schedule = "cron(1/10 * * * ? *)" }
     cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
