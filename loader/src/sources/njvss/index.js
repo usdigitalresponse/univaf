@@ -256,15 +256,13 @@ function filterActualNjvssLocations(locations) {
 /**
  * Match up locations from the NJVSS database with locations from the API.
  * Because NJVSS data doesn't currently include IDs, and all the other fields
- * are malleable, IDs fo NJVSS are arbitrary.
+ * are malleable, IDs for NJVSS are arbitrary.
  * In the mean time, this function tries to reduce duplication by roughly
- * matching live NJVSS data to an existing record from API and use that
+ * matching live NJVSS data to an existing record from our API and use that
  * record's ID if possible.
  *
- * If no match can be found, a new ID will be invented for the record.
- *
- * Returns the list of passed in locations, but with each modified to add an
- * `id` property.
+ * Returns the list of passed in locations, but with some modified to add an
+ * `id` property if a existing match was found.
  * @param {Array<object>} locations List of found NJVSS locations.
  * @returns {Promise<Array<object>>}
  */
@@ -277,12 +275,9 @@ async function findLocationIds(locations) {
     savedLocations = await client.getLocations({ state: "NJ" });
   } catch (error) {
     warn(
-      `Could not contact API. This may output already known locations with different IDs. (${error})`
+      `Could not contact API. This may output already known locations without IDs. (${error})`
     );
-    return locations.map((location) => {
-      location.id = createId(location);
-      return location;
-    });
+    return locations;
   }
 
   for (const saved of savedLocations) {
@@ -353,13 +348,8 @@ async function findLocationIds(locations) {
     if (item.match) {
       item.location.id = item.match.id;
     } else {
-      warn(
-        `NJVSS Inventing new ID for "${item.location.name}" at "${item.simpleAddress}"`
-      );
-      item.location.id = createId(
-        item.location,
-        item.simpleName,
-        item.simpleAddress
+      console.warn(
+        `No match for "${item.location.name}" IDs: "${item.external_ids}"`
       );
     }
   }
@@ -388,15 +378,6 @@ function getDescriptionDetails(text) {
   }
 
   return result.trim();
-}
-
-function createId(location, simpleName, simpleAddress) {
-  simpleName = simpleName || matchable(location.name);
-  simpleAddress = simpleAddress || matchableAddress(location.address_lines);
-  return crypto
-    .createHash("sha1")
-    .update(`${simpleName} ${simpleAddress}`)
-    .digest("hex");
 }
 
 const spaceRegex = /\s+/g;
