@@ -3,15 +3,7 @@ const { parseUsAddress, unpadNumber } = require("../../utils");
 const csvParse = require("csv-parse/sync");
 const getStream = require("get-stream");
 const { S3 } = require("@aws-sdk/client-s3");
-const { ApiClient } = require("../../api-client");
-const {
-  matchable,
-  matchableAddress,
-  oneLine,
-  popItem,
-  titleCase,
-  createWarningLogger,
-} = require("../../utils");
+const { oneLine, titleCase, createWarningLogger } = require("../../utils");
 const { corrections } = require("./corrections");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
