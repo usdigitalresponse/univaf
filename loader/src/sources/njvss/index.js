@@ -15,10 +15,6 @@ const {
 const { corrections } = require("./corrections");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
-const NJVSS_AWS_KEY_ID =
-  process.env["NJVSS_AWS_KEY_ID"] || process.env["AWS_ACCESS_KEY_ID"];
-const NJVSS_AWS_SECRET_KEY =
-  process.env["NJVSS_AWS_SECRET_KEY"] || process.env["AWS_SECRET_ACCESS_KEY"];
 const NJVSS_DATA_REGION = "us-east-1";
 const NJVSS_DATA_BUCKET = "njvss-pinpoint-reports";
 const NJVSS_DATA_KEY = "njvss-available-appointments.csv";
@@ -123,7 +119,12 @@ function parseNjvssCsv(csvText) {
  * @returns {Promise<{lastModified?: Date, rawString: string}>}
  */
 async function getNjvssDataRaw() {
-  if (!NJVSS_AWS_KEY_ID || !NJVSS_AWS_SECRET_KEY) {
+  const accessKeyId =
+    process.env["NJVSS_AWS_KEY_ID"] || process.env["AWS_ACCESS_KEY_ID"];
+  const secretAccessKey =
+    process.env["NJVSS_AWS_SECRET_KEY"] || process.env["AWS_SECRET_ACCESS_KEY"];
+
+  if (!accessKeyId || !secretAccessKey) {
     throw new Error(oneLine`
       To load NJVSS data, you must set the NJVSS_AWS_KEY_ID (or
       AWS_ACCESS_KEY_ID) and NJVSS_AWS_SECRET_KEY (or AWS_SECRET_ACCESS_KEY)
@@ -132,10 +133,7 @@ async function getNjvssDataRaw() {
   }
 
   const client = new S3({
-    credentials: {
-      accessKeyId: NJVSS_AWS_KEY_ID,
-      secretAccessKey: NJVSS_AWS_SECRET_KEY,
-    },
+    credentials: { accessKeyId, secretAccessKey },
     region: NJVSS_DATA_REGION,
   });
   const object = await client.getObject({
