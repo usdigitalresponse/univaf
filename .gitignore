@@ -32,6 +32,7 @@ scratch.*
 *.pid
 *.gz
 *.swp
+!**/fixtures/*.csv
 
 pids
 logs

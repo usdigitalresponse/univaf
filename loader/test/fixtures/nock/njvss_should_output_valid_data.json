@@ -1,0 +1,35 @@
+[
+    {
+        "scope": "https://njvss-pinpoint-reports.s3.us-east-1.amazonaws.com:443",
+        "method": "GET",
+        "path": "/njvss-available-appointments.csv?x-id=GetObject",
+        "body": "",
+        "status": 200,
+        "response": "res_id,provider_id,name,statuscodename,vras_provideraddress,vras_latitude,vras_longitude,vras_typetext,vras_allowschedulingforcountyresidentsonly,county,available\r\nd591d023-b457-eb11-a812-001dd8018866,13340,Ray Pharmacy,Active,\"187 North Ave, Dunellen, NJ 8812\",40.59311,-74.4604,\"<p>187 North Ave, Dunellen, NJ 8812<br/> </p> <strong><em>Available Vaccines</em></strong><ul><li>Novavax (12 and older)</li></ul> This location is available for 1st and 2nd dose recipients. \",,middlesex,2805\r\nb951acec-32f1-eb11-bacb-001dd80283f5,13351,Ewing Pharmacy,Active,\"1400 Parkway Ave # A2, Ewing, New Jersey 08628\",40.26704,-74.80568,\"<p>1400 Parkway Ave # A2, Ewing, New Jersey 08628<br/> </p>  This location is available for 1st and 2nd dose recipients. \",False,mercer,800\r\n976cc7cc-2292-eb11-a812-001dd802d26d,14488,Bells Pharmacy,Active,\"17 N Union Avenue, Cranford, NJ 07016\",40.65606,-74.30391,\"<p>17 N Union Avenue, Cranford, NJ 07016<br/> </p> <strong><em>Available Vaccines</em></strong><ul><li>Janssen (J&J) (18 and older)</li><li>Moderna_Peds (6 months - 5 years)</li><li>Moderna_Peds_DarkBlueCap (6 - 11 years)</li><li>Moderna_RedCap (12 and older)</li><li>Pfizer_GrayCap (12 and older)</li><li>Pfizer_Peds (5 - 11 years)</li><li>Pfizer_Peds (6 months - 4 years)</li></ul> This location is available for 1st and 2nd dose recipients. \",False,union,708\r\n6b0eaeb9-c251-eb11-a812-001dd8020ced,162,Gloucester County Health Department,Active,\"204 E Holly Ave, Sewell, NJ 08080\",39.74471,-75.10931,\"<p>204 E Holly Ave, Sewell, NJ 08080<br/> </p> <strong><em>Available Vaccines</em></strong><ul><li>Novavax (12 and older)</li><li>Pfizer_Bivalent (6 months - 4 years)</li></ul> This location is available for 1st and 2nd dose recipients. \",,gloucester,309\r\n1b535c83-c4a6-eb11-a812-001dd802f902,14586,Franklyns Pharmacy,Active,\"204 Warren Avenue, Ho Ho Kus, NJ 07423\",40.99871,-74.11065,\"<p>204 Warren Avenue, Ho Ho Kus, NJ 07423<br/> </p> <strong><em>Available Vaccines</em></strong><ul><li>Janssen (J&J) (18 and older)</li><li>Moderna_RedCap (12 and older)</li><li>Pfizer_Peds (5 - 11 years)</li></ul> This location is available for 1st and 2nd dose recipients. \",False,bergen,159\r\nacf11ba6-2e04-ec11-94ef-001dd802ac2d,8677,Access Medical Associates Branchburg,Active,\"3322 Route 22 Building 1, Branchburg, NJ 08876\",40.60782,-74.70276,\"<p>3322 Route 22 Building 1, Branchburg, NJ 08876<br/> </p> <strong><em>Available Vaccines</em></strong><ul><li>Janssen (J&J) (18 and older)</li><li>Moderna_RedCap (12 and older)</li><li>Novavax (12 and older)</li></ul> This location is available for 1st and 2nd dose recipients. \",False,somerset,120\r\n4a67c0b2-b003-ed11-bb3a-001dd803f402,734,Montgomery Township Health Department,Active,\"100 Community Drive, Skillman, NJ 08558\",40.41892,-74.65703,\"<p>100 Community Drive, Skillman, NJ 08558<br/> </p>  This location is available for 1st and 2nd dose recipients. \",False,somerset,37\r\n61753bf2-c5a6-eb11-a812-001dd802f038,14319,Richards Pharmacy,Active,\"207 Broad Ave, Palisades Park, NJ 07650\",40.84586,-73.99971,\"<p>207 Broad Ave, Palisades Park, NJ 07650<br/> </p> <strong><em>Available Vaccines</em></strong><ul><li>Janssen (J&J) (18 and older)</li><li>Moderna_RedCap (12 and older)</li></ul> This location is available for 1st and 2nd dose recipients. \",False,bergen,25\r\na1bd2330-3822-ed11-b83c-001dd801ca65,13155,Booster Bivalent Moderna at Campbells Pharmacy,Active,\"2175 Highway 35, Sea Girt, NJ 08750\",40.13658,-74.06378,\"<p>2175 Highway 35, Sea Girt, NJ 08750<br/> </p>  This location is available for 1st and 2nd dose recipients. \",False,monmouth,15\r\n",
+        "rawHeaders": [
+            "x-amz-id-2",
+            "pBbOc0JqRvpkhoiLlSUejCvkBYqgZQvAcXfculWuSFyI3tBKj7OrkbbV1fLV0ZXliDYK9BreCfA=",
+            "x-amz-request-id",
+            "7G7CZG3MZ9M40YAC",
+            "Date",
+            "Tue, 02 May 2023 19:51:41 GMT",
+            "Last-Modified",
+            "Tue, 02 May 2023 19:29:37 GMT",
+            "ETag",
+            "\"8d08f026c219462f2efc8e5d4909e007\"",
+            "x-amz-server-side-encryption",
+            "AES256",
+            "x-amz-meta-title",
+            "someTitle",
+            "Accept-Ranges",
+            "bytes",
+            "Content-Type",
+            "application/CSV",
+            "Server",
+            "AmazonS3",
+            "Content-Length",
+            "3593"
+        ],
+        "responseIsBinary": false
+    }
+]
