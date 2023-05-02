@@ -497,13 +497,13 @@ async function checkAvailability(handler, _options) {
       location_type = LocationType.pharmacy;
     }
 
-    const external_ids = {
+    const external_ids = [
       // NJ IIS locations sometimes run multiple ad-hoc locations, and so have
       // the same IIS identifier. `njiis_covid` adds in the location name to
       // make the identifier unique.
-      njiis_covid: createNjIisId(location),
-      njvss_res_id: location.res_id || undefined,
-    };
+      ["njiis_covid", createNjIisId(location)],
+      ["njvss_res_id", location.res_id || undefined],
+    ];
 
     let name = location.name;
 
@@ -514,11 +514,11 @@ async function checkAvailability(handler, _options) {
       const storeNumber = unpadNumber(walmartMatch.groups.storeId);
 
       if (walmartMatch.groups.sams) {
-        external_ids.sams_club = storeNumber;
+        external_ids.push(["sams_club", storeNumber]);
         provider = PROVIDER.sams;
         name = `Sam’s Club #${storeNumber}`;
       } else {
-        external_ids.walmart = storeNumber;
+        external_ids.push(["walmart", storeNumber]);
         provider = PROVIDER.walmart;
         name = `Walmart #${storeNumber}`;
       }
