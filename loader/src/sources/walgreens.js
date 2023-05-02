@@ -77,6 +77,11 @@ function formatLocation(locationInfo) {
     delete position.altitude;
   }
 
+  // TODO: if all slots are before validTime, consider backdating validTime
+  // or providing some other signal that data is stale. (Important since the
+  // API often surfaces a single multi-day slot per location, so we don't wind
+  // up writing capacity or slot records in practice, and that kind of
+  // freshness data therefore gets lost.)
   const capacity = formatCapacity(locationInfo.slots);
   const available = locationInfo.slots?.some((slot) => slot.status === "free")
     ? Available.yes
