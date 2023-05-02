@@ -188,106 +188,6 @@ function filterHiddenNjvssLocations(locations) {
 }
 
 /**
- * Match up locations from the NJVSS database with locations from the API.
- * Because NJVSS data doesn't currently include IDs, and all the other fields
- * are malleable, IDs for NJVSS are arbitrary.
- * In the mean time, this function tries to reduce duplication by roughly
- * matching live NJVSS data to an existing record from our API and use that
- * record's ID if possible.
- *
- * Returns the list of passed in locations, but with some modified to add an
- * `id` property if a existing match was found.
- * @param {Array<object>} locations List of found NJVSS locations.
- * @returns {Promise<Array<object>>}
- */
-async function findLocationIds(locations) {
-  // FIXME: a lot has changed about how we manage locations and IDs since this
-  // was written. We can probably just use external_ids for this job now!
-  let savedLocations;
-  try {
-    const client = ApiClient.fromEnv();
-    savedLocations = await client.getLocations({ state: "NJ" });
-  } catch (error) {
-    warn(
-      `Could not contact API. This may output already known locations without IDs. (${error})`
-    );
-    return locations;
-  }
-
-  for (const saved of savedLocations) {
-    saved.simpleAddress = matchableAddress(saved.address_lines);
-    saved.simpleName = matchable(saved.name);
-  }
-  const unmatched = savedLocations.slice();
-
-  const matched = locations.map((location) => {
-    // Just match on the first address line. Entries in the DoH list use a
-    // variety of formats and the first line is still more-or-less unique.
-    let simpleAddress = matchableAddress(location.address_lines[0]);
-    let simpleName = matchable(location.name);
-
-    // Manual overrides for cases where the data just does not reconcile :(
-    if (simpleAddress === "college center 1400 tanyard road") {
-      simpleAddress = "1400 tanyard road";
-    }
-    if (simpleName === "vineland doh public health nursing") {
-      simpleName = "city of vineland health department";
-    }
-
-    return { location, simpleAddress, simpleName, match: null };
-  });
-
-  // We need to do three separate loops for matching (address + name,
-  // address only, name only) because the names are not very unique, and if we
-  // did a single pass, we might have a record that matches by name when we
-  // would prefer it match an address later on in the list.
-  //
-  // For example, if the API has an entry like:
-  //   {name: "Trinitas Regional Medical Center", address: "600 Pearl St."}
-  // And NJVSS has:
-  //   {name: "Trinitas Regional Medical Center", address: "225 Williamson St."}
-  //   {name: "TRMC at Thomas Dunn Sports Center", address: "600 Pearl St."}
-  //
-  // A single pass check of all 3 kinds of matches would join the API record to
-  // the first NJVSS site instead of the second, which would be more accurate.
-  // The same situation also applies in reverse.
-  for (const item of matched) {
-    if (!item.match) {
-      item.match = popItem(
-        unmatched,
-        (saved) =>
-          saved.simpleAddress.includes(item.simpleAddress) &&
-          saved.simpleName.includes(item.simpleName)
-      );
-    }
-  }
-
-  for (const item of matched) {
-    if (!item.match) {
-      item.match = popItem(unmatched, (saved) =>
-        saved.simpleAddress.includes(item.simpleAddress)
-      );
-    }
-  }
-
-  for (const item of matched) {
-    if (!item.match) {
-      item.match = popItem(unmatched, (saved) =>
-        saved.simpleName.includes(item.simpleName)
-      );
-    }
-  }
-
-  for (const item of matched) {
-    if (item.match) {
-      item.location.id = item.match.id;
-    }
-  }
-
-  return locations;
-}
-
-/**
  * Remove the address from a location's description and return everything after.
  * If the address can't be identified, the original text is returned unaltered.
  * @param {string} text
@@ -368,7 +268,7 @@ async function checkAvailability(handler, _options) {
   const validTime = data.lastModified?.toISOString();
   const locations = filterHiddenNjvssLocations(data.records);
 
-  let result = [];
+  const result = [];
   for (const location of locations) {
     let provider = PROVIDER.njvss;
 
@@ -462,11 +362,8 @@ async function checkAvailability(handler, _options) {
         products: products.length ? products : undefined,
       },
     };
-    result.push(record);
-  }
 
-  result = await findLocationIds(result);
-  for (const record of result) {
+    result.push(record);
     handler(record, { update_location: true });
   }
 
