@@ -346,10 +346,6 @@ async function findLocationIds(locations) {
   for (const item of matched) {
     if (item.match) {
       item.location.id = item.match.id;
-    } else {
-      console.warn(
-        `No match for "${item.location.name}" IDs: "${item.external_ids}"`
-      );
     }
   }
 
@@ -432,8 +428,6 @@ const walmartPattern = /(walmart(?<sams>\/Sams)?) #?(?<storeId>\d+)\s*$/i;
  * @returns {Promise<Array<object>>}
  */
 async function checkAvailability(handler, _options) {
-  console.error("Checking New Jersey VSS (https://covidvaccine.nj.gov)...");
-
   const data = await getNjvssData();
   const checkTime = new Date().toISOString();
   const validTime = data.lastModified?.toISOString();
