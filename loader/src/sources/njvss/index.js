@@ -121,7 +121,7 @@ function parseNjvssCsv(csvText) {
 
 /**
  * Get current availability data directly from NJVSS with no post-processing.
- * @returns {Promise<string>}
+ * @returns {Promise<{lastModified?: Date, rawString: string}>}
  */
 async function getNjvssDataRaw() {
   if (!NJVSS_AWS_KEY_ID || !NJVSS_AWS_SECRET_KEY) {
@@ -144,18 +144,24 @@ async function getNjvssDataRaw() {
     Key: NJVSS_DATA_KEY,
   });
 
-  return await getStream(object.Body);
+  return {
+    lastModified: object.LastModified,
+    rawString: await getStream(object.Body),
+  };
 }
 
 /**
  * Get current availability data from the NJVSS.
  * A separate process continuously exports current availability data from the
  * NJVSS database to a CSV file in S3, which is what this function loads.
- * @returns {Promise<Array<NjvssRecord>>}
+ * @returns {Promise<{lastModified?: Date, records: Array<NjvssRecord>}>}
  */
 async function getNjvssData() {
   const raw = await getNjvssDataRaw();
-  return parseNjvssCsv(raw);
+  return {
+    lastModified: raw.lastModified,
+    records: parseNjvssCsv(raw.rawString),
+  };
 }
 
 /**
@@ -448,11 +454,13 @@ const walmartPattern = /(walmart(?<sams>\/Sams)?) #?(?<storeId>\d+)\s*$/i;
 async function checkAvailability(handler, _options) {
   console.error("Checking New Jersey VSS (https://covidvaccine.nj.gov)...");
 
+  const data = await getNjvssData();
   const checkTime = new Date().toISOString();
-  let locations = await getNjvssData();
+  const validTime = data.lastModified?.toISOString();
+
   // Not all locations listed in NJVSS are actively participating, so we need
   // to filter non-participants out.
-  locations = filterActualNjvssLocations(locations);
+  const locations = filterActualNjvssLocations(data.records);
 
   let result = [];
   for (const location of locations) {
@@ -541,8 +549,7 @@ async function checkAvailability(handler, _options) {
 
       availability: {
         source: "univaf-njvss",
-        // TODO: See if we can get a field added to the export for this
-        // valid_at: null,
+        valid_at: validTime,
         checked_at: checkTime,
         available: location.available > 0 ? Available.yes : Available.no,
         available_count: location.available,
