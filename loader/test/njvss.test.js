@@ -17,7 +17,16 @@ function mockUnivafLocations(mockedData) {
 }
 
 describe("NJVSS", () => {
+  let processMock;
+  beforeEach(() => {
+    processMock = jest.replaceProperty(process, "env", {
+      NJVSS_AWS_KEY_ID: "abc123xyz",
+      NJVSS_AWS_SECRET_KEY: "abc123xyz",
+    });
+  });
+
   afterEach(() => {
+    processMock.restore();
     nock.cleanAll();
   });
 
