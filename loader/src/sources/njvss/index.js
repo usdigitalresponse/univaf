@@ -47,10 +47,6 @@ const VACCINE_NAMES = {
 
 const warn = createWarningLogger("njvss");
 
-// TODO: clean up the no-longer-relevant logs in this module that use this
-// because we don't actually want to be notified about them.
-const logDebug = console.warn;
-
 /**
  * @typedef {Object} NjvssRecord
  * @property {string} res_id
@@ -163,36 +159,17 @@ async function getNjvssData() {
 
 /**
  * Remove NJVSS locations from an array if they probably don't actually
- * participate in NJVSS for scheduling appointments.
+ * participate in NJVSS for scheduling appointments or should be hidden.
  *
  * The NJVSS database includes many locations that are not actually
  * participating in NJVSS for scheduling, and which will never have open
  * bookings in NJVSS even if they have appointments (i.e. their availability
  * should come from other sources, not this NJVSS module).
- *
- * For now, we keep a list of NJVSS locations that we have previously seen with
- * available appointments and limit the output of this module to only those
- * locations (+ any that have availability now).
  * @param {Array<NjvssRecord>} locations
  * @returns {Array<NjvssRecord>}
  */
-function filterActualNjvssLocations(locations) {
-  // TODO: re-evaluate whether this function and this data file (and most of
-  // what this function does) is still needed. We log a lot of changes from this
-  // data file that we don't actually care about, and we don't really update the
-  // file. New Jersey now manages this info in Airtable, anyway.
-  // See also:
-  // - https://github.com/usdigitalresponse/univaf/issues/198
-  // - https://github.com/usdigitalresponse/univaf/issues/116
-  let knownLocations = require("./known-njvss-locations.json");
-  knownLocations = knownLocations.map((known) => {
-    return Object.assign({}, known, {
-      simpleName: matchable(known.name),
-      simpleAddress: matchableAddress(known.address),
-    });
-  });
-
-  const filtered = locations.filter((location) => {
+function filterHiddenNjvssLocations(locations) {
+  return locations.filter((location) => {
     // Null location coordinates indicate a location should not be listed.
     // (VRAS doesn't support hiding locations, so this is the hack used inside
     // the system to do so.)
@@ -206,48 +183,8 @@ function filterActualNjvssLocations(locations) {
       return false;
     }
 
-    const simpleAddress = matchableAddress(location.vras_provideraddress);
-    const simpleName = matchable(location.name);
-
-    // There are a few locations with the same address but different names, so
-    // try to find a complete before matching only one field.
-    let match = popItem(
-      knownLocations,
-      (known) =>
-        known.simpleAddress === simpleAddress && known.simpleName === simpleName
-    );
-    if (match) return true;
-
-    match = popItem(
-      knownLocations,
-      (known) =>
-        known.simpleAddress === simpleAddress || known.simpleName === simpleName
-    );
-    if (match) return true;
-
-    // If our list of known locations is incomplete, log it so we have a signal
-    // that we should to update our list of known participating locations.
-    if (location.available > 0) {
-      logDebug(oneLine`
-        NJVSS reports availability for a new site: "${location.name}" at
-        "${location.vras_provideraddress}"
-      `);
-      return true;
-    }
-
-    return false;
+    return true;
   });
-
-  // Sanity-check that we don't have any previously known locations that didn't
-  // match up to something in the NJVSS database now.
-  for (const known of knownLocations) {
-    logDebug(oneLine`
-      Previously known NJVSS location not found in NJVSS data:
-      "${known.name}" at "${known.address}"
-    `);
-  }
-
-  return filtered;
 }
 
 /**
@@ -429,10 +366,7 @@ async function checkAvailability(handler, _options) {
   const data = await getNjvssData();
   const checkTime = new Date().toISOString();
   const validTime = data.lastModified?.toISOString();
-
-  // Not all locations listed in NJVSS are actively participating, so we need
-  // to filter non-participants out.
-  const locations = filterActualNjvssLocations(data.records);
+  const locations = filterHiddenNjvssLocations(data.records);
 
   let result = [];
   for (const location of locations) {
