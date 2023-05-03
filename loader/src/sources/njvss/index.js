@@ -1,6 +1,5 @@
 const { Available, LocationType, VaccineProduct } = require("../../model");
 const { parseUsAddress, unpadNumber } = require("../../utils");
-const crypto = require("crypto");
 const csvParse = require("csv-parse/sync");
 const getStream = require("get-stream");
 const { S3 } = require("@aws-sdk/client-s3");
@@ -16,10 +15,6 @@ const {
 const { corrections } = require("./corrections");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
-const NJVSS_AWS_KEY_ID =
-  process.env["NJVSS_AWS_KEY_ID"] || process.env["AWS_ACCESS_KEY_ID"];
-const NJVSS_AWS_SECRET_KEY =
-  process.env["NJVSS_AWS_SECRET_KEY"] || process.env["AWS_SECRET_ACCESS_KEY"];
 const NJVSS_DATA_REGION = "us-east-1";
 const NJVSS_DATA_BUCKET = "njvss-pinpoint-reports";
 const NJVSS_DATA_KEY = "njvss-available-appointments.csv";
@@ -121,10 +116,15 @@ function parseNjvssCsv(csvText) {
 
 /**
  * Get current availability data directly from NJVSS with no post-processing.
- * @returns {Promise<string>}
+ * @returns {Promise<{lastModified?: Date, rawString: string}>}
  */
 async function getNjvssDataRaw() {
-  if (!NJVSS_AWS_KEY_ID || !NJVSS_AWS_SECRET_KEY) {
+  const accessKeyId =
+    process.env["NJVSS_AWS_KEY_ID"] || process.env["AWS_ACCESS_KEY_ID"];
+  const secretAccessKey =
+    process.env["NJVSS_AWS_SECRET_KEY"] || process.env["AWS_SECRET_ACCESS_KEY"];
+
+  if (!accessKeyId || !secretAccessKey) {
     throw new Error(oneLine`
       To load NJVSS data, you must set the NJVSS_AWS_KEY_ID (or
       AWS_ACCESS_KEY_ID) and NJVSS_AWS_SECRET_KEY (or AWS_SECRET_ACCESS_KEY)
@@ -133,10 +133,7 @@ async function getNjvssDataRaw() {
   }
 
   const client = new S3({
-    credentials: {
-      accessKeyId: NJVSS_AWS_KEY_ID,
-      secretAccessKey: NJVSS_AWS_SECRET_KEY,
-    },
+    credentials: { accessKeyId, secretAccessKey },
     region: NJVSS_DATA_REGION,
   });
   const object = await client.getObject({
@@ -144,18 +141,24 @@ async function getNjvssDataRaw() {
     Key: NJVSS_DATA_KEY,
   });
 
-  return await getStream(object.Body);
+  return {
+    lastModified: object.LastModified,
+    rawString: await getStream(object.Body),
+  };
 }
 
 /**
  * Get current availability data from the NJVSS.
  * A separate process continuously exports current availability data from the
  * NJVSS database to a CSV file in S3, which is what this function loads.
- * @returns {Promise<Array<NjvssRecord>>}
+ * @returns {Promise<{lastModified?: Date, records: Array<NjvssRecord>}>}
  */
 async function getNjvssData() {
   const raw = await getNjvssDataRaw();
-  return parseNjvssCsv(raw);
+  return {
+    lastModified: raw.lastModified,
+    records: parseNjvssCsv(raw.rawString),
+  };
 }
 
 /**
@@ -250,15 +253,13 @@ function filterActualNjvssLocations(locations) {
 /**
  * Match up locations from the NJVSS database with locations from the API.
  * Because NJVSS data doesn't currently include IDs, and all the other fields
- * are malleable, IDs fo NJVSS are arbitrary.
+ * are malleable, IDs for NJVSS are arbitrary.
  * In the mean time, this function tries to reduce duplication by roughly
- * matching live NJVSS data to an existing record from API and use that
+ * matching live NJVSS data to an existing record from our API and use that
  * record's ID if possible.
  *
- * If no match can be found, a new ID will be invented for the record.
- *
- * Returns the list of passed in locations, but with each modified to add an
- * `id` property.
+ * Returns the list of passed in locations, but with some modified to add an
+ * `id` property if a existing match was found.
  * @param {Array<object>} locations List of found NJVSS locations.
  * @returns {Promise<Array<object>>}
  */
@@ -271,12 +272,9 @@ async function findLocationIds(locations) {
     savedLocations = await client.getLocations({ state: "NJ" });
   } catch (error) {
     warn(
-      `Could not contact API. This may output already known locations with different IDs. (${error})`
+      `Could not contact API. This may output already known locations without IDs. (${error})`
     );
-    return locations.map((location) => {
-      location.id = createId(location);
-      return location;
-    });
+    return locations;
   }
 
   for (const saved of savedLocations) {
@@ -346,15 +344,6 @@ async function findLocationIds(locations) {
   for (const item of matched) {
     if (item.match) {
       item.location.id = item.match.id;
-    } else {
-      warn(
-        `NJVSS Inventing new ID for "${item.location.name}" at "${item.simpleAddress}"`
-      );
-      item.location.id = createId(
-        item.location,
-        item.simpleName,
-        item.simpleAddress
-      );
     }
   }
 
@@ -382,15 +371,6 @@ function getDescriptionDetails(text) {
   }
 
   return result.trim();
-}
-
-function createId(location, simpleName, simpleAddress) {
-  simpleName = simpleName || matchable(location.name);
-  simpleAddress = simpleAddress || matchableAddress(location.address_lines);
-  return crypto
-    .createHash("sha1")
-    .update(`${simpleName} ${simpleAddress}`)
-    .digest("hex");
 }
 
 const spaceRegex = /\s+/g;
@@ -446,13 +426,13 @@ const walmartPattern = /(walmart(?<sams>\/Sams)?) #?(?<storeId>\d+)\s*$/i;
  * @returns {Promise<Array<object>>}
  */
 async function checkAvailability(handler, _options) {
-  console.error("Checking New Jersey VSS (https://covidvaccine.nj.gov)...");
-
+  const data = await getNjvssData();
   const checkTime = new Date().toISOString();
-  let locations = await getNjvssData();
+  const validTime = data.lastModified?.toISOString();
+
   // Not all locations listed in NJVSS are actively participating, so we need
   // to filter non-participants out.
-  locations = filterActualNjvssLocations(locations);
+  const locations = filterActualNjvssLocations(data.records);
 
   let result = [];
   for (const location of locations) {
@@ -489,13 +469,13 @@ async function checkAvailability(handler, _options) {
       location_type = LocationType.pharmacy;
     }
 
-    const external_ids = {
+    const external_ids = [
       // NJ IIS locations sometimes run multiple ad-hoc locations, and so have
       // the same IIS identifier. `njiis_covid` adds in the location name to
       // make the identifier unique.
-      njiis_covid: createNjIisId(location),
-      njvss_res_id: location.res_id || undefined,
-    };
+      ["njiis_covid", createNjIisId(location)],
+      ["njvss_res_id", location.res_id || undefined],
+    ];
 
     let name = location.name;
 
@@ -506,11 +486,11 @@ async function checkAvailability(handler, _options) {
       const storeNumber = unpadNumber(walmartMatch.groups.storeId);
 
       if (walmartMatch.groups.sams) {
-        external_ids.sams_club = storeNumber;
+        external_ids.push(["sams_club", storeNumber]);
         provider = PROVIDER.sams;
         name = `Sam’s Club #${storeNumber}`;
       } else {
-        external_ids.walmart = storeNumber;
+        external_ids.push(["walmart", storeNumber]);
         provider = PROVIDER.walmart;
         name = `Walmart #${storeNumber}`;
       }
@@ -541,8 +521,7 @@ async function checkAvailability(handler, _options) {
 
       availability: {
         source: "univaf-njvss",
-        // TODO: See if we can get a field added to the export for this
-        // valid_at: null,
+        valid_at: validTime,
         checked_at: checkTime,
         available: location.available > 0 ? Available.yes : Available.no,
         available_count: location.available,
