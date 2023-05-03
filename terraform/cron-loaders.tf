@@ -22,7 +22,7 @@ locals {
   #       njvss = { schedule = "rate(5 minutes)", sources = ["njvss"] }
   loaders = {
     njvss = {
-      schedule = "rate(5 minutes)"
+      schedule = "rate(15 minutes)"
       env_vars = {
         NJVSS_AWS_KEY_ID     = var.njvss_aws_key_id
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
