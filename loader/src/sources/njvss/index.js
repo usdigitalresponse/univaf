@@ -3,15 +3,7 @@ const { parseUsAddress, unpadNumber } = require("../../utils");
 const csvParse = require("csv-parse/sync");
 const getStream = require("get-stream");
 const { S3 } = require("@aws-sdk/client-s3");
-const { ApiClient } = require("../../api-client");
-const {
-  matchable,
-  matchableAddress,
-  oneLine,
-  popItem,
-  titleCase,
-  createWarningLogger,
-} = require("../../utils");
+const { oneLine, titleCase, createWarningLogger } = require("../../utils");
 const { corrections } = require("./corrections");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
@@ -46,10 +38,6 @@ const VACCINE_NAMES = {
 };
 
 const warn = createWarningLogger("njvss");
-
-// TODO: clean up the no-longer-relevant logs in this module that use this
-// because we don't actually want to be notified about them.
-const logDebug = console.warn;
 
 /**
  * @typedef {Object} NjvssRecord
@@ -163,36 +151,17 @@ async function getNjvssData() {
 
 /**
  * Remove NJVSS locations from an array if they probably don't actually
- * participate in NJVSS for scheduling appointments.
+ * participate in NJVSS for scheduling appointments or should be hidden.
  *
  * The NJVSS database includes many locations that are not actually
  * participating in NJVSS for scheduling, and which will never have open
  * bookings in NJVSS even if they have appointments (i.e. their availability
  * should come from other sources, not this NJVSS module).
- *
- * For now, we keep a list of NJVSS locations that we have previously seen with
- * available appointments and limit the output of this module to only those
- * locations (+ any that have availability now).
  * @param {Array<NjvssRecord>} locations
  * @returns {Array<NjvssRecord>}
  */
-function filterActualNjvssLocations(locations) {
-  // TODO: re-evaluate whether this function and this data file (and most of
-  // what this function does) is still needed. We log a lot of changes from this
-  // data file that we don't actually care about, and we don't really update the
-  // file. New Jersey now manages this info in Airtable, anyway.
-  // See also:
-  // - https://github.com/usdigitalresponse/univaf/issues/198
-  // - https://github.com/usdigitalresponse/univaf/issues/116
-  let knownLocations = require("./known-njvss-locations.json");
-  knownLocations = knownLocations.map((known) => {
-    return Object.assign({}, known, {
-      simpleName: matchable(known.name),
-      simpleAddress: matchableAddress(known.address),
-    });
-  });
-
-  const filtered = locations.filter((location) => {
+function filterHiddenNjvssLocations(locations) {
+  return locations.filter((location) => {
     // Null location coordinates indicate a location should not be listed.
     // (VRAS doesn't support hiding locations, so this is the hack used inside
     // the system to do so.)
@@ -206,148 +175,8 @@ function filterActualNjvssLocations(locations) {
       return false;
     }
 
-    const simpleAddress = matchableAddress(location.vras_provideraddress);
-    const simpleName = matchable(location.name);
-
-    // There are a few locations with the same address but different names, so
-    // try to find a complete before matching only one field.
-    let match = popItem(
-      knownLocations,
-      (known) =>
-        known.simpleAddress === simpleAddress && known.simpleName === simpleName
-    );
-    if (match) return true;
-
-    match = popItem(
-      knownLocations,
-      (known) =>
-        known.simpleAddress === simpleAddress || known.simpleName === simpleName
-    );
-    if (match) return true;
-
-    // If our list of known locations is incomplete, log it so we have a signal
-    // that we should to update our list of known participating locations.
-    if (location.available > 0) {
-      logDebug(oneLine`
-        NJVSS reports availability for a new site: "${location.name}" at
-        "${location.vras_provideraddress}"
-      `);
-      return true;
-    }
-
-    return false;
+    return true;
   });
-
-  // Sanity-check that we don't have any previously known locations that didn't
-  // match up to something in the NJVSS database now.
-  for (const known of knownLocations) {
-    logDebug(oneLine`
-      Previously known NJVSS location not found in NJVSS data:
-      "${known.name}" at "${known.address}"
-    `);
-  }
-
-  return filtered;
-}
-
-/**
- * Match up locations from the NJVSS database with locations from the API.
- * Because NJVSS data doesn't currently include IDs, and all the other fields
- * are malleable, IDs for NJVSS are arbitrary.
- * In the mean time, this function tries to reduce duplication by roughly
- * matching live NJVSS data to an existing record from our API and use that
- * record's ID if possible.
- *
- * Returns the list of passed in locations, but with some modified to add an
- * `id` property if a existing match was found.
- * @param {Array<object>} locations List of found NJVSS locations.
- * @returns {Promise<Array<object>>}
- */
-async function findLocationIds(locations) {
-  // FIXME: a lot has changed about how we manage locations and IDs since this
-  // was written. We can probably just use external_ids for this job now!
-  let savedLocations;
-  try {
-    const client = ApiClient.fromEnv();
-    savedLocations = await client.getLocations({ state: "NJ" });
-  } catch (error) {
-    warn(
-      `Could not contact API. This may output already known locations without IDs. (${error})`
-    );
-    return locations;
-  }
-
-  for (const saved of savedLocations) {
-    saved.simpleAddress = matchableAddress(saved.address_lines);
-    saved.simpleName = matchable(saved.name);
-  }
-  const unmatched = savedLocations.slice();
-
-  const matched = locations.map((location) => {
-    // Just match on the first address line. Entries in the DoH list use a
-    // variety of formats and the first line is still more-or-less unique.
-    let simpleAddress = matchableAddress(location.address_lines[0]);
-    let simpleName = matchable(location.name);
-
-    // Manual overrides for cases where the data just does not reconcile :(
-    if (simpleAddress === "college center 1400 tanyard road") {
-      simpleAddress = "1400 tanyard road";
-    }
-    if (simpleName === "vineland doh public health nursing") {
-      simpleName = "city of vineland health department";
-    }
-
-    return { location, simpleAddress, simpleName, match: null };
-  });
-
-  // We need to do three separate loops for matching (address + name,
-  // address only, name only) because the names are not very unique, and if we
-  // did a single pass, we might have a record that matches by name when we
-  // would prefer it match an address later on in the list.
-  //
-  // For example, if the API has an entry like:
-  //   {name: "Trinitas Regional Medical Center", address: "600 Pearl St."}
-  // And NJVSS has:
-  //   {name: "Trinitas Regional Medical Center", address: "225 Williamson St."}
-  //   {name: "TRMC at Thomas Dunn Sports Center", address: "600 Pearl St."}
-  //
-  // A single pass check of all 3 kinds of matches would join the API record to
-  // the first NJVSS site instead of the second, which would be more accurate.
-  // The same situation also applies in reverse.
-  for (const item of matched) {
-    if (!item.match) {
-      item.match = popItem(
-        unmatched,
-        (saved) =>
-          saved.simpleAddress.includes(item.simpleAddress) &&
-          saved.simpleName.includes(item.simpleName)
-      );
-    }
-  }
-
-  for (const item of matched) {
-    if (!item.match) {
-      item.match = popItem(unmatched, (saved) =>
-        saved.simpleAddress.includes(item.simpleAddress)
-      );
-    }
-  }
-
-  for (const item of matched) {
-    if (!item.match) {
-      item.match = popItem(unmatched, (saved) =>
-        saved.simpleName.includes(item.simpleName)
-      );
-    }
-  }
-
-  for (const item of matched) {
-    if (item.match) {
-      item.location.id = item.match.id;
-    }
-  }
-
-  return locations;
 }
 
 /**
@@ -429,12 +258,9 @@ async function checkAvailability(handler, _options) {
   const data = await getNjvssData();
   const checkTime = new Date().toISOString();
   const validTime = data.lastModified?.toISOString();
+  const locations = filterHiddenNjvssLocations(data.records);
 
-  // Not all locations listed in NJVSS are actively participating, so we need
-  // to filter non-participants out.
-  const locations = filterActualNjvssLocations(data.records);
-
-  let result = [];
+  const result = [];
   for (const location of locations) {
     let provider = PROVIDER.njvss;
 
@@ -528,11 +354,8 @@ async function checkAvailability(handler, _options) {
         products: products.length ? products : undefined,
       },
     };
-    result.push(record);
-  }
 
-  result = await findLocationIds(result);
-  for (const record of result) {
+    result.push(record);
     handler(record, { update_location: true });
   }
 
