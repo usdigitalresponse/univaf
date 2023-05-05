@@ -238,7 +238,7 @@ function formatLocation(apiData, checkedAt) {
         warn(`Unknown service type: ${x.serviceTypeName}`);
         return null;
       }
-      return SERVICE_TYPES[x.serviceType];
+      return SERVICE_TYPES[x.serviceTypeName];
     })
     .filter(Boolean);
 
