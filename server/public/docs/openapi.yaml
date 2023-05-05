@@ -21,7 +21,7 @@ info:
     - Walgreens Pharmacy (source name: `univaf-walgreens-smart`)
     - Rite Aid Pharmacy (source names: `univaf-rite-aid-api`,
         `univaf-rite-aid-smart`, `univaf-rite-aid-scraper`)
-    - Albertsons (source name: `univaf-albertsons`)
+    - Albertsons (source name: `univaf-albertsons`, `univaf-albertsons-scraper`)
     - HyVee (source name: `univaf-hyvee`)
     - PrepMod (source name: `univaf-prepmod`)
     - State of New Jersey Vaccine Scheduling System (source name: `univaf-njvss`)

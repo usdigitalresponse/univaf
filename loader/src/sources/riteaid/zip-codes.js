@@ -73,7 +73,7 @@ const zipCodesCovering100Miles = {
  * since the API they are designed for seems to do some funny stuff, and does
  * not just give you back the nearest 100 results in the radius), so these are
  * pretty hand-tuned. They don't always cover the entire geographic area of a
- * state, so as Rite Aid expands, they made need adjustment. (I built them by
+ * state, so as Rite Aid expands, they may need adjustment. (I built them by
  * plotting all Rite Aid and Bartell locations and then each zip code in QGIS
  * and making smaller radii in denser areas.)
  *
