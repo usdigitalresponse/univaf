@@ -4,7 +4,7 @@ const {
   checkAvailability,
   formatLocation,
   parseNameAndAddress,
-} = require("../src/sources/albertsons");
+} = require("../src/sources/albertsons/mhealth");
 const { corrections } = require("../src/sources/albertsons/corrections");
 const { Available } = require("../src/model");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
@@ -27,7 +27,7 @@ const basicLocation = {
   drugName: ["PfizerChild"],
 };
 
-describe("Albertsons", () => {
+describe("Albertsons mHealth", () => {
   // Keep a copy of manual corrections so we can reset it if altered in tests.
   const _corrections = { ...corrections };
 
