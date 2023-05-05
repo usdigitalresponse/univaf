@@ -9,7 +9,13 @@
  *
  * Unfortunately I haven't found a great automated way to do calculate these,
  * so the data here is pretty hand-tuned. I built them by plotting all
- * Albertsons locations along with each zip code in QGIS.
+ * Albertsons locations along with each zip code in QGIS. Once you've plotted
+ * some options, it can be helpful to check that you are getting the right
+ * number of results by finding the expected count with:
+ *
+ *     cat stores-scraped.json | jq 'map(select(.address.region == "LA")) | length'
+ *
+ * And then run the scraper to make sure your zip codes find the same stores.
  *
  * Accurate as of May 2023. May need adjustment in the long-term future.
  *
@@ -72,6 +78,26 @@ const zipCodesCoveringAlbertsons = {
       radius: 50,
       zips: [
         "46347", // Kouts
+      ],
+    },
+  ],
+  LA: [
+    {
+      radius: 50,
+      zips: [
+        "70601", // Lake Charlese
+        "70533", // Erath
+        "70456", // Roseland
+        "71327", // Cottonport
+        "71067", // Princeton
+        // Not needed to cover known stores, but just to cover entire state.
+        // "70083", // Port Sulphur
+        // "70129", // New Orleans
+        // "70390", // Napoleonvill
+        // "71468", // Provencal
+        // "71241", // Farmerville
+        // "71266", // Pioneer
+        // "71368", // Sicily Island
       ],
     },
   ],
