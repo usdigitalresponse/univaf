@@ -234,8 +234,8 @@ function formatLocation(apiData, checkedAt) {
 
   const products = apiData.serviceTypes
     .map((x) => {
-      if (!(x.serviceType in SERVICE_TYPES)) {
-        warn(`Unknown service type: ${x.serviceType}`);
+      if (!(x.serviceTypeName in SERVICE_TYPES)) {
+        warn(`Unknown service type: ${x.serviceTypeName}`);
         return null;
       }
       return SERVICE_TYPES[x.serviceType];
