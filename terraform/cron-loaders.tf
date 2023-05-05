@@ -28,18 +28,15 @@ locals {
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
       }
     },
-    waDoh          = { schedule = "cron(3/5 * * * ? *)" }
-    cvsSmart       = { schedule = "cron(0/10 * * * ? *)" }
-    walgreensSmart = { schedule = "cron(2/10 * * * ? *)" }
-    krogerSmart    = { schedule = "cron(4/10 * * * ? *)" }
-    # FIXME: Albertsons needs a new scraper. The system the current one was
-    # written for has been abandoned by Albertsons, so all info in it is stale.
-    # See https://github.com/usdigitalresponse/univaf/issues/1460
-    # albertsonsScraper     = { schedule = "cron(6/15 * * * ? *)" }
-    hyvee          = { schedule = "cron(8/10 * * * ? *)" }
-    heb            = { schedule = "cron(1/10 * * * ? *)" }
-    cdcApi         = { schedule = "cron(0 0,12 * * ? *)" }
-    riteAidScraper = { schedule = "cron(5/30 * * * ? *)" }
+    waDoh             = { schedule = "cron(3/5 * * * ? *)" }
+    cvsSmart          = { schedule = "cron(0/10 * * * ? *)" }
+    walgreensSmart    = { schedule = "cron(2/10 * * * ? *)" }
+    krogerSmart       = { schedule = "cron(4/10 * * * ? *)" }
+    albertsonsScraper = { schedule = "cron(20/30 * * * ? *)" }
+    hyvee             = { schedule = "cron(8/10 * * * ? *)" }
+    heb               = { schedule = "cron(1/10 * * * ? *)" }
+    cdcApi            = { schedule = "cron(0 0,12 * * ? *)" }
+    riteAidScraper    = { schedule = "cron(5/30 * * * ? *)" }
     # TODO: Turn off riteAidApi. riteAidSmart + riteAidApi are running in
     # parallel while testing riteAidSmart.
     riteAidSmart = { schedule = "cron(8/15 * * * ? *)" }
