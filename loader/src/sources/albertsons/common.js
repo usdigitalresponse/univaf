@@ -96,6 +96,7 @@ const BRANDS = [
     bookingApiName: "PAK N SAVE",
   },
   {
+    ...BASE_BRAND,
     key: "pavilions",
     name: "Pavilions",
     pattern: /Pavilions/i,

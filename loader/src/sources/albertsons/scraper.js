@@ -17,7 +17,7 @@
  *   the cap on number of results is. We've picked radii that seem to be safe
  *   relative to number of stores covered, but don't have a good way to know if
  *   a query has accidentally exceeded that. The biggest distance I've seen in
- *   test queries is ~75 miles, and biggest results is > 110.
+ *   test queries is ~75 miles, and biggest result set is > 110.
  */
 
 const assert = require("node:assert/strict");
@@ -284,6 +284,7 @@ function formatKnownStore(store, extra = null) {
     external_ids: [
       [storeBrand.key, storeNumber],
       ["albertsons_store_number", `${storeBrand.key}:${storeNumber}`],
+      ["albertsons_v2", storeNumber],
     ],
     provider: storeBrand.provider_id,
     location_type: storeBrand.locationType || LocationType.pharmacy,
