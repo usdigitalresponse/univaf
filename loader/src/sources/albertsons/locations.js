@@ -7,6 +7,7 @@ const {
 
 let allLocations;
 let addressIndex;
+let storeNumberIndex;
 
 function loadData(force = false) {
   if (force || !allLocations) {
@@ -20,6 +21,13 @@ function loadData(force = false) {
         `${l.address.line1}, ${l.address.city}, ${l.address.region} ${l.address.postalCode}`
       );
       index[key] = l;
+      return index;
+    }, Object.create(null));
+
+    storeNumberIndex = allLocations.reduce((index, l) => {
+      if (l.c_parentEntityID) {
+        index[unpadNumber(l.c_parentEntityID)] = l;
+      }
       return index;
     }, Object.create(null));
   }
@@ -163,4 +171,19 @@ function findKnownAlbertsons(address, coordinate, storeBrand, storeNumber) {
   return null;
 }
 
-module.exports = { findKnownAlbertsons, getAllKnownAlbertsons };
+/**
+ * Find known information about an Albertsons store based on the store number.
+ * If the store number doesn't match a known store, this returns null.
+ * @param {string} storeNumber A store number for the location to find.
+ * @returns {any}
+ */
+function findKnownAlbertsonsByNumber(storeNumber) {
+  loadData();
+  return storeNumberIndex[unpadNumber(storeNumber)];
+}
+
+module.exports = {
+  findKnownAlbertsons,
+  findKnownAlbertsonsByNumber,
+  getAllKnownAlbertsons,
+};
