@@ -39,6 +39,7 @@ const {
 const { ParseError } = require("../../exceptions");
 const { corrections } = require("./corrections");
 const { findKnownAlbertsons } = require("./locations");
+const { BRANDS } = require("./common");
 
 const API_URL =
   "https://s3-us-west-2.amazonaws.com/mhc.cdn.content/vaccineAvailability.json";
@@ -72,169 +73,6 @@ const PRODUCT_NAMES = {
   modernatoddler: VaccineProduct.modernaAge0_5,
   jnj: VaccineProduct.janssen,
 };
-
-const BASE_BRAND = {
-  provider_id: "albertsons",
-  key: "albertsons",
-  name: "Albertsons",
-  url: "https://www.albertsons.com/pharmacy/covid-19.html",
-};
-
-const BRANDS = [
-  {
-    ...BASE_BRAND,
-    key: "acme",
-    name: "Acme",
-    pattern: /Acme/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "albertsons_market",
-    name: "Albertsons Market",
-    pattern: /Albertsons Market/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "albertsons",
-    name: "Albertsons",
-    pattern: /Albertsons|\bABS\s/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "amigos",
-    name: "Amigos",
-    pattern: /Amigos/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "carrs",
-    name: "Carrs",
-    pattern: /Carrs/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "haggen",
-    name: "Haggen",
-    url: "https://www.haggen.com/explore-our-departments/pharmacy/covid-19/",
-    pattern: /Haggen/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "jewelosco",
-    name: "Jewel-Osco",
-    pattern: /Jewel.Osco/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "luckys",
-    name: "Lucky",
-    pattern: /Lucky/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "market_street",
-    name: "Market Street",
-    pattern: /Market Street/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "pak_n_save",
-    name: "Pak 'n Save",
-    pattern: /Pak '?N Save/i,
-  },
-  {
-    key: "pavilions",
-    name: "Pavilions",
-    pattern: /Pavilions/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "randalls_pharmacy",
-    name: "Randalls Pharmacy",
-    pattern: /Randalls Pharmacy/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "randalls",
-    name: "Randalls",
-    pattern: /Randalls/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "safeway",
-    name: "Safeway",
-    url: "https://www.safeway.com/pharmacy/covid-19.html",
-    pattern: /Safeway/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "sav_on",
-    name: "Sav-On Pharmacy",
-    pattern: /Sav-?On/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "shaws",
-    name: "Shaw's",
-    pattern: /Shaw/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "star_market",
-    name: "Star Market",
-    pattern: /Star Market/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "tom_thumb",
-    name: "Tom Thumb",
-    pattern: /Tom Thumb/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "united",
-    name: "United Supermarkets",
-    // "United" is really common in other names, so we need to a more complex
-    // pattern than most other stores.
-    pattern: /United (#?\d|\w+market)/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "vons",
-    name: "Vons",
-    pattern: /Vons/i,
-  },
-  {
-    ...BASE_BRAND,
-    key: "albertsons_corporate",
-    name: "ALB Corporate Office",
-    isNotAStore: true,
-    pattern: /Corporate Office/i,
-  },
-  // Albertsons is now operating some clinics outside its actual stores, and
-  // this is meant to cover those. The names don't follow any real pattern, so
-  // we do our best by matching anything that doesn't look like some words
-  // followed by a number (since that usually indicates a store of some sort).
-  {
-    ...BASE_BRAND,
-    key: "community_clinic",
-    name: "Community Clinic",
-    locationType: LocationType.clinic,
-    isNotAStore: true,
-    pattern: {
-      test: (name) => {
-        // Some locations need explicit support because they look like "name
-        // followed by store number", which we explicitly disallow for community
-        // clinics in the first pattern.
-        return (
-          !/(\w+\s+#?\d+$)|^\d+\s/.test(name) ||
-          /^teamsters local/i.test(name) ||
-          /^chicago fire department/i.test(name)
-        );
-      },
-    },
-  },
-];
 
 const warn = createWarningLogger("Albertsons");
 
@@ -692,7 +530,7 @@ function formatLocation(data, validAt, checkedAt) {
   return {
     name,
     external_ids,
-    provider: "albertsons",
+    provider: storeBrand.provider_id,
     location_type: storeBrand.locationType || LocationType.pharmacy,
     address_lines: address.lines,
     city: address.city,
