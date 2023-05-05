@@ -1,4 +1,6 @@
 /**
+ * WARNING: THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ *
  * Get official apointment data from Albertsons. This works via a file they
  * publish to S3 for appointment finders and other consumers like us, although
  * it does not appear to be officially documented anywhere. It could disappear
@@ -573,6 +575,8 @@ function formatLocation(data, validAt, checkedAt) {
 }
 
 async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+  warn("WARNING: albertsons is deprecated and no longer maintained.");
+
   const stores = await getData(states);
   stores.forEach((store) => handler(store, { update_location: true }));
   if (config.debug) {
