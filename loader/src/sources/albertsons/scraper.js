@@ -155,7 +155,10 @@ async function* queryState(state, rateLimit = null) {
 }
 
 const numberStringType = { type: "string", minLength: 1, pattern: "^\\d+$" };
-const hoursType = { type: "string", pattern: "(\\d+am - \\d+pm)|Closed" };
+const hoursType = {
+  type: "string",
+  pattern: "(\\d+(AM|am) - \\d+(PM|pm))|24 Hours|Closed",
+};
 
 // API data for each location should look like this. The schema is fairly strict
 // since we are pulling on an unversioned API designed for the web UI, and want
