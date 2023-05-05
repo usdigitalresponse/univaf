@@ -1,10 +1,13 @@
 /**
  * WARNING: THIS LOADER IS DEPRECATED AND NO LONGER IN ACTIVE USE.
+ * (Albertsons no longer uses mHealth Coach for COVID booking.)
  *
- * Get official apointment data from Albertsons. This works via a file they
- * publish to S3 for appointment finders and other consumers like us, although
- * it does not appear to be officially documented anywhere. It could disappear
- * in the future without notice.
+ * Get official apointment data from Albertsons's mHealth Coach-based booking
+ * site. (Albertsons books COVID appointments through mHealth Coach instead of
+ * its own booking site, which is used for other vaccines.) This works via a
+ * file they publish to S3 for appointment finders and other consumers like us,
+ * although it does not appear to be officially documented anywhere. It could
+ * disappear in the future without notice.
  *
  * Most of the logic and branding information here is based on an original
  * implementation by Nick Muerdter of VaccineSpotter.org (which has now been
