@@ -194,7 +194,7 @@ const urlPattern = /https?:\/\/[^/]+\.\w\w+/i;
 /**
  * @typedef {Object} AddressData
  * @property {string} name
- * @property {string} [storeBrand]
+ * @property {import("./common").Brand} [storeBrand]
  * @property {string} [storeNumber]
  * @property {boolean} isPediatric
  * @property {boolean} isInfant
@@ -458,7 +458,7 @@ function formatLocation(data, validAt, checkedAt) {
     latitude: parseFloat(data.lat),
   };
   if (pharmacyMatch && pharmacyMatch.score > 0.2) {
-    storeNumber = pharmacyMatch.data.c_parentEntityID;
+    storeNumber = unpadNumber(pharmacyMatch.data.c_parentEntityID);
     // TODO: consider using c_geomodifier for the name. (We'd still need to
     // create a string with the store number for matching the brand, though.)
     name = `${pharmacyMatch.data.name} #${storeNumber}`;
