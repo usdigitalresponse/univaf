@@ -372,7 +372,7 @@ async function checkAvailability(
         });
         location = formatLocation(apiLocation, checkedAt);
       });
-      handler(location);
+      handler(location, { update_location: true });
       results.push(location);
       storeNumbers.add(location.meta.albertsons_store_number);
     }
@@ -392,7 +392,7 @@ async function checkAvailability(
       const location = formatKnownStore(missing, {
         availability: { checked_at: checkedAt },
       });
-      handler(location);
+      handler(location, { update_location: true });
       results.push(location);
     });
   }
