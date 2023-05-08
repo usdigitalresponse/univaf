@@ -1,4 +1,4 @@
-FROM node:18.16.0-slim AS base
+FROM node:20.1.0-slim AS base
 # Name for the version/release of the software. (Optional)
 ARG RELEASE
 
