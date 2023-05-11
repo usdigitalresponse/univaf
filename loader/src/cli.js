@@ -6,6 +6,7 @@ const { states: allStates } = require("univaf-common");
 const { ApiClient } = require("./api-client");
 const config = require("./config");
 const { sources } = require("./index");
+const { DEFAULT_STALE_THRESHOLD, StaleChecker } = require("./stale");
 const { oneLine } = require("./utils");
 const metrics = require("./metrics");
 
@@ -60,13 +61,20 @@ async function run(options) {
   });
   metrics.increment("loader.jobs.count");
 
-  let handler;
+  let outputter;
   if (options.send) {
-    handler = createDatabaseSender();
+    outputter = createDatabaseSender();
   } else {
     const jsonSpacing = options.compact ? 0 : 2;
-    handler = createResultLogger(jsonSpacing);
+    outputter = createResultLogger(jsonSpacing);
   }
+  const staleChecker = new StaleChecker({ threshold: options.staleThreshold });
+  const handler = (record, ...extra) => {
+    const freshRecord = staleChecker.filterRecord(record);
+    if (!options.filterStaleData || freshRecord) {
+      outputter(record, ...extra);
+    }
+  };
 
   const startTime = Date.now();
   try {
@@ -136,6 +144,20 @@ async function run(options) {
     const duration = (Date.now() - startTime) / 1000;
     console.error(`Completed in ${duration} seconds.`);
     metrics.gauge("loader.jobs.duration_seconds", duration);
+
+    staleChecker.printSummary();
+    // Report these manually instead of adding them as individual data points
+    // since we want a single calculation for the whole run rather than flush
+    // in the middle.
+    // XXX: Do we need auto-flushing in the loader at all?
+    for (const stats of staleChecker.listStatistics()) {
+      const tags = [`source:${stats.source}`];
+      const name = "loader.data.age_seconds";
+      metrics.gauge(`${name}.min`, stats.min / 1000, tags);
+      metrics.gauge(`${name}.max`, stats.max / 1000, tags);
+      metrics.gauge(`${name}.avg`, stats.average / 1000, tags);
+      metrics.gauge(`${name}.median`, stats.median / 1000, tags);
+    }
 
     await new Promise((resolve, reject) => {
       metrics.flush(resolve, reject);
@@ -232,6 +254,17 @@ function main() {
                 throw new Error(`--rate-limit must be a positive number.`);
               }
             },
+          })
+          .option("filter-stale-data", {
+            type: "boolean",
+            describe: "Don't report records with stale data.",
+          })
+          .option("stale-threshold", {
+            type: "number",
+            default: DEFAULT_STALE_THRESHOLD,
+            describe: oneLine`
+              Consider records older than this many milliseconds to be stale.
+            `,
           }),
       handler: run,
     })
