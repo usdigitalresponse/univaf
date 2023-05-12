@@ -2,6 +2,8 @@ const { Duration } = require("luxon");
 const metrics = require("./metrics");
 const { createWarningLogger } = require("./utils");
 
+/** @typedef {import("luxon").DateTime} DateTime */
+
 /**
  * @typedef {Object} AgeStatistics
  * @property {string} source
@@ -12,7 +14,7 @@ const { createWarningLogger } = require("./utils");
  * @property {number} [median]
  */
 
-const DEFAULT_STALE_THRESHOLD = 24 * 60 * 60 * 1000;
+const DEFAULT_STALE_THRESHOLD = Duration.fromObject({ days: 1 }).toMillis();
 
 const warn = createWarningLogger("stale");
 
@@ -26,15 +28,18 @@ class StaleChecker {
    * StaleChecker tracks statistics about the age/staleness of location records
    * found by the loader.
    * @param {Object} options
-   * @param {Date} [options.relativeTime] When to calculate age relative to.
+   * @param {Date|DateTime|number} [options.relativeTo] When to calculate age
+   *        relative to.
    * @param {number} [options.threshold] Consider records older than this many
    *        milliseconds to be stale.
    */
   constructor({
-    relativeTime = new Date(),
+    relativeTo = new Date(),
     threshold = DEFAULT_STALE_THRESHOLD,
   } = {}) {
-    this.relativeTime = relativeTime;
+    /** @type {Date} */
+    this.relativeTo = relativeTo.toJSDate?.() ?? new Date(relativeTo);
+    /** @type {number} */
     this.threshold = threshold;
   }
 
@@ -64,7 +69,7 @@ class StaleChecker {
     if (!record.availability) return null;
 
     const stats = this.getStatisticsForSource(record.availability.source);
-    const age = StaleChecker.calculateAge(this.relativeTime, record);
+    const age = StaleChecker.calculateAge(this.relativeTo, record);
     if (age == null) return null;
 
     this.#finished = false;
@@ -171,13 +176,21 @@ class StaleChecker {
     this.#finished = true;
   }
 
-  static calculateAge(relativeTime, record) {
+  /**
+   * Calculate the age of a record in milliseconds.
+   * @param {Date|DateTime|number} relativeTo Calculate age relative to this.
+   *        Can be a JS Date, Luxon DateTime, or a number of milliseconds.
+   * @param {any} record A location record output by any source.
+   * @returns {number}
+   */
+  static calculateAge(relativeTo, record) {
+    const relative = relativeTo.toMillis?.() ?? relativeTo;
     const data = record.availability;
     if (!data) return null;
 
     let validAge, slotsAge;
     if (data.valid_at) {
-      validAge = relativeTime - new Date(data.valid_at);
+      validAge = relative - new Date(data.valid_at);
     }
     // In each of these, we bail out entirely if there is an empty
     // slots/capcity array. That indicates there ought to have been slot data
@@ -187,13 +200,13 @@ class StaleChecker {
       if (data.slots.length === 0) {
         return null;
       } else {
-        slotsAge = relativeTime - new Date(data.slots.at(-1).start);
+        slotsAge = relative - new Date(data.slots.at(-1).start);
       }
     } else if (data.capacity && data.capacity) {
       if (data.capacity.length === 0) {
         return null;
       } else {
-        slotsAge = relativeTime - new Date(data.capacity.at(-1).date);
+        slotsAge = relative - new Date(data.capacity.at(-1).date);
       }
     }
 

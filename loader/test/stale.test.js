@@ -1,3 +1,4 @@
+const { DateTime, Duration } = require("luxon");
 const utils = require("../src/utils");
 const metrics = require("../src/metrics");
 const { StaleChecker } = require("../src/stale");
@@ -5,19 +6,17 @@ const { StaleChecker } = require("../src/stale");
 jest.mock("../src/utils");
 jest.mock("../src/metrics");
 
-// Keep a single, integerial "now" timestamp so test results are predictable.
-const now = new Date(Math.floor(Date.now()));
+// Keep a single, seconds-level "now" timestamp so test results are predictable.
+// (Rounded to the nearest second to avoid math quirks with floats.)
+// const now = new Date(Math.floor(Date.now()));
+const now = DateTime.utc().set({ millisecond: 0 });
 
-function minutes(count) {
-  return count * 60 * 1000;
+function dateAgo(timeToSubtract) {
+  return now.minus(timeToSubtract).startOf("day");
 }
 
-function createMinutesAgoTimestamp(value = 0, relative = now) {
-  return new Date(relative - minutes(value)).toISOString();
-}
-
-function createMinutesAgoDatestamp(value = 0, relative = now) {
-  return createMinutesAgoTimestamp(value, relative).slice(0, 10);
+function asMillis(durationObject) {
+  return Duration.fromObject(durationObject).toMillis();
 }
 
 function createRecord(data) {
@@ -25,8 +24,8 @@ function createRecord(data) {
   if ("availability" in data && data.availability) {
     availability = {
       source: "test-source",
-      valid_at: createMinutesAgoTimestamp(10),
-      checked_at: createMinutesAgoTimestamp(10),
+      valid_at: now.minus({ minutes: 10 }).toISO(),
+      checked_at: now.minus({ minutes: 10 }).toISO(),
       available: "YES",
       available_count: 191,
       ...data.availability,
@@ -65,8 +64,8 @@ describe("StaleChecker", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     checker = new StaleChecker({
-      relativeTime: now,
-      threshold: minutes(24 * 60),
+      relativeTo: now,
+      threshold: asMillis({ days: 1 }),
     });
   });
 
@@ -74,28 +73,28 @@ describe("StaleChecker", () => {
     checker.checkRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(10),
+          valid_at: now.minus({ minutes: 10 }).toISO(),
         },
       })
     );
     checker.checkRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(20),
+          valid_at: now.minus({ minutes: 20 }).toISO(),
         },
       })
     );
     checker.checkRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(30),
+          valid_at: now.minus({ minutes: 30 }).toISO(),
         },
       })
     );
     checker.checkRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(24),
+          valid_at: now.minus({ minutes: 24 }).toISO(),
         },
       })
     );
@@ -104,11 +103,16 @@ describe("StaleChecker", () => {
     expect(statistics).toHaveLength(1);
     expect(statistics[0]).toEqual({
       source: "test-source",
-      samples: [minutes(10), minutes(20), minutes(24), minutes(30)],
-      min: minutes(10),
-      max: minutes(30),
-      average: minutes(21),
-      median: minutes(22),
+      samples: [
+        asMillis({ minutes: 10 }),
+        asMillis({ minutes: 20 }),
+        asMillis({ minutes: 24 }),
+        asMillis({ minutes: 30 }),
+      ],
+      min: asMillis({ minutes: 10 }),
+      max: asMillis({ minutes: 30 }),
+      average: asMillis({ minutes: 21 }),
+      median: asMillis({ minutes: 22 }),
     });
   });
 
@@ -116,7 +120,7 @@ describe("StaleChecker", () => {
     const filterOut = checker.filterRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(25 * 60),
+          valid_at: now.minus({ hours: 25 }).toISO(),
         },
       })
     );
@@ -125,7 +129,7 @@ describe("StaleChecker", () => {
     const filterIn = checker.filterRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(23 * 60),
+          valid_at: now.minus({ hours: 23 }).toISO(),
         },
       })
     );
@@ -155,7 +159,7 @@ describe("StaleChecker", () => {
       createRecord({
         availability: {
           source: "test-source-1",
-          valid_at: createMinutesAgoTimestamp(25 * 60),
+          valid_at: now.minus({ hours: 25 }).toISO(),
         },
       })
     );
@@ -163,7 +167,7 @@ describe("StaleChecker", () => {
       createRecord({
         availability: {
           source: "test-source-2",
-          valid_at: createMinutesAgoTimestamp(20 * 60),
+          valid_at: now.minus({ hours: 20 }).toISO(),
         },
       })
     );
@@ -171,7 +175,7 @@ describe("StaleChecker", () => {
       createRecord({
         availability: {
           source: "test-source-3",
-          valid_at: createMinutesAgoTimestamp(25 * 60),
+          valid_at: now.minus({ hours: 25 }).toISO(),
         },
       })
     );
@@ -208,14 +212,14 @@ describe("StaleChecker", () => {
     checker.checkRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(10),
+          valid_at: now.minus({ minutes: 10 }).toISO(),
         },
       })
     );
     checker.checkRecord(
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(20),
+          valid_at: now.minus({ minutes: 20 }).toISO(),
         },
       })
     );
@@ -224,22 +228,22 @@ describe("StaleChecker", () => {
 
     expect(metrics.gauge).toHaveBeenCalledWith(
       "prefix.age_seconds.min",
-      minutes(10) / 1000,
+      asMillis({ minutes: 10 }) / 1000,
       [`source:test-source`]
     );
     expect(metrics.gauge).toHaveBeenCalledWith(
       "prefix.age_seconds.max",
-      minutes(20) / 1000,
+      asMillis({ minutes: 20 }) / 1000,
       [`source:test-source`]
     );
     expect(metrics.gauge).toHaveBeenCalledWith(
       "prefix.age_seconds.avg",
-      minutes(15) / 1000,
+      asMillis({ minutes: 15 }) / 1000,
       [`source:test-source`]
     );
     expect(metrics.gauge).toHaveBeenCalledWith(
       "prefix.age_seconds.median",
-      minutes(15) / 1000,
+      asMillis({ minutes: 15 }) / 1000,
       [`source:test-source`]
     );
   });
@@ -265,16 +269,16 @@ describe("StaleChecker.calculateAge", () => {
       now,
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(10),
+          valid_at: now.minus({ minutes: 10 }).toISO(),
           slots: [
-            { start: createMinutesAgoTimestamp(60) },
-            { start: createMinutesAgoTimestamp(30) },
+            { start: now.minus({ minutes: 60 }).toISO() },
+            { start: now.minus({ minutes: 30 }).toISO() },
           ],
         },
       })
     );
 
-    expect(age).toBe(minutes(30));
+    expect(age).toBe(asMillis({ minutes: 30 }));
   });
 
   it("prefers the newest capacity if older than valid_at", () => {
@@ -282,18 +286,16 @@ describe("StaleChecker.calculateAge", () => {
       now,
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(10),
+          valid_at: now.minus({ minutes: 10 }).toISO(),
           capacity: [
-            { date: createMinutesAgoDatestamp(48 * 60) },
-            { date: createMinutesAgoDatestamp(24 * 60) },
+            { date: dateAgo({ days: 2 }).toISODate() },
+            { date: dateAgo({ days: 1 }).toISODate() },
           ],
         },
       })
     );
 
-    expect(age).toBe(
-      now - new Date(createMinutesAgoDatestamp(24 * 60)).getTime()
-    );
+    expect(age).toBe(now.diff(dateAgo({ days: 1 })).toMillis());
   });
 
   it("prefers valid_at if older than capacity", () => {
@@ -301,16 +303,16 @@ describe("StaleChecker.calculateAge", () => {
       now,
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(72 * 60),
+          valid_at: now.minus({ days: 3 }).toISO(),
           capacity: [
-            { date: createMinutesAgoDatestamp(48 * 60) },
-            { date: createMinutesAgoDatestamp(24 * 60) },
+            { date: dateAgo({ days: 2 }).toISODate() },
+            { date: dateAgo({ days: 1 }).toISODate() },
           ],
         },
       })
     );
 
-    expect(age).toBe(minutes(72 * 60));
+    expect(age).toBe(asMillis({ days: 3 }));
   });
 
   it("gives up if there is an empty slot list", () => {
@@ -318,7 +320,7 @@ describe("StaleChecker.calculateAge", () => {
       now,
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(72 * 60),
+          valid_at: now.minus({ days: 3 }).toISO(),
           slots: [],
         },
       })
@@ -332,7 +334,7 @@ describe("StaleChecker.calculateAge", () => {
       now,
       createRecord({
         availability: {
-          valid_at: createMinutesAgoTimestamp(72 * 60),
+          valid_at: now.minus({ days: 3 }).toISO(),
           capacity: [],
         },
       })
