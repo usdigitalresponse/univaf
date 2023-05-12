@@ -146,18 +146,7 @@ async function run(options) {
     metrics.gauge("loader.jobs.duration_seconds", duration);
 
     staleChecker.printSummary();
-    // Report these manually instead of adding them as individual data points
-    // since we want a single calculation for the whole run rather than flush
-    // in the middle.
-    // XXX: Do we need auto-flushing in the loader at all?
-    for (const stats of staleChecker.listStatistics()) {
-      const tags = [`source:${stats.source}`];
-      const name = "loader.data.age_seconds";
-      metrics.gauge(`${name}.min`, stats.min / 1000, tags);
-      metrics.gauge(`${name}.max`, stats.max / 1000, tags);
-      metrics.gauge(`${name}.avg`, stats.average / 1000, tags);
-      metrics.gauge(`${name}.median`, stats.median / 1000, tags);
-    }
+    staleChecker.sendMetrics("loader.data");
 
     await new Promise((resolve, reject) => {
       metrics.flush(resolve, reject);
