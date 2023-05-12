@@ -64,7 +64,7 @@ class StaleChecker {
     if (!record.availability) return null;
 
     const stats = this.getStatisticsForSource(record.availability.source);
-    const age = StaleChecker.calculateDataAge(this.relativeTime, record);
+    const age = StaleChecker.calculateAge(this.relativeTime, record);
     if (age == null) return null;
 
     this.#finished = false;
@@ -158,7 +158,7 @@ class StaleChecker {
 
     for (const stats of this.bySource.values()) {
       if (stats.samples.length !== 0) {
-        const sorted = stats.samples.sort();
+        const sorted = stats.samples.sort((a, b) => a - b);
         stats.average =
           sorted.reduce((sum, sample) => sum + sample, 0) / sorted.length;
         stats.median =
@@ -171,7 +171,7 @@ class StaleChecker {
     this.#finished = true;
   }
 
-  static calculateDataAge(relativeTime, record) {
+  static calculateAge(relativeTime, record) {
     const data = record.availability;
     if (!data) return null;
 
