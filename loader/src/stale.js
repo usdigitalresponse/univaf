@@ -18,7 +18,7 @@ const warn = createWarningLogger("stale");
 
 class StaleChecker {
   /** @type {Map<string, AgeStatistics>} */
-  bySource = new Map();
+  #bySource = new Map();
 
   #finished = false;
 
@@ -44,15 +44,15 @@ class StaleChecker {
    * @returns {AgeStatistics}
    */
   getStatisticsForSource(source) {
-    if (!this.bySource.has(source)) {
-      this.bySource.set(source, {
+    if (!this.#bySource.has(source)) {
+      this.#bySource.set(source, {
         source,
         min: Infinity,
         max: -Infinity,
         samples: [],
       });
     }
-    return this.bySource.get(source);
+    return this.#bySource.get(source);
   }
 
   /**
@@ -98,7 +98,7 @@ class StaleChecker {
   *listStatistics({ includeUnknown = false } = {}) {
     this.finish();
 
-    for (const data of this.bySource.values()) {
+    for (const data of this.#bySource.values()) {
       if (includeUnknown || data.samples.length > 0) {
         yield data;
       }
@@ -117,7 +117,7 @@ class StaleChecker {
 
     for (const stats of this.listStatistics({ includeUnknown: true })) {
       if (stats.samples.length === 0) {
-        console.warn(`No age information for locations in ${stats.source}.`);
+        warn(`${stats.source} has no age information for locations.`);
       } else if (stats.max > this.threshold) {
         warn(
           `${stats.source} has stale data!`,
@@ -156,7 +156,7 @@ class StaleChecker {
   finish() {
     if (this.#finished) return;
 
-    for (const stats of this.bySource.values()) {
+    for (const stats of this.#bySource.values()) {
       if (stats.samples.length !== 0) {
         const sorted = stats.samples.sort((a, b) => a - b);
         stats.average =
