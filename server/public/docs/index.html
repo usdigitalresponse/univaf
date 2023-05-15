@@ -18,9 +18,47 @@
         margin: 0;
         padding: 0;
       }
+
+      .warning {
+        --border-color: #ffe69c;
+        background: #fff3cd;
+        color: #664d03;
+        padding: 0.5em 1em;
+      }
+
+      .banner {
+        border-bottom: 1px solid var(--border-color);
+        font-family: Montserrat, sans-serif;
+        line-height: 1.5;
+        padding: 0.5em 1em;
+      }
+
+      .notice-box {
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        position: relative;
+        padding-left: 2.5em;
+      }
+
+      .notice-box::before {
+        content: "⚠️";
+        position: absolute;
+        left: 0.5em;
+        top: 0.5em;
+      }
+
+      .notice-box p:first-child {
+        margin-top: 0;
+      }
     </style>
   </head>
   <body>
+    <div role="status" class="warning banner">
+      <span role="presentation">⚠️</span>
+      <strong>Support ends on June 15, 2023!</strong>
+      Because the federal COVID-19 emergency has ended, USDR will shut off
+      this API on June 15, 2023.
+    </div>
     <redoc spec-url="/docs/openapi.yaml"></redoc>
     <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
   </body>
