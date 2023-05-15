@@ -49,7 +49,7 @@ locals {
       }
     }
     prepmod = {
-      schedule = "cron(9/30 * * * ? *)"
+      schedule = "cron(9/15 * * * ? *)"
       options  = ["--states", "AK,WA", "--hide-missing-locations"]
     }
   }
