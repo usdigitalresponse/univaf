@@ -28,18 +28,15 @@ locals {
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
       }
     },
-    waDoh             = { schedule = "cron(3/5 * * * ? *)" }
-    cvsSmart          = { schedule = "cron(0/10 * * * ? *)" }
+    waDoh             = { schedule = "cron(3/30 * * * ? *)" }
+    cvsSmart          = { schedule = "cron(0/30 * * * ? *)" }
     walgreensSmart    = { schedule = "cron(2/10 * * * ? *)" }
-    krogerSmart       = { schedule = "cron(4/10 * * * ? *)" }
+    krogerSmart       = { schedule = "cron(4/30 * * * ? *)" }
     albertsonsScraper = { schedule = "cron(20/30 * * * ? *)" }
     hyvee             = { schedule = "cron(8/10 * * * ? *)" }
     heb               = { schedule = "cron(1/10 * * * ? *)" }
     cdcApi            = { schedule = "cron(0 0,12 * * ? *)" }
     riteAidScraper    = { schedule = "cron(5/30 * * * ? *)" }
-    # TODO: Turn off riteAidApi. riteAidSmart + riteAidApi are running in
-    # parallel while testing riteAidSmart.
-    riteAidSmart = { schedule = "cron(8/15 * * * ? *)" }
     riteAidApi = {
       schedule = "cron(0/15 * * * ? *)"
       env_vars = {
@@ -48,7 +45,7 @@ locals {
       }
     }
     prepmod = {
-      schedule = "cron(9/10 * * * ? *)"
+      schedule = "cron(9/30 * * * ? *)"
       options  = ["--states", "AK,WA", "--hide-missing-locations"]
     }
   }
