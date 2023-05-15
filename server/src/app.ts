@@ -5,8 +5,10 @@ import errorHandler from "errorhandler";
 import * as Sentry from "@sentry/node";
 import { RELEASE } from "./config";
 import {
-  AppRequest,
+  addSunsetHeaders,
   authorizeRequest,
+  cacheControlMaxAge,
+  logRequest,
   parseJsonBody,
   versionedMiddleware,
 } from "./middleware";
@@ -15,30 +17,6 @@ import { logger, logStackTrace } from "./logger";
 import * as apiEdge from "./api/edge";
 import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
-
-// TODO: we should use a proper logging library (e.g. Winston) which has
-// plugins and extensions for this, and will gather better data.
-function logRequest(request: Request, response: Response, next: NextFunction) {
-  logger.debug(`${response.statusCode} ${request.method} ${request.url}`);
-  next();
-}
-
-function cacheControlMaxAge(seconds: number) {
-  return function (
-    request: AppRequest,
-    response: Response,
-    next: NextFunction
-  ) {
-    if (request.method == "GET") {
-      const directives = [
-        request.authorization ? "private" : "public",
-        `max-age=${seconds}`,
-      ];
-      response.set("Cache-Control", directives.join(", "));
-    }
-    next();
-  };
-}
 
 // Express configuration -----------------------------------------
 
@@ -74,6 +52,7 @@ app.use(parseJsonBody({ limit: "2.5mb" }));
 app.use(cors());
 app.use(authorizeRequest);
 app.use(urlDecodeSpecialPathChars);
+app.use(addSunsetHeaders);
 
 // Diagnostic Routes ---------------------------------------------
 

@@ -13,6 +13,21 @@ info:
     the State of New Jersey Office of Innovation, VaccineSpotter.org, and
     Vaccinate the States.
 
+    <div class="warning notice-box">
+      <p>
+        The federal COVID-19 emergency has ended, so <strong>U.S. Digital
+        Response will be shutting off this API</strong> and ending active
+        support and updates for the code behind it on June 15, 2023.
+      </p>
+      <p>
+        This system is open-source software, and you can deploy your own
+        version of it based on the code at
+        <a href="https://github.com/usdigitalresponse/univaf">github.com/usdigitalresponse/univaf</a>.
+        If you need additional information or support, please contact
+        univaf@usdigitalresponse.org.
+      </p>
+    </div>
+
 
     ## Data Sources
 

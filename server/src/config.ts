@@ -1,5 +1,6 @@
 import os from "node:os";
 import type { Knex } from "knex";
+import { DateTime } from "luxon";
 
 export const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 
@@ -60,6 +61,19 @@ export function getHostInstance(): string {
     return `${process.env.RENDER_SERVICE_NAME}-${process.env.RENDER_INSTANCE_ID}`;
   } else {
     return os.hostname();
+  }
+}
+
+/**
+ * Get a warning message to be included with any API responses. Will be `null`
+ * if there are no warnings.
+ */
+export function getApiSunset(): { date: DateTime; infoUrl: string } | null {
+  if (process.env.API_SUNSET_DATE) {
+    return {
+      date: DateTime.fromISO(process.env.API_SUNSET_DATE),
+      infoUrl: process.env.API_SUNSET_INFO_URL || "/docs",
+    };
   }
 }
 
