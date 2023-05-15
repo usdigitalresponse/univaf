@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import bodyParser from "body-parser";
-import { getApiKeys } from "./config";
+import { getApiKeys, getApiSunset } from "./config";
+import { absoluteUrl } from "./utils";
 
 export interface AppRequest extends Request {
   authorization?: string;
@@ -67,4 +68,24 @@ export function parseJsonBody(
       }
     },
   });
+}
+
+/**
+ * If the API is configured with a sunset date, add the relevant Sunset and
+ * Link headers to the response.
+ *
+ * See also: RFC 8594 (https://datatracker.ietf.org/doc/html/rfc8594)
+ */
+export function addSunsetHeaders(
+  request: AppRequest,
+  response: Response,
+  next: NextFunction
+): void {
+  const sunset = getApiSunset();
+  if (sunset) {
+    const infoUrl = absoluteUrl(sunset.infoUrl, request);
+    response.header("Sunset", sunset.date.toHTTP());
+    response.header("Link", `<${infoUrl}>;rel="sunset";type="text/html"`);
+  }
+  next();
 }

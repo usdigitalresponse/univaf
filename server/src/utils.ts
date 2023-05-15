@@ -1,6 +1,7 @@
 import { NextFunction, RequestHandler, Request, Response } from "express";
 import { URLSearchParams, format as urlFormat, parse as urlParse } from "url";
 import { ValueError } from "./exceptions";
+import { getPrimaryHost } from "./config";
 
 export const UUID_PATTERN =
   /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
@@ -116,4 +117,19 @@ export function getRequestHost(request: Request): string {
   }
 
   return val || undefined;
+}
+
+export function absoluteUrl(localUrl: string, request?: Request): string {
+  if (/^https?:\/\//.test(localUrl)) return localUrl;
+
+  const host = getPrimaryHost() || (request && getRequestHost(request));
+  if (!host) {
+    throw new Error(
+      "You must configure a primary host or provide a request to build an absolute URL from."
+    );
+  }
+
+  const protocol = request?.protocol ?? "https";
+  const baseUrl = `${protocol}://${host}${request?.baseUrl ?? ""}/`;
+  return new URL(localUrl, baseUrl).href;
 }

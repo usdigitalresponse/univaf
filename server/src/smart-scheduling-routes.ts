@@ -11,8 +11,7 @@ import { Request, Response } from "express";
 import { DateTime } from "luxon";
 import { states } from "univaf-common";
 import { CVX_CODES, PRODUCT_NAMES, VaccineCode } from "univaf-common/vaccines";
-import { getPrimaryHost } from "./config";
-import { getRequestHost } from "./utils";
+import { absoluteUrl } from "./utils";
 import * as db from "./db";
 import {
   Availability,
@@ -98,26 +97,24 @@ export function fhirNotImplemented(_req: Request, res: Response): void {
 const statesList = states.filter((state: any) => state.type === "State");
 
 export function manifest(req: Request, res: Response): void {
-  const host = getPrimaryHost() || getRequestHost(req);
-  const baseUrl = `${req.protocol}://${host}${req.baseUrl}`;
   res.json({
     // TODO: consider making this the latest updated availability timestamp.
     transactionTime: new Date().toISOString(),
-    request: `${baseUrl}/$bulk-publish`,
+    request: absoluteUrl("$bulk-publish", req),
     output: [
       statesList.map((state: any) => ({
         type: "Location",
-        url: `${baseUrl}/locations/states/${state.usps}.ndjson`,
+        url: absoluteUrl(`locations/states/${state.usps}.ndjson`, req),
         extension: { state: [state.usps] },
       })),
       statesList.map((state: any) => ({
         type: "Schedule",
-        url: `${baseUrl}/schedules/states/${state.usps}.ndjson`,
+        url: absoluteUrl(`schedules/states/${state.usps}.ndjson`, req),
         extension: { state: [state.usps] },
       })),
       statesList.map((state: any) => ({
         type: "Slot",
-        url: `${baseUrl}/slots/states/${state.usps}.ndjson`,
+        url: absoluteUrl(`slots/states/${state.usps}.ndjson`, req),
         extension: { state: [state.usps] },
       })),
     ].flat(),

@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/node";
 import { RELEASE } from "./config";
 import {
   AppRequest,
+  addSunsetHeaders,
   authorizeRequest,
   parseJsonBody,
   versionedMiddleware,
@@ -74,6 +75,7 @@ app.use(parseJsonBody({ limit: "2.5mb" }));
 app.use(cors());
 app.use(authorizeRequest);
 app.use(urlDecodeSpecialPathChars);
+app.use(addSunsetHeaders);
 
 // Diagnostic Routes ---------------------------------------------
 
