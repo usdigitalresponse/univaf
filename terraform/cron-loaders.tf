@@ -35,8 +35,12 @@ locals {
     albertsonsScraper = { schedule = "cron(20/30 * * * ? *)" }
     hyvee             = { schedule = "cron(8/10 * * * ? *)" }
     heb               = { schedule = "cron(1/10 * * * ? *)" }
-    cdcApi            = { schedule = "cron(0 0,12 * * ? *)" }
-    riteAidScraper    = { schedule = "cron(5/30 * * * ? *)" }
+    cdcApi = {
+      schedule = "cron(0 0,12 * * ? *)"
+      # CDC updates are often slow; set stale threshold to 3 days.
+      options = ["--stale-threshold", "172800000"]
+    }
+    riteAidScraper = { schedule = "cron(5/30 * * * ? *)" }
     riteAidApi = {
       schedule = "cron(0/15 * * * ? *)"
       env_vars = {
@@ -59,6 +63,7 @@ module "source_loader" {
 
   name = each.key
   command = concat(
+    ["--filter-stale-data"],
     lookup(each.value, "options", []),
     lookup(each.value, "sources", [each.key]),
   )
