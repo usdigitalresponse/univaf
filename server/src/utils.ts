@@ -35,7 +35,7 @@ export function asyncHandler(handler: PromiseHandler): RequestHandler {
  */
 export function addQueryToCurrentUrl(request: Request, newQuery: any): string {
   const query = new URLSearchParams({ ...request.query, ...newQuery });
-  return `${request.baseUrl}${request.path}?${query}`;
+  return absoluteUrl(`${request.path}?${query}`, request);
 }
 
 interface PaginationLinks {
