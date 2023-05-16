@@ -92,6 +92,7 @@ module "api_task" {
     SENTRY_DSN                = var.api_sentry_dsn
     SENTRY_TRACES_SAMPLE_RATE = format("%.2f", var.api_sentry_traces_sample_rate)
     PRIMARY_HOST              = var.domain_name
+    API_SUNSET_DATE           = var.api_sunset_date
   }
 
   depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role]

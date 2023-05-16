@@ -123,6 +123,11 @@ variable "api_sentry_traces_sample_rate" {
   }
 }
 
+variable "api_sunset_date" {
+  description = "ISO 8601 Date or Datetime when the API will be turned off."
+  default     = ""
+}
+
 variable "loader_sentry_dsn" {
   description = "The Sentry.io DSN to use for the loaders"
   default     = ""
