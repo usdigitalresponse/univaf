@@ -22,6 +22,10 @@ const {
   DEFAULT_STATES,
 } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
+const {
+  assertSchema,
+  requireAllProperties,
+} = require("../../schema-validation");
 
 const API_URL = "https://www.hy-vee.com/my-pharmacy/api/graphql";
 const BOOKING_URL = "https://www.hy-vee.com/my-pharmacy/covid-vaccine-consent";
@@ -49,6 +53,54 @@ const VACCINE_NAMES = {
 };
 
 const warn = createWarningLogger("hyvee");
+
+const locationSchema = requireAllProperties({
+  type: "object",
+  properties: {
+    locationId: { type: "string" },
+    name: { type: "string" },
+    nickname: { type: "string", nullable: true },
+    phoneNumber: { type: "string", pattern: "^\\+?1?\\d{10}$" },
+    businessCode: { type: "string", pattern: "^\\d+$" },
+    covidVaccineTimeSlotAndManufacturerAvailability: {
+      type: "object",
+      properties: {
+        isCovidVaccineAvailable: { type: "boolean" },
+        availableCovidVaccineManufacturers: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              covidVaccineManufacturerId: { type: "string" },
+              vaccineName: { type: "string" },
+              doseTypes: { type: "array", items: { type: "string" } },
+              isSingleDose: { type: "boolean" },
+              __typename: { const: "CovidVaccineManufacturer" },
+            },
+          },
+        },
+        __typename: {
+          const: "CovidVaccineTimeSlotAndManufacturerAvailability",
+        },
+      },
+    },
+    covidVaccineEligibilityTerms: { type: "string" },
+    address: {
+      type: "object",
+      properties: {
+        line1: { type: "string" },
+        line2: { type: "string", nullable: true },
+        city: { type: "string" },
+        state: { type: "string", pattern: "^[A-Z]{2}$" },
+        zip: { type: "string", pattern: "^\\d{5}$" },
+        latitude: { type: "number" },
+        longitude: { type: "number" },
+        __typename: { const: "LocationAddress" },
+      },
+    },
+    __typename: { const: "Location" },
+  },
+});
 
 /**
  * Get an array of raw store & covid availability records from the HyVee API.
@@ -119,6 +171,8 @@ async function fetchRawData() {
 }
 
 function formatLocation(data, checkedAt) {
+  assertSchema(locationSchema, data);
+
   const address_lines = [data.address.line1];
   if (data.address.line2) {
     address_lines.push(data.address.line2);
