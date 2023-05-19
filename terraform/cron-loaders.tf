@@ -29,6 +29,7 @@ locals {
       }
     },
     waDoh             = { schedule = "cron(3/30 * * * ? *)" }
+    cvsSmart          = { schedule = "cron(3/15 * * * ? *)" }
     walgreensSmart    = { schedule = "cron(2/10 * * * ? *)" }
     albertsonsScraper = { schedule = "cron(20/30 * * * ? *)" }
     hyvee             = { schedule = "cron(8/10 * * * ? *)" }
@@ -51,10 +52,8 @@ locals {
       options  = ["--states", "AK,WA", "--hide-missing-locations"]
     }
 
-    # CVS appears to have stopped updating the data and Kroger appears to have
-    # shut things off entirely. We just want to run them enough to know if
-    # they start working again.
-    cvsSmart    = { schedule = "cron(0 1/6 * * ? *)" }
+    # Kroger appears to have shut things off entirely. We just want to run them
+    # enough to know if they start working again.
     krogerSmart = { schedule = "cron(0 1/6 * * ? *)" }
   }
 }
