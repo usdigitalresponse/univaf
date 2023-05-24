@@ -1,5 +1,5 @@
 const nock = require("nock");
-const { checkAvailability, API_URL } = require("../src/sources/kroger");
+const { checkAvailability, API_URL } = require("../src/sources/kroger/smart");
 const {
   expectDatetimeString,
   splitHostAndPath,

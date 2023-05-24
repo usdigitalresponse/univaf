@@ -7,7 +7,7 @@ const sources = {
   cvsSmart: require("./sources/cvs/smart"),
   heb: require("./sources/heb"),
   hyvee: require("./sources/hyvee"),
-  krogerSmart: require("./sources/kroger"),
+  krogerSmart: require("./sources/kroger/smart"),
   njvss: require("./sources/njvss"),
   prepmod: require("./sources/prepmod"),
   riteAidApi: require("./sources/riteaid/api"),
@@ -15,8 +15,8 @@ const sources = {
   riteAidScraper: require("./sources/riteaid/scraper"),
   vaccinespotter: require("./sources/vaccinespotter"),
   vtsGeo: require("./sources/vts/geo"),
-  waDoh: require("./sources/wa-doh"),
-  walgreensSmart: require("./sources/walgreens"),
+  waDoh: require("./sources/wa-doh/wa-doh"),
+  walgreensSmart: require("./sources/walgreens/smart"),
 };
 
 module.exports = { sources };

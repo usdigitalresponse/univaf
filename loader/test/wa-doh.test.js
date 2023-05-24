@@ -5,7 +5,7 @@ const {
   API_URL,
   checkAvailability,
   formatLocation,
-} = require("../src/sources/wa-doh");
+} = require("../src/sources/wa-doh/wa-doh");
 const { expectDatetimeString, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 

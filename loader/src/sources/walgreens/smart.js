@@ -6,13 +6,13 @@
  */
 
 const Sentry = require("@sentry/node");
-const { Available, LocationType } = require("../model");
+const { Available, LocationType } = require("../../model");
 const {
   titleCase,
   unpadNumber,
   createWarningLogger,
   DEFAULT_STATES,
-} = require("../utils");
+} = require("../../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -21,7 +21,7 @@ const {
   valuesAsObject,
   sourceReference,
   formatExternalIds,
-} = require("../smart-scheduling-links");
+} = require("../../smart-scheduling-links");
 
 const API_URL =
   "https://wbaschedulinglinks.blob.core.windows.net/fhir/$bulk-publish";
