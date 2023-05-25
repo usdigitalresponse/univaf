@@ -8,7 +8,6 @@
  */
 
 const assert = require("node:assert/strict");
-const timers = require("node:timers/promises");
 const { parseArgs } = require("node:util");
 const { httpClient, RateLimit } = require("../utils");
 const { assertSchema } = require("../schema-validation");
