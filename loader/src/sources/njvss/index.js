@@ -31,8 +31,12 @@ const VACCINE_NAMES = {
   "Booster Pfizer_PurpleCap (12 and older)": VaccineProduct.pfizer,
   "Moderna_Peds (6 months - 5 years)": VaccineProduct.modernaAge0_5,
   "Moderna_Bivalent (6 months - 5 years)": VaccineProduct.modernaBa4Ba5Age0_5,
+  "Moderna_Bivalent (6 -11 years)": VaccineProduct.modernaBa4Ba5Age6_11,
+  "Moderna_Bivalent (12 and older)": VaccineProduct.modernaBa4Ba5,
   "Pfizer_Peds (6 months - 4 years)": VaccineProduct.pfizerAge0_4,
   "Pfizer_Bivalent (6 months - 4 years)": VaccineProduct.pfizerBa4Ba5Age0_4,
+  "Pfizer_Bivalent (5 - 11 years)": VaccineProduct.pfizerBa4Ba5Age5_11,
+  "Pfizer_Bivalent (12 and older)": VaccineProduct.pfizerBa4Ba5,
   "Booster Pfizer_GrayCap (12 and older)": VaccineProduct.pfizerBa4Ba5,
   "Booster Moderna_RedCap (18 and older)": VaccineProduct.moderna,
 };
