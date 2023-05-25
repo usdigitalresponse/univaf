@@ -9,6 +9,7 @@ terraform
 
 **/fixtures/**/*.json
 **/__fixtures__/**/*.json
+**/src/sources/albertsons/stores-scraped.json
 **/src/sources/cvs/known-stores.js
 **/src/sources/cvs/scraped-*.json
-**/src/sources/albertsons/stores-scraped.json
+**/src/sources/kroger/scraped-*.json
