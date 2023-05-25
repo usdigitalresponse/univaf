@@ -1,5 +1,8 @@
 const nock = require("nock");
-const { checkAvailability, API_URL } = require("../src/sources/walgreens");
+const {
+  checkAvailability,
+  API_URL,
+} = require("../src/sources/walgreens/smart");
 const {
   expectDatetimeString,
   splitHostAndPath,

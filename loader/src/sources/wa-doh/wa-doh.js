@@ -3,15 +3,15 @@
 
 const assert = require("node:assert/strict");
 const { states: allStates } = require("univaf-common");
-const { Available, LocationType } = require("../model");
+const { Available, LocationType } = require("../../model");
 const {
   queryGraphQl,
   matchVaccineProduct,
   createWarningLogger,
   DEFAULT_STATES,
-} = require("../utils");
+} = require("../../utils");
 
-/** @typedef {import("../model").VaccineProduct} VaccineProduct */
+/** @typedef {import("../../model").VaccineProduct} VaccineProduct */
 
 const warn = createWarningLogger("waDoh");
 

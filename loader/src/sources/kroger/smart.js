@@ -21,13 +21,13 @@
  * "The Little Clinic" locations.
  */
 
-const { Available, LocationType } = require("../model");
+const { Available, LocationType } = require("../../model");
 const {
   unpadNumber,
   getUniqueExternalIds,
   createWarningLogger,
   DEFAULT_STATES,
-} = require("../utils");
+} = require("../../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -35,7 +35,7 @@ const {
   formatExternalIds,
   valuesAsObject,
   getExtensions,
-} = require("../smart-scheduling-links");
+} = require("../../smart-scheduling-links");
 
 const API_URL =
   "https://api.kroger.com/v1/health-wellness/schedules/vaccines/$bulk-publish";
