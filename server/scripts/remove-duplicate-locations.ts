@@ -4,21 +4,27 @@
  * See CLI help at bottom for complete description and options.
  */
 
-const { db, planMerge, doMerge, locationsQuery } = require("./merge-locations");
-
-function writeLog(...args) {
-  console.warn(...args);
-}
+import assert from "node:assert";
+import yargs from "yargs";
+import {
+  db,
+  planMerge,
+  doMerge,
+  locationsQuery,
+  writeLog,
+  ScriptLocation,
+  MergePlan,
+} from "./merge-locations";
 
 /**
  * Group locations by external ID. Locations will appear in more than one group
  * if more than one external ID is shared.
- * @param {Array} locations
- * @param {Array<string>} [systems] Only consider these external ID systems.
- * @param {boolean} [unpadIds] Compare unpadded versions of numeric IDs.
- * @returns {Map<string,Set>}
  */
-function groupByExternalId(locations, systems = null, unpadIds = false) {
+export function groupByExternalId(
+  locations: ScriptLocation[],
+  systems: string[] = null,
+  unpadIds = false
+): Map<string, Set<ScriptLocation>> {
   const byExternalId = new Map();
 
   // Make a locations lookup and an external IDs lookup
@@ -32,7 +38,7 @@ function groupByExternalId(locations, systems = null, unpadIds = false) {
       if (system === "univaf_v1") continue;
 
       // Only for specified systems
-      if (systems && !systems.includes(system)) continue;
+      if (systems?.length && !systems.includes(system)) continue;
 
       const mergeValue = unpadIds ? value.replace(/^0+(\d+)$/, "$1") : value;
       const simpleId = `${system}:${mergeValue}`;
@@ -56,8 +62,6 @@ function groupByExternalId(locations, systems = null, unpadIds = false) {
  * might share different external IDs with different other locations, and thus
  * be listed in multiple groups. We want to group all those locations together
  * in order to merge them.
- * @param {Map<string,Set|Array>} groups
- * @returns {Array<Set>}
  *
  * @example
  * const groups = new Map([
@@ -73,11 +77,13 @@ function groupByExternalId(locations, systems = null, unpadIds = false) {
  *   {"h", "i", "k"}
  * ];
  */
-function mergeGroupsWithCommonLocations(groups) {
+export function mergeGroupsWithCommonLocations<T>(
+  groups: Map<string, Set<T> | Array<T>>
+): Set<T>[] {
   return (
     [...groups.values()]
       // Skip groups that don't represent duplicates.
-      .filter((items) => (items.size || items.length) > 1)
+      .filter((items) => (items instanceof Set ? items.size : items.length) > 1)
       // The next step will modify the sets, so make copies to work with.
       .map((items) => new Set(items))
       .map((items, index, allSets) => {
@@ -106,22 +112,27 @@ function mergeGroupsWithCommonLocations(groups) {
  * @param {boolean} unpadIds If true, remove zero-padding from numeric IDs
  *        before using them to find duplicates.
  */
-function groupDuplicateLocations(locations, systems = null, unpadIds = false) {
+export function groupDuplicateLocations(
+  locations: ScriptLocation[],
+  systems: string[] = null,
+  unpadIds = false
+): Set<ScriptLocation>[] {
   const byExternalId = groupByExternalId(locations, systems, unpadIds);
   return mergeGroupsWithCommonLocations(byExternalId);
 }
 
 /**
  * Create a merge plan for each group that needs to be merged.
- * @param {Array<Set>} mergeGroups
  */
-function planChanges(mergeGroups) {
+function planChanges(mergeGroups: Set<ScriptLocation>[]) {
   // Plan merges for each group.
   const plans = [];
   for (const group of mergeGroups) {
     // Sort by oldest first, so that the oldest becomes the target all the
     // others merge into.
-    const sorted = [...group].sort((a, b) => a.created_at - b.created_at);
+    const sorted = [...group].sort(
+      (a, b) => a.created_at.getTime() - b.created_at.getTime()
+    );
     plans.push(planMerge(...sorted));
   }
 
@@ -143,12 +154,7 @@ function planChanges(mergeGroups) {
   return plans;
 }
 
-/**
- * @param {Map} toUpdate
- * @param {Map} toRemove
- * @param {boolean} persist
- */
-async function doChanges(plans, persist = false) {
+async function doChanges(plans: MergePlan[], persist = false) {
   let removed = 0;
   let updated = 0;
   for (const plan of plans) {
@@ -161,22 +167,36 @@ async function doChanges(plans, persist = false) {
   return { removed, updated };
 }
 
-async function main(args) {
+export async function main({
+  unpad = false,
+  commit = false,
+  system = [],
+  ..._
+}: {
+  unpad?: boolean;
+  commit?: boolean;
+  system?: (string | number)[];
+}): Promise<void> {
+  assert.ok(
+    system.every((s) => typeof s === "string"),
+    "Systems must all be strings"
+  );
+
   const locations = await locationsQuery();
   writeLog("Total locations:", locations.length);
   const duplicates = groupDuplicateLocations(
     locations,
-    args.system,
-    args.unpad
+    system as string[],
+    unpad
   );
   const plans = planChanges(duplicates);
 
-  const { removed, updated } = await doChanges(plans, args.commit);
+  const { removed, updated } = await doChanges(plans, commit);
 
   writeLog(`Removed ${removed} duplicates`);
   writeLog(`Added to ${updated} locations`);
   writeLog("");
-  if (args.commit) {
+  if (commit) {
     writeLog(`Updated ${removed + updated} location records`);
   } else {
     writeLog("This is a plan. Run with --commit to actually make changes.");
@@ -185,15 +205,7 @@ async function main(args) {
   await db.destroy();
 }
 
-module.exports = {
-  main,
-  groupDuplicateLocations,
-  groupByExternalId,
-  mergeGroupsWithCommonLocations,
-};
-
 if (require.main === module) {
-  const yargs = require("yargs");
   yargs
     .scriptName("remove-duplicate-locations")
     .command({
@@ -239,7 +251,7 @@ if (require.main === module) {
               and CVS IDs, use: "--system kroger --system cvs".
             `.trim(),
           }),
-      handler: main,
+      handler: (args) => main(args),
     })
     .help()
     .parse();

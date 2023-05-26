@@ -4,10 +4,37 @@
  * See CLI help at bottom for complete description and options.
  */
 
-const Knex = require("knex");
-const util = require("util");
+import { knex, Knex } from "knex";
+import yargs from "yargs";
+import util from "node:util";
+import { ProviderLocation } from "../src/interfaces";
 
-const NON_MERGE_FIELDS = new Set([
+// For historical reasons, this script uses a different format for external IDs
+// than the rest of the server codebase.
+export interface ScriptExternalId {
+  system: string;
+  value: string;
+}
+
+export interface ScriptLocation extends Omit<ProviderLocation, "external_ids"> {
+  external_ids: ScriptExternalId[];
+}
+
+interface PlanDescription {
+  address: string;
+  text: string;
+}
+
+export interface MergePlan {
+  targetId: string;
+  newIds: ScriptExternalId[];
+  newData?: any;
+  deleteLocations: string[];
+  description: PlanDescription;
+  deleteDescriptions: PlanDescription[];
+}
+
+export const NON_MERGE_FIELDS = new Set([
   "id",
   "external_ids",
   "id_old",
@@ -15,12 +42,12 @@ const NON_MERGE_FIELDS = new Set([
   "updated_at",
 ]);
 
-function writeLog(...args) {
+export function writeLog(...args: any[]): void {
   console.warn(...args);
 }
 
 const environment = process.env.NODE_ENV || "development";
-const db = Knex(require("../knexfile")[environment]);
+export const db = knex(require("../knexfile")[environment]);
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
 const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
@@ -33,7 +60,7 @@ const ADDRESS_LINE_DELIMITER_PATTERN = /,|\n|\s-\s/g;
 // They're always used in lower-case text where punctuation has been removed.
 // In some cases, the replacements *remove* the abbreviation entirely to enable
 // better loose matching (usually for road types, like "road" vs. "street").
-const ADDRESS_EXPANSIONS = [
+const ADDRESS_EXPANSIONS: [RegExp, string][] = [
   [/ i /g, " interstate "],
   [/ i-(\d+) /g, " interstate $1 "],
   [/ expy /g, " expressway "],
@@ -106,10 +133,8 @@ const ADDRESS_EXPANSIONS = [
 /**
  * Simplify a text string (especially an address) as much as possible so that
  * it might match with a similar string from another source.
- * @param {string} text
- * @returns {string}
  */
-function matchable(text) {
+export function matchable(text: string): string {
   return text
     .toLowerCase()
     .replace(POSSESSIVE_PATTERN, " ")
@@ -118,7 +143,10 @@ function matchable(text) {
     .trim();
 }
 
-function matchableAddress(text, line = null) {
+export function matchableAddress(
+  text: string | string[],
+  line: number = null
+): string {
   let lines = Array.isArray(text)
     ? text
     : text.split(ADDRESS_LINE_DELIMITER_PATTERN);
@@ -141,13 +169,13 @@ function matchableAddress(text, line = null) {
   return result.replace(MULTIPLE_SPACE_PATTERN, " ").trim();
 }
 
-function getAddressString(location) {
+function getAddressString(location: ScriptLocation) {
   return `${location.address_lines?.join(", ")}, ${location.city}, ${
     location.state
   } ${location.postal_code}`;
 }
 
-function locationsQuery() {
+export function locationsQuery(): Knex.QueryBuilder<any, ScriptLocation[]> {
   return db
     .select(
       "provider_locations.*",
@@ -167,7 +195,7 @@ function locationsQuery() {
     .groupBy("provider_locations.id");
 }
 
-async function loadLocation(id) {
+async function loadLocation(id: string) {
   const location = await locationsQuery()
     .where("provider_locations.id", "=", id)
     .first();
@@ -177,10 +205,12 @@ async function loadLocation(id) {
   return location;
 }
 
-function planMerge(target, ...toMerge) {
+export function planMerge(...toMerge: ScriptLocation[]): MergePlan {
+  const target = toMerge.shift();
+
   // Determine what fields to update
   let hasChanges = false;
-  const newData = {};
+  const newData: any = {};
 
   for (const source of toMerge) {
     for (const key in source) {
@@ -204,10 +234,10 @@ function planMerge(target, ...toMerge) {
         }
       } else if (
         newData[key] == null &&
-        target[key] == null &&
-        source[key] != null
+        target[key as keyof ScriptLocation] == null &&
+        source[key as keyof ScriptLocation] != null
       ) {
-        newData[key] = source[key];
+        newData[key] = source[key as keyof ScriptLocation];
         hasChanges = true;
       }
     }
@@ -236,7 +266,10 @@ function planMerge(target, ...toMerge) {
   };
 }
 
-function dedupeNewExternalIds(allExternalIds, newId) {
+export function dedupeNewExternalIds(
+  allExternalIds: ScriptExternalId[],
+  newId: string
+): ScriptExternalId[] {
   const seen = new Set();
   // Don't keep a reference to ourselves in the external IDs!
   return allExternalIds.filter(({ system, value }) => {
@@ -254,7 +287,7 @@ function dedupeNewExternalIds(allExternalIds, newId) {
   });
 }
 
-async function doMerge(plan, persist = false) {
+export async function doMerge(plan: MergePlan, persist = false): Promise<void> {
   writeLog("Merging into", plan.targetId, `(${plan.description.text})`);
 
   plan.deleteLocations.forEach((from, index) => {
@@ -333,7 +366,12 @@ async function doMerge(plan, persist = false) {
   }
 }
 
-async function main(args) {
+async function main(
+  args: yargs.ArgumentsCamelCase<{
+    commit: boolean;
+    IDs: string[];
+  }>
+) {
   if (!args.IDs || args.IDs.length < 2) {
     writeLog("Please specify at least two locations to merge.");
     process.exitCode = 1;
@@ -352,18 +390,7 @@ async function main(args) {
   await db.destroy();
 }
 
-module.exports = {
-  NON_MERGE_FIELDS,
-  db,
-  locationsQuery,
-  dedupeNewExternalIds,
-  planMerge,
-  doMerge,
-  matchableAddress,
-};
-
 if (require.main === module) {
-  const yargs = require("yargs");
   yargs
     .scriptName("merge-locations")
     .command({
