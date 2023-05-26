@@ -15,18 +15,18 @@
  * `--clear-log` when running the command.
  */
 
-const { Upload } = require("@aws-sdk/lib-storage");
-const { S3 } = require("@aws-sdk/client-s3");
-const Sentry = require("@sentry/node");
-const fs = require("fs");
-const knex = require("knex");
-const knexConfig = require("../knexfile");
-const luxon = require("luxon");
-const JSONStream = require("JSONStream");
-const stream = require("stream");
-const { pipeline } = require("stream/promises");
-const { Buffer } = require("buffer");
-const zlib = require("zlib");
+import { Upload } from "@aws-sdk/lib-storage";
+import { S3, ListObjectsV2CommandInput } from "@aws-sdk/client-s3";
+import * as Sentry from "@sentry/node";
+import fs from "node:fs";
+import knex, { type Knex } from "knex";
+import knexConfig from "../knexfile";
+import { DateTime } from "luxon";
+import JSONStream from "JSONStream";
+import stream from "node:stream";
+import { pipeline } from "node:stream/promises";
+import { Buffer } from "node:buffer";
+import zlib from "node:zlib";
 
 Sentry.init();
 
@@ -39,13 +39,13 @@ const s3 = new S3({
     process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || "us-east-1",
 });
 
-const FIRST_RUN_DATE = luxon.DateTime.fromISO("2021-05-19", { zone: "utc" });
+const FIRST_RUN_DATE = DateTime.fromISO("2021-05-19", { zone: "utc" });
 
-function writeLog(...args) {
+function writeLog(...args: any[]) {
   console.warn(...args);
 }
 
-function selectSqlPoint(column) {
+function selectSqlPoint(column: string) {
   return `
   CASE WHEN ${column} is null THEN null
   ELSE
@@ -72,11 +72,11 @@ function removeNullPropertiesStream() {
 /**
  * Get a set with the names of all the objects in an S3 bucket. This paginates
  * through all results from the S3 API and may make many requests.
- * @param {import("@aws-sdk/client-s3").ListObjectsV2CommandInput} options
- * @returns {Set<string>}
  */
-async function getAllBucketObjects(options) {
-  const objects = new Set();
+async function getAllBucketObjects(
+  options: ListObjectsV2CommandInput
+): Promise<Set<string>> {
+  const objects: Set<string> = new Set();
 
   let requestOptions = options;
   while (requestOptions) {
@@ -112,20 +112,24 @@ async function getAllBucketObjects(options) {
  * performs *terribly* and is often worse than no chunking at all.
  */
 class BufferedStream extends stream.Transform {
+  #buffer: Buffer = null;
+  #size = 0;
+  #offset = 0;
+
   constructor({ size = 256 * 1024, ...options } = {}) {
     super(options);
-    this.size = size;
+    this.#size = size;
     this.resetBuffer();
   }
 
   resetBuffer() {
     // Allocate a *new* buffer because we emit the previous buffer to the
     // stream's consumer (in `_transform`) and can no longer safely write to it.
-    this.buffer = Buffer.allocUnsafe(this.size);
-    this.offset = 0;
+    this.#buffer = Buffer.allocUnsafe(this.#size);
+    this.#offset = 0;
   }
 
-  _transform(input, encoding, callback) {
+  _transform(input: any, encoding: BufferEncoding, callback: CallableFunction) {
     if (typeof input === "string") {
       input = Buffer.from(input, encoding);
     } else if (!(input instanceof Buffer)) {
@@ -139,29 +143,29 @@ class BufferedStream extends stream.Transform {
 
     let inputPosition = 0;
     while (inputPosition < input.length) {
-      const written = input.copy(this.buffer, this.offset, inputPosition);
+      const written = input.copy(this.#buffer, this.#offset, inputPosition);
       inputPosition += written;
-      this.offset += written;
+      this.#offset += written;
 
-      if (this.offset === this.size) {
+      if (this.#offset === this.#size) {
         // Emit the filled buffer rather than a copy. `resetBuffer` allocates a
         // new buffer more efficiently than making a copy.
-        this.push(this.buffer);
+        this.push(this.#buffer);
         this.resetBuffer();
       }
     }
     callback();
   }
 
-  _flush(callback) {
-    if (this.offset > 0) {
-      this.push(this.buffer.slice(0, this.offset));
+  _flush(callback: CallableFunction) {
+    if (this.#offset > 0) {
+      this.push(this.#buffer.subarray(0, this.#offset));
     }
     callback();
   }
 
-  _destroy(error, callback) {
-    this.buffer = null;
+  _destroy(error: Error, callback: CallableFunction) {
+    this.#buffer = null;
     callback(error);
   }
 }
@@ -176,11 +180,11 @@ function bufferedGzipStream(size = 64 * 1024) {
   );
 }
 
-function getQueryStream(queryBuilder) {
+function getQueryStream(queryBuilder: Knex.QueryBuilder) {
   return queryBuilder.stream().pipe(JSONStream.stringify(false));
 }
 
-function getTableStream(table) {
+function getTableStream(table: string) {
   return getQueryStream(db(table).select("*"));
 }
 
@@ -194,10 +198,8 @@ function getProviderLocationsStream() {
 
 /**
  * Create a Knex query for availability logs on a given date.
- * @param {luxon.DateTime} date
- * @returns {knex.Knex<any, unknown[]>}
  */
-function availabilityLogQueryForDate(date) {
+function availabilityLogQueryForDate(date: DateTime) {
   return db("availability_log")
     .select("*")
     .where("checked_at", ">", formatDate(date))
@@ -205,7 +207,7 @@ function availabilityLogQueryForDate(date) {
     .orderBy("checked_at", "asc");
 }
 
-function getAvailabilityLogStream(date) {
+function getAvailabilityLogStream(date: DateTime) {
   return availabilityLogQueryForDate(date)
     .stream()
     .pipe(removeNullPropertiesStream())
@@ -214,17 +216,15 @@ function getAvailabilityLogStream(date) {
 
 /**
  * Determine whether there are availability logs in the DB for a given date.
- * @param {luxon.DateTime} date
- * @returns {Promise<boolean>}
  */
-async function availabilityLogsExist(date) {
+async function availabilityLogsExist(date: DateTime) {
   // A limit(1) query is much lighter on the DB that count(*), which *always*
   // performs a table scan, even if there is a relevant index.
   const results = await availabilityLogQueryForDate(date).limit(1);
   return results.length > 0;
 }
 
-async function getAvailabilityLogRunDates(upToDate) {
+async function getAvailabilityLogRunDates(upToDate: DateTime) {
   const existingPaths = await getAllBucketObjects({
     Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
     Prefix: "availability_log/",
@@ -244,19 +244,21 @@ async function getAvailabilityLogRunDates(upToDate) {
   return missing;
 }
 
-async function deleteLoggedAvailabilityRows(upToDate) {
+async function deleteLoggedAvailabilityRows(upToDate: DateTime) {
   await db("availability_log")
     .where("checked_at", "<=", formatDate(upToDate))
     .del();
 }
 
-async function uploadStream(s, path) {
+type StreamToPathFunction = (s: stream.Readable, path: string) => Promise<any>;
+
+async function uploadStream(s: stream.Readable, path: string) {
   const s3Upload = new Upload({
     client: s3,
     params: {
       Bucket: process.env.DATA_SNAPSHOT_S3_BUCKET,
       Key: path,
-      Body: s.pipe(stream.PassThrough()), // PassThrough supports .read(), which aws-sdk.s3 needs
+      Body: s.pipe(new stream.PassThrough()), // PassThrough supports .read(), which aws-sdk.s3 needs
     },
     queueSize: 10,
     partSize: 1024 * 1024 * 10,
@@ -264,10 +266,12 @@ async function uploadStream(s, path) {
 
   return await s3Upload.done();
 }
+uploadStream satisfies StreamToPathFunction;
 
-async function writeStreamToLocal(s, path) {
+async function writeStreamToLocal(s: stream.Readable, path: string) {
   return await pipeline(s, fs.createWriteStream(`output/${path}`));
 }
+writeStreamToLocal satisfies StreamToPathFunction;
 
 async function ensureLocalOutputDirs() {
   const dirs = [
@@ -287,22 +291,22 @@ async function ensureLocalOutputDirs() {
   }
 }
 
-function formatDate(date) {
+function formatDate(date: DateTime) {
   return date.toFormat("yyyy-MM-dd");
 }
 
-function pathFor(type, date) {
+function pathFor(type: string, date: DateTime) {
   return `${type}/${type}-${formatDate(date)}.ndjson.gz`;
 }
 
-function eachDayOfInterval({ start, end }) {
+function eachDayOfInterval({ start, end }: { start: DateTime; end: DateTime }) {
   const interval = start.startOf("day").until(end.endOf("day"));
   return interval.splitBy({ days: 1 }).map((d) => d.start);
 }
 
 async function main() {
   const clearLog = process.argv.includes("--clear-log");
-  let writeStream = uploadStream;
+  let writeStream: StreamToPathFunction = uploadStream;
 
   if (!process.argv.includes("--write-to-s3")) {
     writeStream = writeStreamToLocal;
@@ -315,7 +319,7 @@ async function main() {
     return;
   }
 
-  const now = luxon.DateTime.utc();
+  const now = DateTime.utc();
   const runDate = now.minus({ days: 1 }); // run for previous day
 
   for (const table of ["external_ids", "availability"]) {
