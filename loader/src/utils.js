@@ -2,6 +2,7 @@ const timers = require("node:timers/promises");
 const nodeUtil = require("util");
 const Sentry = require("@sentry/node");
 const got = require("got");
+const { matchableAddress, parseUsAddress } = require("univaf-common/address");
 const config = require("./config");
 const {
   GraphQlError,
@@ -9,102 +10,6 @@ const {
   assertValidGraphQl,
 } = require("./exceptions");
 const { VaccineProduct } = require("./model");
-
-const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
-const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
-const POSSESSIVE_PATTERN = /['’]s /g;
-const ADDRESS_LINE_DELIMITER_PATTERN = /,|\n|\s-\s/g;
-
-const ADDRESS_PATTERN =
-  /^(.*),\s+([^,]+),\s+([A-Z]{2}),?\s+(\d+(-\d{4})?)\s*$/i;
-
-// Common abbreviations in addresses and their expanded, full English form.
-// These are used to match similar addresses. For example:
-//   "600 Ocean Hwy" and "600 Ocean Highway"
-// They're always used in lower-case text where punctuation has been removed.
-// In some cases, the replacements *remove* the abbreviation entirely to enable
-// better loose matching (usually for road types, like "road" vs. "street").
-const ADDRESS_EXPANSIONS = [
-  [/ i /g, " interstate "],
-  [/ i-(\d+) /g, " interstate $1 "],
-  [/ expy /g, " expressway "],
-  [/ fwy /g, " freeway "],
-  [/ hwy /g, " highway "],
-  [/ (u s|us) /g, " "], // Frequently in "U.S. Highway / US Highway"
-  [/ (s r|sr|st rt|state route|state road) /g, " route "],
-  [/ rt /g, " route "],
-  [/ (tpke?|pike) /g, " turnpike "],
-  [/ ft /g, " fort "],
-  [/ mt /g, " mount "],
-  [/ mtn /g, " mountain "],
-  [/ (is|isl|island) /g, " "],
-  [/ n\s?w /g, " northwest "],
-  [/ s\s?w /g, " southwest "],
-  [/ n\s?e /g, " northeast "],
-  [/ s\s?e /g, " southeast "],
-  [/ n /g, " north "],
-  [/ s /g, " south "],
-  [/ e /g, " east "],
-  [/ w /g, " west "],
-  [/ ave? /g, " "],
-  [/ avenue? /g, " "],
-  [/ dr /g, " "],
-  [/ drive /g, " "],
-  [/ rd /g, " "],
-  [/ road /g, " "],
-  [/ st /g, " "],
-  [/ street /g, " "],
-  [/ saint /g, " "], // Unfortunately, this gets mixed in with st for street.
-  [/ blvd /g, " "],
-  [/ boulevard /g, " "],
-  [/ ln /g, " "],
-  [/ lane /g, " "],
-  [/ cir /g, " "],
-  [/ circle /g, " "],
-  [/ ct /g, " "],
-  [/ court /g, " "],
-  [/ cor /g, " "],
-  [/ corner /g, " "],
-  [/ (cmn|common|commons) /g, " "],
-  [/ ctr /g, " "],
-  [/ center /g, " "],
-  [/ pl /g, " "],
-  [/ place /g, " "],
-  [/ plz /g, " "],
-  [/ plaza /g, " "],
-  [/ pkw?y /g, " "],
-  [/ parkway /g, " "],
-  [/ cswy /g, " "],
-  [/ causeway /g, " "],
-  [/ byp /g, " "],
-  [/ bypass /g, " "],
-  [/ mall /g, " "],
-  [/ (xing|crssng) /g, " "],
-  [/ crossing /g, " "],
-  [/ sq /g, " "],
-  [/ square /g, " "],
-  [/ trl? /g, " "],
-  [/ trail /g, " "],
-  [/ (twp|twsp|townsh(ip)?) /g, " "],
-  [/ est(ate)? /g, " estates "],
-  [/ vlg /g, " "],
-  [/ village /g, " "],
-  [/ (ste|suite|unit|apt|apartment) #?(\d+) /g, " $2 "],
-  [/ (bld|bldg) #?(\d+) /g, " $2 "],
-  [/ #?(\d+) /g, " $1 "],
-  [/ (&|and) /g, " "],
-  // "First" - "Tenth" are pretty common (this could obviously go farther).
-  [/ first /g, " 1st "],
-  [/ second /g, " 2nd "],
-  [/ third /g, " 3rd "],
-  [/ fourth /g, " 4th "],
-  [/ fifth /g, " 5th "],
-  [/ sixth /g, " 6th "],
-  [/ seventh /g, " 7th "],
-  [/ eighth /g, " 8th "],
-  [/ ninth /g, " 9th "],
-  [/ tenth /g, " 10th "],
-];
 
 const USER_AGENTS = [
   "Mozilla/5.0 CK={} (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko 	Internet Explorer 11 	Web Browser 	Computer 	Very common",
@@ -267,76 +172,9 @@ module.exports = {
 
   RateLimit,
 
-  /**
-   * Simplify a text string (especially an address) as much as possible so that
-   * it might match with a similar string from another source.
-   * @param {string} text
-   * @returns {string}
-   */
-  matchable(text) {
-    return text
-      .toLowerCase()
-      .replace(POSSESSIVE_PATTERN, " ")
-      .replace(PUNCTUATION_PATTERN, " ")
-      .replace(MULTIPLE_SPACE_PATTERN, " ")
-      .trim();
-  },
+  matchableAddress,
 
-  matchableAddress(text, line = null) {
-    let lines = Array.isArray(text)
-      ? text
-      : text.split(ADDRESS_LINE_DELIMITER_PATTERN);
-
-    // If there are multiple lines and it looks like the first line is the name
-    // of a place (rather than the street), drop the first line.
-    if (lines.length > 1 && !/\d/.test(lines[0])) {
-      lines = lines.slice(1);
-    }
-
-    if (line != null) {
-      lines = lines.slice(line, line + 1);
-    }
-
-    let result = module.exports.matchable(lines.join(" "));
-    for (const [pattern, expansion] of ADDRESS_EXPANSIONS) {
-      result = result.replace(pattern, expansion);
-    }
-
-    return result;
-  },
-
-  /**
-   * Parse a US-style address string.
-   * @param {string} address
-   * @returns {{lines: Array<string>, city: string, state: string, zip: string}}
-   */
-  parseUsAddress(address) {
-    const match = address.match(ADDRESS_PATTERN);
-
-    // Detect whether we have something formatted like an address, but with
-    // obviously incorrect street/city/zip data, e.g. "., ., CA 90210".
-    const invalidMatch =
-      !match ||
-      match[1].replace(PUNCTUATION_PATTERN, "") === "" ||
-      match[2].replace(PUNCTUATION_PATTERN, "") === "" ||
-      match[4].replace(PUNCTUATION_PATTERN, "") === "";
-    if (invalidMatch) {
-      throw new ParseError(`Could not parse address: "${address}"`);
-    }
-
-    let zip = match[4];
-    if (zip.split("-")[0].length < 5) {
-      warn(`Invalid ZIP code in address: "${address}"`);
-      zip = undefined;
-    }
-
-    return {
-      lines: [match[1]],
-      city: match[2],
-      state: match[3].toUpperCase(),
-      zip,
-    };
-  },
+  parseUsAddress,
 
   /**
    * Parse and return a US-style phone number with an area code and, optionally,
@@ -698,5 +536,3 @@ module.exports = {
     throw new ParseError(`Text is not a URL: "${text}"`);
   },
 };
-
-const warn = module.exports.createWarningLogger("utils");

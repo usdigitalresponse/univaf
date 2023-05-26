@@ -7,6 +7,7 @@
 import { type Knex } from "knex";
 import yargs from "yargs";
 import util from "node:util";
+import { matchableAddress } from "univaf-common/address";
 import { ProviderLocation } from "../src/interfaces";
 import { createDbClient } from "../src/db-client";
 
@@ -48,126 +49,6 @@ export function writeLog(...args: any[]): void {
 }
 
 export const db = createDbClient("Scripts");
-
-const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
-const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
-const POSSESSIVE_PATTERN = /['’]s /g;
-const ADDRESS_LINE_DELIMITER_PATTERN = /,|\n|\s-\s/g;
-
-// Common abbreviations in addresses and their expanded, full English form.
-// These are used to match similar addresses. For example:
-//   For example: "600 Ocean Hwy" and "600 Ocean Highway"
-// They're always used in lower-case text where punctuation has been removed.
-// In some cases, the replacements *remove* the abbreviation entirely to enable
-// better loose matching (usually for road types, like "road" vs. "street").
-const ADDRESS_EXPANSIONS: [RegExp, string][] = [
-  [/ i /g, " interstate "],
-  [/ i-(\d+) /g, " interstate $1 "],
-  [/ expy /g, " expressway "],
-  [/ fwy /g, " freeway "],
-  [/ hwy /g, " highway "],
-  [/ (u s|us) /g, " "], // Frequently in "U.S. Highway / US Highway"
-  [/ (s r|sr|st rt|state route|state road) /g, " route "],
-  [/ rt /g, " route "],
-  [/ (tpke?|pike) /g, " turnpike "],
-  [/ ft /g, " fort "],
-  [/ mt /g, " mount "],
-  [/ mtn /g, " mountain "],
-  [/ (is|isl|island) /g, " "],
-  [/ n /g, " north "],
-  [/ s /g, " south "],
-  [/ e /g, " east "],
-  [/ w /g, " west "],
-  [/ nw /g, " northwest "],
-  [/ sw /g, " southwest "],
-  [/ ne /g, " northeast "],
-  [/ se /g, " southeast "],
-  [/ ave? /g, " "],
-  [/ avenue? /g, " "],
-  [/ dr /g, " "],
-  [/ drive /g, " "],
-  [/ rd /g, " "],
-  [/ road /g, " "],
-  [/ st /g, " "],
-  [/ street /g, " "],
-  [/ saint /g, " "], // Unfortunately, this gets mixed in with st for street.
-  [/ blvd /g, " "],
-  [/ boulevard /g, " "],
-  [/ ln /g, " "],
-  [/ lane /g, " "],
-  [/ cir /g, " "],
-  [/ circle /g, " "],
-  [/ ct /g, " "],
-  [/ court /g, " "],
-  [/ cor /g, " "],
-  [/ corner /g, " "],
-  [/ (cmn|common|commons) /g, " "],
-  [/ ctr /g, " "],
-  [/ center /g, " "],
-  [/ pl /g, " "],
-  [/ place /g, " "],
-  [/ plz /g, " "],
-  [/ plaza /g, " "],
-  [/ pkw?y /g, " "],
-  [/ parkway /g, " "],
-  [/ cswy /g, " "],
-  [/ causeway /g, " "],
-  [/ byp /g, " "],
-  [/ bypass /g, " "],
-  [/ mall /g, " "],
-  [/ (xing|crssng) /g, " "],
-  [/ crossing /g, " "],
-  [/ sq /g, " "],
-  [/ square /g, " "],
-  [/ trl? /g, " "],
-  [/ trail /g, " "],
-  [/ (twp|twsp|townsh(ip)?) /g, " "],
-  [/ est(ate)? /g, " estates "],
-  [/ vlg /g, " "], // village
-  [/ village /g, " "],
-  [/ (ste|suite|unit|apt|apartment) #?(\d+) /g, " $1 "],
-  [/ #?(\d+) /g, " $1 "],
-  [/ (&|and) /g, " "],
-];
-
-/**
- * Simplify a text string (especially an address) as much as possible so that
- * it might match with a similar string from another source.
- */
-export function matchable(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(POSSESSIVE_PATTERN, " ")
-    .replace(PUNCTUATION_PATTERN, " ")
-    .replace(MULTIPLE_SPACE_PATTERN, " ")
-    .trim();
-}
-
-export function matchableAddress(
-  text: string | string[],
-  line: number = null
-): string {
-  let lines = Array.isArray(text)
-    ? text
-    : text.split(ADDRESS_LINE_DELIMITER_PATTERN);
-
-  // If there are multiple lines and it looks like the first line is the name
-  // of a place (rather than the street), drop the first line.
-  if (lines.length > 1 && !/\d/.test(lines[0])) {
-    lines = lines.slice(1);
-  }
-
-  if (line != null) {
-    lines = lines.slice(line, line + 1);
-  }
-
-  let result = matchable(lines.join(" "));
-  for (const [pattern, expansion] of ADDRESS_EXPANSIONS) {
-    result = result.replace(pattern, expansion);
-  }
-
-  return result.replace(MULTIPLE_SPACE_PATTERN, " ").trim();
-}
 
 function getAddressString(location: ScriptLocation) {
   return `${location.address_lines?.join(", ")}, ${location.city}, ${
