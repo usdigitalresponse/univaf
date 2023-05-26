@@ -4,10 +4,11 @@
  * See CLI help at bottom for complete description and options.
  */
 
-import { knex, Knex } from "knex";
+import { type Knex } from "knex";
 import yargs from "yargs";
 import util from "node:util";
 import { ProviderLocation } from "../src/interfaces";
+import { createDbClient } from "../src/db-client";
 
 // For historical reasons, this script uses a different format for external IDs
 // than the rest of the server codebase.
@@ -46,8 +47,7 @@ export function writeLog(...args: any[]): void {
   console.warn(...args);
 }
 
-const environment = process.env.NODE_ENV || "development";
-export const db = knex(require("../knexfile")[environment]);
+export const db = createDbClient("Scripts");
 
 const MULTIPLE_SPACE_PATTERN = /[\n\s]+/g;
 const PUNCTUATION_PATTERN = /[.,;\-–—'"“”‘’`!()/\\]+/g;
