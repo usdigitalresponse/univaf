@@ -171,3 +171,25 @@ export function parseUsAddress(address: string): UsAddress {
     zip,
   };
 }
+
+/**
+ * Format a US ZIP code into its canonical 5-digit form (plus an optional
+ * 4-digit suffix). This is useful since a lot of systems return ZIP codes
+ * without leading zeroes.
+ */
+export function formatZipCode(zipCode: string | number): string {
+  if (typeof zipCode === "number" && !Number.isInteger(zipCode)) {
+    throw new SyntaxError(`ZIP code is not an integer: "${zipCode}"`);
+  }
+
+  const parts = zipCode.toString().split("-");
+  if (parts.length > 2) {
+    throw new SyntaxError(`ZIP code has multiple dashes: "${zipCode}"`);
+  }
+
+  let result = parts[0].padStart(5, "0");
+  if (parts.length > 1) {
+    result = `${result}-${parts[1].padStart(4, "0")}`;
+  }
+  return result;
+}
