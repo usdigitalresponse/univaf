@@ -1,4 +1,4 @@
-const { BaseError } = require("univaf-common/exceptions");
+const { BaseError, ParseError } = require("univaf-common/exceptions");
 
 /**
  * @typedef {object} HttpResponse
@@ -91,8 +91,6 @@ function assertValidGraphQl(response) {
     throw new HttpApiError(response);
   }
 }
-
-class ParseError extends BaseError {}
 
 module.exports = {
   GraphQlError,
