@@ -205,7 +205,7 @@ describe("StaleChecker", () => {
     );
 
     checker.printSummary();
-    expect(logging.mock.messages["warning"]).toContainEqual(
+    expect(logging.mock.messages["info"]).toContainEqual(
       expect.stringContaining("test-source-1 has no age information")
     );
   });
