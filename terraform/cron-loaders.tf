@@ -30,10 +30,10 @@ locals {
     },
     waDoh             = { schedule = "cron(3/30 * * * ? *)" }
     cvsSmart          = { schedule = "cron(3/15 * * * ? *)" }
-    walgreensSmart    = { schedule = "cron(2/10 * * * ? *)" }
+    walgreensSmart    = { schedule = "cron(2/15 * * * ? *)" }
     albertsonsScraper = { schedule = "cron(20/30 * * * ? *)" }
-    hyvee             = { schedule = "cron(8/10 * * * ? *)" }
-    heb               = { schedule = "cron(1/10 * * * ? *)" }
+    hyvee             = { schedule = "cron(8/15 * * * ? *)" }
+    heb               = { schedule = "cron(1/15 * * * ? *)" }
     cdcApi = {
       schedule = "cron(0 0,12 * * ? *)"
       # CDC updates are often slow; set stale threshold to 3 days.
