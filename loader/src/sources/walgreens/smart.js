@@ -6,13 +6,9 @@
  */
 
 const Sentry = require("@sentry/node");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
-const {
-  titleCase,
-  unpadNumber,
-  createWarningLogger,
-  DEFAULT_STATES,
-} = require("../../utils");
+const { titleCase, unpadNumber, DEFAULT_STATES } = require("../../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -29,7 +25,7 @@ const API_URL =
 // System used for Walgreens store IDs.
 const WALGREENS_ID_SYSTEM = "https://walgreens.com";
 
-const warn = createWarningLogger("walgreensSmart");
+const logger = new Logger("walgreensSmart");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -165,12 +161,12 @@ function formatCapacity(slots) {
           // (*some* appointments) rather than actual capacity estimates. It
           // doesn't indicate this in any way, so watch for unexpected values in
           // case something in their implementation to be more detailed.
-          warn("Unexpected != 5 capacity", { slot }, true);
+          logger.warn("Unexpected != 5 capacity", { slot });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         booking_url = extension.valueUrl;
       } else {
-        warn("Unexpected slot extension", { slot }, true);
+        logger.warn("Unexpected slot extension", { slot });
       }
     }
 

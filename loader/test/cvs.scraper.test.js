@@ -11,8 +11,7 @@ const {
 
 const { expectDatetimeString } = require("./support");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 // const geocoding = require("../src/geocoding");
 // const { dataSources, callsToAction } = require("../src/model");

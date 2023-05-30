@@ -11,14 +11,14 @@ const {
   formatExternalIds,
   valuesAsObject,
 } = require("../../smart-scheduling-links");
-const { createWarningLogger, DEFAULT_STATES } = require("../../utils");
+const { Logger } = require("../../logging");
+const { DEFAULT_STATES } = require("../../utils");
 const { CVS_BOOKING_URL } = require("./shared");
 
 const CVS_SMART_API_URL =
   "https://www.cvs.com/immunizations/inventory/data/$bulk-publish";
 
-const warn = createWarningLogger("cvsSmart");
-const logError = createWarningLogger("cvsSmart", "error");
+const logger = new Logger("cvsSmart");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -103,20 +103,20 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
           available = Available.unknown;
-          logError("Non-integer slot capcity", slot, true);
+          logger.error("Non-integer slot capcity", slot);
         } else if (capacity > 1) {
           // The CVS API currently returns 0 (no appointments) or 1 (*some*
           // appointments) rather than actual capacity estimates. It doesn't
           // indicate this in any way, so watch for unexpected values in case
           // something in their implementation to be more detailed.
-          warn("Unexpected > 1 capacity for slot", { slot }, true);
+          logger.warn("Unexpected > 1 capacity for slot", { slot });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         // We don't use the Booking URL; we hardcode a better one that puts you
         // directly into the screener flow instead of an interstitial page.
         // bookingLink = extension.valueUrl;
       } else {
-        warn("Unexpected slot extension", { slot }, true);
+        logger.warn("Unexpected slot extension", { slot });
       }
     }
 

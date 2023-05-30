@@ -16,14 +16,11 @@ const {
   formatExternalIds,
   valuesAsObject,
 } = require("../../smart-scheduling-links");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const { prepmodHostsByState } = require("./hosts");
 const { HTTPError } = require("got");
-const {
-  matchVaccineProduct,
-  createWarningLogger,
-  DEFAULT_STATES,
-} = require("../../utils");
+const { matchVaccineProduct, DEFAULT_STATES } = require("../../utils");
 
 /**
  * Import types
@@ -32,7 +29,7 @@ const {
 
 const API_PATH = "/api/smart-scheduling-links/$bulk-publish";
 
-const warn = createWarningLogger("prepmod");
+const logger = new Logger("prepmod");
 
 function getApiForHost(host) {
   return new SmartSchedulingLinksApi(`${host}${API_PATH}`);
@@ -350,37 +347,25 @@ function parseSchedule(schedule) {
       } else if (nonCovidProductName.test(extension.valueCoding.display)) {
         data.hasNonCovidProducts = true;
       } else {
-        warn(
-          `Unparseable product "${extension?.valueCoding?.display}"`,
-          {
-            scheduleId: schedule.id,
-            extension,
-          },
-          true
-        );
+        logger(`Unparseable product "${extension?.valueCoding?.display}"`, {
+          scheduleId: schedule.id,
+          extension,
+        });
       }
     } else if (extension.url === EXTENSIONS.DOSE) {
       if (extension.valueInteger >= 1 && extension.valueInteger <= 2) {
         doses.add(extension.valueInteger);
       } else {
-        warn(
-          "Unparseable dose extension",
-          {
-            scheduleId: schedule.id,
-            extension,
-          },
-          true
-        );
-      }
-    } else {
-      warn(
-        `Unknown schedule extension url: "${extension.url}"`,
-        {
+        logger.warn("Unparseable dose extension", {
           scheduleId: schedule.id,
           extension,
-        },
-        true
-      );
+        });
+      }
+    } else {
+      logger.warn(`Unknown schedule extension url: "${extension.url}"`, {
+        scheduleId: schedule.id,
+        extension,
+      });
     }
   }
 
@@ -426,26 +411,18 @@ function formatSlots(smartSlots) {
           // TODO: should have something that automatically parses by value type.
           capacity = parseInt(extension.valueInteger);
           if (isNaN(capacity)) {
-            warn(
-              `Non-integer slot capacity`,
-              {
-                slotId: smartSlot.id,
-                extension,
-              },
-              true
-            );
+            logger.warn(`Non-integer slot capacity`, {
+              slotId: smartSlot.id,
+              extension,
+            });
           }
         } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
           booking_url = extension.valueUrl;
         } else {
-          warn(
-            `Unknown slot extension url: "${extension.url}"`,
-            {
-              slotId: smartSlot.id,
-              extension,
-            },
-            true
-          );
+          logger.warn(`Unknown slot extension url: "${extension.url}"`, {
+            slotId: smartSlot.id,
+            extension,
+          });
         }
       }
 

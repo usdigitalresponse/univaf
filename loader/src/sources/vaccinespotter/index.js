@@ -11,18 +11,18 @@
  */
 
 const Sentry = require("@sentry/node");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const {
   httpClient,
   titleCase,
   unpadNumber,
   getUniqueExternalIds,
-  createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
 const walgreens_store_list = require("./walgreens_base");
 
-const warn = createWarningLogger("vaccinespotter");
+const logger = new Logger("vaccinespotter");
 
 async function queryState(state) {
   try {
@@ -90,17 +90,13 @@ function validateSlots(apiLocation) {
   }
 
   if (warning || error) {
-    const context = { id: apiLocation.id, provider: apiLocation.provider };
-    if (warning) {
-      warn(warning, context);
-    }
-    if (error) {
-      warn(error, context);
-      return false;
-    }
+    logger.warn(warning || error, {
+      id: apiLocation.id,
+      provider: apiLocation.provider,
+    });
   }
 
-  return true;
+  return error ? false : true;
 }
 
 /**
@@ -437,7 +433,7 @@ function formatStore(store) {
 }
 
 async function checkAvailability(handler, { states = DEFAULT_STATES }) {
-  warn("WARNING: vaccinespotter is deprecated and no longer maintained.");
+  logger.warn("DEPRECATED: vaccinespotter is no longer maintained.");
 
   let results = [];
   for (const state of states) {

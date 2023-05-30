@@ -26,7 +26,7 @@
 
 const Sentry = require("@sentry/node");
 const { ParseError } = require("../../exceptions");
-
+const { Logger } = require("../../logging");
 const { Available, VaccineProduct } = require("../../model");
 const {
   httpClient,
@@ -34,15 +34,13 @@ const {
   titleCase,
   unpadNumber,
   cleanUrl,
-  createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
 
 const API_HOST = "https://data.cdc.gov";
 const API_PATH = "/resource/5jp2-pgaw.json";
 
-const warn = createWarningLogger("cdcApi");
-const error = createWarningLogger("cdcApi", "error");
+const logger = new Logger("cdcApi");
 
 function parseWholeNumber(value) {
   if (!value) return 0;
@@ -50,7 +48,7 @@ function parseWholeNumber(value) {
   const numberValue = Number(value);
   if (isNaN(numberValue) || numberValue < 0 || !Number.isInteger(numberValue)) {
     // FIXME: make it safe for this to throw instead. (Then move this to utils.)
-    error(
+    logger.error(
       new ParseError(
         `Expected integer >= 0 or null, but got ${JSON.stringify(value)}`
       )
@@ -86,8 +84,8 @@ async function* queryState(state) {
       } else {
         offset += PAGE_SIZE;
       }
-    } catch (e) {
-      error(`Error fetching CDC data`, e);
+    } catch (error) {
+      logger.error(`Error fetching CDC data`, error);
       return;
     }
   }
@@ -190,7 +188,7 @@ function formatStore(storeItems, checkedAt) {
         latitude: Number(base.latitude),
       };
       if (isNaN(position.longitude) || isNaN(position.latitude)) {
-        error("longitude and latitude are not numbers");
+        logger.error("longitude and latitude are not numbers");
       } else {
         result.position = position;
       }
@@ -234,15 +232,11 @@ function getWalmartId(location) {
     return unpadNumber(numberInName[1]);
   }
 
-  warn(
-    "Unexpected Walmart/Sams ID format",
-    {
-      id: location.provider_location_guid,
-      storeNumber: location.loc_store_no,
-      storeName: location.loc_name,
-    },
-    true
-  );
+  logger.warn("Unexpected Walmart/Sams ID format", {
+    id: location.provider_location_guid,
+    storeNumber: location.loc_store_no,
+    storeName: location.loc_name,
+  });
   return null;
 }
 
@@ -311,14 +305,10 @@ const locationSystems = [
       // There doesn't appear to be a simple way to match up to their data here.
       const id = location.loc_store_no.match(/^\s*0*69(\d\d)\s*$/)?.[1];
       if (!id) {
-        warn(
-          "Unexpected Bartell ID format",
-          {
-            id: location.provider_location_guid,
-            storeNumber: location.loc_store_no,
-          },
-          true
-        );
+        logger.warn("Unexpected Bartell ID format", {
+          id: location.provider_location_guid,
+          storeNumber: location.loc_store_no,
+        });
       }
       return [
         ["bartell", id],
@@ -337,14 +327,10 @@ const locationSystems = [
         // the store number prefixed with "1-".
         return `1-${storeNumber}`;
       }
-      warn(
-        "Unexpected Winn-Dixie ID format",
-        {
-          id: location.provider_location_guid,
-          storeNumber: location.loc_store_no,
-        },
-        true
-      );
+      logger.warn("Unexpected Winn-Dixie ID format", {
+        id: location.provider_location_guid,
+        storeNumber: location.loc_store_no,
+      });
       return null;
     },
   },

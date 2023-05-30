@@ -1,6 +1,6 @@
 const { Duration } = require("luxon");
 const metrics = require("./metrics");
-const { createWarningLogger } = require("./utils");
+const { Logger } = require("./logging");
 
 /** @typedef {import("luxon").DateTime} DateTime */
 
@@ -16,7 +16,7 @@ const { createWarningLogger } = require("./utils");
 
 const DEFAULT_STALE_THRESHOLD = Duration.fromObject({ days: 1 }).toMillis();
 
-const warn = createWarningLogger("stale");
+const logger = new Logger("stale");
 
 class StaleChecker {
   /** @type {Map<string, AgeStatistics>} */
@@ -122,18 +122,14 @@ class StaleChecker {
 
     for (const stats of this.listStatistics({ includeUnknown: true })) {
       if (stats.samples.length === 0) {
-        warn(`${stats.source} has no age information for locations.`);
+        logger.warn(`${stats.source} has no age information for locations.`);
       } else if (stats.max > this.threshold) {
-        warn(
-          `${stats.source} has stale data!`,
-          {
-            min: formatMillis(stats.min),
-            max: formatMillis(stats.max),
-            average: formatMillis(stats.average),
-            median: formatMillis(stats.median),
-          },
-          true
-        );
+        logger.warn(`${stats.source} has stale data!`, {
+          min: formatMillis(stats.min),
+          max: formatMillis(stats.max),
+          average: formatMillis(stats.average),
+          median: formatMillis(stats.median),
+        });
       }
     }
   }

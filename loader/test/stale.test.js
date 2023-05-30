@@ -1,10 +1,10 @@
+jest.mock("../src/logging");
+jest.mock("../src/metrics");
+
 const { DateTime, Duration } = require("luxon");
-const utils = require("../src/utils");
+const logging = require("../src/logging");
 const metrics = require("../src/metrics");
 const { StaleChecker } = require("../src/stale");
-
-jest.mock("../src/utils");
-jest.mock("../src/metrics");
 
 // Keep a single, seconds-level "now" timestamp so test results are predictable.
 // (Rounded to the nearest second to avoid math quirks with floats.)
@@ -63,6 +63,7 @@ describe("StaleChecker", () => {
   let checker;
   beforeEach(() => {
     jest.clearAllMocks();
+    logging.mock.clear();
     checker = new StaleChecker({
       relativeTo: now,
       threshold: asMillis({ days: 1 }),
@@ -181,13 +182,14 @@ describe("StaleChecker", () => {
     );
 
     checker.printSummary();
-    expect(utils.__getWarnings()).toContainEqual(
+    const warnings = logging.mock.messages["warning"];
+    expect(warnings).toContainEqual(
       expect.stringContaining("test-source-1 has stale data")
     );
-    expect(utils.__getWarnings()).not.toContainEqual(
+    expect(warnings).not.toContainEqual(
       expect.stringContaining("test-source-2 has stale data")
     );
-    expect(utils.__getWarnings()).toContainEqual(
+    expect(warnings).toContainEqual(
       expect.stringContaining("test-source-3 has stale data")
     );
   });
@@ -203,7 +205,7 @@ describe("StaleChecker", () => {
     );
 
     checker.printSummary();
-    expect(utils.__getWarnings()).toContainEqual(
+    expect(logging.mock.messages["warning"]).toContainEqual(
       expect.stringContaining("test-source-1 has no age information")
     );
   });

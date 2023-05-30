@@ -1,6 +1,6 @@
 const { DateTime } = require("luxon");
 const nock = require("nock");
-const utils = require("../src/utils");
+const logging = require("../src/logging");
 const {
   checkAvailability,
   queryState,
@@ -9,8 +9,7 @@ const {
 const { locationSchema } = require("./support/schemas");
 const responseFixture = require("./fixtures/riteaid.api.test.json");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 function createMockApiLocation() {
   return {
@@ -32,7 +31,7 @@ describe("Rite Aid Source", () => {
 
   afterEach(() => {
     processMock.restore();
-    utils.__mockClear();
+    logging.mock.clear();
     nock.cleanAll();
   });
 
@@ -240,7 +239,7 @@ describe("Rite Aid Source", () => {
     };
 
     formatStore(badData);
-    expect(utils.__getWarnings()).toContainEqual(
+    expect(logging.mock.messages["warning"]).toContainEqual(
       expect.stringContaining("slot count")
     );
   });

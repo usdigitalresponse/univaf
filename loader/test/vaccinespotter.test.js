@@ -2,8 +2,7 @@ const { Available } = require("../src/model");
 const { formatStore } = require("../src/sources/vaccinespotter/index");
 const { expectDatetimeString } = require("./support");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 describe("VaccineSpotter", () => {
   const basicVaccineSpotterStore = {

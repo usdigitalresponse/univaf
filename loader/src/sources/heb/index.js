@@ -12,11 +12,8 @@
 
 const Sentry = require("@sentry/node");
 const { DateTime } = require("luxon");
-const {
-  httpClient,
-  createWarningLogger,
-  DEFAULT_STATES,
-} = require("../../utils");
+const { Logger } = require("../../logging");
+const { httpClient, DEFAULT_STATES } = require("../../utils");
 const { LocationType, VaccineProduct, Available } = require("../../model");
 const { assertSchema } = require("../../schema-validation");
 
@@ -95,7 +92,7 @@ const IMMUNIZATION_TYPES = {
   },
 };
 
-const warn = createWarningLogger("heb");
+const logger = new Logger("heb");
 
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
@@ -136,7 +133,7 @@ async function getData(states) {
         try {
           formatted = formatLocation(entry, validAt, checkedAt);
         } catch (error) {
-          warn(error);
+          logger.warn(error);
         }
       });
       return formatted;
@@ -182,7 +179,7 @@ function formatAvailableProducts(slots, availableImmunizations) {
     availableTypes = availableImmunizations
       .map((key) => {
         if (!Object.hasOwn(IMMUNIZATION_TYPES, key)) {
-          warn(`Unknown immunization type: ${key}`);
+          logger.warn(`Unknown immunization type: ${key}`);
         } else if (IMMUNIZATION_TYPES[key].product) {
           return IMMUNIZATION_TYPES[key];
         }
@@ -206,9 +203,11 @@ function formatAvailableProducts(slots, availableImmunizations) {
 
         if (!formatted.length) {
           if (availableTypes) {
-            warn(`No available products match manufacturer: "${manufacturer}"`);
+            logger.warn(
+              `No available products match manufacturer: "${manufacturer}"`
+            );
           } else {
-            warn(`Unknown manufacturer: "${manufacturer}"`);
+            logger.warn(`Unknown manufacturer: "${manufacturer}"`);
           }
         }
 

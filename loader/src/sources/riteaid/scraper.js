@@ -11,12 +11,12 @@
 const { mapKeys } = require("lodash");
 const { DateTime } = require("luxon");
 const Sentry = require("@sentry/node");
+const { Logger } = require("../../logging");
 const { Available, LocationType, VaccineProduct } = require("../../model");
 const { assertSchema } = require("../../schema-validation");
 const {
   RateLimit,
   TIME_ZONE_OFFSET_STRINGS,
-  createWarningLogger,
   parseUsPhoneNumber,
   httpClient,
 } = require("../../utils");
@@ -56,7 +56,7 @@ const VACCINE_IDS = {
 // response.
 const VACCINE_IDS_SHORT = mapKeys(VACCINE_IDS, (_, key) => key.split("-")[0]);
 
-const warn = createWarningLogger("riteAidScraper");
+const logger = new Logger("riteAidScraper");
 
 async function queryZipCode(zip, radius = 100, stores = null) {
   const maximumResultCount = 100;
@@ -101,11 +101,11 @@ async function queryZipCode(zip, radius = 100, stores = null) {
       .slice()
       .sort((a, b) => a.miles - b.miles)
       .at(-1);
-    warn(
-      `Query for zip code ${zip} had too many results`,
-      { radius, farthest, results: resultSummary },
-      true
-    );
+    logger.warn(`Query for zip code ${zip} had too many results`, {
+      radius,
+      farthest,
+      results: resultSummary,
+    });
   }
 
   return response.body;
@@ -326,7 +326,7 @@ function formatSlots(location) {
     for (const [vaccineKey, slots] of Object.entries(day.slots)) {
       const product = VACCINE_IDS_SHORT[vaccineKey];
       if (!product) {
-        warn(`Unknown product ID: ${vaccineKey}`);
+        logger.warn(`Unknown product ID: ${vaccineKey}`);
         continue;
       }
 
@@ -336,7 +336,7 @@ function formatSlots(location) {
           let timestamp = slot.apptDateTime;
           const timestampInfo = timestamp.match(timestampPattern);
           if (!timestampInfo) {
-            warn(`Invalid timestamp`, { timestamp });
+            logger.warn(`Invalid timestamp`, { timestamp });
             continue;
           } else if (!timestampInfo.groups.offset) {
             timestamp += timeOffset;

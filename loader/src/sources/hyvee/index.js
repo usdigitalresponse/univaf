@@ -16,11 +16,8 @@
 
 const assert = require("node:assert/strict");
 const Sentry = require("@sentry/node");
-const {
-  queryGraphQl,
-  createWarningLogger,
-  DEFAULT_STATES,
-} = require("../../utils");
+const { Logger } = require("../../logging");
+const { queryGraphQl, DEFAULT_STATES } = require("../../utils");
 const { LocationType, Available, VaccineProduct } = require("../../model");
 const {
   assertSchema,
@@ -52,7 +49,7 @@ const VACCINE_NAMES = {
   Novavax: VaccineProduct.novavax,
 };
 
-const warn = createWarningLogger("hyvee");
+const logger = new Logger("hyvee");
 
 const locationSchema = requireAllProperties({
   type: "object",
@@ -232,7 +229,7 @@ function formatProducts(vaccineData) {
     .map((product) => {
       const result = VACCINE_NAMES[product.vaccineName];
       if (!result) {
-        warn(`Unknown product type "${product.vaccineName}"`);
+        logger.warn(`Unknown product type "${product.vaccineName}"`);
       }
       return result;
     });
@@ -254,7 +251,7 @@ async function getData(states) {
         try {
           formatted = formatLocation(entry.location, checkedAt);
         } catch (error) {
-          warn(error);
+          logger.warn(error);
         }
       });
       return formatted;

@@ -3,8 +3,7 @@ const { LocationType, Available } = require("../src/model");
 const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 const baseLocation = {
   zip: "78209-5703",

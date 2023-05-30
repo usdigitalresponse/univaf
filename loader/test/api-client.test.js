@@ -2,8 +2,7 @@ const timers = require("node:timers/promises");
 const { UpdateQueue, ApiClient } = require("../src/api-client");
 const nock = require("nock");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 const MOCK_HOST = "http://univaf.test";
 

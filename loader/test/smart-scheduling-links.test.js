@@ -8,8 +8,7 @@ const {
   SmartSchedulingLinksApi,
 } = require("../src/smart-scheduling-links");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 describe("smart-scheduling-links", () => {
   describe("valuesAsObject", () => {

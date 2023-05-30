@@ -27,12 +27,8 @@ const {
   assertSchema,
   requireAllProperties,
 } = require("../../schema-validation");
-const {
-  RateLimit,
-  createWarningLogger,
-  httpClient,
-  unpadNumber,
-} = require("../../utils");
+const { Logger } = require("../../logging");
+const { RateLimit, httpClient, unpadNumber } = require("../../utils");
 const { HttpApiError } = require("../../exceptions");
 const { BRANDS } = require("./common");
 const {
@@ -75,7 +71,7 @@ const SERVICE_TYPES = {
 
 const SUPPORTED_STATES = Object.keys(zipCodesCoveringAlbertsons);
 
-const warn = createWarningLogger("albertsonsScraper");
+const logger = new Logger("albertsonsScraper");
 
 class AlbertsonsScraperApiError extends HttpApiError {
   parse(response) {
@@ -235,7 +231,7 @@ function formatLocation(apiData, checkedAt) {
   const products = apiData.serviceTypes
     .map((x) => {
       if (!(x.serviceTypeName in SERVICE_TYPES)) {
-        warn(`Unknown service type: ${x.serviceTypeName}`);
+        logger.warn(`Unknown service type: ${x.serviceTypeName}`);
         return null;
       }
       return SERVICE_TYPES[x.serviceTypeName];
@@ -351,7 +347,7 @@ async function checkAvailability(
   // Filter out unsupported states.
   states = states.filter((state) => {
     if (!SUPPORTED_STATES.includes(state)) {
-      warn(`The state "${state}" is not supported.`);
+      logger.warn(`The state "${state}" is not supported.`);
       return false;
     }
     return true;
