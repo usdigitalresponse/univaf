@@ -122,7 +122,7 @@ class StaleChecker {
 
     for (const stats of this.listStatistics({ includeUnknown: true })) {
       if (stats.samples.length === 0) {
-        logger.warn(`${stats.source} has no age information for locations.`);
+        logger.info(`${stats.source} has no age information for locations.`);
       } else if (stats.max > this.threshold) {
         logger.warn(`${stats.source} has stale data!`, {
           min: formatMillis(stats.min),
