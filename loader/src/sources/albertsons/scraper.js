@@ -342,7 +342,7 @@ function* listUnmatchedStores(matchedStoreNumbers, states) {
 
 async function checkAvailability(
   handler,
-  { states = SUPPORTED_STATES, rateLimit, verbose = false }
+  { states = SUPPORTED_STATES, rateLimit }
 ) {
   // Filter out unsupported states.
   states = states.filter((state) => {
@@ -393,9 +393,7 @@ async function checkAvailability(
     });
   }
 
-  if (verbose) {
-    console.warn(`Stores in API: ${foundCount}, missing: ${missingCount}`);
-  }
+  logger.debug(`Stores in API: ${foundCount}, missing: ${missingCount}`);
 
   return results;
 }

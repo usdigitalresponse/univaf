@@ -293,7 +293,7 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const unsupported = new Set(["AA", "AP", "AE"]);
   states = states.filter((state) => {
     if (unsupported.has(state)) {
-      console.warn(`"${state}" is not supported for WA DoH.`);
+      logger.warn(`"${state}" is not supported for WA DoH.`);
       return false;
     }
     return true;

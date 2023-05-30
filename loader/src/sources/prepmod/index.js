@@ -475,7 +475,7 @@ async function checkAvailability(
           // FIXME: this should be a custom error emitted by the
           // SmartSchedulingLinksApi class.
           if (error instanceof HTTPError && error.response.statusCode === 404) {
-            console.error(`PrepMod API not enabled for ${host}`);
+            logger.error(`PrepMod API not enabled for ${host}`);
           } else {
             throw error;
           }

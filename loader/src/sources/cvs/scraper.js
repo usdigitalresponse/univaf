@@ -231,14 +231,14 @@ async function queryClinic(address) {
       //
       // For now, check with Alan (github @askldjd) when making
       // changes to these.
-      console.error(`found results at ${address}`);
-      console.error(JSON.stringify(response, null, 2));
+      logger.info(`found results at ${address}`);
+      logger.info(JSON.stringify(response, null, 2));
       return response;
     } else {
-      console.error("CVS Scraper: nothing found at zip", address);
+      logger.error("CVS Scraper: nothing found at zip", address);
     }
   } catch (err) {
-    console.error(`Error scraping CVS in '${address}':`, err);
+    logger.error(`Error scraping CVS in '${address}':`, err);
   }
   return null;
 }

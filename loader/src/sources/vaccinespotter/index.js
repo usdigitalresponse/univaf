@@ -31,7 +31,7 @@ async function queryState(state) {
     });
     return JSON.parse(response.body);
   } catch (error) {
-    console.error(`Error fetching Vaccine Spotter data`, error);
+    logger.error(`Error fetching Vaccine Spotter data`, error);
   }
 }
 
@@ -345,7 +345,7 @@ const formatters = {
       formatted.external_ids.push(["safeway", storeId]);
       formatted.name = `Safeway #${storeId}`;
     } else {
-      console.warn(
+      logger.warn(
         "VaccineSpotter: No Safeway store number found for location",
         store.properties.id
       );

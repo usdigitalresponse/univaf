@@ -37,7 +37,7 @@ module.exports = {
   apiUrl: process.env.API_URL,
   apiKey: process.env.API_KEY,
   apiConcurrency: parseInt(process.env.API_CONCURRENCY) || 0,
-  debug: !!process.env.DEBUG,
+  debug: !!process.env.DEBUG || process.argv.includes("--verbose"),
   getPlatform,
   isTest: process.env.NODE_ENV?.toLowerCase() === "test",
   version,

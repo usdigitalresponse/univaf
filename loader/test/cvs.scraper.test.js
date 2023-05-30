@@ -217,19 +217,6 @@ test("correctness of unavailable slots", () => {
   });
 });
 
-// test("all stores have valid county data", () => {
-//   const results = createCannedUnavailableStore();
-//   Object.values(results).forEach((store) => {
-//     expect(store.official.County).toBeTruthy();
-//     if (!geocoding.ALL_COUNTIES.has(store.official.County)) {
-//       console.log(
-//         `Store ${store.name} has invalid county: ${store.official.County}`
-//       );
-//       throw new Error("invalid county");
-//     }
-//   });
-// });
-
 test("getStoreCounty handling of unknown store", () => {
   expect(getStoreCounty("nosuchstorenumber")).toBeUndefined();
 });

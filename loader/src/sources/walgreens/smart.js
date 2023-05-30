@@ -5,7 +5,6 @@
  * Walgreens to be their official implementation.)
  */
 
-const Sentry = require("@sentry/node");
 const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const { titleCase, unpadNumber, DEFAULT_STATES } = require("../../utils");
@@ -149,13 +148,7 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
           available = Available.unknown;
-          console.error(`Walgreens SMART: non-integer capcity: ${extension}`);
-          Sentry.captureMessage(`Unparseable slot capacity`, {
-            level: "error",
-            contexts: {
-              raw_slot: slot,
-            },
-          });
+          logger.error(`Non-integer slot capcity`, { slot });
         } else if (capacity !== 0 && capacity !== 5) {
           // The Walgreens API currently returns 0 (no appointments) or 5
           // (*some* appointments) rather than actual capacity estimates. It

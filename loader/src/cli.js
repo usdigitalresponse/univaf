@@ -6,11 +6,14 @@ const { states: allStates } = require("univaf-common");
 const { ApiClient } = require("./api-client");
 const config = require("./config");
 const { sources } = require("./index");
+const { Logger } = require("./logging");
 const { DEFAULT_STALE_THRESHOLD, StaleChecker } = require("./stale");
 const { oneLine } = require("./utils");
 const metrics = require("./metrics");
 
 Sentry.init({ release: config.version });
+
+const logger = new Logger();
 
 async function runSources(targets, handler, options) {
   targets =
@@ -82,10 +85,10 @@ async function run(options) {
 
     if (updateQueue) {
       if (updateQueue.length) {
-        console.warn("Waiting for data to finish sending to API...");
+        logger.info("Waiting for data to finish sending to API...");
       }
       const results = await updateQueue.whenDone();
-      console.warn(`Sent ${results.length} updates`);
+      logger.info(`Sent ${results.length} updates`);
       let sendStale = 0;
       let sendErrors = 0;
       for (const saveResult of results) {
@@ -98,20 +101,15 @@ async function run(options) {
 
           sendErrors++;
           const data = saveResult.sent;
-          const message = `Error sending: ${
-            saveResult.error?.message || "unknown reason"
-          }`;
-          const logData = {
-            status_code: saveResult.statusCode,
-            source: data.availability?.source,
-            location_id: data.id,
-            location_name: data.name,
-          };
-          console.error(message, JSON.stringify(logData));
-          Sentry.captureMessage(message, {
-            level: "error",
-            contexts: { send_error: logData },
-          });
+          logger.error(
+            `Error sending: ${saveResult.error?.message || "unknown reason"}`,
+            {
+              status_code: saveResult.statusCode,
+              source: data.availability?.source,
+              location_id: data.id,
+              location_name: data.name,
+            }
+          );
         }
       }
 
@@ -123,11 +121,7 @@ async function run(options) {
     let successCount = 0;
     for (const report of reports) {
       if (report.error) {
-        console.error(`Error in "${report.name}":`, report.error, "\n");
-        Sentry.withScope((scope) => {
-          scope.setContext("context", { source: report.name });
-          Sentry.captureException(report.error);
-        });
+        logger.error(report.error, { source: report.name });
         process.exitCode = 91;
       } else {
         successCount++;
@@ -138,11 +132,10 @@ async function run(options) {
     }
   } catch (error) {
     process.exitCode = 90;
-    console.error(error.toString());
-    Sentry.captureException(error);
+    logger.error(error);
   } finally {
     const duration = (Date.now() - startTime) / 1000;
-    console.error(`Completed in ${duration} seconds.`);
+    logger.info(`Completed in ${duration} seconds.`);
     metrics.gauge("loader.jobs.duration_seconds", duration);
 
     staleChecker.printSummary();
@@ -151,7 +144,7 @@ async function run(options) {
     await new Promise((resolve, reject) => {
       metrics.flush(resolve, reject);
     }).catch((error) => {
-      console.error("Error flushing metrics:", error);
+      logger.info("Error flushing metrics:", error);
     });
   }
 }

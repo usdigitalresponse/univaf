@@ -15,12 +15,15 @@
  */
 
 const Sentry = require("@sentry/node");
+const { Logger } = require("../../logging");
 const {
   httpClient,
   splitOnce,
   oneLine,
   DEFAULT_STATES,
 } = require("../../utils");
+
+const logger = new Logger("vts-geo");
 
 const dataProviders = {
   "Rite-Aid": {
@@ -46,18 +49,13 @@ const dataProviders = {
   },
 };
 
-function error(message, context) {
-  console.error(`VTS Geo: ${message}`, context);
-  Sentry.captureMessage(message, "error");
-}
-
 async function getStores() {
   try {
     return await httpClient({
       url: `https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/vts/vts-final-output-locations.geojson.gz`,
     }).json();
-  } catch (e) {
-    error(`Error fetching stored Vaccine the States data`, e);
+  } catch (error) {
+    logger.error(`Error fetching stored Vaccine the States data`, error);
     return [];
   }
 }
@@ -110,7 +108,7 @@ function formatStore(store) {
   Sentry.withScope((scope) => {
     const dataProvider = dataProviders[data.provider.name];
     if (!dataProvider) {
-      error(`Unexpected provider name ${data.provider.name}`);
+      logger.error(`Unexpected provider name ${data.provider.name}`);
       return null;
     }
 
