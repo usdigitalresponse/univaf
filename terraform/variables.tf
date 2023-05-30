@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "az_count" {
   description = "Number of AZs to cover (within the chosen region)"
-  default     = 2
+  default     = 1
 }
 
 variable "ssl_certificate_arn" {
