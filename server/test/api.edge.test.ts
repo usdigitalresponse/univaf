@@ -1,4 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
+import { type Options as GotOptions } from "got";
 import { parseJsonLines } from "univaf-common/utils";
 import { expectDatetimeString } from "./support/lib";
 import { installTestDatabaseHooks } from "./support/database-testing";
@@ -16,152 +17,148 @@ function systemValue(externalIds: ExternalIdList, system: string): string {
   return Object.fromEntries(externalIds)[system];
 }
 
-describe("GET /api/edge/locations", () => {
-  const context = useServerForTests(app);
+describe.each(["locations", "locations.ndjson"])(
+  "GET /api/edge/%s",
+  (endpoint: string) => {
+    const isNdJsonTest = endpoint.endsWith(".ndjson");
+    const context = useServerForTests(app);
 
-  it("responds with a list of locations containing external_ids", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, TestLocation.availability);
-    const res = await context.client.get<any>(
-      "api/edge/locations?external_id_format=v1"
-    );
-    expect(res.statusCode).toBe(200);
-    expect(res.body.data).toHaveLength(1);
+    async function getLocations(options?: GotOptions) {
+      const url = `api/edge/${endpoint}`;
 
-    expect(res.body.data[0]).toHaveProperty(
-      "external_ids",
-      TestLocation.external_ids
-    );
-  });
+      const response = await context.client.get<any>({
+        url,
+        responseType: isNdJsonTest ? "text" : "json",
+        ...options,
+      } as any);
 
-  it("responds with a list of locations filtered by state", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, TestLocation.availability);
+      const data = isNdJsonTest
+        ? parseJsonLines(response.body)
+        : response.body.data;
 
-    let res = await context.client.get<any>("api/edge/locations?state=AK");
-    expect(res.statusCode).toBe(200);
-    expect(res.body.data).toHaveLength(0);
+      return [response, data];
+    }
 
-    res = await context.client.get<any>("api/edge/locations?state=NJ");
-    expect(res.statusCode).toBe(200);
-    expect(res.body.data).toHaveLength(1);
-  });
+    it("responds with a list of locations containing external_ids", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, TestLocation.availability);
+      const [res, data] = await getLocations({
+        searchParams: { external_id_format: "v1" },
+      });
+      expect(res.statusCode).toBe(200);
+      expect(data).toHaveLength(1);
 
-  it("responds with a list of locations filtered by provider", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, TestLocation.availability);
-
-    let res = await context.client.get<any>(
-      "api/edge/locations?provider=MISSING"
-    );
-    expect(res.statusCode).toBe(200);
-    expect(res.body.data).toHaveLength(0);
-
-    res = await context.client.get<any>("api/edge/locations?provider=NJVSS");
-    expect(res.statusCode).toBe(200);
-    expect(res.body.data).toHaveLength(1);
-  });
-
-  it("by default supports the standard external_ids output format", async () => {
-    await createLocation(TestLocation);
-    const res = await context.client.get<any>(`api/edge/locations`);
-    expect(res.statusCode).toBe(200);
-    expect(res.body.data[0].external_ids).toEqual(
-      expect.arrayContaining(TestLocation.external_ids)
-    );
-  });
-
-  // There are more tests about detailed features of availability in db.test.
-  it("includes current availability", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, {
-      source: "test-system-1",
-      checked_at: new Date(),
-      available: Availability.YES,
-      available_count: 5,
-    });
-    await updateAvailability(location.id, {
-      source: "test-system-2",
-      checked_at: new Date(),
-      available: Availability.YES,
-      products: ["pfizer", "moderna"],
+      expect(data[0]).toHaveProperty("external_ids", TestLocation.external_ids);
     });
 
-    const response = await context.client.get<any>("api/edge/locations");
-    expect(response.body.data).toHaveLength(1);
-    expect(response.body.data[0].availability).toEqual({
-      sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
-      checked_at: expectDatetimeString(),
-      valid_at: expectDatetimeString(),
-      changed_at: expectDatetimeString(),
-      available: Availability.YES,
-      available_count: 5,
-      products: ["pfizer", "moderna"],
-    });
-  });
+    it("responds with a list of locations filtered by state", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, TestLocation.availability);
 
-  it("limits sources used when `?sources=x` is set", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, {
-      source: "test-system-1",
-      checked_at: new Date(),
-      available: Availability.YES,
-      available_count: 5,
-    });
-    await updateAvailability(location.id, {
-      source: "test-system-2",
-      checked_at: new Date(),
-      available: Availability.YES,
-      products: ["pfizer", "moderna"],
-    });
-    await updateAvailability(location.id, {
-      source: "test-system-3",
-      checked_at: new Date(),
-      available: Availability.YES,
-      capacity: [
-        {
-          date: "2021-05-13",
-          available: Availability.YES,
-        },
-      ],
+      let [res, data] = await getLocations({ searchParams: { state: "AK" } });
+      expect(res.statusCode).toBe(200);
+      expect(data).toHaveLength(0);
+
+      [res, data] = await getLocations({ searchParams: { state: "NJ" } });
+      expect(res.statusCode).toBe(200);
+      expect(data).toHaveLength(1);
     });
 
-    const response = await context.client.get<any>({
-      url: "api/edge/locations",
-      searchParams: { sources: "test-system-1,test-system-2" },
+    it("responds with a list of locations filtered by provider", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, TestLocation.availability);
+
+      let [res, data] = await getLocations({
+        searchParams: { provider: "MISSING" },
+      });
+      expect(res.statusCode).toBe(200);
+      expect(data).toHaveLength(0);
+
+      [res, data] = await getLocations({ searchParams: { provider: "NJVSS" } });
+      expect(res.statusCode).toBe(200);
+      expect(data).toHaveLength(1);
     });
-    expect(response.body.data).toHaveLength(1);
-    expect(response.body.data[0].availability).toEqual({
-      sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
-      checked_at: expectDatetimeString(),
-      valid_at: expectDatetimeString(),
-      changed_at: expectDatetimeString(),
-      available: Availability.YES,
-      available_count: 5,
-      products: ["pfizer", "moderna"],
+
+    it("by default supports the standard external_ids output format", async () => {
+      await createLocation(TestLocation);
+      const [res, data] = await getLocations();
+      expect(res.statusCode).toBe(200);
+      expect(data[0].external_ids).toEqual(
+        expect.arrayContaining(TestLocation.external_ids)
+      );
     });
-  });
-});
 
-describe("GET /api/edge/locations.ndjson", () => {
-  const context = useServerForTests(app);
+    // There are more tests about detailed features of availability in db.test.
+    it("includes current availability", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.YES,
+        available_count: 5,
+      });
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(),
+        available: Availability.YES,
+        products: ["pfizer", "moderna"],
+      });
 
-  it("responds with a list of locations containing external_ids", async () => {
-    const location = await createLocation(TestLocation);
-    await updateAvailability(location.id, TestLocation.availability);
-    const response = await context.client.get<any>({
-      url: "api/edge/locations.ndjson?external_id_format=v1",
-      responseType: "text",
-    } as any);
-    expect(response.statusCode).toBe(200);
+      const [_response, data] = await getLocations();
+      expect(data).toHaveLength(1);
+      expect(data[0].availability).toEqual({
+        sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        changed_at: expectDatetimeString(),
+        available: Availability.YES,
+        available_count: 5,
+        products: ["pfizer", "moderna"],
+      });
+    });
 
-    const data = parseJsonLines(response.body);
-    expect(data).toHaveLength(1);
-    expect(data[0]).toHaveProperty("external_ids", TestLocation.external_ids);
-  });
+    it("limits sources used when `?sources=x` is set", async () => {
+      const location = await createLocation(TestLocation);
+      await updateAvailability(location.id, {
+        source: "test-system-1",
+        checked_at: new Date(),
+        available: Availability.YES,
+        available_count: 5,
+      });
+      await updateAvailability(location.id, {
+        source: "test-system-2",
+        checked_at: new Date(),
+        available: Availability.YES,
+        products: ["pfizer", "moderna"],
+      });
+      await updateAvailability(location.id, {
+        source: "test-system-3",
+        checked_at: new Date(),
+        available: Availability.YES,
+        capacity: [
+          {
+            date: "2021-05-13",
+            available: Availability.YES,
+          },
+        ],
+      });
 
-  // FIXME: this needs the same tests as the non-NDJSON formatted endpoint.
-});
+      const [_response, data] = await getLocations({
+        searchParams: { sources: "test-system-1,test-system-2" },
+      });
+      expect(data).toHaveLength(1);
+      expect(data[0].availability).toEqual({
+        sources: expect.toEqualUnordered(["test-system-2", "test-system-1"]),
+        checked_at: expectDatetimeString(),
+        valid_at: expectDatetimeString(),
+        changed_at: expectDatetimeString(),
+        available: Availability.YES,
+        available_count: 5,
+        products: ["pfizer", "moderna"],
+      });
+    });
+  }
+);
 
 describe("GET /api/edge/locations/:id", () => {
   const context = useServerForTests(app);
