@@ -1,9 +1,9 @@
 const { DateTime } = require("luxon");
 const geocoding = require("../../geocoding");
 const { ParseError } = require("../../exceptions");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const {
-  createWarningLogger,
   parseUsPhoneNumber,
   httpClient,
   RateLimit,
@@ -20,7 +20,7 @@ const {
   getLocationName,
 } = require("./common");
 
-const warn = createWarningLogger("riteAidApi");
+const logger = new Logger("riteAidApi");
 
 // Log a warning if a location has more than this many slots in a given day.
 const MAXIMUM_SLOT_COUNT = 500;
@@ -187,7 +187,7 @@ function formatStore(provider) {
   try {
     valid_at = parseUpdateTime(provider.last_updated).toUTC().toString();
   } catch (error) {
-    warn(error);
+    logger.warn(error);
     valid_at = checked_at;
   }
 
@@ -247,11 +247,9 @@ function formatCapacity(provider) {
   });
 
   if (maxDailySlots > MAXIMUM_SLOT_COUNT) {
-    warn(
-      "Unrealistic slot count at a Rite Aid",
-      { slots: maxDailySlots },
-      true
-    );
+    logger.warn("Unrealistic slot count at a Rite Aid", {
+      slots: maxDailySlots,
+    });
   }
 
   return result;
@@ -287,14 +285,14 @@ async function checkAvailability(
         try {
           stores.push(formatStore(rawLocation));
         } catch (error) {
-          warn(error, { ...errorContext, locationId: rawLocation.id }, true);
+          logger.warn(error, { ...errorContext, locationId: rawLocation.id });
         }
       }
     } catch (error) {
       // Stop early on authentication errors. Future requests won't work.
       if ([401, 403].includes(error.response?.statusCode)) throw error;
 
-      warn(error, errorContext, true);
+      logger.warn(error, errorContext);
       continue;
     }
 

@@ -1,9 +1,14 @@
+const { Logger } = require("../../logging");
 const { Available, LocationType, VaccineProduct } = require("../../model");
-const { parseUsAddress, unpadNumber } = require("../../utils");
+const {
+  oneLine,
+  parseUsAddress,
+  titleCase,
+  unpadNumber,
+} = require("../../utils");
 const csvParse = require("csv-parse/sync");
 const getStream = require("get-stream");
 const { S3 } = require("@aws-sdk/client-s3");
-const { oneLine, titleCase, createWarningLogger } = require("../../utils");
 const { corrections } = require("./corrections");
 
 const NJVSS_WEBSITE = "https://covidvaccine.nj.gov";
@@ -41,7 +46,7 @@ const VACCINE_NAMES = {
   "Booster Moderna_RedCap (18 and older)": VaccineProduct.moderna,
 };
 
-const warn = createWarningLogger("njvss");
+const logger = new Logger("njvss");
 
 /**
  * @typedef {Object} NjvssRecord
@@ -171,7 +176,7 @@ function filterHiddenNjvssLocations(locations) {
     // the system to do so.)
     if (location.vras_latitude == null || location.vras_longitude == null) {
       if (location.available > 0) {
-        warn(oneLine`
+        logger.warn(oneLine`
           Hiding NJVSS location with appointments because it has no coordinates:
           "${location.name}"
         `);
@@ -225,14 +230,10 @@ function parseVaccineProducts(text) {
         return VACCINE_NAMES[match.groups.vaccineName];
       }
 
-      warn(
-        `Unknown vaccine: "${match.groups.vaccineName}"`,
-        {
-          foundName: match.groups.vaccineName,
-          text,
-        },
-        true
-      );
+      logger.warn(`Unknown vaccine: "${match.groups.vaccineName}"`, {
+        foundName: match.groups.vaccineName,
+        text,
+      });
       return null;
     })
     .filter(Boolean);
@@ -247,7 +248,7 @@ function parseNjvssAddress(address) {
   try {
     return parseUsAddress(address);
   } catch (error) {
-    warn(error);
+    logger.warn(error);
     return { lines: [address], city: null, state: "NJ", zip: null };
   }
 }

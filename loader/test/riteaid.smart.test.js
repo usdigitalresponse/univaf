@@ -9,8 +9,7 @@ const {
 const { locationSchema } = require("./support/schemas");
 const { createSmartLocation } = require("./support/smart-scheduling-links");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 const [API_BASE, API_MANIFEST_PATH] = splitHostAndPath(API_URL);
 

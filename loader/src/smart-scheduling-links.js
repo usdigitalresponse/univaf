@@ -5,7 +5,10 @@
 
 const { parseJsonLines } = require("univaf-common/utils");
 const { states: allStates } = require("univaf-common");
+const { Logger } = require("./logging");
 const { httpClient, filterObject, oneLine } = require("./utils");
+
+const logger = new Logger("smart-scheduling-links");
 
 const MANIFEST_CACHE_TIME = 5 * 60 * 1000;
 
@@ -204,13 +207,13 @@ async function getLocations(api, states) {
         location.schedules.push(schedule);
         schedule[locationReference] = location;
       } else {
-        console.error(oneLine`
+        logger.debug(oneLine`
           Found schedule with unknown location: ${schedule.id}
           (references location ${locationId})
         `);
       }
     } else {
-      console.warn(
+      logger.debug(
         `Found non-COVID schedule: ${JSON.stringify(schedule.serviceType)}`
       );
     }
@@ -223,7 +226,7 @@ async function getLocations(api, states) {
       slot[scheduleReference] = schedule;
       schedule[locationReference]?.slots?.push(slot);
     } else {
-      console.error(
+      logger.debug(
         `No schedule ${scheduleId} (referenced from slot ${slot.id})`,
         slot[sourceReference]
       );

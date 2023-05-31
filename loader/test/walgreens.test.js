@@ -12,8 +12,7 @@ const { locationSchema } = require("./support/schemas");
 const fixtures = require("./fixtures/walgreens.smart.fixtures");
 const { Available } = require("../src/model");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 afterEach(() => {
   nock.cleanAll();

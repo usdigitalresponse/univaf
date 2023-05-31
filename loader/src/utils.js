@@ -1,6 +1,4 @@
 const timers = require("node:timers/promises");
-const nodeUtil = require("util");
-const Sentry = require("@sentry/node");
 const got = require("got");
 const {
   formatZipCode,
@@ -256,28 +254,6 @@ module.exports = {
         (chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1).toLowerCase()
       )
       .join(" ");
-  },
-
-  createWarningLogger(prefix, level = "info") {
-    return function warn(message, context, sendContextToSentry = false) {
-      const logMessage = prefix ? `${prefix}: ${message}` : message;
-      console.warn(
-        logMessage,
-        context !== undefined ? nodeUtil.inspect(context, { depth: 8 }) : ""
-      );
-
-      const sentryInfo = { level };
-      if (context && sendContextToSentry) {
-        sentryInfo.contexts = { context };
-      }
-
-      // Sentry does better fingerprinting with an actual exception object.
-      if (message instanceof Error) {
-        Sentry.captureException(message, sentryInfo);
-      } else {
-        Sentry.captureMessage(logMessage, sentryInfo);
-      }
-    };
   },
 
   /**

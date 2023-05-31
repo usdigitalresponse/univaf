@@ -3,11 +3,11 @@
  */
 
 const assert = require("node:assert/strict");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const {
   titleCase,
   unpadNumber,
-  createWarningLogger,
   DEFAULT_STATES,
   formatZipCode,
 } = require("../../utils");
@@ -24,8 +24,7 @@ const { getExternalIds, getLocationName } = require("./common");
 const API_URL =
   "https://api.riteaid.com/digital/vaccine-provider/$bulk-publish";
 
-const warn = createWarningLogger("riteAidSmart");
-const logError = createWarningLogger("riteAidSmart", "error");
+const logger = new Logger("riteAidSmart");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -58,11 +57,9 @@ function formatLocation(locationInfo) {
     );
     external_ids.push(...getExternalIds(storeNumber));
   } else {
-    warn(
-      "Rite Aid store missing VTrckS PIN",
-      { identifiers: smartLocation.identifier },
-      true
-    );
+    logger.warn("Rite Aid store missing VTrckS PIN", {
+      identifiers: smartLocation.identifier,
+    });
   }
 
   // All slots for a location share an identical booking URL/phone,
@@ -147,17 +144,17 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
           available = Available.unknown;
-          logError(`Non-integer capacity: ${extension}`, { slot }, true);
+          logger.error(`Non-integer capacity: ${extension}`, { slot });
         } else if (capacity < 0) {
           available = Available.unknown;
-          logError(`Negative capacity: ${extension}`, { slot }, true);
+          logger.error(`Negative capacity: ${extension}`, { slot });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         booking_url = extension.valueUrl;
       } else if (extension.url === EXTENSIONS.BOOKING_PHONE) {
         // We only surface this on the location level.
       } else {
-        warn("Unexpected slot extension", { extension }, true);
+        logger.warn("Unexpected slot extension", { extension });
       }
     }
 

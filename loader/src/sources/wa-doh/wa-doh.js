@@ -3,17 +3,17 @@
 
 const assert = require("node:assert/strict");
 const { states: allStates } = require("univaf-common");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const {
   queryGraphQl,
   matchVaccineProduct,
-  createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
 
 /** @typedef {import("../../model").VaccineProduct} VaccineProduct */
 
-const warn = createWarningLogger("waDoh");
+const logger = new Logger("waDoh");
 
 // You can also navigate to this URL in a browser and get an interactive
 // GraphQL testing console.
@@ -139,7 +139,7 @@ function toLocationType(apiValue) {
   else if (text === "store") return LocationType.pharmacy;
   else if (text === "") return LocationType.pharmacy;
 
-  warn(`Unknown location type "${apiValue}"`);
+  logger.warn(`Unknown location type "${apiValue}"`);
   return LocationType.pharmacy;
 }
 
@@ -151,7 +151,7 @@ function toLocationType(apiValue) {
 function toProduct(apiValue) {
   const product = matchVaccineProduct(apiValue);
   if (!product) {
-    warn(`Unknown product type "${apiValue}"`);
+    logger.warn(`Unknown product type "${apiValue}"`);
   }
   return product;
 }
@@ -172,7 +172,7 @@ function formatLocation(data) {
     provider = "costco";
   }
   if (!provider) {
-    warn(`Unable to determine provider for ${data.locationId}`);
+    logger.warn(`Unable to determine provider for ${data.locationId}`);
   }
 
   const address_lines = [];
@@ -182,7 +182,7 @@ function formatLocation(data) {
   const state = allStates.find(
     (state) => state.name === data.state || state.usps === data.state
   );
-  if (!state) warn(`Unknown state "${data.state}"`);
+  if (!state) logger.warn(`Unknown state "${data.state}"`);
 
   const external_ids = [["wa_doh", data.locationId]];
 
@@ -197,15 +197,14 @@ function formatLocation(data) {
     } else if (storeNameMatch) {
       external_ids.push(["costco", storeNameMatch.groups.number]);
     } else {
-      warn(
+      logger.warn(
         `Unable to determine Costco store number for "${data.locationId}"`,
         {
           locationId: data.locationId,
           locationName: data.locationName,
           state: data.state,
           rawDataSourceName: data.rawDataSourceName,
-        },
-        true
+        }
       );
     }
   }
@@ -294,7 +293,7 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   const unsupported = new Set(["AA", "AP", "AE"]);
   states = states.filter((state) => {
     if (unsupported.has(state)) {
-      console.warn(`"${state}" is not supported for WA DoH.`);
+      logger.warn(`"${state}" is not supported for WA DoH.`);
       return false;
     }
     return true;
@@ -337,7 +336,7 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
   }
 
   if (!results.length) {
-    warn("No locations were found. Something has probably gone wrong.");
+    logger.warn("No locations were found. Something has probably gone wrong.");
   }
 
   return results;

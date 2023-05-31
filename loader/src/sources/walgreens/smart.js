@@ -5,14 +5,9 @@
  * Walgreens to be their official implementation.)
  */
 
-const Sentry = require("@sentry/node");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
-const {
-  titleCase,
-  unpadNumber,
-  createWarningLogger,
-  DEFAULT_STATES,
-} = require("../../utils");
+const { titleCase, unpadNumber, DEFAULT_STATES } = require("../../utils");
 const {
   EXTENSIONS,
   SmartSchedulingLinksApi,
@@ -29,7 +24,7 @@ const API_URL =
 // System used for Walgreens store IDs.
 const WALGREENS_ID_SYSTEM = "https://walgreens.com";
 
-const warn = createWarningLogger("walgreensSmart");
+const logger = new Logger("walgreensSmart");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -153,24 +148,18 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity)) {
           available = Available.unknown;
-          console.error(`Walgreens SMART: non-integer capcity: ${extension}`);
-          Sentry.captureMessage(`Unparseable slot capacity`, {
-            level: "error",
-            contexts: {
-              raw_slot: slot,
-            },
-          });
+          logger.error(`Non-integer slot capcity`, { slot });
         } else if (capacity !== 0 && capacity !== 5) {
           // The Walgreens API currently returns 0 (no appointments) or 5
           // (*some* appointments) rather than actual capacity estimates. It
           // doesn't indicate this in any way, so watch for unexpected values in
           // case something in their implementation to be more detailed.
-          warn("Unexpected != 5 capacity", { slot }, true);
+          logger.warn("Unexpected != 5 capacity", { slot });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         booking_url = extension.valueUrl;
       } else {
-        warn("Unexpected slot extension", { slot }, true);
+        logger.warn("Unexpected slot extension", { slot });
       }
     }
 

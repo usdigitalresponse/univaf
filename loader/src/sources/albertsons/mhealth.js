@@ -26,8 +26,8 @@ const Sentry = require("@sentry/node");
 const { groupBy } = require("lodash");
 const { DateTime } = require("luxon");
 const config = require("../../config");
+const { Logger } = require("../../logging");
 const {
-  createWarningLogger,
   httpClient,
   parseUsAddress,
   getUniqueExternalIds,
@@ -79,7 +79,7 @@ const PRODUCT_NAMES = {
   jnj: VaccineProduct.janssen,
 };
 
-const warn = createWarningLogger("Albertsons");
+const logger = new Logger("Albertsons");
 
 async function fetchRawData() {
   const response = await httpClient(API_URL, {
@@ -115,8 +115,8 @@ async function getData(states) {
         try {
           formatted = formatLocation(entry, validAt, checkedAt);
         } catch (error) {
-          warn(error);
-          console.error(error.stack);
+          logger.warn(error);
+          logger.debug(error.stack);
         }
       });
       return formatted;
@@ -142,7 +142,7 @@ async function getData(states) {
       return mHealthId[1];
     } else {
       // This should never happen! Every location should have an mHealthId.
-      warn(new Error("Albertsons location has no ID", location));
+      logger.warn(new Error("Albertsons location has no ID"), location);
       return Math.random().toString();
     }
   });
@@ -360,7 +360,7 @@ function formatAvailability(raw) {
   } else if (raw === "no") {
     return Available.no;
   } else {
-    warn(`Unexpected availability: ${raw}`);
+    logger.warn(`Unexpected availability: ${raw}`);
     return Available.unknown;
   }
 }
@@ -372,7 +372,7 @@ function formatProducts(raw) {
     .map((value) => {
       const formatted = PRODUCT_NAMES[value.toLowerCase()];
       if (!formatted) {
-        warn(`Unknown 'drugName' value: ${value}`);
+        logger.warn(`Unknown 'drugName' value: ${value}`);
       }
       return formatted;
     })
@@ -391,7 +391,7 @@ function logMatchDebugInfo(match, rawData, address, storeBrand, storeNumber) {
   if (match) {
     if (match.data.c_parentEntityID !== storeNumber) {
       const matchAddress = `${match.data.address.line1}, ${match.data.address.city}, ${match.data.address.region} ${match.data.address.postalCode}`;
-      console.error(
+      logger.debug(
         "Method:",
         match.method,
         " / Score:",
@@ -400,23 +400,23 @@ function logMatchDebugInfo(match, rawData, address, storeBrand, storeNumber) {
         match.factors || "-"
       );
       const found = match.data;
-      console.error(
+      logger.debug(
         "Appointments:",
         `${storeBrand?.name ?? "[no brand]"} #${storeNumber}`.padEnd(40),
         `/  ${address}  /  ${rawData.address}`
       );
-      console.error(
+      logger.debug(
         "Match:       ",
         `${found.name} #${found.c_parentEntityID}`.padEnd(40),
         `/  ${matchAddress}`,
         `\n              (c_oldStoreID: ${found.c_oldStoreID})`
       );
-      console.error("------------");
+      logger.debug("------------");
     }
   } else if (!storeBrand || !storeBrand.isNotAStore) {
-    console.error("NO MATCH:", rawData.address);
-    console.error(`  Parsed: ${storeBrand?.name} #${storeNumber}, ${address}`);
-    console.error("------------");
+    logger.debug("NO MATCH:", rawData.address);
+    logger.debug(`  Parsed: ${storeBrand?.name} #${storeNumber}, ${address}`);
+    logger.debug("------------");
   }
 }
 
@@ -503,7 +503,7 @@ function formatLocation(data, validAt, checkedAt) {
   // If we couldn't match this to some expected brand, don't attempt to output
   // a location since we could wind up with bad or mis-parsed data.
   if (!storeBrand) {
-    warn("Could not find a matching brand", {
+    logger.warn("Could not find a matching brand", {
       mhealth_id: data.id,
       address: data.address,
     });
@@ -578,13 +578,11 @@ function formatLocation(data, validAt, checkedAt) {
 }
 
 async function checkAvailability(handler, { states = DEFAULT_STATES }) {
-  warn("WARNING: albertsons is deprecated and no longer maintained.");
+  logger.warn("DEPRECATED: albertsons is no longer maintained.");
 
   const stores = await getData(states);
   stores.forEach((store) => handler(store, { update_location: true }));
-  if (config.debug) {
-    console.error("Matches to known locations:", knownLocationMatches);
-  }
+  logger.debug("Matches to known locations:", knownLocationMatches);
   return stores;
 }
 

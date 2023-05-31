@@ -9,8 +9,7 @@ const { locationSchema } = require("./support/schemas");
 const fixtures = require("./fixtures/kroger.smart.fixtures");
 const { Available } = require("../src/model");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 describe("Kroger SMART Scheduling Links API", () => {
   const [API_BASE, MANIFEST_PATH] = splitHostAndPath(API_URL);

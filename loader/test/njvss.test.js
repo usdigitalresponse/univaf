@@ -3,8 +3,7 @@ const nock = require("nock");
 const { checkAvailability } = require("../src/sources/njvss");
 const { locationSchema } = require("./support/schemas");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 const fixturePath = path.join(__dirname, "fixtures/njvss.fixture.csv");
 

@@ -6,8 +6,7 @@ const {
 const { splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 const [API_URL_BASE, API_URL_PATH] = splitHostAndPath(API_URL);
 

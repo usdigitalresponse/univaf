@@ -9,12 +9,8 @@
 
 const timers = require("node:timers/promises");
 const knownStores = require("./known-stores");
-const {
-  httpClient,
-  randomInt,
-  randomUserAgent,
-  createWarningLogger,
-} = require("../../utils");
+const { Logger } = require("../../logging");
+const { httpClient, randomInt, randomUserAgent } = require("../../utils");
 const { LocationType, Available } = require("../../model");
 const {
   CVS_BOOKING_URL,
@@ -22,7 +18,7 @@ const {
   getStoreCounty,
 } = require("./shared");
 
-const warn = createWarningLogger("cvsScraper");
+const logger = new Logger("cvsScraper");
 
 // The zip code selected are reverse engineered based on CVS' advertised
 // vaccine location. The city/town with CVS that provides that provide COVID
@@ -235,14 +231,14 @@ async function queryClinic(address) {
       //
       // For now, check with Alan (github @askldjd) when making
       // changes to these.
-      console.error(`found results at ${address}`);
-      console.error(JSON.stringify(response, null, 2));
+      logger.info(`found results at ${address}`);
+      logger.info(JSON.stringify(response, null, 2));
       return response;
     } else {
-      console.error("CVS Scraper: nothing found at zip", address);
+      logger.error("CVS Scraper: nothing found at zip", address);
     }
   } catch (err) {
-    console.error(`Error scraping CVS in '${address}':`, err);
+    logger.error(`Error scraping CVS in '${address}':`, err);
   }
   return null;
 }
@@ -273,7 +269,7 @@ function convertToStandardSchema(cvsResult) {
     if (!county) {
       // Ignore the store if it is not in our list. We need to log it out
       // and possibly update our result list.
-      warn(
+      logger.warn(
         `CVS store ${location.StoreNumber} at ${addressString} is not in known store list, ignoring`
       );
       return;
@@ -362,7 +358,7 @@ function createCannedUnavailableStore() {
  * @return {Promise<Array>} Array of results conforming to the scraper standard.
  */
 async function checkAvailability(handler, _options) {
-  warn("WARNING: cvsScraper is deprecated and no longer maintained.");
+  logger.warn("DEPRECATED: cvsScraper is no longer maintained.");
 
   const clinicsZip = njClinicZip;
 

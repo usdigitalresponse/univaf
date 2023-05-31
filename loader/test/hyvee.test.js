@@ -4,8 +4,7 @@ const { Available, LocationType } = require("../src/model");
 const { expectDatetimeString } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 const RawLocation = {
   locationId: "fa22572e-ad2b-4cec-a787-dec0fb3ea086",

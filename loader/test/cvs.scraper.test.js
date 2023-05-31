@@ -11,8 +11,7 @@ const {
 
 const { expectDatetimeString } = require("./support");
 
-// Mock utils so we can track logs.
-jest.mock("../src/utils");
+jest.mock("../src/logging");
 
 // const geocoding = require("../src/geocoding");
 // const { dataSources, callsToAction } = require("../src/model");
@@ -217,19 +216,6 @@ test("correctness of unavailable slots", () => {
     state: "NJ",
   });
 });
-
-// test("all stores have valid county data", () => {
-//   const results = createCannedUnavailableStore();
-//   Object.values(results).forEach((store) => {
-//     expect(store.official.County).toBeTruthy();
-//     if (!geocoding.ALL_COUNTIES.has(store.official.County)) {
-//       console.log(
-//         `Store ${store.name} has invalid county: ${store.official.County}`
-//       );
-//       throw new Error("invalid county");
-//     }
-//   });
-// });
 
 test("getStoreCounty handling of unknown store", () => {
   expect(getStoreCounty("nosuchstorenumber")).toBeUndefined();

@@ -13,9 +13,9 @@
 
 const GEOCODE_DB = require("../data/geocoded.json");
 const ZIP_DB = require("../data/zip_to_county.json");
-// FIXME: need to implement proper logging
-// const { logger } = require("./logging");
-const logger = console;
+const { Logger } = require("./logging");
+
+const logger = new Logger("geocoding");
 
 const ZIP_REGEX = /\b0[0-9]{4}\b/;
 

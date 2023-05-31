@@ -12,8 +12,9 @@
 
 const got = require("got");
 const { HttpApiError } = require("../../exceptions");
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
-const { httpClient, oneLine, createWarningLogger } = require("../../utils");
+const { httpClient, oneLine } = require("../../utils");
 const {
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
   CVS_BOOKING_URL,
@@ -23,7 +24,7 @@ const {
 const API_URL = "https://api.cvshealth.com/";
 const AVAILABILITY_ENDPOINT = "/immunization-status/v1/covax-availability";
 
-const warn = createWarningLogger("cvsApi");
+const logger = new Logger("cvsApi");
 
 /**
  * @typedef {Object} CvsApiLocation
@@ -86,9 +87,9 @@ function toAvailable(apiValue) {
 function parseApiLocation(location, lastUpdated) {
   const available = toAvailable(location.availabilityStatusDescription);
   if (available === Available.unknown) {
-    warn(
+    logger.warn(
       `Unexpected availability value for CVS store ${location.storeId}:`,
-      location.availabilityStatusDescription
+      { value: location.availabilityStatusDescription }
     );
   }
 
@@ -132,7 +133,7 @@ function parseApiLocation(location, lastUpdated) {
  * @param {any} [_options]
  */
 async function checkAvailability(handler, _options) {
-  warn("WARNING: cvsApi is deprecated and no longer maintained.");
+  logger.warn("DEPRECATED: cvsApi is no longer maintained.");
 
   const apiKey = process.env.CVS_API_KEY;
   let apiUrl = process.env.CVS_API_URL || API_URL;

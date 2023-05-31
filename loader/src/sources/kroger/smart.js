@@ -21,11 +21,11 @@
  * "The Little Clinic" locations.
  */
 
+const { Logger } = require("../../logging");
 const { Available, LocationType } = require("../../model");
 const {
   unpadNumber,
   getUniqueExternalIds,
-  createWarningLogger,
   DEFAULT_STATES,
 } = require("../../utils");
 const {
@@ -40,7 +40,7 @@ const {
 const API_URL =
   "https://api.kroger.com/v1/health-wellness/schedules/vaccines/$bulk-publish";
 
-const warn = createWarningLogger("krogerSmart");
+const logger = new Logger("krogerSmart");
 
 /**
  * Get an array of UNIVAF-formatted locations & availabilities from the
@@ -117,15 +117,11 @@ const KROGER_BRAND_ID_SYSTEMS = [
           const longId = `${newPrefix}${shortId.slice(2)}`;
           ids.push(["kroger_the_little_clinic", longId], ["kroger", longId]);
         } else {
-          warn(
-            `Unknown ID prefix for The Little Clinic "${shortId}"`,
-            {
-              id: location.id,
-              name: location.name,
-              state: location.address.state,
-            },
-            true
-          );
+          logger.warn(`Unknown ID prefix for The Little Clinic "${shortId}"`, {
+            id: location.id,
+            name: location.name,
+            state: location.address.state,
+          });
         }
       }
 
@@ -153,15 +149,11 @@ function formatKrogerExternalIds(location) {
     }
   }
   if (!foundSubBrand) {
-    warn(
-      `Unknown sub-brand for Kroger store "${location.name}"`,
-      {
-        id: location.id,
-        name: location.name,
-        state: location.address.state,
-      },
-      true
-    );
+    logger.warn(`Unknown sub-brand for Kroger store "${location.name}"`, {
+      id: location.id,
+      name: location.name,
+      state: location.address.state,
+    });
   }
 
   external_ids = external_ids.flatMap((id) => [
@@ -244,15 +236,11 @@ function getBookingLink(locationInfo) {
     if (!link) {
       link = slotLink;
     } else if (link !== slotLink) {
-      warn(
-        "Kroger slots have different booking links",
-        {
-          id: locationInfo.location.id,
-          name: locationInfo.location.name,
-          state: locationInfo.location.address.state,
-        },
-        true
-      );
+      logger.warn("Kroger slots have different booking links", {
+        id: locationInfo.location.id,
+        name: locationInfo.location.name,
+        state: locationInfo.location.address.state,
+      });
       return null;
     }
   }
@@ -274,14 +262,14 @@ function formatCapacity(slots) {
         capacity = parseInt(extension.valueInteger);
         if (isNaN(capacity) || capacity < 0) {
           available = Available.unknown;
-          warn("Invalid slot capacity", { extension });
+          logger.warn("Invalid slot capacity", { extension });
         }
       } else if (extension.url === EXTENSIONS.BOOKING_DEEP_LINK) {
         // We don't use the Booking URL; we hardcode a better one that puts you
         // directly into the screener flow instead of an interstitial page.
         // bookingLink = extension.valueUrl;
       } else {
-        warn("Unexpected slot extension", slot);
+        logger.warn("Unexpected slot extension", slot);
       }
     }
 
