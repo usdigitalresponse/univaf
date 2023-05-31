@@ -285,6 +285,8 @@ const nonCovidProductName = new RegExp(
     raw`^child and adolescent immunization`,
     raw`monkeypox`,
     raw`jynneos`,
+    // Tetanus & Diptheria
+    raw`^\s*Td\s*$`,
     // Diphtheria, Tetanus, & Pertussis. These two cover the same viruses, but
     // are slightly different formulations for different people.
     raw`\b(tdap|dtap)\b`,
