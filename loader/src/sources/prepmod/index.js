@@ -347,7 +347,7 @@ function parseSchedule(schedule) {
       } else if (nonCovidProductName.test(extension.valueCoding.display)) {
         data.hasNonCovidProducts = true;
       } else {
-        logger(`Unparseable product "${extension?.valueCoding?.display}"`, {
+        logger.warn(`Unparseable product "${extension.valueCoding?.display}"`, {
           scheduleId: schedule.id,
           extension,
         });
