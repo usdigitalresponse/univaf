@@ -280,6 +280,7 @@ const nonCovidProductName = new RegExp(
   [
     raw`^influenza`,
     raw`flu`,
+    raw`\bfever\b`,
     raw`zoster`,
     raw`^\s*adenovirus\s*$`,
     raw`^child and adolescent immunization`,
@@ -311,6 +312,12 @@ const nonCovidProductName = new RegExp(
     raw`\bHib\b`,
     // Polio
     raw`\bPolio\b`,
+    // Typhoid
+    raw`\bTyphoid\b`,
+    // Various Encephalitises, e.g. "J.encephalitis" (Japanese Encephalitis)
+    raw`\bencephalitis\b`,
+    // Rabies
+    raw`\bRabies\b`,
     // In all cases we've seen, this occurs on schedules that list other actual
     // vaccine names as well. We'll pick up the true products from the other
     // extensions in the schedule.
