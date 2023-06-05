@@ -18,8 +18,9 @@ const {
   formatExternalIds,
 } = require("../../smart-scheduling-links");
 
+// The querystring here is required for access, but is not secret.
 const API_URL =
-  "https://wbaschedulinglinks.blob.core.windows.net/fhir/$bulk-publish";
+  "https://wbaschedulinglinks.blob.core.windows.net/fhir/$bulk-publish?sv=2022-11-02&ss=b&srt=co&sp=rlf&se=2027-01-01T05:02:56Z&st=2023-06-05T20:02:56Z&spr=https&sig=Yd%2Bguve3J7ZlkNPoT88RqJ%2FhEgbaRiltcpzMSc2OlCk%3D";
 
 // System used for Walgreens store IDs.
 const WALGREENS_ID_SYSTEM = "https://walgreens.com";
