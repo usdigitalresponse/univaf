@@ -22,7 +22,10 @@ describe("Walgreens SMART Scheduling Links API", () => {
   const [API_BASE, API_MANIFEST_PATH] = splitHostAndPath(API_URL);
 
   it("should load Walgreens SMART API data", async () => {
-    nock(API_BASE).get(API_MANIFEST_PATH).reply(200, fixtures.TestManifest);
+    nock(API_BASE)
+      .get(API_MANIFEST_PATH)
+      .query(true)
+      .reply(200, fixtures.TestManifest);
     nock(API_BASE)
       .get("/fhir/locations.ndjson")
       .reply(200, toNdJson(fixtures.TestLocations));
@@ -80,7 +83,10 @@ describe("Walgreens SMART Scheduling Links API", () => {
   });
 
   it("should set availability to NO if no slots are free", async () => {
-    nock(API_BASE).get(API_MANIFEST_PATH).reply(200, fixtures.TestManifest);
+    nock(API_BASE)
+      .get(API_MANIFEST_PATH)
+      .query(true)
+      .reply(200, fixtures.TestManifest);
     nock(API_BASE)
       .get("/fhir/locations.ndjson")
       .reply(200, toNdJson(fixtures.TestLocations));
@@ -102,7 +108,10 @@ describe("Walgreens SMART Scheduling Links API", () => {
   });
 
   it("should set availability to NO if there are no slots", async () => {
-    nock(API_BASE).get(API_MANIFEST_PATH).reply(200, fixtures.TestManifest);
+    nock(API_BASE)
+      .get(API_MANIFEST_PATH)
+      .query(true)
+      .reply(200, fixtures.TestManifest);
     nock(API_BASE)
       .get("/fhir/locations.ndjson")
       .reply(200, toNdJson(fixtures.TestLocations));
@@ -117,7 +126,10 @@ describe("Walgreens SMART Scheduling Links API", () => {
   });
 
   it("should not return results outside the requested states", async () => {
-    nock(API_BASE).get(API_MANIFEST_PATH).reply(200, fixtures.TestManifest);
+    nock(API_BASE)
+      .get(API_MANIFEST_PATH)
+      .query(true)
+      .reply(200, fixtures.TestManifest);
     nock(API_BASE)
       .get("/fhir/locations.ndjson")
       .reply(200, toNdJson(fixtures.TestLocations));
