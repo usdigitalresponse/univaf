@@ -96,7 +96,7 @@ class GraphQlError extends HttpApiError {
         const key = error.message || code || "[unknown error]";
         const summary = uniqueErrors.get(key);
         if (summary) {
-          summary.errorCount += 1;
+          summary.count += 1;
         } else {
           uniqueErrors.set(key, {
             count: 1,
