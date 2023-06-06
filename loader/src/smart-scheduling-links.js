@@ -6,6 +6,7 @@
 const { parseJsonLines } = require("univaf-common/utils");
 const { states: allStates } = require("univaf-common");
 const { Logger } = require("./logging");
+const { assertSchema, requireAllProperties } = require("./schema-validation");
 const { httpClient, filterObject, oneLine } = require("./utils");
 
 const logger = new Logger("smart-scheduling-links");
@@ -62,6 +63,186 @@ const scheduleReference = Symbol("schedule");
 // Link information about an item's source from the manifest file (e.g. a
 // Slot object will use this to reference the manifest item the slot was from).
 const sourceReference = Symbol("source");
+
+// IDs in any FHIR object should follow this schema.
+// This isn't technically correct; it should be "^[A-Za-z0-9\\-\\.]{1,64}$".
+// Some sources include other characters, so we allow those.
+const FHIR_ID_SCHEMA = {
+  type: "string",
+  pattern: "^[A-Za-z0-9\\-\\._\\s]{1,64}$",
+};
+
+// FHIR extension objects fit a wide variety based on `url`, which identifies
+// the type of extension. We don't bother validating too deeply here, since the
+// options are reasonably complex.
+// See: http://hl7.org/fhir/R5/extensibility.html#Extension
+const FHIR_EXTENSION_SCHEMA = requireAllProperties({
+  type: "object",
+  properties: {
+    url: { type: "string", format: "uri" },
+    // Additional properties vary based on `url`.
+  },
+});
+
+const MANIFEST_SCHEMA = requireAllProperties({
+  type: "object",
+  properties: {
+    transactionTime: { type: "string", format: "date-time" },
+    request: { type: "string", format: "url" },
+    output: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          type: { enum: ["Location", "Schedule", "Slot"] },
+          url: { type: "string", format: "url" },
+          extension: {
+            type: "object",
+            nullable: true,
+            properties: {
+              state: {
+                oneOf: [
+                  {
+                    type: "array",
+                    items: { type: "string", pattern: "^[A-Z]{2}$" },
+                  },
+                  // This is technically invalid, but in use by some providers.
+                  { type: "string", pattern: "^[A-Z]{2}$" },
+                ],
+              },
+              currentAsOf: { type: "string", format: "date-time" },
+            },
+          },
+        },
+        required: ["type", "url"],
+      },
+    },
+  },
+});
+
+const LOCATION_SCHEMA = {
+  type: "object",
+  properties: {
+    resourceType: { const: "Location" },
+    id: FHIR_ID_SCHEMA,
+    identifier: {
+      type: "array",
+      items: requireAllProperties({
+        type: "object",
+        properties: {
+          system: { type: "string", format: "uri" },
+          value: { type: "string" },
+        },
+      }),
+    },
+    name: { type: "string" },
+    telecom: {
+      type: "array",
+      items: requireAllProperties({
+        type: "object",
+        properties: {
+          system: { enum: ["phone", "url"] },
+          value: { type: "string" },
+        },
+      }),
+    },
+    address: {
+      type: "object",
+      properties: {
+        line: { type: "array", items: { type: "string" } },
+        city: { type: "string" },
+        state: { type: "string" },
+        postalCode: { type: "string" },
+        district: { type: "string" },
+      },
+      required: ["line", "city", "state", "postalCode"],
+    },
+    description: { type: "string" },
+    position: {
+      type: "object",
+      properties: {
+        latitude: { type: "number" },
+        longitude: { type: "number" },
+      },
+    },
+  },
+  required: ["resourceType", "id", "identifier", "name", "telecom", "address"],
+};
+
+const SCHEDULE_SCHEMA = {
+  type: "object",
+  required: ["resourceType", "id", "actor", "serviceType"],
+  properties: {
+    resourceType: { const: "Schedule" },
+    id: FHIR_ID_SCHEMA,
+    actor: {
+      type: "array",
+      minItems: 1,
+      maxItems: 1,
+      items: {
+        type: "object",
+        properties: {
+          reference: { type: "string", pattern: "^Location/.+" },
+        },
+      },
+    },
+    serviceType: {
+      type: "array",
+      minItems: 1,
+      items: requireAllProperties({
+        type: "object",
+        properties: {
+          coding: {
+            type: "array",
+            minItems: 1,
+            items: requireAllProperties({
+              type: "object",
+              properties: {
+                system: { type: "string", format: "uri" },
+                code: { type: "string" },
+                display: { type: "string" },
+              },
+            }),
+          },
+        },
+      }),
+    },
+    extension: {
+      type: "array",
+      nullable: true,
+      items: FHIR_EXTENSION_SCHEMA,
+    },
+  },
+};
+
+const SLOT_SCHEMA = {
+  type: "object",
+  required: ["resourceType", "id", "schedule", "status", "start", "end"],
+  properties: {
+    resourceType: { const: "Slot" },
+    id: FHIR_ID_SCHEMA,
+    schedule: {
+      type: "object",
+      properties: {
+        reference: { type: "string", pattern: "^Schedule/.+" },
+      },
+    },
+    status: { enum: ["free", "busy"] },
+    start: { type: "string", format: "date-time" },
+    end: { type: "string", format: "date-time" },
+    extension: {
+      type: "array",
+      nullable: true,
+      items: FHIR_EXTENSION_SCHEMA,
+    },
+  },
+};
+
+const SCHEMAS = {
+  Location: LOCATION_SCHEMA,
+  Schedule: SCHEDULE_SCHEMA,
+  Slot: SLOT_SCHEMA,
+};
 
 /**
  * @typedef {Object} SmartSchdulingLinksAddress
@@ -120,10 +301,8 @@ class SmartSchedulingLinksApi {
         ...this.httpOptions,
         url: this.url,
       }).json();
-      // FIXME: We should validate the schema of the response.
+      assertSchema(MANIFEST_SCHEMA, data, "Invalid Manifest");
       this.manifest = { time: Date.now(), data };
-      // HACK: This is a [temporary?] workaround for bad data from Walgreens.
-      this.manifest.data.output = this.manifest.data.output.flat();
     }
     return this.manifest.data;
   }
@@ -142,7 +321,9 @@ class SmartSchedulingLinksApi {
         url: entry.url,
       });
       for (const record of parseJsonLines(response.body)) {
-        // FIXME: We should validate the schema of the data.
+        const schema = SCHEMAS[type];
+        if (schema) assertSchema(schema, record, `Invalid ${type} record`);
+
         record[sourceReference] = entry;
         yield record;
       }
