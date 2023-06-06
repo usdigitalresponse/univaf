@@ -39,7 +39,6 @@ export interface MergePlan {
 export const NON_MERGE_FIELDS = new Set([
   "id",
   "external_ids",
-  "id_old",
   "created_at",
   "updated_at",
 ]);
