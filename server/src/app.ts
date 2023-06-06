@@ -15,7 +15,6 @@ import {
 import { datadogMiddleware } from "./datadog";
 import { logger, logStackTrace } from "./logger";
 import * as apiEdge from "./api/edge";
-import * as apiLegacy from "./api/legacy";
 import { asyncHandler, urlDecodeSpecialPathChars } from "./utils";
 
 // Express configuration -----------------------------------------
@@ -85,15 +84,6 @@ app.use("/docs", express.static("public/docs"));
 
 // Version handling ----------------------------------------------
 app.use("/", versionedMiddleware);
-
-// Legacy top-level API ------------------------------------------
-// TODO: Remove these when we're confident people aren't using them.
-app.get("/locations", asyncHandler(apiLegacy.list));
-app.get("/locations/:id", (req: Request, res: Response) => {
-  res.redirect(`/api/edge/locations/${req.params.id}`);
-});
-// Note this one uses the newer edge API to ease our transition.
-app.post("/update", asyncHandler(apiEdge.update));
 
 // Current, non-stable API ------------------------------------------
 app.get("/api/edge/locations", asyncHandler(apiEdge.list));
