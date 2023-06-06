@@ -7,6 +7,7 @@ const {
   sourceReference,
   SmartSchedulingLinksApi,
 } = require("../src/smart-scheduling-links");
+const { createSmartLocation } = require("./support/smart-scheduling-links");
 
 jest.mock("../src/logging");
 
@@ -200,13 +201,19 @@ describe("smart-scheduling-links", () => {
       nock("http://example.com").get("/manifest.json").reply(200, manifest);
       nock("http://example.com")
         .get("/l/test1.ndjson")
-        .reply(200, `{"source": "test1.ndjson"}`);
+        .reply(
+          200,
+          JSON.stringify(createSmartLocation({ id: "test1" }).location)
+        );
       nock("http://example.com")
         .get("/l/NJ.ndjson")
-        .reply(200, `{"source": "NJ.ndjson"}`);
+        .reply(200, JSON.stringify(createSmartLocation({ id: "NJ" }).location));
       nock("http://example.com")
         .get("/l/test3.ndjson")
-        .reply(200, `{"source": "test3.ndjson"}`);
+        .reply(
+          200,
+          JSON.stringify(createSmartLocation({ id: "test3" }).location)
+        );
 
       const client = new SmartSchedulingLinksApi(
         "http://example.com/manifest.json"
@@ -216,9 +223,18 @@ describe("smart-scheduling-links", () => {
       ).toArray();
 
       expect(locations).toEqual([
-        { source: "test1.ndjson", [sourceReference]: manifest.output[0] },
-        { source: "NJ.ndjson", [sourceReference]: manifest.output[2] },
-        { source: "test3.ndjson", [sourceReference]: manifest.output[4] },
+        expect.objectContaining({
+          id: "test1",
+          [sourceReference]: manifest.output[0],
+        }),
+        expect.objectContaining({
+          id: "NJ",
+          [sourceReference]: manifest.output[2],
+        }),
+        expect.objectContaining({
+          id: "test3",
+          [sourceReference]: manifest.output[4],
+        }),
       ]);
       expect(nock.isDone()).toBe(true);
     });
