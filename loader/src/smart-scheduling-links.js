@@ -120,7 +120,10 @@ class SmartSchedulingLinksApi {
         ...this.httpOptions,
         url: this.url,
       }).json();
+      // FIXME: We should validate the schema of the response.
       this.manifest = { time: Date.now(), data };
+      // HACK: This is a [temporary?] workaround for bad data from Walgreens.
+      this.manifest.data.output = this.manifest.data.output.flat();
     }
     return this.manifest.data;
   }
@@ -139,6 +142,7 @@ class SmartSchedulingLinksApi {
         url: entry.url,
       });
       for (const record of parseJsonLines(response.body)) {
+        // FIXME: We should validate the schema of the data.
         record[sourceReference] = entry;
         yield record;
       }
