@@ -673,7 +673,7 @@ describe("POST /api/edge/update", () => {
 
   it("should validate basic types in availability", async () => {
     const location = await createLocation(TestLocation);
-    const response = await context.client.post("update", {
+    const response = await context.client.post("api/edge/update", {
       headers,
       json: {
         id: location.id,
