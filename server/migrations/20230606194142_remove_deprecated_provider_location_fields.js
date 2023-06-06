@@ -1,4 +1,9 @@
 /**
+ * Clean out the original ID and external ID fields for locations. They were
+ * deprecated and renamed way back in May 2021, and should be dropped.
+ */
+
+/**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
