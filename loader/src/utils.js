@@ -422,7 +422,9 @@ module.exports = {
     } else if (text.includes("moderna")) {
       if (/ages?\s+(6|12|18)( (years )?and up|\s*\+)/i.test(text)) {
         return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
-      } else if (/ages?\s+6\s*(m|months)\b/i.test(text)) {
+      } else if (/ages?\s+6\s*(m|mo|months)(\s+and up|\s*\+)/i.test(text)) {
+        return isBa4Ba5 ? VaccineProduct.modernaBa4Ba5 : VaccineProduct.moderna;
+      } else if (/ages?\s+6\s*(m|mo|months)\b/i.test(text)) {
         return isBa4Ba5
           ? VaccineProduct.modernaBa4Ba5Age0_5
           : VaccineProduct.modernaAge0_5;
