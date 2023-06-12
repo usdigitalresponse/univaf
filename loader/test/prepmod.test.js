@@ -10,7 +10,7 @@ const {
   createSmartLocation,
   createSmartManifest,
 } = require("./support/smart-scheduling-links");
-const { expectDatetimeString, toNdJson } = require("./support");
+const { expectDatetimeString, getLocations, toNdJson } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const { VaccineProduct } = require("../src/model");
 const { EXTENSIONS } = require("../src/smart-scheduling-links");
@@ -34,7 +34,7 @@ describe("PrepMod API", () => {
   // have tests with simpler, more contrived API responses to verify values.
   // This is too complicated to set up again if the API changes.
   it.nock("should successfully format results", async () => {
-    const result = await checkAvailability(() => {}, { states: ["WA"] });
+    const result = await getLocations(checkAvailability({ states: ["WA"] }));
     expect(result).toEqual([
       {
         address_lines: ["500 Tausick Way"],
@@ -861,10 +861,12 @@ describe("PrepMod API", () => {
       .get("/test/slots.ndjson")
       .reply(200, toNdJson(testLocation.slots));
 
-    const results = await checkAvailability(() => {}, {
-      states: ["AK"],
-      hideMissingLocations: true,
-    });
+    const results = await getLocations(
+      checkAvailability({
+        states: ["AK"],
+        hideMissingLocations: true,
+      })
+    );
     expect(results).toHaveLength(2);
     expect(results).toHaveProperty("0.is_public", true);
     expect(results).toHaveProperty("1.is_public", false);

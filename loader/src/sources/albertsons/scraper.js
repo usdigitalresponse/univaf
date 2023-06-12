@@ -340,10 +340,7 @@ function* listUnmatchedStores(matchedStoreNumbers, states) {
   }
 }
 
-async function checkAvailability(
-  handler,
-  { states = SUPPORTED_STATES, rateLimit }
-) {
+async function* checkAvailability({ states = SUPPORTED_STATES, rateLimit }) {
   // Filter out unsupported states.
   states = states.filter((state) => {
     if (!SUPPORTED_STATES.includes(state)) {
@@ -356,7 +353,7 @@ async function checkAvailability(
   const rateLimiter = new RateLimit(rateLimit || 1);
   const checkedAt = new Date().toISOString();
 
-  const results = [];
+  let foundCount = 0;
   const storeNumbers = new Set();
   for (const state of states) {
     for await (const apiLocation of queryState(state, rateLimiter)) {
@@ -368,34 +365,31 @@ async function checkAvailability(
         });
         location = formatLocation(apiLocation, checkedAt);
       });
-      handler(location, { update_location: true });
-      results.push(location);
+      yield [location, { update_location: true }];
+      foundCount++;
       storeNumbers.add(location.meta.albertsons_store_number);
     }
   }
 
   // The web API only returns locations where appointments are available. Find
   // all other known locations and mark them as unavailable.
-  const foundCount = results.length;
   let missingCount = 0;
   for (const missing of listUnmatchedStores(storeNumbers, states)) {
     missingCount++;
+    let location;
     Sentry.withScope((scope) => {
       scope.setContext("location", {
         id: missing.c_parentEntityID,
         source: "albertsonsScraper",
       });
-      const location = formatKnownStore(missing, {
+      location = formatKnownStore(missing, {
         availability: { checked_at: checkedAt },
       });
-      handler(location, { update_location: true });
-      results.push(location);
     });
+    yield [location, { update_location: true }];
   }
 
   logger.debug(`Stores in API: ${foundCount}, missing: ${missingCount}`);
-
-  return results;
 }
 
 module.exports = {

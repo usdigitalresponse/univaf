@@ -1,6 +1,7 @@
 const path = require("node:path");
 const nock = require("nock");
 const { checkAvailability } = require("../src/sources/njvss");
+const { getLocations } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 jest.mock("../src/logging");
@@ -30,7 +31,7 @@ describe("NJVSS", () => {
   });
 
   it.nock("should output valid data", async () => {
-    const result = await checkAvailability(() => {});
+    const result = await getLocations(checkAvailability());
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
@@ -45,7 +46,7 @@ describe("NJVSS", () => {
         "last-modified": "Tue, 01 May 2023 12:00:00 GMT",
       });
 
-    const result = await checkAvailability(() => {});
+    const result = await getLocations(checkAvailability());
     expect(result).toHaveProperty(
       "0.availability.valid_at",
       "2023-05-01T12:00:00.000Z"

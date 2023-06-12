@@ -132,7 +132,7 @@ function parseApiLocation(location, lastUpdated) {
  * @param {(any) => void} handler
  * @param {any} [_options]
  */
-async function checkAvailability(handler, _options) {
+async function* checkAvailability(_options) {
   logger.warn("DEPRECATED: cvsApi is no longer maintained.");
 
   const apiKey = process.env.CVS_API_KEY;
@@ -161,11 +161,10 @@ async function checkAvailability(handler, _options) {
       },
     }).json();
 
-    return body.covaxAvailability.map((location) => {
-      const record = parseApiLocation(location, body.lastUpdated);
-      handler(record);
-      return record;
-    });
+    for (const rawLocation of body.covaxAvailability) {
+      const record = parseApiLocation(rawLocation, body.lastUpdated);
+      yield record;
+    }
   } catch (error) {
     if (error instanceof got.HTTPError) {
       throw new CvsApiError(error.response, { cause: error });

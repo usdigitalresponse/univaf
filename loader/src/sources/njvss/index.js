@@ -259,13 +259,12 @@ const walmartPattern = /(walmart(?<sams>\/Sams)?) #?(?<storeId>\d+)\s*$/i;
  * Get availability for locations scheduled through NJVSS.
  * @returns {Promise<Array<object>>}
  */
-async function checkAvailability(handler, _options) {
+async function* checkAvailability(_options) {
   const data = await getNjvssData();
   const checkTime = new Date().toISOString();
   const validTime = data.lastModified?.toISOString();
   const locations = filterHiddenNjvssLocations(data.records);
 
-  const result = [];
   for (const location of locations) {
     let provider = PROVIDER.njvss;
 
@@ -360,11 +359,8 @@ async function checkAvailability(handler, _options) {
       },
     };
 
-    result.push(record);
-    handler(record, { update_location: true });
+    yield [record, { update_location: true }];
   }
-
-  return result;
 }
 
 module.exports = {

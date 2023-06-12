@@ -6,7 +6,11 @@ const {
   checkAvailability,
   formatLocation,
 } = require("../src/sources/wa-doh/wa-doh");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const {
+  expectDatetimeString,
+  getLocations,
+  splitHostAndPath,
+} = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 jest.mock("../src/logging");
@@ -19,7 +23,7 @@ describe("Washington DoH API", () => {
   });
 
   it.nock("should successfully format results", async () => {
-    const result = await checkAvailability(() => {}, { states: ["PR"] });
+    const result = await getLocations(checkAvailability({ states: ["PR"] }));
     expect(result).toEqual([
       {
         address_lines: ["PR #30 INTERSECCION AVENDIA", "RAFAEL CORDERO BARIO"],
@@ -104,10 +108,9 @@ describe("Washington DoH API", () => {
         ],
       });
 
-    const error = await checkAvailability(() => null, { states: ["PR"] }).then(
-      () => null,
-      (error) => error
-    );
+    const error = await getLocations(
+      checkAvailability({ states: ["PR"] })
+    ).catch((error) => error);
     expect(error).toBeInstanceOf(GraphQlError);
     expect(error.message).toContain("Expected type Int!");
     expect(error.codes).toContain("GRAPHQL_VALIDATION_FAILED");

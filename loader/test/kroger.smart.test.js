@@ -2,6 +2,7 @@ const nock = require("nock");
 const { checkAvailability, API_URL } = require("../src/sources/kroger/smart");
 const {
   expectDatetimeString,
+  getLocations,
   splitHostAndPath,
   toNdJson,
 } = require("./support");
@@ -26,7 +27,7 @@ describe("Kroger SMART Scheduling Links API", () => {
       .get("/v1/health-wellness/schedules/vaccines/slot_AK.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
-    const result = await checkAvailability(() => null, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toEqual([
       {
         external_ids: [
@@ -98,7 +99,7 @@ describe("Kroger SMART Scheduling Links API", () => {
         )
       );
 
-    const result = await checkAvailability(() => null, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toHaveProperty("0.availability.available", Available.no);
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
@@ -115,7 +116,7 @@ describe("Kroger SMART Scheduling Links API", () => {
       .get("/v1/health-wellness/schedules/vaccines/slot_NJ.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
-    const result = await checkAvailability(() => null, { states: ["NJ"] });
+    const result = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(result).toHaveLength(0);
   });
 
@@ -149,7 +150,7 @@ describe("Kroger SMART Scheduling Links API", () => {
         return toNdJson(items);
       });
 
-    const result = await checkAvailability(() => null, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toHaveLength(0);
   });
 });

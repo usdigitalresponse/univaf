@@ -4,7 +4,11 @@ const {
   API_URL,
   checkAvailability,
 } = require("../src/sources/riteaid/scraper");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const {
+  expectDatetimeString,
+  getLocations,
+  splitHostAndPath,
+} = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 jest.mock("../src/logging");
@@ -42,10 +46,12 @@ describe("Rite Aid Scraper", () => {
   });
 
   it.nock("should output valid data", async () => {
-    const result = await checkAvailability(() => {}, {
-      states: ["CT"],
-      rateLimit: 0,
-    });
+    const result = await getLocations(
+      checkAvailability({
+        states: ["CT"],
+        rateLimit: 0,
+      })
+    );
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
@@ -144,7 +150,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["CT"] });
+    const result = await getLocations(checkAvailability({ states: ["CT"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
@@ -286,7 +292,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["CT"] });
+    const result = await getLocations(checkAvailability({ states: ["CT"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0].availability.slots).toEqual([
       {
@@ -338,7 +344,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["CT"] });
+    const result = await getLocations(checkAvailability({ states: ["CT"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toHaveProperty("0.availability.available", Available.no);
   });
@@ -353,7 +359,7 @@ describe("Rite Aid Scraper", () => {
     });
 
     await expect(
-      checkAvailability(() => {}, { states: ["CT"] })
+      getLocations(checkAvailability({ states: ["CT"] }))
     ).rejects.toThrow("Something went wrong");
   });
 
@@ -391,7 +397,7 @@ describe("Rite Aid Scraper", () => {
         },
       });
 
-    const result = await checkAvailability(() => {}, { states: ["CT"] });
+    const result = await getLocations(checkAvailability({ states: ["CT"] }));
     expect(result).toHaveProperty("0.external_ids", [
       ["rite_aid", "6958"],
       ["bartell", "58"],

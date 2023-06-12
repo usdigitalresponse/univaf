@@ -375,13 +375,9 @@ function formatSlots(location) {
   return allSlots;
 }
 
-async function checkAvailability(
-  handler,
-  { states = RITE_AID_STATES, rateLimit }
-) {
+async function* checkAvailability({ states = RITE_AID_STATES, rateLimit }) {
   const rateLimiter = new RateLimit(rateLimit || 1);
 
-  const results = [];
   for (const state of states) {
     for await (const apiLocation of queryState(state, rateLimiter)) {
       let location;
@@ -392,12 +388,9 @@ async function checkAvailability(
         });
         location = formatLocation(apiLocation);
       });
-      handler(location);
-      results.push(location);
+      yield location;
     }
   }
-
-  return results;
 }
 
 module.exports = {

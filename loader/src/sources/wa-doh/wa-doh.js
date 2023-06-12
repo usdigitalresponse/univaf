@@ -288,7 +288,7 @@ function formatLocation(data) {
 /**
  * Get availability data from the WA Department of Health API.
  */
-async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+async function* checkAvailability({ states = DEFAULT_STATES }) {
   // WA doesn't support some US territories.
   const unsupported = new Set(["AA", "AP", "AE"]);
   states = states.filter((state) => {
@@ -299,7 +299,7 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
     return true;
   });
 
-  const results = [];
+  let count = 0;
   for (const state of states) {
     for await (const page of queryState(state)) {
       for (const item of page) {
@@ -328,18 +328,16 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
 
         const location = formatLocation(item);
         if (location) {
-          results.push(location);
-          handler(location);
+          yield location;
+          count++;
         }
       }
     }
   }
 
-  if (!results.length) {
+  if (!count) {
     logger.warn("No locations were found. Something has probably gone wrong.");
   }
-
-  return results;
 }
 
 module.exports = {

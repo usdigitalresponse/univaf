@@ -1,5 +1,7 @@
 "use strict";
 
+const { pipeline } = require("node:stream/promises");
+const { compose } = require("node:stream");
 const Sentry = require("@sentry/node");
 const yargs = require("yargs");
 const { states: allStates } = require("univaf-common");
@@ -15,6 +17,12 @@ Sentry.init({ release: config.version });
 
 const logger = new Logger();
 
+/**
+ * @param {string[]} targets
+ * @param {(results: Iterable<any>) => Promise<any>} handler
+ * @param {any} options
+ * @returns {Promise<{name: string, error?: Error}[]>}
+ */
 async function runSources(targets, handler, options) {
   targets =
     targets && targets.length ? targets : Object.getOwnPropertyNames(sources);
@@ -22,33 +30,65 @@ async function runSources(targets, handler, options) {
   const runs = targets.map((name) => {
     const source = sources[name];
     const run = source
-      ? source.checkAvailability(handler, options)
+      ? pipeline(source.checkAvailability(options), handler)
       : Promise.reject(new Error(`Unknown source: "${name}"`));
     return run
-      .then((results) => ({ name, error: null, results }))
-      .catch((error) => ({ name, error, results: [] }));
+      .then(() => ({ name, error: null }))
+      .catch((error) => ({ name, error }));
   });
 
   return Promise.all(runs);
 }
 
-function createResultLogger(spacing) {
-  return function logResult(locationData) {
-    const serialized = JSON.stringify(locationData, null, spacing);
-    for (const line of serialized.split("\n")) {
-      process.stdout.write(`  ${line}\n`);
-    }
-  };
+/**
+ * Sources can yield a location object or an array of [location, sendOptions].
+ * This normalizes the result iterable to always be the array form.
+ * @param {AsyncIterable} results
+ * @yields {[any, any][]}
+ */
+async function* normalizeResults(results) {
+  for await (const result of results) {
+    yield Array.isArray(result) ? result : [result];
+  }
 }
 
-let updateQueue = null;
+function createStaleFilter(threshold, filterStaleData) {
+  const staleChecker = new StaleChecker({ threshold });
+  async function* staleFilter(results) {
+    for await (const [location, options] of results) {
+      const freshRecord = staleChecker.filterRecord(location);
+      if (!filterStaleData || freshRecord) {
+        yield [location, options];
+      }
+    }
+  }
+
+  return { staleChecker, staleFilter };
+}
+
+function createResultLogger(spacing) {
+  async function handler(results) {
+    for await (const [location, ..._] of results) {
+      const serialized = JSON.stringify(location, null, spacing);
+      for (const line of serialized.split("\n")) {
+        process.stdout.write(`  ${line}\n`);
+      }
+    }
+  }
+
+  return { handler };
+}
 
 function createDatabaseSender() {
-  const client = ApiClient.fromEnv();
-  updateQueue = client.updateQueue();
-  return function handler(locationData, options) {
-    updateQueue.push(locationData, options);
-  };
+  const dbClient = ApiClient.fromEnv();
+  const queue = dbClient.updateQueue();
+  async function handler(results) {
+    for await (const [location, options] of results) {
+      queue.push(location, options);
+    }
+  }
+
+  return { handler, queue };
 }
 
 /**
@@ -64,20 +104,15 @@ async function run(options) {
   });
   metrics.increment("loader.jobs.count");
 
-  let outputter;
-  if (options.send) {
-    outputter = createDatabaseSender();
-  } else {
-    const jsonSpacing = options.compact ? 0 : 2;
-    outputter = createResultLogger(jsonSpacing);
-  }
-  const staleChecker = new StaleChecker({ threshold: options.staleThreshold });
-  const handler = (record, ...extra) => {
-    const freshRecord = staleChecker.filterRecord(record);
-    if (!options.filterStaleData || freshRecord) {
-      outputter(record, ...extra);
-    }
-  };
+  const { staleChecker, staleFilter } = createStaleFilter(
+    options.staleThreshold,
+    options.filterStaleData
+  );
+  const outputter = options.send
+    ? createDatabaseSender()
+    : createResultLogger(options.compact ? 0 : 2);
+  const handler = compose(normalizeResults, staleFilter, outputter.handler);
+  const updateQueue = outputter.queue;
 
   const startTime = Date.now();
   try {

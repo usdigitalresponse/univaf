@@ -450,10 +450,10 @@ function formatSlots(smartSlots) {
   return { available, slots };
 }
 
-async function checkAvailability(
-  handler,
-  { states = DEFAULT_STATES, hideMissingLocations = false }
-) {
+async function* checkAvailability({
+  states = DEFAULT_STATES,
+  hideMissingLocations = false,
+}) {
   let results = [];
   for (const [state, namedHosts] of Object.entries(prepmodHostsByState)) {
     if (states.includes(state)) {
@@ -467,8 +467,8 @@ async function checkAvailability(
       for (const host of Object.values(namedHosts)) {
         try {
           const hostLocations = await getDataForHost(host);
-          hostLocations.forEach((location) => {
-            handler(location, { update_location: true });
+          for (const location of hostLocations) {
+            yield [location, { update_location: true }];
 
             // If we already knew about this location, mark it as found.
             for (const externalId of location.external_ids) {
@@ -478,7 +478,7 @@ async function checkAvailability(
                 break;
               }
             }
-          });
+          }
           results = results.concat(hostLocations);
         } catch (error) {
           // FIXME: this should be a custom error emitted by the
@@ -494,8 +494,7 @@ async function checkAvailability(
       for (const known of new Set([...Object.values(knownLocations)])) {
         if (!known.found) {
           const newData = { ...known.location, is_public: false };
-          results.push(newData);
-          handler(newData, { update_location: true });
+          yield [newData, { update_location: true }];
         }
       }
     }

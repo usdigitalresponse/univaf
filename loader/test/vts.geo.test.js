@@ -1,10 +1,10 @@
 const nock = require("nock");
 const { checkAvailability } = require("../src/sources/vts/geo");
+const { getLocations } = require("./support");
 
 jest.mock("../src/logging");
 
 const apiResponse = require("./fixtures/vts.geo.test.json");
-const noopHandler = () => {};
 
 describe.skip("VtS Geo", () => {
   const S3_URL = "https://univaf-data-snapshots.s3.us-west-2.amazonaws.com/";
@@ -18,28 +18,28 @@ describe.skip("VtS Geo", () => {
   });
 
   it("gracefully handles no states", async () => {
-    const locations = await checkAvailability(noopHandler, {});
+    const locations = await getLocations(checkAvailability());
     expect(locations).toEqual([]);
   });
 
   it("filters by state", async () => {
     let locations;
-    locations = await checkAvailability(noopHandler, { states: ["NJ"] });
+    locations = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(locations.length).toBe(0);
 
-    locations = await checkAvailability(noopHandler, { states: ["CA"] });
+    locations = await getLocations(checkAvailability({ states: ["CA"] }));
     expect(locations.length).not.toBe(0);
   });
 
   it("skips stores we don't care about", async () => {
     expect(apiResponse.features.length).toBe(3);
 
-    const locations = await checkAvailability(noopHandler, { states: ["CA"] });
+    const locations = await getLocations(checkAvailability({ states: ["CA"] }));
     expect(locations.length).toBe(2);
   });
 
   it("formats stores as expected", async () => {
-    const locations = await checkAvailability(noopHandler, { states: ["CA"] });
+    const locations = await getLocations(checkAvailability({ states: ["CA"] }));
     expect(locations[0]).toStrictEqual({
       external_ids: [
         ["vaccines_gov", "d91cd449-36c2-4cf5-9c1a-f4136d9a2bf7"],

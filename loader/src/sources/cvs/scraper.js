@@ -357,7 +357,7 @@ function createCannedUnavailableStore() {
  *
  * @return {Promise<Array>} Array of results conforming to the scraper standard.
  */
-async function checkAvailability(handler, _options) {
+async function* checkAvailability(_options) {
   logger.warn("DEPRECATED: cvsScraper is no longer maintained.");
 
   const clinicsZip = njClinicZip;
@@ -368,7 +368,9 @@ async function checkAvailability(handler, _options) {
     if (rawResults) {
       const clinicResults = convertToStandardSchema(rawResults);
       Object.assign(standardResults, clinicResults);
-      Object.values(clinicResults).forEach((item) => handler(item));
+      for (const clinic of Object.values(clinicResults)) {
+        yield [clinic];
+      }
     }
 
     await timers.setTimeout(randomInt(3, 7) * 1000);
@@ -381,7 +383,7 @@ async function checkAvailability(handler, _options) {
 
   for (const store of Object.values(finalResult)) {
     if (store.availability.available === Available.no) {
-      handler(store);
+      yield [store];
     }
   }
 

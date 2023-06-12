@@ -559,9 +559,8 @@ function formatProductTypes(products) {
   return result.length ? result : undefined;
 }
 
-async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+async function* checkAvailability({ states = DEFAULT_STATES }) {
   const checkedAt = new Date().toISOString();
-  let results = [];
   for (const state of states) {
     const entriesByStoreId = {};
     for await (const entry of queryState(state)) {
@@ -577,12 +576,10 @@ async function checkAvailability(handler, { states = DEFAULT_STATES }) {
       .filter(Boolean)
       .map(markUnexpectedCvsIds);
 
-    formatted.forEach((item) => handler(item, { update_location: true }));
-
-    results = results.concat(formatted);
+    for (const store of formatted) {
+      yield [store, { update_location: true }];
+    }
   }
-
-  return results;
 }
 
 // 18 locations we don't have from the official CVS API that need special treatment

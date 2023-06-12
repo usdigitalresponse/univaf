@@ -3,6 +3,7 @@ const { Available } = require("../src/model");
 const { checkAvailability, API_URL } = require("../src/sources/riteaid/smart");
 const {
   expectDatetimeString,
+  getLocations,
   splitHostAndPath,
   toNdJson,
 } = require("./support");
@@ -95,7 +96,7 @@ afterEach(() => {
 
 describe("Rite Aid SMART Scheduling Links API", () => {
   it.nock("should output valid data", async () => {
-    const result = await checkAvailability(() => {}, { states: ["NJ"] });
+    const result = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
@@ -109,7 +110,7 @@ describe("Rite Aid SMART Scheduling Links API", () => {
       .reply(200, toNdJson(mockSchedules));
     nock(API_BASE).get("/slots/NJ.ndjson").reply(200, toNdJson(mockSlots));
 
-    const result = await checkAvailability(() => null, { states: ["NJ"] });
+    const result = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(result).toEqual([
       {
         external_ids: [
@@ -177,7 +178,7 @@ describe("Rite Aid SMART Scheduling Links API", () => {
         toNdJson(mockSlots.map((slot) => ({ ...slot, status: "busy" })))
       );
 
-    const result = await checkAvailability(() => null, { states: ["NJ"] });
+    const result = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(result).toHaveProperty("0.availability.available", Available.no);
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(nock.isDone()).toBe(true);
@@ -193,7 +194,7 @@ describe("Rite Aid SMART Scheduling Links API", () => {
       .reply(200, toNdJson(mockSchedules));
     nock(API_BASE).get("/slots/NJ.ndjson").reply(200, "");
 
-    const result = await checkAvailability(() => null, { states: ["NJ"] });
+    const result = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(result).toHaveProperty("0.availability.available", Available.no);
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(nock.isDone()).toBe(true);
@@ -202,7 +203,7 @@ describe("Rite Aid SMART Scheduling Links API", () => {
   it("should not return results outside the requested states", async () => {
     nock(API_BASE).get(API_MANIFEST_PATH).reply(200, mockManifest);
 
-    const result = await checkAvailability(() => null, { states: ["VA"] });
+    const result = await getLocations(checkAvailability({ states: ["VA"] }));
     expect(result).toHaveLength(0);
 
     // It should not have *requested* extra states, either! This tests that

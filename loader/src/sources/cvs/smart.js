@@ -141,10 +141,11 @@ function formatCapacity(slots) {
     .map((key) => byDate[key]);
 }
 
-async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+async function* checkAvailability({ states = DEFAULT_STATES }) {
   const stores = await getData(states);
-  stores.forEach((store) => handler(store));
-  return stores;
+  for (const store of stores) {
+    yield [store];
+  }
 }
 
 module.exports = {

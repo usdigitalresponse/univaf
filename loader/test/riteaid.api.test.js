@@ -6,6 +6,7 @@ const {
   queryState,
   formatStore,
 } = require("../src/sources/riteaid/api");
+const { getLocations } = require("./support");
 const { locationSchema } = require("./support/schemas");
 const responseFixture = require("./fixtures/riteaid.api.test.json");
 
@@ -57,7 +58,7 @@ describe("Rite Aid Source", () => {
 
     nock(API_URL).get("?stateCode=NJ").reply(200, responseFixture);
 
-    const locations = await checkAvailability(() => {}, { states: ["NJ"] });
+    const locations = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(locations.length).toBe(108);
 
     expect(locations[0]).toStrictEqual({

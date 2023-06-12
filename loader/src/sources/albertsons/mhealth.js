@@ -577,13 +577,15 @@ function formatLocation(data, validAt, checkedAt) {
   };
 }
 
-async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+async function* checkAvailability({ states = DEFAULT_STATES }) {
   logger.warn("DEPRECATED: albertsons is no longer maintained.");
 
   const stores = await getData(states);
-  stores.forEach((store) => handler(store, { update_location: true }));
+  for (const store of stores) {
+    yield [store, { update_location: true }];
+  }
+
   logger.debug("Matches to known locations:", knownLocationMatches);
-  return stores;
 }
 
 module.exports = {
