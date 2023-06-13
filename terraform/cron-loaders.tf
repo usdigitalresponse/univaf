@@ -22,39 +22,39 @@ locals {
   #       njvss = { schedule = "rate(5 minutes)", sources = ["njvss"] }
   loaders = {
     njvss = {
-      schedule = "rate(15 minutes)"
+      schedule = "cron(0/15 0-22 1-15 1-6 ? *)"
       env_vars = {
         NJVSS_AWS_KEY_ID     = var.njvss_aws_key_id
         NJVSS_AWS_SECRET_KEY = var.njvss_aws_secret_key
       }
     },
-    waDoh             = { schedule = "cron(3/30 * * * ? *)" }
-    cvsSmart          = { schedule = "cron(3/15 * * * ? *)" }
-    walgreensSmart    = { schedule = "cron(2/15 * * * ? *)" }
-    albertsonsScraper = { schedule = "cron(20/30 * * * ? *)" }
-    hyvee             = { schedule = "cron(8/15 * * * ? *)" }
-    heb               = { schedule = "cron(1/15 * * * ? *)" }
+    waDoh             = { schedule = "cron(3/30 0-22 1-15 1-6 ? *)" }
+    cvsSmart          = { schedule = "cron(3/15 0-22 1-15 1-6 ? *)" }
+    walgreensSmart    = { schedule = "cron(2/15 0-22 1-15 1-6 ? *)" }
+    albertsonsScraper = { schedule = "cron(20/30 0-22 1-15 1-6 ? *)" }
+    hyvee             = { schedule = "cron(8/15 0-22 1-15 1-6 ? *)" }
+    heb               = { schedule = "cron(1/15 0-22 1-15 1-6 ? *)" }
     cdcApi = {
-      schedule = "cron(0 0,12 * * ? *)"
+      schedule = "cron(0 0,12 1-15 1-6 ? *)"
       # CDC updates are often slow; set stale threshold to 3 days.
       options = ["--stale-threshold", "172800000"]
     }
-    riteAidScraper = { schedule = "cron(5/30 * * * ? *)" }
+    riteAidScraper = { schedule = "cron(5/30 0-22 1-15 1-6 ? *)" }
     riteAidApi = {
-      schedule = "cron(0/15 * * * ? *)"
+      schedule = "cron(0/15 0-22 1-15 1-6 ? *)"
       env_vars = {
         RITE_AID_URL = var.rite_aid_api_url
         RITE_AID_KEY = var.rite_aid_api_key
       }
     }
     prepmod = {
-      schedule = "cron(9/15 * * * ? *)"
+      schedule = "cron(9/15 0-22 1-15 1-6 ? *)"
       options  = ["--states", "AK,WA", "--hide-missing-locations"]
     }
 
     # Kroger appears to have shut things off entirely. We just want to run them
     # enough to know if they start working again.
-    krogerSmart = { schedule = "cron(0 1/6 * * ? *)" }
+    krogerSmart = { schedule = "cron(0 1/6 1-15 1-6 ? *)" }
   }
 }
 
