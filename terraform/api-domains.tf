@@ -166,6 +166,9 @@ module "univaf_data_snaphsots_cdn" {
     var.domain_name != ""
     && var.ssl_certificate_arn != "" ? 1 : 0
   )
+  # NOTE: If upgrading this module, please check whether it's now compatible
+  # with the current version of the AWS provider and upgrade that, too!
+  # See https://github.com/cloudposse/terraform-aws-cloudfront-s3-cdn/issues/279
   source  = "cloudposse/cloudfront-s3-cdn/aws"
   version = "0.90.0"
 
