@@ -14,6 +14,22 @@ module.exports = {
   },
 
   /**
+   * Convert the iterator from a source's `checkAvailability()` function to an
+   * array of location objects. This discards any extra processing instructions
+   * that might be emitted by `checkAvailability()` so you just get the
+   * locations.
+   * @param {AsyncIterator} resultsIterator
+   * @returns {Promise<any[]>}
+   */
+  async getLocations(resultsIterator) {
+    const locations = [];
+    for await (const item of resultsIterator) {
+      locations.push(Array.isArray(item) ? item[0] : item);
+    }
+    return locations;
+  },
+
+  /**
    * Split up a URL into two strings: a URL for the host and the path.
    * @param {string} url
    * @returns {[string, string]}

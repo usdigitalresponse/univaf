@@ -1,6 +1,6 @@
 const { checkAvailability, formatLocation } = require("../src/sources/heb");
 const { LocationType, Available } = require("../src/model");
-const { expectDatetimeString } = require("./support");
+const { expectDatetimeString, getLocations } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 jest.mock("../src/logging");
@@ -47,7 +47,7 @@ const baseLocation = {
 
 describe("H-E-B", () => {
   it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
-    const result = await checkAvailability(() => {}, { states: ["TX"] });
+    const result = await getLocations(checkAvailability({ states: ["TX"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 

@@ -3,7 +3,7 @@ const {
   API_URL,
   checkAvailability,
 } = require("../src/sources/albertsons/scraper");
-const { splitHostAndPath } = require("./support");
+const { getLocations, splitHostAndPath } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 jest.mock("../src/logging");
@@ -16,7 +16,7 @@ describe("Albertsons Scraper", () => {
   });
 
   it.nock("should output valid data", async () => {
-    const result = await checkAvailability(() => {}, { states: ["NJ"] });
+    const result = await getLocations(checkAvailability({ states: ["NJ"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result.length).toBeGreaterThan(0);
   });
@@ -25,7 +25,7 @@ describe("Albertsons Scraper", () => {
   // from different underlying data.
   it("should output valid data for unavailable locations", async () => {
     nock(API_URL_BASE).post(API_URL_PATH).reply(200, []);
-    const result = await checkAvailability(() => {}, { states: ["DC"] });
+    const result = await getLocations(checkAvailability({ states: ["DC"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result.length).toBeGreaterThan(0);
   });

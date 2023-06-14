@@ -4,7 +4,7 @@ const {
   CVS_BOOKING_URL,
   CVS_CORPORATE_PHARMACY_PHONE_NUMBER,
 } = require("../src/sources/cvs/shared");
-const { expectDatetimeString } = require("./support");
+const { expectDatetimeString, getLocations } = require("./support");
 
 jest.mock("../src/logging");
 
@@ -21,7 +21,7 @@ describe("CVS API", () => {
 
   it("throws an error if there are no credentials", async () => {
     delete process.env.CVS_API_KEY;
-    await expect(checkAvailability(() => null)).rejects.toThrow(/API key/i);
+    await expect(getLocations(checkAvailability())).rejects.toThrow(/API key/i);
   });
 
   it("sends credentials", async () => {
@@ -33,7 +33,7 @@ describe("CVS API", () => {
       .get("/immunization-status/v1/covax-availability?stateCode=NJ")
       .reply(200, { covaxAvailability: [] });
 
-    await checkAvailability(() => null);
+    await getLocations(checkAvailability());
 
     expect(scope.isDone());
   });
@@ -67,7 +67,7 @@ describe("CVS API", () => {
         lastUpdated: "2021-03-09T17:08:30.842Z",
       });
 
-    const result = await checkAvailability(() => null);
+    const result = await getLocations(checkAvailability());
     expect(result).toEqual([
       {
         address_lines: ["701 COLLEGE DRIVE"],
@@ -132,10 +132,7 @@ describe("CVS API", () => {
         fault: { more: "data" },
       });
 
-    const error = await checkAvailability(() => null).then(
-      () => null,
-      (error) => error
-    );
+    const error = await getLocations(checkAvailability()).catch((e) => e);
     expect(error).toBeInstanceOf(CvsApiError);
     expect(error.message).toContain("5004");
     expect(error.message).toContain(

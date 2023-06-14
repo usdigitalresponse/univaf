@@ -1,7 +1,7 @@
 const { states: stateData } = require("univaf-common");
 const { checkAvailability, formatLocation } = require("../src/sources/hyvee");
 const { Available, LocationType } = require("../src/model");
-const { expectDatetimeString } = require("./support");
+const { expectDatetimeString, getLocations } = require("./support");
 const { locationSchema } = require("./support/schemas");
 
 jest.mock("../src/logging");
@@ -134,7 +134,7 @@ describe("HyVee", () => {
 
   it.nock("should output valid data", async () => {
     const states = stateData.map((x) => x.usps);
-    const result = await checkAvailability(() => {}, { states });
+    const result = await getLocations(checkAvailability({ states }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 });

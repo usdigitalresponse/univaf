@@ -259,10 +259,9 @@ async function getData(states) {
     .filter((location) => states.includes(location.state));
 }
 
-async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+async function* checkAvailability({ states = DEFAULT_STATES }) {
   const locations = await getData(states);
-  locations.forEach((location) => handler(location));
-  return locations;
+  yield* locations;
 }
 
 module.exports = {

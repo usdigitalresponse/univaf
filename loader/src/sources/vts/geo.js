@@ -142,7 +142,7 @@ function formatStore(store) {
   return result;
 }
 
-async function updateGeo(handler, { states = DEFAULT_STATES }) {
+async function* updateGeo({ states = DEFAULT_STATES }) {
   throw new Error(oneLine`
     The vtsGeo source is unsafe!
     Please fix https://github.com/usdigitalresponse/univaf/issues/433 first.
@@ -158,8 +158,9 @@ async function updateGeo(handler, { states = DEFAULT_STATES }) {
     .map(formatStore)
     .filter(Boolean);
 
-  results.forEach((item) => handler(item, { update_location: true }));
-  return results;
+  for (const item of results) {
+    yield [item, { update_location: true }];
+  }
   /* eslint-enable no-unreachable */
 }
 

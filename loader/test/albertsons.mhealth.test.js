@@ -7,7 +7,11 @@ const {
 } = require("../src/sources/albertsons/mhealth");
 const { corrections } = require("../src/sources/albertsons/corrections");
 const { Available } = require("../src/model");
-const { expectDatetimeString, splitHostAndPath } = require("./support");
+const {
+  getLocations,
+  expectDatetimeString,
+  splitHostAndPath,
+} = require("./support");
 const { locationSchema } = require("./support/schemas");
 const { ParseError } = require("../src/exceptions");
 
@@ -40,7 +44,7 @@ describe("Albertsons mHealth", () => {
   });
 
   it.nock("should output valid data", { ignoreQuery: ["v"] }, async () => {
-    const result = await checkAvailability(() => {}, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
 
@@ -75,7 +79,7 @@ describe("Albertsons mHealth", () => {
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
       );
 
-    const result = await checkAvailability(() => {}, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
@@ -187,7 +191,7 @@ describe("Albertsons mHealth", () => {
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result[0]).toHaveProperty("name", "Safeway Pharmacy #3410");
     expect(result[0]).toHaveProperty("address_lines", ["30 College Rd"]);
     expect(result).toContainItemsMatchingSchema(locationSchema);
@@ -204,7 +208,7 @@ describe("Albertsons mHealth", () => {
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: ["MD"] });
+    const result = await getLocations(checkAvailability({ states: ["MD"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty(
       "availability.available",
@@ -228,7 +232,7 @@ describe("Albertsons mHealth", () => {
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0].availability.products).toBe(undefined);
   });
@@ -244,7 +248,7 @@ describe("Albertsons mHealth", () => {
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: ["MD"] });
+    const result = await getLocations(checkAvailability({ states: ["MD"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result[0]).toHaveProperty("availability.products", ["pfizer"]);
   });
@@ -260,7 +264,7 @@ describe("Albertsons mHealth", () => {
         },
       ]);
 
-    const result = await checkAvailability(() => {}, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toHaveLength(0);
   });
 
@@ -308,7 +312,7 @@ describe("Albertsons mHealth", () => {
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
       );
 
-    const result = await checkAvailability(() => {}, { states: ["VA"] });
+    const result = await getLocations(checkAvailability({ states: ["VA"] }));
     expect(result).toContainItemsMatchingSchema(locationSchema);
     expect(result).toEqual([
       {
@@ -417,7 +421,7 @@ describe("Albertsons mHealth", () => {
         ],
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
       );
-    const result = await checkAvailability(() => {}, { states: ["CA"] });
+    const result = await getLocations(checkAvailability({ states: ["CA"] }));
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchSchema(locationSchema);
     expect(result).toHaveProperty("0.meta", {
@@ -474,7 +478,7 @@ describe("Albertsons mHealth", () => {
         ],
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
       );
-    const result = await checkAvailability(() => {}, { states: ["CA"] });
+    const result = await getLocations(checkAvailability({ states: ["CA"] }));
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchSchema(locationSchema);
     expect(result).toHaveProperty("0.meta", {
@@ -517,7 +521,7 @@ describe("Albertsons mHealth", () => {
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
       );
 
-    const result = await checkAvailability(() => {}, { states: ["MD"] });
+    const result = await getLocations(checkAvailability({ states: ["MD"] }));
     expect(result[0]).toMatchSchema(locationSchema);
     expect(result[0]).toHaveProperty("name", "Takoma Park Recreation Center");
     expect(result[0]).toHaveProperty("location_type", "CLINIC");
@@ -543,7 +547,7 @@ describe("Albertsons mHealth", () => {
         { "Last-Modified": "Thu, 28 Oct 2021 07:06:13 GMT" }
       );
 
-    const result = await checkAvailability(() => {}, { states: ["MD"] });
+    const result = await getLocations(checkAvailability({ states: ["MD"] }));
     expect(result).toHaveLength(0);
   });
 
@@ -552,11 +556,9 @@ describe("Albertsons mHealth", () => {
       errors: "Oh no!",
     });
 
-    const error = await checkAvailability(() => null, { states: ["AK"] }).then(
-      () => null,
-      (error) => error
-    );
-    expect(error).toBeInstanceOf(Error);
+    await expect(
+      getLocations(checkAvailability({ states: ["AK"] }))
+    ).rejects.toThrow();
   });
 
   it("errors when formatting locations with a name and address that can't be separated", () => {

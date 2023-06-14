@@ -265,25 +265,20 @@ function formatAddress(location) {
   return `${location.street}, ${location.city}, ${location.state}, ${zipCode}`;
 }
 
-async function checkAvailability(
-  handler,
-  { states = RITE_AID_STATES, rateLimit }
-) {
+async function* checkAvailability({ states = RITE_AID_STATES, rateLimit }) {
   getRiteAidConfiguration();
   const rateLimiter = new RateLimit(rateLimit || 1);
 
-  let results = [];
   for (const state of states) {
     // Sentry's withScope() doesn't work for async code, so we have to manually
     // track the context data we want to add. :(
     const errorContext = { state, source: "Rite Aid API" };
 
-    const stores = [];
     try {
       const rawData = await queryState(state, rateLimiter);
       for (const rawLocation of rawData) {
         try {
-          stores.push(formatStore(rawLocation));
+          yield formatStore(rawLocation);
         } catch (error) {
           logger.warn(error, { ...errorContext, locationId: rawLocation.id });
         }
@@ -295,12 +290,7 @@ async function checkAvailability(
       logger.warn(error, errorContext);
       continue;
     }
-
-    stores.forEach((store) => handler(store));
-    results = results.concat(stores);
   }
-
-  return results;
 }
 
 module.exports = {

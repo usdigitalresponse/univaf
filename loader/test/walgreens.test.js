@@ -5,6 +5,7 @@ const {
 } = require("../src/sources/walgreens/smart");
 const {
   expectDatetimeString,
+  getLocations,
   splitHostAndPath,
   toNdJson,
 } = require("./support");
@@ -36,7 +37,7 @@ describe("Walgreens SMART Scheduling Links API", () => {
       .get("/fhir/Slot-abc.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
-    const result = await checkAvailability(() => null, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toEqual([
       {
         external_ids: [
@@ -102,7 +103,7 @@ describe("Walgreens SMART Scheduling Links API", () => {
         )
       );
 
-    const result = await checkAvailability(() => null, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toHaveProperty("0.availability.available", Available.no);
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
@@ -120,7 +121,7 @@ describe("Walgreens SMART Scheduling Links API", () => {
       .reply(200, toNdJson(fixtures.TestSchedules));
     nock(API_BASE).get("/fhir/Slot-abc.ndjson").reply(200, "");
 
-    const result = await checkAvailability(() => null, { states: ["AK"] });
+    const result = await getLocations(checkAvailability({ states: ["AK"] }));
     expect(result).toHaveProperty("0.availability.available", Available.no);
     expect(result).toContainItemsMatchingSchema(locationSchema);
   });
@@ -140,7 +141,7 @@ describe("Walgreens SMART Scheduling Links API", () => {
       .get("/fhir/Slot-abc.ndjson")
       .reply(200, toNdJson(fixtures.TestSlots));
 
-    const result = await checkAvailability(() => null, { states: ["VA"] });
+    const result = await getLocations(checkAvailability({ states: ["VA"] }));
     expect(result).toHaveLength(0);
   });
 });

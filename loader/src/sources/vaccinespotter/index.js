@@ -432,22 +432,18 @@ function formatStore(store) {
   return result;
 }
 
-async function checkAvailability(handler, { states = DEFAULT_STATES }) {
+async function* checkAvailability({ states = DEFAULT_STATES }) {
   logger.warn("DEPRECATED: vaccinespotter is no longer maintained.");
 
-  let results = [];
   for (const state of states) {
     const stores = await queryState(state);
     const formatted = stores.features
       .filter(hasUsefulData)
       .map(formatStore)
-      .filter((item) => !!item)
-      .forEach((item) => handler(item));
+      .filter((item) => !!item);
 
-    results = results.concat(formatted);
+    yield* formatted;
   }
-
-  return results;
 }
 
 module.exports = {
