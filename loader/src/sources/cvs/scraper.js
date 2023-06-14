@@ -368,9 +368,7 @@ async function* checkAvailability(_options) {
     if (rawResults) {
       const clinicResults = convertToStandardSchema(rawResults);
       Object.assign(standardResults, clinicResults);
-      for (const clinic of Object.values(clinicResults)) {
-        yield [clinic];
-      }
+      yield* Object.values(clinicResults);
     }
 
     await timers.setTimeout(randomInt(3, 7) * 1000);
@@ -383,7 +381,7 @@ async function* checkAvailability(_options) {
 
   for (const store of Object.values(finalResult)) {
     if (store.availability.available === Available.no) {
-      yield [store];
+      yield store;
     }
   }
 

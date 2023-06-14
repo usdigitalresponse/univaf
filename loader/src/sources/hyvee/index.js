@@ -261,9 +261,7 @@ async function getData(states) {
 
 async function* checkAvailability({ states = DEFAULT_STATES }) {
   const locations = await getData(states);
-  for (const location of locations) {
-    yield [location];
-  }
+  yield* locations;
 }
 
 module.exports = {

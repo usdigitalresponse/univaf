@@ -316,9 +316,7 @@ function formatUrl(url) {
 
 async function* checkAvailability({ states = DEFAULT_STATES }) {
   const stores = await getData(states);
-  for (const store of stores) {
-    yield [store];
-  }
+  yield* stores;
 }
 
 module.exports = {
