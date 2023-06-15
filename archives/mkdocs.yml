@@ -1,0 +1,47 @@
+site_name: UNIVAF
+site_url: https://archives.getmyvax.org/docs/
+repo_url: https://github.com/usdigitalresponse/univaf
+repo_name: usdigitalresponse/univaf
+edit_uri: edit/main/archives/docs/
+copyright: Copyright &copy; 2021–2023 U.S. Digital Response
+
+# We don't have the S3 bucket this lives in configured as a website, so turning
+# off directory URLs makes things work a bit better.
+use_directory_urls: false
+
+# For consistency use the same build directory name as other parts of UNIVAF.
+site_dir: dist
+
+# Needed for custom USDR color palette.
+extra_css:
+  - assets/stylesheets/extra.css
+
+theme:
+  name: material
+  custom_dir: overrides/
+  favicon: assets/images/usdr-favicon.png
+  logo: assets/images/usdr-mark-dark-bg.svg
+  features:
+    - content.action.edit
+    - content.code.copy
+    - navigation.footer
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
