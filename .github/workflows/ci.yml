@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - "docs/**"
       - "terraform/**"
+      - "tombstone/**"
       - "docker/postgis/**"
 
 name: Continuous Integration
