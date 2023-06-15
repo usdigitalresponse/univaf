@@ -1,0 +1,80 @@
+name: Deploy Archives Docs
+
+on:
+  pull_request:
+    paths:
+      - "archives/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "archives/**"
+
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # No venv here: caching is easier, the environment is ephemeral anyway.
+      - name: Install dependencies
+        run: |
+          cd archives
+          pip install -r requirements.txt
+
+      - name: Build Archive Docs
+        run: |
+          cd archives
+          mkdocs build
+
+          # Combine with index redirect page
+          mkdir site
+          mv dist site/docs
+          cp index.html site/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: archives-docs
+          path: archives/site/
+
+  deploy:
+    # FIXME: uncomment before merging and after cleaning up stuff below!
+    # if: github.ref == 'refs/heads/main'
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: archives-docs
+
+      - name: "TEST: List files"
+        run: ls -R
+
+      # FIXME: uncomment after verifying build layout above!
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.ARCHIVE_DOCS_AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.ARCHIVE_DOCS_AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-west-2
+
+      # - name: Copy files to S3
+      #   env:
+      #     ARCHIVE_BUCKET: univaf-data-snapshots
+      #   run: |
+      #     aws s3 cp index.html "s3://${ARCHIVE_BUCKET}/index.html"
+      #     aws s3 sync docs "s3://${ARCHIVE_BUCKET}/docs/"
