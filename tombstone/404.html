@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>UNIVAF Has Been Shut Down</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <link
+      href="/assets/usdr-favicon.png"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
+    <link href="/assets/usdr-apple-touch-icon.svg" rel="apple-touch-icon" />
+    <style type="text/css">
+      :root {
+        --a-color: #006bc9;
+        --a-hover-color: #070721;
+        --bg-color: #fff;
+        --fg-color: #333;
+        --fg-color-light: #666;
+      }
+
+      html,
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        line-height: 1.4;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg-color);
+        color: var(--fg-color);
+      }
+
+      main {
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        max-width: 44rem;
+      }
+
+      a {
+        color: var(--a-color);
+      }
+
+      a:hover {
+        color: var(--a-hover-color);
+      }
+
+      h1 {
+        line-height: 1.2;
+      }
+
+      footer {
+        color: var(--fg-color-light);
+        margin-top: 3em;
+      }
+
+      .danger {
+        /* --border-color: #f1aeb5;
+          --background-color: #f8d7da; */
+
+        /* --border-color: #ff1744;
+          --background-color: #ff17441a; */
+
+        --border-color: #ff5252;
+        --background-color: #ff52521a;
+      }
+
+      .notice-box {
+        --border-width: 1px;
+        border: var(--border-width) solid var(--border-color);
+        border-radius: 6px;
+        position: relative;
+        margin: 1.5em 0;
+        padding: 0.5em 1em;
+        overflow: hidden;
+      }
+
+      .danger header {
+        background: var(--background-color);
+        /* border-bottom: var(--border-width) solid var(--border-color); */
+        margin: -0.5em -1em 0 -1em;
+        padding: 0.5em 1em;
+        font-weight: bold;
+      }
+
+      .notice-box header::before {
+        content: "⚠️";
+        margin-right: 0.5em;
+      }
+
+      .danger.notice-box header::before {
+        content: "⛔️";
+      }
+
+      .notice-box p:last-child {
+        margin-bottom: 0.5em;
+      }
+
+      #logo {
+        display: block;
+        height: 2em;
+      }
+
+      #logo picture,
+      #logo img {
+        display: block;
+        height: 100%;
+      }
+
+      @media (min-width: 46rem) {
+        main {
+          padding: 3rem 2rem;
+        }
+
+        h1 {
+          font-size: 2.5em;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --a-color: #6c91d5;
+          --a-hover-color: #006bc9;
+          --bg-color: #222;
+          --fg-color: #ccc;
+          --fg-color-light: #999;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header id="site-header">
+        <a href="https://usdigitalresponse.org/" id="logo">
+          <picture>
+            <source
+              srcset="/assets/usdr-logo-dark-bg.svg"
+              media="(prefers-color-scheme: dark)"
+            />
+            <img
+              src="/assets/usdr-logo-light-bg-color.svg"
+              alt="U.S. Digital Response Logo"
+            />
+          </picture>
+        </a>
+        <h1>COVID-19 Unified Vaccine Appointment Finder API (UNIVAF)</h1>
+      </header>
+
+      <aside class="danger notice-box">
+        <header>This API is no longer maintained as of June 15, 2023.</header>
+        <p>
+          The federal COVID-19 emergency has ended, and U.S. Digital Response is
+          no longer providing active support or updates for the API and the code
+          behind it.
+        </p>
+        <p>
+          This system is open-source software, and you can deploy your own
+          version of it based on the code at
+          <a href="https://github.com/usdigitalresponse/univaf"
+            >github.com/usdigitalresponse/univaf</a
+          >. If you need additional information or support, please contact
+          univaf@usdigitalresponse.org.
+        </p>
+      </aside>
+
+      <p>
+        From March 2021 – June 2023,
+        <a href="https://usdigitalresponse.org/"
+          >U.S. Digital Response (USDR)</a
+        >
+        built and maintained a public API providing combined, standardized, live
+        information about COVID-19 vaccine appointment availability at locations
+        across the United States at
+        <code>https://getmyvax.org/</code>. Data was sourced from a variety of
+        official data sources (e.g. CVS Pharmacy) and unofficial data sources
+        (e.g. web scraping and volunteer phone banking). It was built in
+        partnership with the State of New Jersey Office of Innovation, the
+        Municipality of Anchorage Innovation Team, VaccineSpotter.org, and
+        Vaccinate the States and acted as a source of information for a variety
+        of government and community vaccine finder websites.
+      </p>
+
+      <!-- FIXME: add showy numbers here after service is shut down and we can calculate them.
+      <p>
+        Over the course of its existence, UNIVAF published data on
+        <strong>XXX,XXX,XXX appointments</strong> across
+        <strong>YY,YYY</strong> locations in
+        <strong>54 U.S. states and territories</strong>. Its data also aided in
+        designing
+        <a href="https://github.com/smart-on-fhir/smart-scheduling-links/"
+          >a federal standard</a
+        >
+        for publishing information about vaccination appointments.
+      </p>
+      -->
+
+      <p>
+        The live API has been shut down, but you can find the archived source
+        code and documentation at
+        <a href="https://github.com/usdigitalresponse/univaf"
+          >github.com/usdigitalresponse/univaf</a
+        >. Historical data and logs are also available for analysis at
+        <a href="https://archives.getmyvax.org/">archives.getmyvax.org</a>. For
+        current information about vaccine locations, please check
+        <a href="https://vaccines.gov/">vaccines.gov</a>.
+      </p>
+
+      <p>
+        You can also fork and deploy your own copy of the system. Please keep in
+        mind that some sources may have moved, changed formats, or stopped
+        working by the time you do so — this system requires continual
+        monitoring maintenance in order to keep up to date with changes to all
+        the systems it interacts with. Some systems also require authorization
+        via API keys or other tokens, which you will need to obtain separately.
+      </p>
+
+      <h2 id="additional-resources" tabindex="-1">Additional resources</h2>
+
+      <ul>
+        <li>
+          <a href="https://github.com/usdigitalresponse/univaf"
+            >Archived UNIVAF Source code</a
+          >
+        </li>
+        <li>
+          <a href="https://archives.getmyvax.org/"
+            >UNIVAF Historical Data Archives</a
+          >
+        </li>
+        <li>
+          <a href="https://usdigitalresponse.org/">U.S. Digital Response</a>
+        </li>
+        <li>
+          <a href="https://github.com/smart-on-fhir/smart-scheduling-links/"
+            >SMART Scheduling Links Specification</a
+          >
+          (a standardized format for providers to publish any kind of vaccine
+          appointment information).
+        </li>
+      </ul>
+
+      <footer id="site-footer">
+        <p>
+          © 2023 U.S. Digital Response
+          <br />
+          ✏️
+          <a
+            href="https://github.com/usdigitalresponse/univaf/blob/main/tombstone/"
+            >Suggest a change on GitHub</a
+          >
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
