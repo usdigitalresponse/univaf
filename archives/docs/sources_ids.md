@@ -39,9 +39,9 @@ UNIVAF availability records are organized by source, indicating where the data c
 - `vaccinespotter`: Data from an earlier iteration of Vaccine Spotter.
 
 
-### Albertsons (`univaf-albertsons`)
+### Albertsons (`univaf-albertsons`, `univaf-albertsons-scraper`)
 
-[Albertsons](https://www.albertsonscompanies.com/) is the parent company for a number of major grocery store and pharmacy chains. This source provides data for the following stores:
+[Albertsons](https://www.albertsonscompanies.com/) is the parent company for a number of major grocery store and pharmacy chains. Albertsons-related sources provide data for the following stores:
 
 - ACME
 - Albertsons/Albertsons Market
@@ -60,9 +60,14 @@ UNIVAF availability records are organized by source, indicating where the data c
 - United Supermarkets
 - Vons
 
-Albertsons does not provide day-by-day counts of appointment availability or specific appointment slot times; only that slots are generally available and for what vaccine product.
+In 2021 and 2022, Albertsons used a third-party booking system for COVID vaccinations called MHealth Coach that did not provide day-by-day counts of appointment availability or specific appointment slot times; only that slots are generally available and for what vaccine product. Data from this system is labeled with the `univaf-albertsons` source.
 
-<!-- TODO: Information about old MHealth Coach system vs. new in-house booking system scraper -->
+In 2023, Albertsons switched COVID vaccinations to their in-house booking system. Data from this system is labeled with the `univaf-albertsons-scraper` source.
+
+
+### H-E-B (`univaf-heb`)
+
+[H-E-B](https://www.heb.com) is a grocery and pharmacy chain in Texas. The `univaf-heb` source scrapes their booking website’s API for data about vaccine products and availability. It does not gather available appointment counts by day (`capacity`) or individual appointment slots (`slots`).
 
 
 ### HyVee (`univaf-hyvee`)
@@ -87,14 +92,76 @@ PrepMod is a clinic management tool in use by many public health departments and
 
 Stock information from the CDC is also extremely rough — many locations report this information by hand at the end of a day, or every few days, so it is not always completely up to date. The CDC also includes two separate indicators of vaccine stock that often conflict (whether vaccines are in stock, and roughly how long that stock is expected to last). We currently take an optimistic approach here, and report availability if either indicator shows some stock.
 
-<!-- TODO: CVS -->
-<!-- TODO: HEB -->
-<!-- TODO: Kroger -->
-<!-- TODO: NJVSS -->
-<!-- TODO: Rite Aid -->
-<!-- TODO: Vaccine Spotter -->
-<!-- TODO: WA DoH -->
-<!-- TODO: Walgreens -->
+
+### CVS (`univaf-cvs-scraper`, `univaf-cvs-api`, `univaf-cvs-smart`)
+
+[CVS](https://www.cvs.com) is a national retail pharmacy chain that performed a large number of COVID vaccinations. There are 3 sources that loaded data from CVS's booking systems:
+
+- `univaf-cvs-scraper` was built before official agreements with CVS, but was never used in production. It scrapes CVS's booking website.
+- `univaf-cvs-api` uses CVS's private API. You must have an API key to use it. It was used primarily in 2021 before CVS shipped their public, standards-based API (see `univaf-cvs-smart` below).
+- `univaf-cvs-smart` loads data from CVS's standardized SMART Scheduling Links API, which is publicly available.
+
+
+### Kroger
+
+[Kroger](https://www.thekrogerco.com) is the parent company for a number of major grocery store and pharmacy chains. Kroger-related sources provide data for the following stores:
+
+- Baker's Pharmacy
+- Copps Pharmacy
+- Dillons Pharmacy
+- Food 4 Less
+- Foods Co
+- Fred Meyer
+- Fry's
+- Gerbes
+- Harris Teeter
+- JayC
+- King Soopers
+- Kroger
+- Mariano's
+- Metro Market
+- Pay-less
+- Pick 'n Save
+- QFC Pharmacy
+- Ralphs
+- Smith's
+- City Market Pharmacy
+- The Little Clinic
+
+Kroger provides day-by-day `capacity` data, but not `slots` level data. In mid-2022, they shut off their public API with no notice to partners, and neither UNIVAF nor vaccines.gov has appointment data after that date (there is *stock* data from the CDC for these stores, though).
+
+
+### Rite Aid (`univaf-rite-aid-api`, `univaf-rite-aid-scraper`, `univaf-rite-aid-smart`)
+
+[CVS](https://www.riteaid.com) is a national retail pharmacy chain that performed a large number of COVID vaccinations. Rite Aid also owns [Bartell Drugs](https://www.bartelldrugs.com) and some Rite Aid sources also provide information for those stores.
+
+There are 3 sources that loaded data from Rite Aid's systems:
+
+- `univaf-rite-aid-api` uses Rite Aid's private API and requires an API key. It was built in early 2021 before Rite Aid shipped their public, standards-based API (see `univaf-rite-aid-smart` below) and has been in use for all of UNIVAF's operational lifetime. It provides day-by-day counts (`capacity`), but not individual appointment times (`slots`).
+- `univaf-rite-aid-scraper` was built to work around issues with Rite Aid's private API during a period of low reliability. It provides both day-by-day counts (`capacity`) and individual appointment times (`slots`).
+- `univaf-rite-aid-smart` loads data from Rite Aid's standardized SMART Scheduling Links API, which is publicly available. It provides day-by-day counts (`capacity`), but not individual appointment times (`slots`). It also does not provide information about which vaccine types (`products`) are available.
+
+
+### Walgreens (`univaf-walgreens-smart`)
+
+[Walgreens](https://www.walgreens.com) is a national retail pharmacy chain that performed a large number of COVID vaccinations. It publishes data using the standardized SMART Scheduling Links API, and indicates whether appointments were available on a day-by-day basis (`capacity`) but not a count of appointments on those days. It does not provide individual appointment details (`slots`).
+
+
+### Washington State Department of Health (`univaf-wa-doh`)
+
+A public-private partnership with the Washington State Department of Health developed a similar system to UNIVAF that focuses on just Washington. UNIVAF sources only data about Costco stores from this system, which covered all Costco stores in the United States and its territories in 2021 and 2022 (other providers in this system are limited to Washington State — the broader Costco support was the result of an agreement between Costco, the state of Washington, the state of New Jersey, and USDR). In 2023, this source ceased publishing Costco data outside Washington state.
+
+
+### NJVSS (`univaf-njvss`)
+
+The [New Jersey Vaccine Scheduling System (NJVSS)](https://covidvaccine.nj.gov/) is the state of New Jersey's official booking system, and was used for mass vaccination centers, public health clinics, and an assortment other retail locations (it does not cover all vaccination locations in the state).
+
+
+### Vaccine Spotter (`vaccinespotter`)
+
+[Vaccine Spotter](https://shutdown.vaccinespotter.org/) was a community-based project to provide vaccine availability started in early 2021. It overlapped significantly with UNIVAF's scope, and the two projects worked together for while (UNIVAF focused on sources Vaccine Spotter didn’t have and vice versa).
+
+Vaccine Spotter shut down in late 2021, at which time UNIVAF incorporated its data sources directly. They show up as some of the other `univaf-*` sources.
 
 
 ## External IDs
