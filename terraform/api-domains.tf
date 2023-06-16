@@ -40,7 +40,7 @@ resource "aws_route53_record" "api_apex_domain_record" {
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = var.domain_name
   type    = "CNAME"
-  records = [var.domain_name_remote_api]
+  records = var.domain_name_remote_api_ips
   ttl     = 300
 }
 

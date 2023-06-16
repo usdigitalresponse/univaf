@@ -23,9 +23,10 @@ variable "domain_name" {
   default     = ""
 }
 
-variable "domain_name_remote_api" {
-  description = "The domain name for a service outside AWS to send API traffic to"
-  default     = ""
+variable "domain_name_remote_api_ips" {
+  description = "The IP addresses for a service outside AWS to send API traffic to."
+  type        = list(string)
+  default     = []
 }
 
 variable "data_snapshot_s3_bucket" {
