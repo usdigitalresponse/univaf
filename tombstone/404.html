@@ -59,12 +59,6 @@
       }
 
       .danger {
-        /* --border-color: #f1aeb5;
-          --background-color: #f8d7da; */
-
-        /* --border-color: #ff1744;
-          --background-color: #ff17441a; */
-
         --border-color: #ff5252;
         --background-color: #ff52521a;
       }
@@ -81,7 +75,6 @@
 
       .danger header {
         background: var(--background-color);
-        /* border-bottom: var(--border-width) solid var(--border-color); */
         margin: -0.5em -1em 0 -1em;
         padding: 0.5em 1em;
         font-weight: bold;
@@ -111,6 +104,47 @@
         height: 100%;
       }
 
+      .boasts {
+        background: #ddeffc;
+        border-radius: 6px;
+        margin: 1.5em 0;
+        padding: 1.2em 1.2em;
+        text-align: center;
+      }
+
+      .boasts .statistics {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .boasts .statistic {
+        flex: 1 1 14em;
+        margin: 1em 1.2em;
+        padding: 0;
+      }
+
+      .boasts .statistic .value {
+        display: block;
+        font-size: 3em;
+        line-height: 1;
+      }
+
+      .boasts .statistic .unit {
+        font-size: 0.5em;
+      }
+
+      .boasts > p:first-child {
+        margin-top: 0;
+      }
+
+      .boasts > p:last-child {
+        margin-bottom: 0;
+      }
+
       @media (min-width: 46rem) {
         main {
           padding: 3rem 2rem;
@@ -128,6 +162,10 @@
           --bg-color: #222;
           --fg-color: #ccc;
           --fg-color-light: #999;
+        }
+
+        .boasts {
+          background: #ddeffc1a;
         }
       }
     </style>
@@ -184,19 +222,38 @@
         of government and community vaccine finder websites.
       </p>
 
-      <!-- FIXME: add showy numbers here after service is shut down and we can calculate them.
-      <p>
-        Over the course of its existence, UNIVAF published data on
-        <strong>XXX,XXX,XXX appointments</strong> across
-        <strong>YY,YYY</strong> locations in
-        <strong>54 U.S. states and territories</strong>. Its data also aided in
-        designing
-        <a href="https://github.com/smart-on-fhir/smart-scheduling-links/"
-          >a federal standard</a
-        >
-        for publishing information about vaccination appointments.
-      </p>
-      -->
+      <aside class="boasts">
+        <ul class="statistics">
+          <li class="statistic">
+            <strong class="value">
+              <abbr title="130,216,353">
+                <span class="number">130</span
+                ><span class="unit"> million</span>
+              </abbr>
+            </strong>
+            <span class="description">Appointments Published</span>
+          </li>
+          <li class="statistic">
+            <strong class="value">44,059</strong>
+            <span class="description">Pharmacies and Clinics</span>
+          </div>
+          <li class="statistic">
+            <strong class="value">53</strong>
+            <span class="description">States and Territories Covered</span>
+          </li>
+          <li class="statistic">
+            <strong class="value">808<span class="unit"> days</span></strong>
+            <span class="description">In Operation</span>
+          </li>
+        </ul>
+
+        <p>
+          …and supported development of
+          <a href="https://github.com/smart-on-fhir/smart-scheduling-links/"
+            >a federal data standard</a
+          >.
+        </p>
+      </aside>
 
       <p>
         The live API has been shut down, but you can find the archived source
@@ -238,8 +295,8 @@
           <a href="https://github.com/smart-on-fhir/smart-scheduling-links/"
             >SMART Scheduling Links Specification</a
           >
-          (a standardized format for providers to publish any kind of vaccine
-          appointment information).
+          (a federal standard for publishing appointment booking information
+          about all types of vaccines).
         </li>
       </ul>
 
