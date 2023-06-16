@@ -23,6 +23,11 @@ variable "domain_name" {
   default     = ""
 }
 
+variable "domain_name_remote_api" {
+  description = "The domain name for a service outside AWS to send API traffic to"
+  default     = ""
+}
+
 variable "data_snapshot_s3_bucket" {
   description = "The S3 bucket to store database snapshot data into"
   default     = "univaf-data-snapshots"
