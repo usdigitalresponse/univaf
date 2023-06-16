@@ -1,9 +1,0 @@
-# outputs.tf
-
-output "alb_hostname" {
-  value = aws_alb.main.dns_name
-}
-
-output "cloudfront_hostname_ecs" {
-  value = aws_cloudfront_distribution.univaf_api_ecs[0].domain_name
-}

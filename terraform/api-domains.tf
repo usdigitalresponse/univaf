@@ -10,14 +10,6 @@
 # created manually in the AWS console).
 
 locals {
-  # The domain of the API service's load balancer (not for public use).
-  api_internal_subdomain = "api.internal"
-  api_internal_domain = (
-    var.domain_name != ""
-    ? "${local.api_internal_subdomain}.${var.domain_name}"
-    : ""
-  )
-
   # Domain at which to serve archived, historical data (stored in S3).
   data_snapshots_subdomain = "archives"
   data_snapshots_domain = (
@@ -54,104 +46,8 @@ resource "aws_route53_record" "api_www_domain_record" {
   ttl     = 300
 }
 
-# The `api.internal` subdomain. Used for the API service's load balancer so it
-# can be secured with HTTPS.
-resource "aws_route53_record" "api_load_balancer_domain_record" {
-  count = var.domain_name != "" ? 1 : 0
-
-  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = local.api_internal_subdomain
-  type    = "A"
-
-  alias {
-    name                   = aws_alb.main.dns_name
-    zone_id                = aws_alb.main.zone_id
-    evaluate_target_health = false
-  }
-}
-
-# The `ecs.` subdomain.
-# This specifically points to the deployment on ECS (as opposed to a possible
-# external host).
-resource "aws_route53_record" "api_ecs_domain_record" {
-  count = var.domain_name != "" ? 1 : 0
-
-  zone_id = data.aws_route53_zone.domain_zone[0].zone_id
-  name    = "ecs"
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.univaf_api_ecs[0].domain_name
-    zone_id                = aws_cloudfront_distribution.univaf_api_ecs[0].hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
 
 # CloudFront ------------------------------------------------------------------
-
-# Use CloudFront as a caching layer in front of the API server that's running
-# in ECS. Enabled only if var.domain and var.ssl_certificate_arn are provided.
-resource "aws_cloudfront_distribution" "univaf_api_ecs" {
-  count = (
-    var.domain_name != ""
-    && var.ssl_certificate_arn != "" ? 1 : 0
-  )
-  enabled     = true
-  price_class = "PriceClass_100" # North America
-  aliases = [
-    var.domain_name,
-    "www.${var.domain_name}",
-    "ecs.${var.domain_name}"
-  ]
-  http_version = "http2and3"
-
-  origin {
-    origin_id   = "ecs.${var.domain_name}"
-    domain_name = local.api_internal_domain
-
-    custom_header {
-      name  = var.api_cloudfront_secret_header_name
-      value = var.api_cloudfront_secret
-    }
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_ssl_protocols   = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
-      origin_protocol_policy = "https-only"
-    }
-  }
-
-  default_cache_behavior {
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "ecs.${var.domain_name}"
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    max_ttl                = 3600
-
-    forwarded_values {
-      headers      = ["Host", "Origin", "Authorization", "x-api-key"]
-      query_string = true
-
-      cookies {
-        forward = "none"
-      }
-    }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn = var.ssl_certificate_arn
-    ssl_support_method  = "sni-only"
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-}
 
 # Provide a protective caching layer and a nice domain name for the S3 bucket
 # with historical data. (Allowing direct public access can get expensive.)
