@@ -1,6 +1,7 @@
 on:
   pull_request:
     paths-ignore:
+      - "archives/**"
       - "docs/**"
       - "terraform/**"
       - "tombstone/**"
