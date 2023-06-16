@@ -35,13 +35,18 @@ data "aws_route53_zone" "domain_zone" {
 }
 
 # DNS record for the domain specified in the `domain_name` variable.
-resource "aws_route53_record" "api_apex_domain_record" {
-  count   = var.domain_name != "" ? 1 : 0
+resource "aws_route53_record" "api_domain_record" {
+  count = var.domain_name != "" ? 1 : 0
+
   zone_id = data.aws_route53_zone.domain_zone[0].zone_id
   name    = var.domain_name
-  type    = "CNAME"
-  records = [var.domain_name_remote_api]
-  ttl     = 300
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.univaf_api_ecs[0].domain_name
+    zone_id                = aws_cloudfront_distribution.univaf_api_ecs[0].hosted_zone_id
+    evaluate_target_health = false
+  }
 }
 
 # The `www.` subdomain. It is an alias for the primary domain name.
