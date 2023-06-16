@@ -65,27 +65,6 @@ In 2021 and 2022, Albertsons used a third-party booking system for COVID vaccina
 In 2023, Albertsons switched COVID vaccinations to their in-house booking system. Data from this system is labeled with the `univaf-albertsons-scraper` source.
 
 
-### H-E-B (`univaf-heb`)
-
-[H-E-B](https://www.heb.com) is a grocery and pharmacy chain in Texas. The `univaf-heb` source scrapes their booking website’s API for data about vaccine products and availability. It does not gather available appointment counts by day (`capacity`) or individual appointment slots (`slots`).
-
-
-### HyVee (`univaf-hyvee`)
-
-[HyVee](https://www.hy-vee.com/corporate) is a large employee-co-op grocery chain in the midwest. The `univaf-hyvee` source scrapes their booking website’s API for data about vaccine products and availability. It does not gather available appointment counts by day (`capacity`) or individual appointment slots (`slots`).
-
-
-### PrepMod (`univaf-prepmod`)
-
-PrepMod is a clinic management tool in use by many public health departments and built by [Maryland Partnership for Prevention](https://www.immunizemaryland.org). It is designed around one-off *events*, so there are some caveats with how we map clinic events to physical locations in this API. In particular:
-
-- A location’s top-level `booking_url` property is generally the best link for somebody who wants to book a vaccination. It links to a search results page with criteria that match the location. However, there are some caveats here:
-    - Most locations have multiple listings — most PrepMod “clincs” are single-day events, so a given location may have one listing for each day, or sometimes one for each day & vaccine type combination (it depends on how the public health department sets things up).
-    - It may also list *other* locations that aren’t exact matches. PrepMod searches are based on the centroid of a zip code, and so may include additional similarly named clinics nearby. (This is most often a problem for mobile clinics, where multiple nearby locations share the same name, e.g. “Pop-up Clinic - Anchorage Health Department.”)
-- A location’s `info_url` property links to a listing of all the clinics managed by a given PrepMod server, and may include *many* different locations.
-- Each slot in an availability record's `slots` array has a relatively unique `booking_url` that lets you book that exact slot. However, the list of vaccines available may include more than are actually offered for that slot. PrepMod's API unfortunately doesn't provide fine-grained enough info to explain which vaccines are available for which slot.
-
-
 ### Centers for Disease Control (`cdc`, `univaf-cdc`)
 
 **The Centers for Disease Control (CDC) publishes open data about vaccine stock, not appointments.** We include it because it provides valuable other details, like which vaccine products are available or what the operating hours are at a given location, that other sources do not. In general, you should only use it in combination with other sources. For more about this, see “appointments vs. stock” in the tips and notes section.
@@ -100,6 +79,16 @@ Stock information from the CDC is also extremely rough — many locations report
 - `univaf-cvs-scraper` was built before official agreements with CVS, but was never used in production. It scrapes CVS's booking website.
 - `univaf-cvs-api` uses CVS's private API. You must have an API key to use it. It was used primarily in 2021 before CVS shipped their public, standards-based API (see `univaf-cvs-smart` below).
 - `univaf-cvs-smart` loads data from CVS's standardized SMART Scheduling Links API, which is publicly available.
+
+
+### H-E-B (`univaf-heb`)
+
+[H-E-B](https://www.heb.com) is a grocery and pharmacy chain in Texas. The `univaf-heb` source scrapes their booking website’s API for data about vaccine products and availability. It does not gather available appointment counts by day (`capacity`) or individual appointment slots (`slots`).
+
+
+### HyVee (`univaf-hyvee`)
+
+[HyVee](https://www.hy-vee.com/corporate) is a large employee-co-op grocery chain in the midwest. The `univaf-hyvee` source scrapes their booking website’s API for data about vaccine products and availability. It does not gather available appointment counts by day (`capacity`) or individual appointment slots (`slots`).
 
 
 ### Kroger
@@ -131,6 +120,22 @@ Stock information from the CDC is also extremely rough — many locations report
 Kroger provides day-by-day `capacity` data, but not `slots` level data. In mid-2022, they shut off their public API with no notice to partners, and neither UNIVAF nor vaccines.gov has appointment data after that date (there is *stock* data from the CDC for these stores, though).
 
 
+### NJVSS (`univaf-njvss`)
+
+The [New Jersey Vaccine Scheduling System (NJVSS)](https://covidvaccine.nj.gov/) is the state of New Jersey's official booking system, and was used for mass vaccination centers, public health clinics, and an assortment other retail locations (it does not cover all vaccination locations in the state).
+
+
+### PrepMod (`univaf-prepmod`)
+
+PrepMod is a clinic management tool in use by many public health departments and built by [Maryland Partnership for Prevention](https://www.immunizemaryland.org). It is designed around one-off *events*, so there are some caveats with how we map clinic events to physical locations in this API. In particular:
+
+- A location’s top-level `booking_url` property is generally the best link for somebody who wants to book a vaccination. It links to a search results page with criteria that match the location. However, there are some caveats here:
+    - Most locations have multiple listings — most PrepMod “clincs” are single-day events, so a given location may have one listing for each day, or sometimes one for each day & vaccine type combination (it depends on how the public health department sets things up).
+    - It may also list *other* locations that aren’t exact matches. PrepMod searches are based on the centroid of a zip code, and so may include additional similarly named clinics nearby. (This is most often a problem for mobile clinics, where multiple nearby locations share the same name, e.g. “Pop-up Clinic - Anchorage Health Department.”)
+- A location’s `info_url` property links to a listing of all the clinics managed by a given PrepMod server, and may include *many* different locations.
+- Each slot in an availability record's `slots` array has a relatively unique `booking_url` that lets you book that exact slot. However, the list of vaccines available may include more than are actually offered for that slot. PrepMod's API unfortunately doesn't provide fine-grained enough info to explain which vaccines are available for which slot.
+
+
 ### Rite Aid (`univaf-rite-aid-api`, `univaf-rite-aid-scraper`, `univaf-rite-aid-smart`)
 
 [CVS](https://www.riteaid.com) is a national retail pharmacy chain that performed a large number of COVID vaccinations. Rite Aid also owns [Bartell Drugs](https://www.bartelldrugs.com) and some Rite Aid sources also provide information for those stores.
@@ -150,11 +155,6 @@ There are 3 sources that loaded data from Rite Aid's systems:
 ### Washington State Department of Health (`univaf-wa-doh`)
 
 A public-private partnership with the Washington State Department of Health developed a similar system to UNIVAF that focuses on just Washington. UNIVAF sources only data about Costco stores from this system, which covered all Costco stores in the United States and its territories in 2021 and 2022 (other providers in this system are limited to Washington State — the broader Costco support was the result of an agreement between Costco, the state of Washington, the state of New Jersey, and USDR). In 2023, this source ceased publishing Costco data outside Washington state.
-
-
-### NJVSS (`univaf-njvss`)
-
-The [New Jersey Vaccine Scheduling System (NJVSS)](https://covidvaccine.nj.gov/) is the state of New Jersey's official booking system, and was used for mass vaccination centers, public health clinics, and an assortment other retail locations (it does not cover all vaccination locations in the state).
 
 
 ### Vaccine Spotter (`vaccinespotter`)
