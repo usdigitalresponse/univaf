@@ -3,6 +3,8 @@ on:
     paths-ignore:
       - "docs/**"
       - "terraform/**"
+      - "tombstone/**"
+      - "docker/postgis/**"
   push:
     branches:
       - main
