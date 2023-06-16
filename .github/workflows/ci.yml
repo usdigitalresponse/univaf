@@ -1,6 +1,7 @@
 on:
   pull_request:
     paths-ignore:
+      - "archives/**"
       - "docs/**"
       - "terraform/**"
       - "tombstone/**"
@@ -9,6 +10,7 @@ on:
     branches:
       - main
     paths-ignore:
+      - "archives/**"
       - "docs/**"
       - "terraform/**"
       - "tombstone/**"
