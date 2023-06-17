@@ -11,7 +11,7 @@ The historical data in this archive includes:
 
 Keep in mind that, since these are historical archives, the format of data has changed over time and data files from different dates may contain different fields. Historical service outages and incidents also impact the data on some days.
 
-Also note that UNIVAF began operation in March 2023, but did not start archiving historical data until May.
+Also note that UNIVAF began operation in March 2021, but did not start archiving historical data until May.
 
 For an example of analyzing this data, see <https://github.com/usdigitalresponse/appointment-data-insights>.
 
