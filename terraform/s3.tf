@@ -5,7 +5,7 @@
 # from the bucket.
 
 resource "aws_s3_bucket" "data_snapshots" {
-  bucket = "univaf-data-snapshots"
+  bucket = var.data_snapshot_s3_bucket
 }
 
 resource "aws_s3_bucket_acl" "data_snapshots_acl" {
