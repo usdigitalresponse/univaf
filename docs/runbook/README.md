@@ -42,11 +42,12 @@ We also rely on a handful of other services for critical operations tasks:
 - **[Terraform Cloud][terraform-cloud]** manages checking and applying our Terraform configurations.
 - **GitHub actions** works in concert with Terraform Cloud to automatically deploy changes that land on the `main` branch.
     - The `ci` workflow publishes docker images to Amazon ECR.
-    - The `ui-deploy` workflow builds the UI and publishes it to GitHub pages (see below).
+    - The `deploy-archives-docs` workflow builds and publishes the documentation for UNIVAF's historical archives. After building, it publishes by storing the results in S3.
+    - The `deploy-tombstone` workflow publishes the [tombstone page](../../tombstone/) to GitHub pages.
 - **[Sentry][sentry]** tracks exceptions in our code. It also tracks warnings about unexpected content in the data we pull in from external sources (e.g. a new, unknown vaccine code), which is critical to keeping the service up-to-date and accurate.
 - **[DataDog][]** for general stats on our services. The most imporant of these is usually metrics on HTTP requests. Sometimes the server may be rejecting bad requests with a 4xx status code, and the dashboards in DataDog are the best place to see that happening since they might not trigger exceptions or other kinds of alerts.
 - **[1Password][1pw]** stores Important team and partner credentials in a shared *vault*.
-- **GitHub pages** hosts the demo UI at https://usdigitalresponse.github.io/univaf/. However, we don’t generally point everyday residents to this URL and are not aware of anybody using it in a production capacity — it’s intended a demonstration and testing tool for API consumers.
+- **GitHub pages** hosts the tombstone page that replaces the API server (site the production service has been shut down) https://getmyvax.org/.
 - **[Slack][slack-usdr]** for team communication. We have two channels in USDR’s Slack:
     - One for team discussion
     - One for errors and alerts from the above services. When there’s an incident, the alerts channel is usually how we find out about it. We typically start a thread based on the alert that was posted to the channel, so if you are looking for live discussion of an ongoing problem, check there first.
@@ -76,7 +77,7 @@ If you need to trigger Terraform manually, log into [Terraform Cloud][terraform-
 
 ![Manually deploying in Terraform Cloud](../_assets/terraform-manual-deploy.png)
 
-**The Demo UI is a static site built with Webpack.** We use GitHub Actions to automatically build and publish the site. The [`ui-deploy` workflow][workflow-ui-deploy] automatically builds and deploys the site every time a commit lands on the `main` branch. See the main README for details on [building the static site manually](../../README.md#building-and-viewing-the-ui).
+**The archives documentation is a static site built with [MkDocs][].** We use GitHub Actions to automatically build and publish the site. The [`deploy-archives-docs` workflow][deploy-archives-docs] automatically builds and deploys the site every time a commit lands on the `main` branch. See the archives README for details on [building the static site manually](../../archives/README.md).
 
 
 ### Terraforming Locally
@@ -124,4 +125,5 @@ And then run any commands you'd like from inside the SSH session.
 [terraform-aws-provider]: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 [workflow-ci]: ../../.github/workflows/ci.yml
 [workflow-ci-runs]: https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml
-[workflow-ui-deploy]: ../../.github/workflows/ui-deploy.yml
+[deploy-archives-docs]: ../../.github/workflows/deploy-archives-docs.yml
+[mkdocs]: https://www.mkdocs.org/

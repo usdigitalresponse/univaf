@@ -92,13 +92,6 @@ jobs:
         run: |
           npm run test --workspace loader
 
-      # TODO: We should write some tests :(
-      - name: Build UI
-        if: ${{ always() }}
-        run: |
-          cd ui
-          NODE_ENV=production npm run build
-
   lint:
     name: Run linters
     runs-on: ubuntu-latest
