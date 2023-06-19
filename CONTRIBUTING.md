@@ -38,7 +38,7 @@ Did not find it? :( So we can act quickly on it, please include the following:
 
 - Your **operating system**.
 - If the problem is with the API, your **client (e.g. cURL, Python Requests)**.
-- If the problem was with the demo UI or docs pages, your **browser (e.g. Firefox, Chrome, Edge, Internet Explorer)**.
+- If the problem was with the tombstone page or the archives docs pages, your **browser (e.g. Firefox, Chrome, Edge, Internet Explorer)**.
 - Any code errors that you have access to.
 
 

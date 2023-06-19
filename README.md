@@ -21,23 +21,25 @@ UNIVAF is built in Node.js and TypeScript.
 
 ## Project Structure
 
-This project is broken up into three major components, each in a separate directory:
+This project is broken up into two major components, each in a separate directory:
 
 1. **`server`** is a small API server that wraps a Postgres database. Various scrapers and API clients can `POST` appointment data to it, and consumers can `GET` data from it. It’s currently accessible in production at https://getmyvax.org/.
 
 2. **`loader`** is a set of scrapers and API clients that discover information about vaccine provider locations and appointment availability, then send it to the server. We currently run them on a schedule every few minutes (see [`terraform/loaders.tf`](./terraform/loaders.tf)), but they can also be run in a loop, as a server, or whatever works best.
 
-3. **`ui`** is a demo frontend to display the data. It’s not especially fancy, and is meant more as a display of what can be done or a starter for states/community groups to build their own sites.
-
 At the top level of this repo, you’ll also find some other useful directories:
 
 - **`common`** is shared library code that is used by both the server and loader components.
 
-- **`docs`** contains additional project documentation, infrastructure guidance, and incident reports.
+- **`archives`** contains documentation for the the archived historical data the server saves as an open dataset, and which can be used for deeper analysis of vaccination reach, equity, etc. It's ultimately served from https://archives.getmyvax.org/.
+
+- **`docs`** contains internal project documentation for contirbutors, infrastructure guidance, and incident reports.
 
 - **`scripts`** contains scripts for managing releases, deployments, and other tasks.
 
 - **`terraform`** contains Terraform configuration files used to deploy this project to AWS. We try to keep as much of our infrastructure configuration as possible stored here as code.
+
+- **`tombstone`** contains a placeholder page that is deployed in place of the production API (since it's been shut down). If you are forking and re-deploying this project, you'll probably want to remove it.
 
 
 ## Developing Locally
@@ -134,35 +136,6 @@ Options:
   --rite-aid-states        Overrides the `--states` option for riteAidApi
                                                                         [string]
 ```
-
-
-### Building and Viewing the UI
-
-To install, run `npm install` in the ui directory:
-
-```bash
-$ npm install
-$ cd ./ui
-```
-
-The UI needs an API server to load data from. By default, it will use `http://localhost:3000`, but if you want to use a different server, set the `DATA_URL` environment variable.
-
-Then you can start the development server with `npm start`:
-
-```bash
-$ export DATA_URL='http://api.server.com'
-$ npm start
-```
-
-And open your browser to `http://localhost:8080` to see it in action.
-
-You can also build a production copy of the UI with `npm run build`:
-
-```bash
-$ NODE_ENV=production npm run build
-```
-
-That will create a JS file and an HTML file in the `ui/dist/` directory. The HTML file is an example, while the JS file is a standalone UI. (The idea here is to keep it portable; a site could embed the UI by simple adding a `<script>` tag to a page.)
 
 
 ## Deployment
