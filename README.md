@@ -1,9 +1,11 @@
 [![Code of Conduct](https://img.shields.io/badge/%E2%9D%A4-code%20of%20conduct-blue.svg?style=flat)](https://github.com/usdigitalresponse/univaf/blob/main/CODE_OF_CONDUCT.md) [![CI Tests](https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml/badge.svg)](https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml)
 
+⚠️ **This project is no longer maintained!** ⚠️ The code here is archived for historical and educational purposes, but is no longer receiving bug fixes or updates, and is no longer in production use by USDR or its partners. You are free to fork and re-use the code here, but please make sure abide by the [license](./LICENSE).
+
 
 # UNIVAF: Vaccine Appointment Availability API
 
-UNIVAF is a system for gathering vaccination appointment availability information from providers across North America and making it available in a standard format via a free-to-use, open API. It supports both government- and community-run vaccine finders, such as [the State of New Jersey’s vaccine finder][nj-finder] and [Vaccinate the States][VtS]. You can access the live API and documentation at https://getmyvax.org/.
+UNIVAF is a system for gathering vaccination appointment availability information from providers across North America and making it available in a standard format via a free-to-use, open API. It supports both government- and community-run vaccine finders, such as [the State of New Jersey’s vaccine finder][nj-finder] and [Vaccinate the States][VtS]. ~~You can access the live API and documentation at https://getmyvax.org/.~~ *The live service has been shut down, but you can view historical data and documentation at https://archives.getmyvax.org/.*
 
 While currently focused on COVID-19 vaccinations, we hope the code and infrastructure here might be easily repurposed in the future for other kinds of everyday vaccinations (e.g. flu vaccines) or for future health emergencies.
 
