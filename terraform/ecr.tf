@@ -28,6 +28,7 @@ locals {
 resource "aws_ecr_repository" "server_repository" {
   name                 = "univaf-server"
   image_tag_mutability = "IMMUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = false
@@ -42,6 +43,7 @@ resource "aws_ecr_lifecycle_policy" "server_repository" {
 resource "aws_ecr_repository" "loader_repository" {
   name                 = "univaf-loader"
   image_tag_mutability = "IMMUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = false
@@ -58,6 +60,7 @@ resource "aws_ecr_lifecycle_policy" "loader_repository" {
 resource "aws_ecr_repository" "seed_repository" {
   name                 = "univaf-db-seed"
   image_tag_mutability = "IMMUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = false
