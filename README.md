@@ -5,7 +5,7 @@
 
 # UNIVAF: Vaccine Appointment Availability API
 
-UNIVAF is a system for gathering vaccination appointment availability information from providers across North America and making it available in a standard format via a free-to-use, open API. It supports both government- and community-run vaccine finders, such as [the State of New Jersey’s vaccine finder][nj-finder] and [Vaccinate the States][VtS]. ~~You can access the live API and documentation at https://getmyvax.org/.~~ *The live service has been shut down, but you can view historical data and documentation at https://archives.getmyvax.org/.*
+UNIVAF is a system for gathering vaccination appointment availability information from providers across North America and making it available in a standard format via a free-to-use, open API. It acts as the source of data for both government- and community-run vaccine finders, such as [the State of New Jersey’s vaccine finder][nj-finder] and [Vaccinate the States][VtS]. ~~You can access the live API and documentation at https://getmyvax.org/.~~ *The live service has been shut down, but you can view historical data and documentation at https://archives.getmyvax.org/.*
 
 While currently focused on COVID-19 vaccinations, we hope the code and infrastructure here might be easily repurposed in the future for other kinds of everyday vaccinations (e.g. flu vaccines) or for future health emergencies.
 
@@ -35,7 +35,7 @@ At the top level of this repo, you’ll also find some other useful directories:
 
 - **`archives`** contains documentation for the the archived historical data the server saves as an open dataset, and which can be used for deeper analysis of vaccination reach, equity, etc. It's ultimately served from https://archives.getmyvax.org/.
 
-- **`docs`** contains internal project documentation for contirbutors, infrastructure guidance, and incident reports.
+- **`docs`** contains internal project documentation for contributors, infrastructure guidance, and incident reports.
 
 - **`scripts`** contains scripts for managing releases, deployments, and other tasks.
 
@@ -71,8 +71,6 @@ Next, seed the database and run the server (see below)!
 
 ### Starting the API server
 
-
-
 ```bash
 $ npm install
 $ cd ./server/
@@ -81,6 +79,7 @@ $ npm run watch         # `watch` will auto-recompile typescript
 $ npm run test          # `test` will run the various jest tests
 $ open http://localhost:3000/providers
 ```
+
 
 ### Running the Loaders
 
@@ -107,36 +106,44 @@ univaf-loader [sources..]
 Load data about COVID-19 vaccine appointment availability from a
 variety of different sources.
 
-Supported sources: cvsApi, cvsScraper, cvsSmart, njvss, riteAidApi,
-vaccinespotter, waDoh
+Data about each vaccination location is written as a single line of JSON
+on STDOUT, so you can pipe or stream the output to other files or
+programs for processing. Informational messages are available on STDERR.
 
-Commands:
-  univaf-loader [sources..]     Load data about COVID-19 vaccine appointment
-                                availability from a
-                                variety of different sources.
+Supported sources: albertsonsMhealth, albertsonsScraper, cdcApi, cvsApi,
+cvsScraper, cvsSmart, heb, hyvee, krogerSmart, njvss, prepmod, riteAidApi,
+riteAidSmart, riteAidScraper, vaccinespotter, vtsGeo, waDoh, walgreensSmart
 
-                                Supported sources: cvsApi, cvsScraper, cvsSmart,
-                                njvss, riteAidApi, vaccinespotter, waDoh
-                                                                       [default]
-  univaf-loader server          Start a web server that loads vaccine
-                                appointment availability when an
-                                HTTP POST request is made to "/".
-
-                                Use the "PORT" environment variable to specify
-                                what port to listen on.
+Exit codes:
+- 90: An unhandled error occurred.
+- 91: An error occurred in one of the requested sources.
+- 92: An error occurred in all of the requested sources.
 
 Options:
-  --version                Show version number                         [boolean]
-  --help                   Show help                                   [boolean]
-  --send                   Send availability info to the API specified by the
-                           environment variable API_URL                [boolean]
-  --compact                Output JSON as a single line                [boolean]
-  --states                 Comma-separated list of states to query for
-                           multi-state sources (e.g. vaccinespotter)    [string]
-  --vaccinespotter-states  Overrides the `--states` option for vaccinespotter
-                                                                        [string]
-  --rite-aid-states        Overrides the `--states` option for riteAidApi
-                                                                        [string]
+  --version                 Show version number                        [boolean]
+  --help                    Show help                                  [boolean]
+  --send                    Send availability info to the API specified by the
+                            environment variable API_URL. If set, data will not
+                            be written to STDOUT.                      [boolean]
+  --compact                 Output JSON as a single line               [boolean]
+  --states                  Comma-separated list of states to query for
+                            multi-state sources (e.g. cvsSmart). If not
+                            specified all relevant states for the requested
+                            sources will be checked.                    [string]
+  --hide-missing-locations  If a previously found location stops being returned
+                            by a source, output it with `is_public: false`. Only
+                            use this with sources that are "authoritative" --
+                            that is, you expect them to output a *complete* list
+                            of whatever type of locations they cover.
+                            ("Previously found" locations are loaded from the
+                            server specified by the API_URL environment
+                            variable. This is currently only supported by the
+                            `prepmod` source.)                         [boolean]
+  --rate-limit              Only make this many HTTP requests per second. (Only
+                            applies to the Rite Aid sources for now.)   [number]
+  --filter-stale-data       Don't report records with stale data.      [boolean]
+  --stale-threshold         Consider records older than this many milliseconds
+                            to be stale.            [number] [default: 86400000]
 ```
 
 
@@ -190,7 +197,7 @@ The list is manually managed.
 
 ## License & Copyright
 
-Copyright (C) 2021 U.S. Digital Response (USDR)
+Copyright (C) 2021–2023 U.S. Digital Response (USDR)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this software except in compliance with the License. You may obtain a copy of the License at:
 

@@ -19,15 +19,15 @@ Most of the infrastructure and services that support this project are hosted in 
 
 Major components:
 
-- Most code runs in Elastic Container Service (ECS) as Docker containers. Everything runs in a single ECS *cluster*.
+- Most code runs in Elastic Container Service (ECS) as Docker containers. Everything runs in a single ECS *cluster*. **(Note: UNIVAF has been shut down, and the ECS cluster does currently exist.)**
     - The main concept in ECS is a *task*, which you can generally think of as Docker container.
     - The API server is an ECS *service* (named `api`). A *service* is a set of long-running tasks that ECS keeps a certain number of instances running (so if one stops, ECS starts a new one, and keeps N copies running where N scales between an upper and lower limit based on resource usage).
     - Most other code runs as *scheduled tasks* in the same clauser as the API service. A *scheduled task* isn't actually a built-in feature of ECS, but is a well-known pattern — it's a *CloudWatch event* that is triggered on a schedule and that tells the ECS cluster to run a particular *task* — basically `cron` for Docker containers. Terraform is incredibly helpful by letting us make this pattern into a single, manageable configuration object.
         - Each loader source (e.g. `albertsons`, `krogerSmart`, `walgreensSmart`) is a separate task (see [`terraform/loaders.tf`](../../terraform/loaders.tf)). This lets us control the schedule and arguments for each source we pull data from in an organized way.
         - Other scheduled tasks are part of the `server` code and support its functions. For example, the `daily_data_snapshot_task` dumps a copy of the database each night into S3 as JSON files that are used for historical analysis.
-- CloudFront is used as a caching proxy in front of the API server.
 - The database is managed in RDS.
 - Historical log data is saved and made publicly accessible in S3. (A scheduled task in ECS runs nightly and is responsible for this.)
+- CloudFront is used as a caching proxy in front of the API server and in front of the S3 bucket with historical log data (as two separate CloudFront distributions).
 
 As much of the infrastructure as possible is managed in Terraform, but a few bits are set up manually:
 
@@ -71,13 +71,17 @@ Please get in touch with a project lead for access to any of these systems.
 
     - Terraform Cloud automatically picks up the change and updates ECS configurations to use the new images.
 
+**⚠️ Since UNIVAF has been shut down, the above steps no longer run automatically.** The Terraform and docs content below *does* still run in order to support maintentance of historical data, shutdown notices, etc.
+
 **AWS configuration changes deploy automatically via Terraform Cloud.** Every time a new commit that changes Terraform files lands on the `main` branch, Terraform Cloud will deploy. It will also *plan* a deployment (and tell you what it would create/update/destroy) every time you push to a Pull Request branch (this will show up as a “check” at the bottom of a PR).
 
 If you need to trigger Terraform manually, log into [Terraform Cloud][terraform-cloud], browse to the “univaf-infra” workspace, click the “actions” dropdown in the upper-right, and select “start new run.”
 
 ![Manually deploying in Terraform Cloud](../_assets/terraform-manual-deploy.png)
 
-**The archives documentation is a static site built with [MkDocs][].** We use GitHub Actions to automatically build and publish the site. The [`deploy-archives-docs` workflow][deploy-archives-docs] automatically builds and deploys the site every time a commit lands on the `main` branch. See the archives README for details on [building the static site manually](../../archives/README.md).
+**The archives documentation is a static site built with [MkDocs][] and is deployed as static content in same S3 bucket as archived data.** We use GitHub Actions to automatically build and publish the site. The [`deploy-archives-docs` workflow][deploy-archives-docs] automatically builds and deploys the site every time a commit lands on the `main` branch. See the archives README for details on [building the static site manually](../../archives/README.md).
+
+**The tombstone placeholder page is hand-coded with no build step and is deployed to GitHub pages.** We use GitHub Actions to automatically publish it via the [`deploy-tombstone` workflow][deploy-tombstone] every time a commit lands on the `main` branch.
 
 
 ### Terraforming Locally
@@ -85,6 +89,7 @@ If you need to trigger Terraform manually, log into [Terraform Cloud][terraform-
 In order to run terraform locally, you have to auth `terraform` to terraform cloud. This requires a cloud invite; reach out to the project owners to get an invite. Once you clone the repository locally, navigate to the `terraform/` directory in your preferred shell. Run `terraform login`, which will create an API access token for you. You'll be prompted to paste it in to your shell in order to access it. Initialize to the backend using `terraform init`. At this point, you will be able to run terraform commands as expected: `terraform plan`, `terraform apply`, `terraform state list`, etc.
 
 **Please avoid running commands that change Terraform’s state locally (e.g. `terraform apply`) and instead run them in Terraform Cloud.** If you absolutely need to modify state locally, coordinate with the rest of the team by following the instructions below.
+
 
 ### Terraforming changes that require manual state intervention
 
@@ -100,6 +105,8 @@ Follow this process when making any changes in terraform that may affect another
 
 
 ## Bastion Server
+
+**Note: since UNIVAF production services have been shut down, there is no more bastion server.**
 
 Most of our services in AWS are in VPCs without public access, so if you need to log directly into a server, the database, or something else, you’ll need to do it through the [bastion server][bastion-server]. You can SSH into the bastion from a computer on the public internet, and from there run any commands that need access to our internal services, like using `psql` to log directly into the database.
 
@@ -126,4 +133,5 @@ And then run any commands you'd like from inside the SSH session.
 [workflow-ci]: ../../.github/workflows/ci.yml
 [workflow-ci-runs]: https://github.com/usdigitalresponse/univaf/actions/workflows/ci.yml
 [deploy-archives-docs]: ../../.github/workflows/deploy-archives-docs.yml
+[deploy-tombstone]: ../../.github/workflows/deploy-tombstone.yml
 [mkdocs]: https://www.mkdocs.org/
