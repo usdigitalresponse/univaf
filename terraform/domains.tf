@@ -1,13 +1,17 @@
 # Domains and CDN/Caching Layers
 #
-# The DNS zone (defined by the `domain_name` variable) should be manually
-# created in the AWS console, but all the records for the domain and subdomains
-# are managed here in code.
+# These depend on two manually-created resources in the AWS console:
+#   1. The DNS zone (referenced in the `domain_name` variable).
+#   2. An SSL certificate covering all the domains (referenced in the
+#      `ssl_certificate_arn` variable).
 #
-# The domains all point to CloudFront distributions for caching and DOS
-# protection. These are only turned on if there is also an SSL certificate
-# (set in the `ssl_certificate_arn` variable, and which also needs to be
-# created manually in the AWS console).
+# All the records for the domain and subdomains, however, are managed via
+# Terraform resources in this file.
+#
+# The domains variously point to CloudFront distributions for caching and DOS
+# protection or to other services entirely if things are hosted outside AWS.
+# The CloudFront distributions are only created if there is is also an SSL
+# certificate set in the `ssl_certificate_arn` variable (see above).
 
 locals {
   # Domain at which to serve archived, historical data (stored in S3).
