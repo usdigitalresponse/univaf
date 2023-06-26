@@ -19,7 +19,7 @@
     "@types/node": "^18.16.17",
     "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
-    "typescript": "5.0.4"
+    "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/155637/artifacts?artifactName=tgz&fileId=04DE374095785839F62F13D7F462400B471B8FC647A291E41CD31D23BFD6186002&fileName=/typescript-5.2.0-insiders.20230626.tgz"
   },
   "scripts": {
     "clean": "tsc --build --clean",
