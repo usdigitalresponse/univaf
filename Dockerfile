@@ -1,9 +1,11 @@
-FROM node:18.16.0-slim AS base
+FROM node:18.18.2-slim AS base
 # Name for the version/release of the software. (Optional)
 ARG RELEASE
 
+# FIXME: This repo is no longer actively maintained! If you start using it, you
+# should re-enable this, which may also require updating the Node.js version.
 # Upgrade to latest NPM.
-RUN npm install -g npm
+# RUN npm install -g npm
 
 WORKDIR /app
 
